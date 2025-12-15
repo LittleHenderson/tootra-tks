@@ -21,7 +21,15 @@ from pathlib import Path
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from scripts.serve_inference import TKSInferenceHandler, CANON_CONFIG, SERVER_MODE
+from scripts.serve_inference import (
+    TKSInferenceHandler,
+    CANON_CONFIG,
+    SERVER_MODE,
+    check_rate_limit,
+    verify_auth_token,
+    rate_limit_store,
+    rate_limit_lock,
+)
 
 
 # =============================================================================

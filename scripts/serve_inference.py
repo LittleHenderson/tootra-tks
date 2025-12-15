@@ -142,6 +142,8 @@ from pathlib import Path
 from typing import Dict, Any, Optional, List
 from urllib.parse import urlparse, parse_qs
 from datetime import datetime
+from collections import defaultdict
+from threading import Lock
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -183,13 +185,88 @@ CANON_CONFIG = {
 # Global server mode (can be set via CLI)
 SERVER_MODE = "strict"  # "strict" or "lenient"
 
+# Security configuration (can be set via CLI)
+AUTH_TOKEN = None  # Optional shared secret for authentication
+RATE_LIMIT_ENABLED = False  # Enable rate limiting
+RATE_LIMIT_REQUESTS = 60  # Max requests per minute per IP
+RATE_LIMIT_WINDOW = 60  # Time window in seconds
+
 # Logger configuration
 logger = logging.getLogger("tks_inference_server")
+
+# Rate limiting state
+rate_limit_store = defaultdict(list)
+rate_limit_lock = Lock()
 
 
 # =============================================================================
 # HELPER FUNCTIONS
 # =============================================================================
+
+def check_rate_limit(client_ip: str) -> bool:
+    """
+    Check if client has exceeded rate limit.
+
+    Args:
+        client_ip: Client IP address
+
+    Returns:
+        True if request is allowed, False if rate limit exceeded
+    """
+    if not RATE_LIMIT_ENABLED:
+        return True
+
+    current_time = datetime.utcnow().timestamp()
+
+    with rate_limit_lock:
+        # Get request timestamps for this IP
+        timestamps = rate_limit_store[client_ip]
+
+        # Remove timestamps outside the time window
+        timestamps[:] = [ts for ts in timestamps if current_time - ts < RATE_LIMIT_WINDOW]
+
+        # Check if limit exceeded
+        if len(timestamps) >= RATE_LIMIT_REQUESTS:
+            logger.warning(f"Rate limit exceeded for {client_ip}: {len(timestamps)} requests in {RATE_LIMIT_WINDOW}s")
+            return False
+
+        # Add current timestamp
+        timestamps.append(current_time)
+        return True
+
+
+def verify_auth_token(headers: dict) -> bool:
+    """
+    Verify authentication token from request headers.
+
+    Args:
+        headers: Request headers
+
+    Returns:
+        True if authentication is successful or not required, False otherwise
+    """
+    if AUTH_TOKEN is None:
+        return True  # No authentication required
+
+    # Check for Authorization header
+    auth_header = headers.get('Authorization', '').strip()
+
+    if not auth_header:
+        logger.warning("Missing Authorization header")
+        return False
+
+    # Support both "Bearer <token>" and plain token
+    if auth_header.startswith('Bearer '):
+        token = auth_header[7:].strip()
+    else:
+        token = auth_header
+
+    if token != AUTH_TOKEN:
+        logger.warning("Invalid authentication token")
+        return False
+
+    return True
+
 
 def parse_axes(axes_list: List[str]) -> set:
     """
@@ -407,6 +484,26 @@ class TKSInferenceHandler(BaseHTTPRequestHandler):
             format % args
         ))
 
+    def _check_security(self) -> bool:
+        """
+        Check rate limiting and authentication.
+
+        Returns:
+            True if request passes security checks, False otherwise
+        """
+        # Check rate limit
+        client_ip = self.client_address[0]
+        if not check_rate_limit(client_ip):
+            self._send_error_json("Rate limit exceeded. Please try again later.", 429)
+            return False
+
+        # Check authentication
+        if not verify_auth_token(self.headers):
+            self._send_error_json("Unauthorized: Invalid or missing authentication token", 401)
+            return False
+
+        return True
+
     def _set_headers(self, status_code: int = 200, content_type: str = "application/json"):
         """Set HTTP response headers."""
         self.send_response(status_code)
@@ -460,6 +557,10 @@ class TKSInferenceHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         """Handle GET requests."""
+        # Security checks
+        if not self._check_security():
+            return
+
         parsed_path = urlparse(self.path)
         path = parsed_path.path
 
@@ -470,6 +571,10 @@ class TKSInferenceHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         """Handle POST requests."""
+        # Security checks
+        if not self._check_security():
+            return
+
         parsed_path = urlparse(self.path)
         path = parsed_path.path
 
@@ -488,6 +593,12 @@ class TKSInferenceHandler(BaseHTTPRequestHandler):
             "status": "ok",
             "canon": CANON_CONFIG,
             "mode": SERVER_MODE,
+            "security": {
+                "auth_required": AUTH_TOKEN is not None,
+                "rate_limit_enabled": RATE_LIMIT_ENABLED,
+                "rate_limit_requests": RATE_LIMIT_REQUESTS if RATE_LIMIT_ENABLED else None,
+                "rate_limit_window": RATE_LIMIT_WINDOW if RATE_LIMIT_ENABLED else None,
+            },
             "timestamp": datetime.utcnow().isoformat() + "Z"
         }
         self._send_json(response)
@@ -680,7 +791,7 @@ class TKSInferenceHandler(BaseHTTPRequestHandler):
 # SERVER STARTUP
 # =============================================================================
 
-def run_server(host: str, port: int, log_file: Optional[str] = None):
+def run_server(host: str, port: int, log_file: Optional[str] = None, verbose: bool = False):
     """
     Start the TKS inference HTTP server.
 
@@ -688,9 +799,10 @@ def run_server(host: str, port: int, log_file: Optional[str] = None):
         host: Host address to bind to
         port: Port number to listen on
         log_file: Optional log file path
+        verbose: Enable verbose logging
     """
     # Configure logging
-    log_level = logging.INFO
+    log_level = logging.DEBUG if verbose else logging.INFO
     log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
     if log_file:
@@ -719,6 +831,13 @@ def run_server(host: str, port: int, log_file: Optional[str] = None):
     logger.info(f"Server mode: {SERVER_MODE}")
     logger.info(f"Canonical config: {CANON_CONFIG}")
     logger.info(f"Listening on http://{host}:{port}")
+    logger.info("")
+    logger.info("Security Settings:")
+    logger.info(f"  Authentication: {'ENABLED' if AUTH_TOKEN else 'DISABLED'}")
+    logger.info(f"  Rate limiting: {'ENABLED' if RATE_LIMIT_ENABLED else 'DISABLED'}")
+    if RATE_LIMIT_ENABLED:
+        logger.info(f"  Rate limit: {RATE_LIMIT_REQUESTS} requests per {RATE_LIMIT_WINDOW}s per IP")
+    logger.info(f"  Verbose logging: {'ENABLED' if verbose else 'DISABLED'}")
     logger.info("")
     logger.info("Available endpoints:")
     logger.info("  GET  /health           - Server health check")
@@ -800,6 +919,35 @@ Examples:
         dest="log_file",
         help="Log file path (logs to stdout by default)"
     )
+    p.add_argument(
+        "--verbose",
+        action="store_true",
+        help="Enable verbose/debug logging"
+    )
+
+    # Security options
+    security_group = p.add_argument_group('security options')
+    security_group.add_argument(
+        "--auth-token",
+        type=str,
+        dest="auth_token",
+        help="Shared secret token for authentication (optional). Clients must send this in Authorization header."
+    )
+    security_group.add_argument(
+        "--rate-limit",
+        type=int,
+        dest="rate_limit",
+        metavar="N",
+        help="Enable rate limiting: max N requests per minute per IP (e.g., --rate-limit 60)"
+    )
+    security_group.add_argument(
+        "--rate-limit-window",
+        type=int,
+        dest="rate_limit_window",
+        default=60,
+        metavar="SECONDS",
+        help="Rate limit time window in seconds (default: 60)"
+    )
 
     return p.parse_args()
 
@@ -810,7 +958,7 @@ Examples:
 
 def main():
     """Main CLI entry point."""
-    global SERVER_MODE
+    global SERVER_MODE, AUTH_TOKEN, RATE_LIMIT_ENABLED, RATE_LIMIT_REQUESTS, RATE_LIMIT_WINDOW
 
     args = parse_args()
 
@@ -820,9 +968,21 @@ def main():
     else:
         SERVER_MODE = "strict"
 
+    # Set authentication token
+    if args.auth_token:
+        AUTH_TOKEN = args.auth_token
+        logger.info("Authentication enabled")
+
+    # Set rate limiting
+    if args.rate_limit:
+        RATE_LIMIT_ENABLED = True
+        RATE_LIMIT_REQUESTS = args.rate_limit
+        RATE_LIMIT_WINDOW = args.rate_limit_window
+        logger.info(f"Rate limiting enabled: {RATE_LIMIT_REQUESTS} requests per {RATE_LIMIT_WINDOW}s")
+
     # Start server
     try:
-        run_server(args.host, args.port, args.log_file)
+        run_server(args.host, args.port, args.log_file, args.verbose)
     except Exception as e:
         print(f"ERROR: Failed to start server: {e}", file=sys.stderr)
         import traceback

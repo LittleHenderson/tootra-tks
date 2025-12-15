@@ -1,0 +1,35 @@
+{
+  "epoch_losses": [
+    {
+      "epoch": 1,
+      "loss": 4.007182637850444
+    },
+    {
+      "epoch": 2,
+      "loss": 3.200437823931376
+    },
+    {
+      "epoch": 3,
+      "loss": 2.777176022529602
+    }
+  ],
+  "eval_losses": [
+    {
+      "epoch": 1,
+      "loss": 3.3830318450927734
+    },
+    {
+      "epoch": 2,
+      "loss": 2.9051871299743652
+    },
+    {
+      "epoch": 3,
+      "loss": 2.5987815856933594
+    }
+  ],
+  "augmentation": {
+    "original": 15,
+    "inversion": 30,
+    "anti_attractor": 15
+  }
+}

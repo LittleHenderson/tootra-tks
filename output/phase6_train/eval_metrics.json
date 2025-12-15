@@ -1,0 +1,103 @@
+{
+  "timestamp": "2025-12-14T19:41:56.254454",
+  "config": {
+    "checkpoint": "output/phase6_train/final_model.pt",
+    "data": "output/teacher_augmented.jsonl",
+    "test_ratio": 0.2,
+    "batch_size": 8,
+    "seed": 42
+  },
+  "evaluation": {
+    "summary": {
+      "loss": 2.376426100730896,
+      "accuracy": 0.33043478260869563,
+      "perplexity": 10.766357421875,
+      "num_batches": 2,
+      "total_tokens": 345
+    },
+    "validator": {
+      "dataset_pass_rate": {
+        "total_entries": 60,
+        "passed_entries": 60,
+        "overall_pass_rate": 1.0,
+        "per_aug_type": {
+          "original": {
+            "pass_rate": 1.0,
+            "total": 15,
+            "passed": 15
+          },
+          "inversion": {
+            "pass_rate": 1.0,
+            "total": 30,
+            "passed": 30
+          },
+          "anti_attractor": {
+            "pass_rate": 1.0,
+            "total": 15,
+            "passed": 15
+          }
+        }
+      }
+    },
+    "per_aug_type": {
+      "original": {
+        "accuracy": 0.0,
+        "count": 2,
+        "tokens": 2
+      },
+      "inversion": {
+        "accuracy": 0.3357142857142857,
+        "count": 8,
+        "tokens": 280
+      },
+      "anti_attractor": {
+        "accuracy": 0.31746031746031744,
+        "count": 2,
+        "tokens": 63
+      }
+    }
+  },
+  "summary": {
+    "overall_accuracy": 0.33043478260869563,
+    "overall_loss": 2.376426100730896,
+    "perplexity": 10.766357421875,
+    "validator_pass_rate": 1.0
+  },
+  "training": {
+    "epoch_losses": [
+      {
+        "epoch": 1,
+        "loss": 4.007182637850444
+      },
+      {
+        "epoch": 2,
+        "loss": 3.200437823931376
+      },
+      {
+        "epoch": 3,
+        "loss": 2.777176022529602
+      }
+    ],
+    "eval_losses": [
+      {
+        "epoch": 1,
+        "loss": 3.3830318450927734
+      },
+      {
+        "epoch": 2,
+        "loss": 2.9051871299743652
+      },
+      {
+        "epoch": 3,
+        "loss": 2.5987815856933594
+      }
+    ],
+    "final_train_loss": 2.777176022529602,
+    "final_eval_loss": 2.5987815856933594,
+    "augmentation": {
+      "original": 15,
+      "inversion": 30,
+      "anti_attractor": 15
+    }
+  }
+}

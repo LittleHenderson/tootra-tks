@@ -316,15 +316,23 @@ def main():
     start_time = time.time()
 
     print("\n" + "=" * 80)
-    print("TKS REGRESSION GATE - Phase 4")
+    print("TKS REGRESSION GATE - Phase 6")
     print("=" * 80)
     print("Testing canonical validity of encode -> invert -> decode pipeline")
     print("Time budget: < 5 seconds")
     print()
 
-    # Run tests
-    test1_pass = test_canonical_roundtrip()
-    test2_pass = test_operator_preservation()
+    # Run tests (they assert internally, so if they pass, all is good)
+    all_pass = True
+    try:
+        test_canonical_roundtrip()
+        test_operator_preservation()
+    except AssertionError as e:
+        print(f"\n[ERROR] Test assertion failed: {e}")
+        all_pass = False
+    except Exception as e:
+        print(f"\n[ERROR] Unexpected exception: {e}")
+        all_pass = False
 
     elapsed = time.time() - start_time
 
@@ -340,7 +348,7 @@ def main():
     # Final result
     print("=" * 80)
 
-    if test1_pass and test2_pass:
+    if all_pass:
         print("\n[SUCCESS] Regression gate PASSED - all outputs canonical!")
         print("=" * 80)
         return 0

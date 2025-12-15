@@ -53,6 +53,12 @@ jobs:
           name: coverage-${{ matrix.python-version }}
           path: coverage.xml
 
+      - name: Run regression gate
+        run: |
+          echo "Running regression gate (story→expr→invert→story roundtrip validation)..."
+          python tests/test_regression_gate.py
+          echo "Regression gate completed successfully!"
+
       - name: Run fuzz pipeline tests
         run: python tests/fuzz_pipeline.py
 

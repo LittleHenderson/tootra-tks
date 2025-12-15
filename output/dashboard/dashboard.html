@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TKS Phase 6 Monitoring Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2E86AB;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        .timestamp {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .summary {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            border-left: 4px solid #2E86AB;
+        }
+        .summary h2 {
+            margin-top: 0;
+            color: #2E86AB;
+            font-size: 20px;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .summary-item {
+            background-color: white;
+            padding: 12px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .summary-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .summary-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2E86AB;
+            margin-top: 5px;
+        }
+        .plot-section {
+            margin-bottom: 40px;
+        }
+        .plot-section h2 {
+            color: #2E86AB;
+            margin-bottom: 15px;
+            font-size: 22px;
+            border-bottom: 2px solid #2E86AB;
+            padding-bottom: 10px;
+        }
+        .plot-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .plot-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #666;
+            font-size: 12px;
+        }
+        .canon-note {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .canon-note h3 {
+            margin-top: 0;
+            color: #856404;
+            font-size: 16px;
+        }
+        .canon-note ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .canon-note li {
+            color: #856404;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>TKS Phase 6 Monitoring Dashboard</h1>
+        <div class="timestamp">Generated: 2025-12-14 19:42:05</div>
+
+        <div class="canon-note">
+            <h3>Canon Guardrails</h3>
+            <ul>
+                <li><strong>Worlds:</strong> A/B/C/D</li>
+                <li><strong>Noetics:</strong> 1-10 (pairs 2-3, 5-6, 8-9; self-duals 1,4,7,10)</li>
+                <li><strong>Foundations:</strong> 1-7, Sub-foundations: 7x4=28</li>
+                <li><strong>ALLOWED_OPS:</strong> +, -, +T, -T, ->, &lt;-, *T, /T, o (9 total)</li>
+            </ul>
+        </div>
+
+        <div class="summary">
+            <h2>Quick Summary</h2>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <div class="summary-label">Total Samples</div>
+                    <div class="summary-value">0</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Original (Teacher)</div>
+                    <div class="summary-value">0</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Inversion</div>
+                    <div class="summary-value">0</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Anti-Attractor</div>
+                    <div class="summary-value">0</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Augmentation Ratio</div>
+                    <div class="summary-value">0.00x</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Epochs</div>
+                    <div class="summary-value">1</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="plot-section">
+            <h2>Comprehensive Dashboard</h2>
+            <div class="plot-container">
+                <img src="comprehensive_dashboard.png" alt="Comprehensive Dashboard">
+            </div>
+        </div>
+
+        <div class="plot-section">
+            <h2>Training Progress</h2>
+            <div class="plot-container">
+                <img src="loss_curves.png" alt="Loss Curves">
+            </div>
+        </div>
+
+        <div class="plot-section">
+            <h2>Validation Metrics</h2>
+            <div class="plot-container">
+                <img src="validation_rates.png" alt="Validation Rates">
+            </div>
+        </div>
+
+        <div class="plot-section">
+            <h2>Augmentation Analysis</h2>
+            <div class="plot-container">
+                <img src="augmentation_counts.png" alt="Augmentation Counts">
+            </div>
+            <div class="plot-container">
+                <img src="anti_attractor_usage.png" alt="Anti-Attractor Usage">
+            </div>
+        </div>
+
+        <div class="footer">
+            TKS Phase 6 Monitoring Dashboard | Generated by Agent 4 | 2025-12-14
+        </div>
+    </div>
+</body>
+</html>

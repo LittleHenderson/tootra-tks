@@ -1,0 +1,157 @@
+{
+  "summary": {
+    "total_entries": 60,
+    "clean_entries": 45,
+    "duplicate_entries": 0,
+    "invalid_operators": 0,
+    "invalid_worlds": 0,
+    "invalid_noetics": 0,
+    "missing_fields": 15,
+    "structural_errors": 0,
+    "pass_rate": 0.75
+  },
+  "issues": [
+    {
+      "entry_id": "entry_0",
+      "issue_type": "missing_field",
+      "description": "Missing required field: story",
+      "severity": "error",
+      "field": "story"
+    },
+    {
+      "entry_id": "entry_1",
+      "issue_type": "missing_field",
+      "description": "Missing required field: story",
+      "severity": "error",
+      "field": "story"
+    },
+    {
+      "entry_id": "entry_2",
+      "issue_type": "missing_field",
+      "description": "Missing required field: story",
+      "severity": "error",
+      "field": "story"
+    },
+    {
+      "entry_id": "entry_3",
+      "issue_type": "missing_field",
+      "description": "Missing required field: story",
+      "severity": "error",
+      "field": "story"
+    },
+    {
+      "entry_id": "entry_4",
+      "issue_type": "missing_field",
+      "description": "Missing required field: story",
+      "severity": "error",
+      "field": "story"
+    },
+    {
+      "entry_id": "entry_5",
+      "issue_type": "missing_field",
+      "description": "Missing required field: story",
+      "severity": "error",
+      "field": "story"
+    },
+    {
+      "entry_id": "entry_6",
+      "issue_type": "missing_field",
+      "description": "Missing required field: story",
+      "severity": "error",
+      "field": "story"
+    },
+    {
+      "entry_id": "entry_7",
+      "issue_type": "missing_field",
+      "description": "Missing required field: story",
+      "severity": "error",
+      "field": "story"
+    },
+    {
+      "entry_id": "entry_8",
+      "issue_type": "missing_field",
+      "description": "Missing required field: story",
+      "severity": "error",
+      "field": "story"
+    },
+    {
+      "entry_id": "entry_9",
+      "issue_type": "missing_field",
+      "description": "Missing required field: story",
+      "severity": "error",
+      "field": "story"
+    },
+    {
+      "entry_id": "entry_10",
+      "issue_type": "missing_field",
+      "description": "Missing required field: story",
+      "severity": "error",
+      "field": "story"
+    },
+    {
+      "entry_id": "entry_11",
+      "issue_type": "missing_field",
+      "description": "Missing required field: story",
+      "severity": "error",
+      "field": "story"
+    },
+    {
+      "entry_id": "entry_12",
+      "issue_type": "missing_field",
+      "description": "Missing required field: story",
+      "severity": "error",
+      "field": "story"
+    },
+    {
+      "entry_id": "entry_13",
+      "issue_type": "missing_field",
+      "description": "Missing required field: story",
+      "severity": "error",
+      "field": "story"
+    },
+    {
+      "entry_id": "entry_14",
+      "issue_type": "missing_field",
+      "description": "Missing required field: story",
+      "severity": "error",
+      "field": "story"
+    }
+  ],
+  "duplicates": {
+    "by_id": {},
+    "by_hash": {
+      "f5f09b963f3da46e42fe5b9c098b59eabee4741e928d6bc88d230c813a240588": [
+        "entry_0_inv_W",
+        "entry_0_inv_N"
+      ],
+      "dccfc07363b35f5522b7e1b18c803a260e0adb20ff5fb33701c1dccce0413ded": [
+        "entry_1_inv_W",
+        "entry_1_inv_N"
+      ],
+      "fe160d2aed7826e85b1c077ee69e77fb9a75e171927e95a2886be3c4863a6fa3": [
+        "entry_2_inv_W",
+        "entry_2_inv_N"
+      ],
+      "16ae0ce57d80c4bd10041ff340d67a4527bc4fcd04a6868951546ad05fe36158": [
+        "entry_3_inv_W",
+        "entry_3_inv_N"
+      ],
+      "4d1b1aa1e77aa8b82714adea72a07bfe62dfc1d5ca3f207ca504d43984896b90": [
+        "entry_6_inv_W",
+        "entry_6_inv_N"
+      ],
+      "d21b60d800cf96b8f50564e64af927906df944c0f19ed798d12f101e5dd7ffa4": [
+        "entry_9_inv_W",
+        "entry_9_inv_N"
+      ],
+      "a6df245b812ef972ceb2fddbf89f418b6044cb69acf02825a7ea9eed116bd599": [
+        "entry_13_inv_W",
+        "entry_13_inv_N"
+      ],
+      "a16b6be941dd351a7cacaa03b0675c07595a06d99d74b6a501a7657d7fcdb03b": [
+        "entry_14_inv_W",
+        "entry_14_inv_N"
+      ]
+    }
+  }
+}

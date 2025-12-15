@@ -20,6 +20,21 @@ python scripts/serve_inference.py --lenient
 
 # Start server with logging to file
 python scripts/serve_inference.py --log-file server.log
+
+# Start server with verbose logging
+python scripts/serve_inference.py --verbose
+
+# Start server with authentication (shared secret token)
+python scripts/serve_inference.py --auth-token "my-secret-token-123"
+
+# Start server with rate limiting (60 requests per minute per IP)
+python scripts/serve_inference.py --rate-limit 60
+
+# Start server with rate limiting (custom window: 100 requests per 120 seconds)
+python scripts/serve_inference.py --rate-limit 100 --rate-limit-window 120
+
+# Start server with all security features enabled
+python scripts/serve_inference.py --auth-token "my-secret-token-123" --rate-limit 60 --verbose
 ```
 
 ### Testing the Server
@@ -42,6 +57,18 @@ curl -X POST http://localhost:8000/invert \
 curl -X POST http://localhost:8000/anti-attractor \
      -H "Content-Type: application/json" \
      -d '{"story": "Power corrupts"}'
+
+# With authentication (if enabled with --auth-token)
+curl -X POST http://localhost:8000/encode \
+     -H "Content-Type: application/json" \
+     -H "Authorization: Bearer my-secret-token-123" \
+     -d '{"story": "A woman loved a man"}'
+
+# Alternative: plain token (without "Bearer ")
+curl -X POST http://localhost:8000/encode \
+     -H "Content-Type: application/json" \
+     -H "Authorization: my-secret-token-123" \
+     -d '{"story": "A woman loved a man"}'
 ```
 
 ## Endpoints
@@ -67,6 +94,12 @@ GET /health
     "subfoundations": 28
   },
   "mode": "strict",
+  "security": {
+    "auth_required": true,
+    "rate_limit_enabled": true,
+    "rate_limit_requests": 60,
+    "rate_limit_window": 60
+  },
   "timestamp": "2025-12-14T10:30:00.000000Z"
 }
 ```
@@ -380,6 +413,136 @@ You can override the server mode on a per-request basis using the `strict` param
   "strict": false  // Override server mode for this request
 }
 ```
+
+## Security Features
+
+### Authentication
+
+The server supports optional token-based authentication using a shared secret. When enabled, all requests must include the authentication token in the `Authorization` header.
+
+**Enable authentication:**
+```bash
+python scripts/serve_inference.py --auth-token "your-secret-token-here"
+```
+
+**Making authenticated requests:**
+```bash
+# Using Bearer token format (recommended)
+curl -X POST http://localhost:8000/encode \
+     -H "Content-Type: application/json" \
+     -H "Authorization: Bearer your-secret-token-here" \
+     -d '{"story": "A woman loved a man"}'
+
+# Using plain token format
+curl -X POST http://localhost:8000/encode \
+     -H "Content-Type: application/json" \
+     -H "Authorization: your-secret-token-here" \
+     -d '{"story": "A woman loved a man"}'
+```
+
+**Error responses:**
+
+Unauthorized (missing or invalid token):
+```json
+{
+  "success": false,
+  "error": "Unauthorized: Invalid or missing authentication token",
+  "timestamp": "2025-12-14T10:30:00.000000Z"
+}
+```
+
+Status code: `401 Unauthorized`
+
+### Rate Limiting
+
+The server supports per-IP rate limiting to prevent abuse. When enabled, each IP address is limited to a maximum number of requests within a time window.
+
+**Enable rate limiting:**
+```bash
+# Limit to 60 requests per minute (60 seconds) per IP
+python scripts/serve_inference.py --rate-limit 60
+
+# Custom time window: 100 requests per 120 seconds
+python scripts/serve_inference.py --rate-limit 100 --rate-limit-window 120
+```
+
+**Rate limit behavior:**
+- Requests are counted per IP address
+- Old requests outside the time window are automatically removed
+- When limit is exceeded, requests return `429 Too Many Requests`
+- The rate limit resets as the time window slides
+
+**Error responses:**
+
+Rate limit exceeded:
+```json
+{
+  "success": false,
+  "error": "Rate limit exceeded. Please try again later.",
+  "timestamp": "2025-12-14T10:30:00.000000Z"
+}
+```
+
+Status code: `429 Too Many Requests`
+
+**Check rate limit status:**
+
+The `/health` endpoint includes rate limit configuration:
+```json
+{
+  "security": {
+    "auth_required": false,
+    "rate_limit_enabled": true,
+    "rate_limit_requests": 60,
+    "rate_limit_window": 60
+  }
+}
+```
+
+### Verbose Logging
+
+Enable verbose logging to track all requests, security events, and errors:
+
+```bash
+python scripts/serve_inference.py --verbose
+```
+
+Verbose mode logs:
+- All incoming requests with client IP
+- Request bodies (JSON payloads)
+- Response bodies
+- Rate limit violations
+- Authentication failures
+- Detailed error traces
+
+**Example log output:**
+```
+2025-12-14 10:30:00,123 - tks_inference_server - INFO - 127.0.0.1 - - [14/Dec/2025 10:30:00] "POST /encode HTTP/1.1" 200 -
+2025-12-14 10:30:00,124 - tks_inference_server - INFO - Request body: {"story": "A woman loved a man"}
+2025-12-14 10:30:00,234 - tks_inference_server - INFO - Response (200): {"success": true, "expression": "B5 +T D3", ...}
+2025-12-14 10:30:01,456 - tks_inference_server - WARNING - Rate limit exceeded for 192.168.1.100: 61 requests in 60s
+2025-12-14 10:30:02,789 - tks_inference_server - WARNING - Invalid authentication token
+```
+
+### Combined Security Setup
+
+For production deployments, combine all security features:
+
+```bash
+python scripts/serve_inference.py \
+    --auth-token "$(openssl rand -hex 32)" \
+    --rate-limit 60 \
+    --rate-limit-window 60 \
+    --verbose \
+    --log-file /var/log/tks/server.log \
+    --strict
+```
+
+This configuration:
+- Requires authentication for all requests
+- Limits to 60 requests per minute per IP
+- Enables verbose logging to file and stdout
+- Uses strict mode for canonical validation
 
 ## CORS Support
 

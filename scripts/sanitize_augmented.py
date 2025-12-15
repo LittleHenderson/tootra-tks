@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-TKS Data Quality / Sanitizer Script
+TKS Data Quality / Sanitizer Script - Phase 6
 
 Scans augmented JSONL files for data quality issues and provides options to clean them.
 
@@ -13,6 +13,17 @@ Options:
 - --drop-invalid: Remove invalid entries from output
 - --flag-only: Report issues without removing entries
 - --output: Specify output file for cleaned data
+
+Pipeline Integration Points:
+1. POST-TEACHER GENERATION (Recommended):
+   Run after teacher generation, before augmentation
+   Use: --flag-only (catch issues early)
+
+2. POST-AUGMENTATION (Critical):
+   Run after all augmentation (inversion, anti-attractor, etc.)
+   Use: --drop-invalid (final quality gate before training)
+
+See docs/DATA_SANITIZER_GUIDE.md for full pipeline integration details.
 
 Usage:
     # Scan and report only
