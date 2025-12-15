@@ -1,0 +1,19 @@
+[run]
+omit =
+    tests/*
+    */tests/*
+    */__pycache__/*
+    */site-packages/*
+    scripts/*
+    tks_llm_core.py
+    tks_llm_core_v2.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise AssertionError
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    if TYPE_CHECKING:
+    @abstract

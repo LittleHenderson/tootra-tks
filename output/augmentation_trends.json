@@ -1,0 +1,141 @@
+[
+  {
+    "timestamp": "2025-12-14T16:27:28.319546",
+    "duration_seconds": 0.006824,
+    "augmentation": {
+      "original_count": 0,
+      "inversion_count": 0,
+      "anti_attractor_count": 0,
+      "total_count": 0,
+      "augmentation_ratio": 0.0,
+      "inversion_ratio": 0.0,
+      "anti_attractor_ratio": 0.0,
+      "axes_usage": {},
+      "mode_counts": {}
+    },
+    "validation": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "pass_rate": 0.0,
+      "world_validity_rate": 0.0,
+      "noetic_validity_rate": 0.0,
+      "operator_validity_rate": 0.0,
+      "structural_validity_rate": 0.0,
+      "foundation_validity_rate": 0.0,
+      "error_counts": {}
+    },
+    "distribution": {
+      "world_counts": {},
+      "world_distribution": {},
+      "noetic_counts": {},
+      "noetic_distribution": {},
+      "operator_counts": {},
+      "operator_distribution": {},
+      "foundation_counts": {},
+      "polarity": {
+        "positive": 0,
+        "negative": 0,
+        "neutral": 0,
+        "distribution": {}
+      }
+    }
+  },
+  {
+    "timestamp": "2025-12-14T16:28:24.948861",
+    "duration_seconds": 0.011547,
+    "augmentation": {
+      "original_count": 15,
+      "inversion_count": 30,
+      "anti_attractor_count": 15,
+      "total_count": 60,
+      "augmentation_ratio": 3.0,
+      "inversion_ratio": 2.0,
+      "anti_attractor_ratio": 1.0,
+      "axes_usage": {
+        "W": 15,
+        "N": 15
+      },
+      "mode_counts": {
+        "soft": 30
+      }
+    },
+    "validation": {
+      "total": 60,
+      "passed": 60,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "world_validity_rate": 1.0,
+      "noetic_validity_rate": 1.0,
+      "operator_validity_rate": 0.7333333333333333,
+      "structural_validity_rate": 0.7333333333333333,
+      "foundation_validity_rate": 0.0,
+      "error_counts": {}
+    },
+    "distribution": {
+      "world_counts": {
+        "A": 25,
+        "D": 30,
+        "B": 32,
+        "C": 32
+      },
+      "world_distribution": {
+        "A": 0.21008403361344538,
+        "D": 0.25210084033613445,
+        "B": 0.2689075630252101,
+        "C": 0.2689075630252101
+      },
+      "noetic_counts": {
+        "1": 16,
+        "4": 16,
+        "10": 8,
+        "7": 23,
+        "2": 12,
+        "3": 12,
+        "5": 12,
+        "6": 12,
+        "8": 4,
+        "9": 4
+      },
+      "noetic_distribution": {
+        "1": 0.13445378151260504,
+        "4": 0.13445378151260504,
+        "10": 0.06722689075630252,
+        "7": 0.19327731092436976,
+        "2": 0.10084033613445378,
+        "3": 0.10084033613445378,
+        "5": 0.10084033613445378,
+        "6": 0.10084033613445378,
+        "8": 0.03361344537815126,
+        "9": 0.03361344537815126
+      },
+      "operator_counts": {
+        "+T": 9,
+        "-T": 6,
+        "/T": 6,
+        "<-": 6,
+        "+": 18,
+        "o": 7,
+        "->": 3,
+        "*T": 4
+      },
+      "operator_distribution": {
+        "+T": 0.15254237288135594,
+        "-T": 0.1016949152542373,
+        "/T": 0.1016949152542373,
+        "<-": 0.1016949152542373,
+        "+": 0.3050847457627119,
+        "o": 0.11864406779661017,
+        "->": 0.05084745762711865,
+        "*T": 0.06779661016949153
+      },
+      "foundation_counts": {},
+      "polarity": {
+        "positive": 0,
+        "negative": 0,
+        "neutral": 0,
+        "distribution": {}
+      }
+    }
+  }
+]

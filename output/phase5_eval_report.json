@@ -1,0 +1,68 @@
+{
+  "timestamp": "2025-12-14T16:28:12.357286",
+  "config": {
+    "checkpoint": "output/models/best_model.pt",
+    "data": "output/sample_augmented.jsonl",
+    "test_ratio": 0.2,
+    "batch_size": 4,
+    "hidden_dim": 128,
+    "max_length": 256,
+    "seed": 42
+  },
+  "model_performance": {
+    "summary": {
+      "loss": 14.957513809204102,
+      "accuracy": 0.010362694300518135,
+      "perplexity": 1000000.0,
+      "num_batches": 1,
+      "total_tokens": 193
+    },
+    "component_losses": {
+      "task": 6.888476848602295,
+      "rpm": 0.0,
+      "attractor": 0.6060056090354919,
+      "involution": 38.52169418334961,
+      "spectral": 0.46975037455558777,
+      "cascade": 0.6796008348464966
+    },
+    "per_aug_type": {
+      "accuracy": {
+        "anti_attractor": 0.015151515151515152,
+        "original": 0.007874015748031496
+      },
+      "token_counts": {
+        "anti_attractor": 66,
+        "original": 127
+      }
+    },
+    "validation": {
+      "validated_accuracy": 0.010362694300518135,
+      "validated_tokens": 193
+    }
+  },
+  "canonical_validity": {
+    "total_entries": 15,
+    "world_validity_rate": 1.0,
+    "noetic_validity_rate": 1.0,
+    "operator_validity_rate": 1.0,
+    "full_validity_rate": 1.0,
+    "per_aug_type": {
+      "validity_rates": {
+        "original": 1.0,
+        "inversion": 1.0,
+        "anti_attractor": 1.0
+      },
+      "counts": {
+        "original": 5,
+        "inversion": 6,
+        "anti_attractor": 4
+      }
+    }
+  },
+  "summary": {
+    "overall_accuracy": 0.010362694300518135,
+    "overall_loss": 14.957513809204102,
+    "canonical_validity": 1.0,
+    "perplexity": 1000000.0
+  }
+}

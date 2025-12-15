@@ -1,0 +1,88 @@
+{
+  "timestamp": "2025-12-14T13:27:54.842758",
+  "duration_seconds": 4.7e-05,
+  "augmentation": {
+    "original_count": 4,
+    "inversion_count": 5,
+    "anti_attractor_count": 4,
+    "total_count": 13,
+    "augmentation_ratio": 2.25,
+    "inversion_ratio": 1.25,
+    "anti_attractor_ratio": 1.0,
+    "axes_usage": {
+      "W": 3,
+      "N": 3
+    },
+    "mode_counts": {
+      "soft": 5
+    }
+  },
+  "validation": {
+    "total": 13,
+    "passed": 13,
+    "failed": 0,
+    "pass_rate": 1.0,
+    "world_validity_rate": 1.0,
+    "noetic_validity_rate": 1.0,
+    "operator_validity_rate": 1.0,
+    "structural_validity_rate": 1.0,
+    "foundation_validity_rate": 0.0,
+    "error_counts": {}
+  },
+  "distribution": {
+    "world_counts": {
+      "D": 9,
+      "A": 9,
+      "B": 7,
+      "C": 6
+    },
+    "world_distribution": {
+      "D": 0.2903225806451613,
+      "A": 0.2903225806451613,
+      "B": 0.22580645161290322,
+      "C": 0.1935483870967742
+    },
+    "noetic_counts": {
+      "5": 5,
+      "2": 6,
+      "3": 3,
+      "6": 3,
+      "7": 4,
+      "9": 3,
+      "1": 4,
+      "8": 1,
+      "4": 1,
+      "10": 1
+    },
+    "noetic_distribution": {
+      "5": 0.16129032258064516,
+      "2": 0.1935483870967742,
+      "3": 0.0967741935483871,
+      "6": 0.0967741935483871,
+      "7": 0.12903225806451613,
+      "9": 0.0967741935483871,
+      "1": 0.12903225806451613,
+      "8": 0.03225806451612903,
+      "4": 0.03225806451612903,
+      "10": 0.03225806451612903
+    },
+    "operator_counts": {
+      "->": 9,
+      "-T": 5,
+      "+T": 4
+    },
+    "operator_distribution": {
+      "->": 0.5,
+      "-T": 0.2777777777777778,
+      "+T": 0.2222222222222222
+    },
+    "foundation_counts": {},
+    "polarity": {
+      "positive": 0,
+      "negative": 0,
+      "neutral": 0,
+      "distribution": {}
+    }
+  },
+  "epoch": 9
+}

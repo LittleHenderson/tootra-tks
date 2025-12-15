@@ -1,0 +1,602 @@
+[
+  {
+    "timestamp": "2025-12-14T10:00:00.000000",
+    "duration_seconds": 45.2,
+    "epoch": 1,
+    "loss": 0.85,
+    "augmentation": {
+      "original_count": 100,
+      "inversion_count": 150,
+      "anti_attractor_count": 50,
+      "total_count": 300,
+      "augmentation_ratio": 2.0,
+      "inversion_ratio": 1.5,
+      "anti_attractor_ratio": 0.5,
+      "axes_usage": {
+        "W": 75,
+        "N": 75,
+        "F": 25
+      },
+      "mode_counts": {
+        "soft": 120,
+        "hard": 30
+      }
+    },
+    "validation": {
+      "total": 300,
+      "passed": 270,
+      "failed": 30,
+      "pass_rate": 0.9,
+      "world_validity_rate": 0.95,
+      "noetic_validity_rate": 0.92,
+      "operator_validity_rate": 0.88,
+      "structural_validity_rate": 0.91,
+      "foundation_validity_rate": 0.87,
+      "error_counts": {
+        "invalid_world": 5,
+        "invalid_noetic": 8,
+        "invalid_operator": 12,
+        "structural_error": 5
+      }
+    },
+    "distribution": {
+      "world_counts": {
+        "A": 80,
+        "B": 75,
+        "C": 70,
+        "D": 75
+      },
+      "world_distribution": {
+        "A": 0.2667,
+        "B": 0.25,
+        "C": 0.2333,
+        "D": 0.25
+      },
+      "noetic_counts": {
+        "1": 30,
+        "2": 35,
+        "3": 40,
+        "4": 32,
+        "5": 38,
+        "6": 28,
+        "7": 25,
+        "8": 22,
+        "9": 20,
+        "10": 30
+      },
+      "noetic_distribution": {
+        "1": 0.1,
+        "2": 0.117,
+        "3": 0.133,
+        "4": 0.107,
+        "5": 0.127,
+        "6": 0.093,
+        "7": 0.083,
+        "8": 0.073,
+        "9": 0.067,
+        "10": 0.1
+      },
+      "operator_counts": {
+        "+": 45,
+        "-": 38,
+        "->": 50,
+        "<-": 32,
+        "+T": 25,
+        "-T": 20,
+        "o": 15,
+        "*T": 12,
+        "/T": 8
+      },
+      "operator_distribution": {
+        "+": 0.184,
+        "-": 0.155,
+        "->": 0.204,
+        "<-": 0.131,
+        "+T": 0.102,
+        "-T": 0.082,
+        "o": 0.061,
+        "*T": 0.049,
+        "/T": 0.033
+      },
+      "foundation_counts": {
+        "1": 40,
+        "2": 35,
+        "3": 38,
+        "4": 32,
+        "5": 30,
+        "6": 28,
+        "7": 25
+      },
+      "polarity": {
+        "positive": 120,
+        "negative": 80,
+        "neutral": 100,
+        "distribution": {
+          "positive": 0.4,
+          "negative": 0.267,
+          "neutral": 0.333
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2025-12-14T10:05:00.000000",
+    "duration_seconds": 48.5,
+    "epoch": 2,
+    "loss": 0.72,
+    "augmentation": {
+      "original_count": 100,
+      "inversion_count": 150,
+      "anti_attractor_count": 50,
+      "total_count": 300,
+      "augmentation_ratio": 2.0,
+      "inversion_ratio": 1.5,
+      "anti_attractor_ratio": 0.5,
+      "axes_usage": {
+        "W": 75,
+        "N": 75,
+        "F": 25
+      },
+      "mode_counts": {
+        "soft": 120,
+        "hard": 30
+      }
+    },
+    "validation": {
+      "total": 300,
+      "passed": 282,
+      "failed": 18,
+      "pass_rate": 0.94,
+      "world_validity_rate": 0.97,
+      "noetic_validity_rate": 0.95,
+      "operator_validity_rate": 0.92,
+      "structural_validity_rate": 0.94,
+      "foundation_validity_rate": 0.91,
+      "error_counts": {
+        "invalid_world": 3,
+        "invalid_noetic": 5,
+        "invalid_operator": 7,
+        "structural_error": 3
+      }
+    },
+    "distribution": {
+      "world_counts": {
+        "A": 80,
+        "B": 75,
+        "C": 70,
+        "D": 75
+      },
+      "world_distribution": {
+        "A": 0.2667,
+        "B": 0.25,
+        "C": 0.2333,
+        "D": 0.25
+      },
+      "noetic_counts": {
+        "1": 30,
+        "2": 35,
+        "3": 40,
+        "4": 32,
+        "5": 38,
+        "6": 28,
+        "7": 25,
+        "8": 22,
+        "9": 20,
+        "10": 30
+      },
+      "noetic_distribution": {
+        "1": 0.1,
+        "2": 0.117,
+        "3": 0.133,
+        "4": 0.107,
+        "5": 0.127,
+        "6": 0.093,
+        "7": 0.083,
+        "8": 0.073,
+        "9": 0.067,
+        "10": 0.1
+      },
+      "operator_counts": {
+        "+": 45,
+        "-": 38,
+        "->": 50,
+        "<-": 32,
+        "+T": 25,
+        "-T": 20,
+        "o": 15,
+        "*T": 12,
+        "/T": 8
+      },
+      "operator_distribution": {
+        "+": 0.184,
+        "-": 0.155,
+        "->": 0.204,
+        "<-": 0.131,
+        "+T": 0.102,
+        "-T": 0.082,
+        "o": 0.061,
+        "*T": 0.049,
+        "/T": 0.033
+      },
+      "foundation_counts": {
+        "1": 40,
+        "2": 35,
+        "3": 38,
+        "4": 32,
+        "5": 30,
+        "6": 28,
+        "7": 25
+      },
+      "polarity": {
+        "positive": 120,
+        "negative": 80,
+        "neutral": 100,
+        "distribution": {
+          "positive": 0.4,
+          "negative": 0.267,
+          "neutral": 0.333
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2025-12-14T10:10:00.000000",
+    "duration_seconds": 47.1,
+    "epoch": 3,
+    "loss": 0.58,
+    "augmentation": {
+      "original_count": 100,
+      "inversion_count": 150,
+      "anti_attractor_count": 50,
+      "total_count": 300,
+      "augmentation_ratio": 2.0,
+      "inversion_ratio": 1.5,
+      "anti_attractor_ratio": 0.5,
+      "axes_usage": {
+        "W": 75,
+        "N": 75,
+        "F": 25
+      },
+      "mode_counts": {
+        "soft": 120,
+        "hard": 30
+      }
+    },
+    "validation": {
+      "total": 300,
+      "passed": 288,
+      "failed": 12,
+      "pass_rate": 0.96,
+      "world_validity_rate": 0.98,
+      "noetic_validity_rate": 0.97,
+      "operator_validity_rate": 0.95,
+      "structural_validity_rate": 0.96,
+      "foundation_validity_rate": 0.94,
+      "error_counts": {
+        "invalid_world": 2,
+        "invalid_noetic": 3,
+        "invalid_operator": 5,
+        "structural_error": 2
+      }
+    },
+    "distribution": {
+      "world_counts": {
+        "A": 80,
+        "B": 75,
+        "C": 70,
+        "D": 75
+      },
+      "world_distribution": {
+        "A": 0.2667,
+        "B": 0.25,
+        "C": 0.2333,
+        "D": 0.25
+      },
+      "noetic_counts": {
+        "1": 30,
+        "2": 35,
+        "3": 40,
+        "4": 32,
+        "5": 38,
+        "6": 28,
+        "7": 25,
+        "8": 22,
+        "9": 20,
+        "10": 30
+      },
+      "noetic_distribution": {
+        "1": 0.1,
+        "2": 0.117,
+        "3": 0.133,
+        "4": 0.107,
+        "5": 0.127,
+        "6": 0.093,
+        "7": 0.083,
+        "8": 0.073,
+        "9": 0.067,
+        "10": 0.1
+      },
+      "operator_counts": {
+        "+": 45,
+        "-": 38,
+        "->": 50,
+        "<-": 32,
+        "+T": 25,
+        "-T": 20,
+        "o": 15,
+        "*T": 12,
+        "/T": 8
+      },
+      "operator_distribution": {
+        "+": 0.184,
+        "-": 0.155,
+        "->": 0.204,
+        "<-": 0.131,
+        "+T": 0.102,
+        "-T": 0.082,
+        "o": 0.061,
+        "*T": 0.049,
+        "/T": 0.033
+      },
+      "foundation_counts": {
+        "1": 40,
+        "2": 35,
+        "3": 38,
+        "4": 32,
+        "5": 30,
+        "6": 28,
+        "7": 25
+      },
+      "polarity": {
+        "positive": 120,
+        "negative": 80,
+        "neutral": 100,
+        "distribution": {
+          "positive": 0.4,
+          "negative": 0.267,
+          "neutral": 0.333
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2025-12-14T10:15:00.000000",
+    "duration_seconds": 46.8,
+    "epoch": 4,
+    "loss": 0.45,
+    "augmentation": {
+      "original_count": 100,
+      "inversion_count": 150,
+      "anti_attractor_count": 50,
+      "total_count": 300,
+      "augmentation_ratio": 2.0,
+      "inversion_ratio": 1.5,
+      "anti_attractor_ratio": 0.5,
+      "axes_usage": {
+        "W": 75,
+        "N": 75,
+        "F": 25
+      },
+      "mode_counts": {
+        "soft": 120,
+        "hard": 30
+      }
+    },
+    "validation": {
+      "total": 300,
+      "passed": 294,
+      "failed": 6,
+      "pass_rate": 0.98,
+      "world_validity_rate": 0.99,
+      "noetic_validity_rate": 0.98,
+      "operator_validity_rate": 0.97,
+      "structural_validity_rate": 0.98,
+      "foundation_validity_rate": 0.96,
+      "error_counts": {
+        "invalid_world": 1,
+        "invalid_noetic": 2,
+        "invalid_operator": 2,
+        "structural_error": 1
+      }
+    },
+    "distribution": {
+      "world_counts": {
+        "A": 80,
+        "B": 75,
+        "C": 70,
+        "D": 75
+      },
+      "world_distribution": {
+        "A": 0.2667,
+        "B": 0.25,
+        "C": 0.2333,
+        "D": 0.25
+      },
+      "noetic_counts": {
+        "1": 30,
+        "2": 35,
+        "3": 40,
+        "4": 32,
+        "5": 38,
+        "6": 28,
+        "7": 25,
+        "8": 22,
+        "9": 20,
+        "10": 30
+      },
+      "noetic_distribution": {
+        "1": 0.1,
+        "2": 0.117,
+        "3": 0.133,
+        "4": 0.107,
+        "5": 0.127,
+        "6": 0.093,
+        "7": 0.083,
+        "8": 0.073,
+        "9": 0.067,
+        "10": 0.1
+      },
+      "operator_counts": {
+        "+": 45,
+        "-": 38,
+        "->": 50,
+        "<-": 32,
+        "+T": 25,
+        "-T": 20,
+        "o": 15,
+        "*T": 12,
+        "/T": 8
+      },
+      "operator_distribution": {
+        "+": 0.184,
+        "-": 0.155,
+        "->": 0.204,
+        "<-": 0.131,
+        "+T": 0.102,
+        "-T": 0.082,
+        "o": 0.061,
+        "*T": 0.049,
+        "/T": 0.033
+      },
+      "foundation_counts": {
+        "1": 40,
+        "2": 35,
+        "3": 38,
+        "4": 32,
+        "5": 30,
+        "6": 28,
+        "7": 25
+      },
+      "polarity": {
+        "positive": 120,
+        "negative": 80,
+        "neutral": 100,
+        "distribution": {
+          "positive": 0.4,
+          "negative": 0.267,
+          "neutral": 0.333
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2025-12-14T10:20:00.000000",
+    "duration_seconds": 45.9,
+    "epoch": 5,
+    "loss": 0.35,
+    "augmentation": {
+      "original_count": 100,
+      "inversion_count": 150,
+      "anti_attractor_count": 50,
+      "total_count": 300,
+      "augmentation_ratio": 2.0,
+      "inversion_ratio": 1.5,
+      "anti_attractor_ratio": 0.5,
+      "axes_usage": {
+        "W": 75,
+        "N": 75,
+        "F": 25
+      },
+      "mode_counts": {
+        "soft": 120,
+        "hard": 30
+      }
+    },
+    "validation": {
+      "total": 300,
+      "passed": 297,
+      "failed": 3,
+      "pass_rate": 0.99,
+      "world_validity_rate": 0.995,
+      "noetic_validity_rate": 0.99,
+      "operator_validity_rate": 0.985,
+      "structural_validity_rate": 0.99,
+      "foundation_validity_rate": 0.98,
+      "error_counts": {
+        "invalid_world": 1,
+        "invalid_noetic": 1,
+        "invalid_operator": 1,
+        "structural_error": 0
+      }
+    },
+    "distribution": {
+      "world_counts": {
+        "A": 80,
+        "B": 75,
+        "C": 70,
+        "D": 75
+      },
+      "world_distribution": {
+        "A": 0.2667,
+        "B": 0.25,
+        "C": 0.2333,
+        "D": 0.25
+      },
+      "noetic_counts": {
+        "1": 30,
+        "2": 35,
+        "3": 40,
+        "4": 32,
+        "5": 38,
+        "6": 28,
+        "7": 25,
+        "8": 22,
+        "9": 20,
+        "10": 30
+      },
+      "noetic_distribution": {
+        "1": 0.1,
+        "2": 0.117,
+        "3": 0.133,
+        "4": 0.107,
+        "5": 0.127,
+        "6": 0.093,
+        "7": 0.083,
+        "8": 0.073,
+        "9": 0.067,
+        "10": 0.1
+      },
+      "operator_counts": {
+        "+": 45,
+        "-": 38,
+        "->": 50,
+        "<-": 32,
+        "+T": 25,
+        "-T": 20,
+        "o": 15,
+        "*T": 12,
+        "/T": 8
+      },
+      "operator_distribution": {
+        "+": 0.184,
+        "-": 0.155,
+        "->": 0.204,
+        "<-": 0.131,
+        "+T": 0.102,
+        "-T": 0.082,
+        "o": 0.061,
+        "*T": 0.049,
+        "/T": 0.033
+      },
+      "foundation_counts": {
+        "1": 40,
+        "2": 35,
+        "3": 38,
+        "4": 32,
+        "5": 30,
+        "6": 28,
+        "7": 25
+      },
+      "polarity": {
+        "positive": 120,
+        "negative": 80,
+        "neutral": 100,
+        "distribution": {
+          "positive": 0.4,
+          "negative": 0.267,
+          "neutral": 0.333
+        }
+      }
+    }
+  }
+]

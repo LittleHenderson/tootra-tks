@@ -1,0 +1,642 @@
+[
+  {
+    "timestamp": "2025-12-14T13:27:07.036553",
+    "duration_seconds": 0.000936,
+    "augmentation": {
+      "original_count": 40,
+      "inversion_count": 40,
+      "anti_attractor_count": 40,
+      "total_count": 120,
+      "augmentation_ratio": 2.0,
+      "inversion_ratio": 1.0,
+      "anti_attractor_ratio": 1.0,
+      "axes_usage": {
+        "W": 40
+      },
+      "mode_counts": {
+        "soft": 40
+      }
+    },
+    "validation": {
+      "total": 120,
+      "passed": 108,
+      "failed": 12,
+      "pass_rate": 0.9,
+      "world_validity_rate": 1.0,
+      "noetic_validity_rate": 1.0,
+      "operator_validity_rate": 1.0,
+      "structural_validity_rate": 1.0,
+      "foundation_validity_rate": 0.0,
+      "error_counts": {
+        "unknown": 12
+      }
+    },
+    "distribution": {
+      "world_counts": {
+        "B": 120,
+        "D": 120
+      },
+      "world_distribution": {
+        "B": 0.5,
+        "D": 0.5
+      },
+      "noetic_counts": {
+        "2": 120,
+        "5": 120
+      },
+      "noetic_distribution": {
+        "2": 0.5,
+        "5": 0.5
+      },
+      "operator_counts": {
+        "->": 120
+      },
+      "operator_distribution": {
+        "->": 1.0
+      },
+      "foundation_counts": {},
+      "polarity": {
+        "positive": 0,
+        "negative": 0,
+        "neutral": 0,
+        "distribution": {}
+      }
+    }
+  },
+  {
+    "timestamp": "2025-12-14T13:27:07.038212",
+    "duration_seconds": 0.000893,
+    "augmentation": {
+      "original_count": 47,
+      "inversion_count": 47,
+      "anti_attractor_count": 46,
+      "total_count": 140,
+      "augmentation_ratio": 1.9787234042553192,
+      "inversion_ratio": 1.0,
+      "anti_attractor_ratio": 0.9787234042553191,
+      "axes_usage": {
+        "W": 47
+      },
+      "mode_counts": {
+        "soft": 47
+      }
+    },
+    "validation": {
+      "total": 140,
+      "passed": 126,
+      "failed": 14,
+      "pass_rate": 0.9,
+      "world_validity_rate": 1.0,
+      "noetic_validity_rate": 1.0,
+      "operator_validity_rate": 1.0,
+      "structural_validity_rate": 1.0,
+      "foundation_validity_rate": 0.0,
+      "error_counts": {
+        "unknown": 14
+      }
+    },
+    "distribution": {
+      "world_counts": {
+        "B": 140,
+        "D": 140
+      },
+      "world_distribution": {
+        "B": 0.5,
+        "D": 0.5
+      },
+      "noetic_counts": {
+        "2": 140,
+        "5": 140
+      },
+      "noetic_distribution": {
+        "2": 0.5,
+        "5": 0.5
+      },
+      "operator_counts": {
+        "->": 140
+      },
+      "operator_distribution": {
+        "->": 1.0
+      },
+      "foundation_counts": {},
+      "polarity": {
+        "positive": 0,
+        "negative": 0,
+        "neutral": 0,
+        "distribution": {}
+      }
+    }
+  },
+  {
+    "timestamp": "2025-12-14T13:27:07.047548",
+    "duration_seconds": 0.000993,
+    "augmentation": {
+      "original_count": 54,
+      "inversion_count": 53,
+      "anti_attractor_count": 53,
+      "total_count": 160,
+      "augmentation_ratio": 1.962962962962963,
+      "inversion_ratio": 0.9814814814814815,
+      "anti_attractor_ratio": 0.9814814814814815,
+      "axes_usage": {
+        "W": 53
+      },
+      "mode_counts": {
+        "soft": 53
+      }
+    },
+    "validation": {
+      "total": 160,
+      "passed": 144,
+      "failed": 16,
+      "pass_rate": 0.9,
+      "world_validity_rate": 1.0,
+      "noetic_validity_rate": 1.0,
+      "operator_validity_rate": 1.0,
+      "structural_validity_rate": 1.0,
+      "foundation_validity_rate": 0.0,
+      "error_counts": {
+        "unknown": 16
+      }
+    },
+    "distribution": {
+      "world_counts": {
+        "B": 160,
+        "D": 160
+      },
+      "world_distribution": {
+        "B": 0.5,
+        "D": 0.5
+      },
+      "noetic_counts": {
+        "2": 160,
+        "5": 160
+      },
+      "noetic_distribution": {
+        "2": 0.5,
+        "5": 0.5
+      },
+      "operator_counts": {
+        "->": 160
+      },
+      "operator_distribution": {
+        "->": 1.0
+      },
+      "foundation_counts": {},
+      "polarity": {
+        "positive": 0,
+        "negative": 0,
+        "neutral": 0,
+        "distribution": {}
+      }
+    }
+  },
+  {
+    "timestamp": "2025-12-14T13:27:07.056235",
+    "duration_seconds": 0.000937,
+    "augmentation": {
+      "original_count": 60,
+      "inversion_count": 60,
+      "anti_attractor_count": 60,
+      "total_count": 180,
+      "augmentation_ratio": 2.0,
+      "inversion_ratio": 1.0,
+      "anti_attractor_ratio": 1.0,
+      "axes_usage": {
+        "W": 60
+      },
+      "mode_counts": {
+        "soft": 60
+      }
+    },
+    "validation": {
+      "total": 180,
+      "passed": 162,
+      "failed": 18,
+      "pass_rate": 0.9,
+      "world_validity_rate": 1.0,
+      "noetic_validity_rate": 1.0,
+      "operator_validity_rate": 1.0,
+      "structural_validity_rate": 1.0,
+      "foundation_validity_rate": 0.0,
+      "error_counts": {
+        "unknown": 18
+      }
+    },
+    "distribution": {
+      "world_counts": {
+        "B": 180,
+        "D": 180
+      },
+      "world_distribution": {
+        "B": 0.5,
+        "D": 0.5
+      },
+      "noetic_counts": {
+        "2": 180,
+        "5": 180
+      },
+      "noetic_distribution": {
+        "2": 0.5,
+        "5": 0.5
+      },
+      "operator_counts": {
+        "->": 180
+      },
+      "operator_distribution": {
+        "->": 1.0
+      },
+      "foundation_counts": {},
+      "polarity": {
+        "positive": 0,
+        "negative": 0,
+        "neutral": 0,
+        "distribution": {}
+      }
+    }
+  },
+  {
+    "timestamp": "2025-12-14T13:27:07.068659",
+    "duration_seconds": 0.00116,
+    "augmentation": {
+      "original_count": 67,
+      "inversion_count": 67,
+      "anti_attractor_count": 66,
+      "total_count": 200,
+      "augmentation_ratio": 1.9850746268656716,
+      "inversion_ratio": 1.0,
+      "anti_attractor_ratio": 0.9850746268656716,
+      "axes_usage": {
+        "W": 67
+      },
+      "mode_counts": {
+        "soft": 67
+      }
+    },
+    "validation": {
+      "total": 200,
+      "passed": 180,
+      "failed": 20,
+      "pass_rate": 0.9,
+      "world_validity_rate": 1.0,
+      "noetic_validity_rate": 1.0,
+      "operator_validity_rate": 1.0,
+      "structural_validity_rate": 1.0,
+      "foundation_validity_rate": 0.0,
+      "error_counts": {
+        "unknown": 20
+      }
+    },
+    "distribution": {
+      "world_counts": {
+        "B": 200,
+        "D": 200
+      },
+      "world_distribution": {
+        "B": 0.5,
+        "D": 0.5
+      },
+      "noetic_counts": {
+        "2": 200,
+        "5": 200
+      },
+      "noetic_distribution": {
+        "2": 0.5,
+        "5": 0.5
+      },
+      "operator_counts": {
+        "->": 200
+      },
+      "operator_distribution": {
+        "->": 1.0
+      },
+      "foundation_counts": {},
+      "polarity": {
+        "positive": 0,
+        "negative": 0,
+        "neutral": 0,
+        "distribution": {}
+      }
+    }
+  },
+  {
+    "timestamp": "2025-12-14T13:31:28.415137",
+    "duration_seconds": 0.00095,
+    "augmentation": {
+      "original_count": 40,
+      "inversion_count": 40,
+      "anti_attractor_count": 40,
+      "total_count": 120,
+      "augmentation_ratio": 2.0,
+      "inversion_ratio": 1.0,
+      "anti_attractor_ratio": 1.0,
+      "axes_usage": {
+        "W": 40
+      },
+      "mode_counts": {
+        "soft": 40
+      }
+    },
+    "validation": {
+      "total": 120,
+      "passed": 108,
+      "failed": 12,
+      "pass_rate": 0.9,
+      "world_validity_rate": 1.0,
+      "noetic_validity_rate": 1.0,
+      "operator_validity_rate": 1.0,
+      "structural_validity_rate": 1.0,
+      "foundation_validity_rate": 0.0,
+      "error_counts": {
+        "unknown": 12
+      }
+    },
+    "distribution": {
+      "world_counts": {
+        "B": 120,
+        "D": 120
+      },
+      "world_distribution": {
+        "B": 0.5,
+        "D": 0.5
+      },
+      "noetic_counts": {
+        "2": 120,
+        "5": 120
+      },
+      "noetic_distribution": {
+        "2": 0.5,
+        "5": 0.5
+      },
+      "operator_counts": {
+        "->": 120
+      },
+      "operator_distribution": {
+        "->": 1.0
+      },
+      "foundation_counts": {},
+      "polarity": {
+        "positive": 0,
+        "negative": 0,
+        "neutral": 0,
+        "distribution": {}
+      }
+    }
+  },
+  {
+    "timestamp": "2025-12-14T13:31:28.417144",
+    "duration_seconds": 0.000789,
+    "augmentation": {
+      "original_count": 47,
+      "inversion_count": 47,
+      "anti_attractor_count": 46,
+      "total_count": 140,
+      "augmentation_ratio": 1.9787234042553192,
+      "inversion_ratio": 1.0,
+      "anti_attractor_ratio": 0.9787234042553191,
+      "axes_usage": {
+        "W": 47
+      },
+      "mode_counts": {
+        "soft": 47
+      }
+    },
+    "validation": {
+      "total": 140,
+      "passed": 126,
+      "failed": 14,
+      "pass_rate": 0.9,
+      "world_validity_rate": 1.0,
+      "noetic_validity_rate": 1.0,
+      "operator_validity_rate": 1.0,
+      "structural_validity_rate": 1.0,
+      "foundation_validity_rate": 0.0,
+      "error_counts": {
+        "unknown": 14
+      }
+    },
+    "distribution": {
+      "world_counts": {
+        "B": 140,
+        "D": 140
+      },
+      "world_distribution": {
+        "B": 0.5,
+        "D": 0.5
+      },
+      "noetic_counts": {
+        "2": 140,
+        "5": 140
+      },
+      "noetic_distribution": {
+        "2": 0.5,
+        "5": 0.5
+      },
+      "operator_counts": {
+        "->": 140
+      },
+      "operator_distribution": {
+        "->": 1.0
+      },
+      "foundation_counts": {},
+      "polarity": {
+        "positive": 0,
+        "negative": 0,
+        "neutral": 0,
+        "distribution": {}
+      }
+    }
+  },
+  {
+    "timestamp": "2025-12-14T13:31:28.431016",
+    "duration_seconds": 0.001139,
+    "augmentation": {
+      "original_count": 54,
+      "inversion_count": 53,
+      "anti_attractor_count": 53,
+      "total_count": 160,
+      "augmentation_ratio": 1.962962962962963,
+      "inversion_ratio": 0.9814814814814815,
+      "anti_attractor_ratio": 0.9814814814814815,
+      "axes_usage": {
+        "W": 53
+      },
+      "mode_counts": {
+        "soft": 53
+      }
+    },
+    "validation": {
+      "total": 160,
+      "passed": 144,
+      "failed": 16,
+      "pass_rate": 0.9,
+      "world_validity_rate": 1.0,
+      "noetic_validity_rate": 1.0,
+      "operator_validity_rate": 1.0,
+      "structural_validity_rate": 1.0,
+      "foundation_validity_rate": 0.0,
+      "error_counts": {
+        "unknown": 16
+      }
+    },
+    "distribution": {
+      "world_counts": {
+        "B": 160,
+        "D": 160
+      },
+      "world_distribution": {
+        "B": 0.5,
+        "D": 0.5
+      },
+      "noetic_counts": {
+        "2": 160,
+        "5": 160
+      },
+      "noetic_distribution": {
+        "2": 0.5,
+        "5": 0.5
+      },
+      "operator_counts": {
+        "->": 160
+      },
+      "operator_distribution": {
+        "->": 1.0
+      },
+      "foundation_counts": {},
+      "polarity": {
+        "positive": 0,
+        "negative": 0,
+        "neutral": 0,
+        "distribution": {}
+      }
+    }
+  },
+  {
+    "timestamp": "2025-12-14T13:31:28.440670",
+    "duration_seconds": 0.000929,
+    "augmentation": {
+      "original_count": 60,
+      "inversion_count": 60,
+      "anti_attractor_count": 60,
+      "total_count": 180,
+      "augmentation_ratio": 2.0,
+      "inversion_ratio": 1.0,
+      "anti_attractor_ratio": 1.0,
+      "axes_usage": {
+        "W": 60
+      },
+      "mode_counts": {
+        "soft": 60
+      }
+    },
+    "validation": {
+      "total": 180,
+      "passed": 162,
+      "failed": 18,
+      "pass_rate": 0.9,
+      "world_validity_rate": 1.0,
+      "noetic_validity_rate": 1.0,
+      "operator_validity_rate": 1.0,
+      "structural_validity_rate": 1.0,
+      "foundation_validity_rate": 0.0,
+      "error_counts": {
+        "unknown": 18
+      }
+    },
+    "distribution": {
+      "world_counts": {
+        "B": 180,
+        "D": 180
+      },
+      "world_distribution": {
+        "B": 0.5,
+        "D": 0.5
+      },
+      "noetic_counts": {
+        "2": 180,
+        "5": 180
+      },
+      "noetic_distribution": {
+        "2": 0.5,
+        "5": 0.5
+      },
+      "operator_counts": {
+        "->": 180
+      },
+      "operator_distribution": {
+        "->": 1.0
+      },
+      "foundation_counts": {},
+      "polarity": {
+        "positive": 0,
+        "negative": 0,
+        "neutral": 0,
+        "distribution": {}
+      }
+    }
+  },
+  {
+    "timestamp": "2025-12-14T13:31:28.449678",
+    "duration_seconds": 0.001286,
+    "augmentation": {
+      "original_count": 67,
+      "inversion_count": 67,
+      "anti_attractor_count": 66,
+      "total_count": 200,
+      "augmentation_ratio": 1.9850746268656716,
+      "inversion_ratio": 1.0,
+      "anti_attractor_ratio": 0.9850746268656716,
+      "axes_usage": {
+        "W": 67
+      },
+      "mode_counts": {
+        "soft": 67
+      }
+    },
+    "validation": {
+      "total": 200,
+      "passed": 180,
+      "failed": 20,
+      "pass_rate": 0.9,
+      "world_validity_rate": 1.0,
+      "noetic_validity_rate": 1.0,
+      "operator_validity_rate": 1.0,
+      "structural_validity_rate": 1.0,
+      "foundation_validity_rate": 0.0,
+      "error_counts": {
+        "unknown": 20
+      }
+    },
+    "distribution": {
+      "world_counts": {
+        "B": 200,
+        "D": 200
+      },
+      "world_distribution": {
+        "B": 0.5,
+        "D": 0.5
+      },
+      "noetic_counts": {
+        "2": 200,
+        "5": 200
+      },
+      "noetic_distribution": {
+        "2": 0.5,
+        "5": 0.5
+      },
+      "operator_counts": {
+        "->": 200
+      },
+      "operator_distribution": {
+        "->": 1.0
+      },
+      "foundation_counts": {},
+      "polarity": {
+        "positive": 0,
+        "negative": 0,
+        "neutral": 0,
+        "distribution": {}
+      }
+    }
+  }
+]

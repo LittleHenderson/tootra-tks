@@ -1,0 +1,53 @@
+{
+  "timestamp": "2025-12-14T10:37:17.690078",
+  "duration_seconds": 0.008061,
+  "total_epochs": 5,
+  "total_steps": 20,
+  "total_samples": 65,
+  "loss": {
+    "epoch_losses": [
+      [
+        1,
+        0.905029296875
+      ],
+      [
+        2,
+        0.903564453125
+      ],
+      [
+        3,
+        0.903564453125
+      ],
+      [
+        4,
+        0.9013671875
+      ],
+      [
+        5,
+        0.90484619140625
+      ]
+    ],
+    "final_loss": 0.90484619140625,
+    "initial_loss": 0.905029296875,
+    "min_loss": 0.9013671875,
+    "max_loss": 0.905029296875
+  },
+  "validation": {
+    "total": 65,
+    "passed": 65,
+    "failed": 0,
+    "pass_rate": 1.0
+  },
+  "augmentation": {
+    "original_count": 20,
+    "inversion_count": 25,
+    "anti_attractor_count": 20,
+    "total_count": 65,
+    "augmentation_ratio": 2.25,
+    "distribution": {
+      "original": 20,
+      "inversion": 25,
+      "anti_attractor": 20
+    }
+  }
+}

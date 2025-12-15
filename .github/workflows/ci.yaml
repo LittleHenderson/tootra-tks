@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.11']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest coverage
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run tests with coverage
+        run: |
+          coverage run -m pytest tests -v
+          coverage report -m
+          coverage xml
+
+      - name: Check coverage threshold
+        run: |
+          # Coverage threshold set to 87% (enforced)
+          # Note: Teacher module (teacher/*.py) may have lower coverage due to external API dependencies
+          # Core modules (narrative, inversion) maintain higher coverage (~75-94%)
+          # If coverage drops below 87%, CI will fail
+          coverage report --fail-under=87
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ matrix.python-version }}
+          path: coverage.xml
+
+      - name: Run fuzz pipeline tests
+        run: python tests/fuzz_pipeline.py
+
+      - name: Check fuzz test pass rate
+        run: |
+          echo "Checking fuzz test pass rate..."
+          python tests/fuzz_pipeline.py > fuzz_output.txt 2>&1 || true
+          if grep -q "Pass rate:" fuzz_output.txt; then
+            PASS_RATE=$(grep "Pass rate:" fuzz_output.txt | awk '{print $3}' | sed 's/%//')
+            echo "Fuzz test pass rate: ${PASS_RATE}%"
+            if (( $(echo "$PASS_RATE < 95" | bc -l) )); then
+              echo "::warning::Fuzz test pass rate (${PASS_RATE}%) is below 95% threshold"
+            fi
+          fi
+          cat fuzz_output.txt
+          rm -f fuzz_output.txt

@@ -1,0 +1,15 @@
+{"elements": ["A1"], "equation": "A1"}
+{"elements": ["B4"], "equation": "B4"}
+{"elements": ["C10"], "equation": "C10"}
+{"elements": ["D7"], "equation": "D7"}
+{"elements": ["A2", "B3"], "equation": "A2 +T B3"}
+{"elements": ["C5", "D6"], "equation": "C5 -T D6"}
+{"elements": ["A1", "B4", "C7"], "equation": "A1 + B4 + C7"}
+{"elements": ["B2", "C3"], "equation": "B2 -> C3"}
+{"elements": ["D8", "A9"], "equation": "D8 <- A9"}
+{"elements": ["A4", "B4"], "equation": "A4 *T B4"}
+{"elements": ["C6", "D6"], "equation": "C6 /T D6"}
+{"elements": ["B5", "C6"], "equation": "B5 o C6"}
+{"elements": ["A1", "B2", "C3"], "equation": "A1 +T B2 -T C3"}
+{"elements": ["D10", "A1"], "equation": "D10 + A1"}
+{"elements": ["A7", "B7", "C7", "D7"], "equation": "A7 + B7 + C7 + D7"}

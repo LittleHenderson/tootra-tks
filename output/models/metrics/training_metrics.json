@@ -1,0 +1,72 @@
+{
+  "timestamp": "2025-12-14T14:46:05.250476",
+  "duration_seconds": 0.719022,
+  "total_epochs": 3,
+  "total_steps": 9,
+  "total_samples": 36,
+  "loss": {
+    "epoch_losses": [
+      {
+        "epoch": 1,
+        "loss": 9.548068523406982,
+        "timestamp": "2025-12-14T14:46:04.755738"
+      },
+      {
+        "epoch": 2,
+        "loss": 6.891193389892578,
+        "timestamp": "2025-12-14T14:46:04.999797"
+      },
+      {
+        "epoch": 3,
+        "loss": 6.8918023109436035,
+        "timestamp": "2025-12-14T14:46:05.221195"
+      }
+    ],
+    "final_loss": 6.8918023109436035,
+    "initial_loss": 9.548068523406982
+  },
+  "validation": {
+    "total": 36,
+    "passed": 30,
+    "pass_rate": 0.8333333333333334
+  },
+  "augmentation": {
+    "distribution": {
+      "anti_attractor": 10,
+      "inversion": 15,
+      "original": 11
+    },
+    "original_count": 11,
+    "inversion_count": 15,
+    "anti_attractor_count": 10
+  },
+  "eval_results": [
+    {
+      "loss": 6.881589412689209,
+      "accuracy": 0.0,
+      "perplexity": 974.1734619140625,
+      "num_batches": 1,
+      "total_tokens": 63,
+      "epoch": 1,
+      "timestamp": "2025-12-14T14:46:04.770695"
+    },
+    {
+      "loss": 6.880893707275391,
+      "accuracy": 0.0,
+      "perplexity": 973.4959716796875,
+      "num_batches": 1,
+      "total_tokens": 63,
+      "epoch": 2,
+      "timestamp": "2025-12-14T14:46:05.014433"
+    },
+    {
+      "loss": 6.880738258361816,
+      "accuracy": 0.0,
+      "perplexity": 973.3446655273438,
+      "num_batches": 1,
+      "total_tokens": 63,
+      "epoch": 3,
+      "timestamp": "2025-12-14T14:46:05.230539"
+    }
+  ]
+}

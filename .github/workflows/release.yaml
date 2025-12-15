@@ -1,0 +1,135 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest coverage
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run tests with coverage
+        run: |
+          coverage run -m pytest tests -v
+          coverage report -m
+          coverage xml
+
+      - name: Check coverage threshold
+        run: |
+          # Coverage threshold set to 87% (enforced)
+          # Note: Teacher module (teacher/*.py) may have lower coverage due to external API dependencies
+          # Core modules (narrative, inversion) maintain higher coverage (~75-94%)
+          # If coverage drops below 87%, release will fail
+          coverage report --fail-under=87
+
+      - name: Run fuzz pipeline tests
+        run: python tests/fuzz_pipeline.py
+
+      - name: Check fuzz test pass rate
+        run: |
+          echo "Checking fuzz test pass rate..."
+          python tests/fuzz_pipeline.py > fuzz_output.txt 2>&1 || true
+          if grep -q "Pass rate:" fuzz_output.txt; then
+            PASS_RATE=$(grep "Pass rate:" fuzz_output.txt | awk '{print $3}' | sed 's/%//')
+            echo "Fuzz test pass rate: ${PASS_RATE}%"
+            if (( $(echo "$PASS_RATE < 95" | bc -l) )); then
+              echo "::warning::Fuzz test pass rate (${PASS_RATE}%) is below 95% threshold"
+            fi
+          fi
+          cat fuzz_output.txt
+          rm -f fuzz_output.txt
+
+      - name: Upload coverage to artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.xml
+
+      - name: Extract version release notes
+        id: release_notes
+        run: |
+          VERSION="${{ github.ref_name }}"
+          VERSION_NUM="${VERSION#v}"
+          echo "Extracting release notes for version: $VERSION_NUM"
+
+          # Extract the section for this version from CHANGELOG.md
+          # Start from the version header until the next version header or end of file
+          if grep -q "## \[$VERSION_NUM\]" CHANGELOG.md 2>/dev/null; then
+            sed -n "/## \[$VERSION_NUM\]/,/## \[v\{0,1\}[0-9]/p" CHANGELOG.md | head -n -1 > release_notes_section.md
+            echo "Found version-specific release notes"
+          elif [ -f RELEASE.md ]; then
+            cp RELEASE.md release_notes_section.md
+            echo "Using RELEASE.md as fallback"
+          else
+            echo "## Release $VERSION" > release_notes_section.md
+            echo "" >> release_notes_section.md
+            echo "See CHANGELOG.md for detailed changes." >> release_notes_section.md
+          fi
+
+          echo "Release notes content:"
+          cat release_notes_section.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            CHANGELOG.md
+            RELEASE.md
+          body_path: release_notes_section.md
+          append_body: true
+          generate_release_notes: false
+          draft: false
+          prerelease: false
+
+      - name: Append installation instructions to release
+        uses: softprops/action-gh-release@v1
+        with:
+          append_body: true
+          body: |
+
+            ---
+
+            ## Installation
+
+            ```bash
+            pip install -r requirements.txt
+            ```
+
+            ## Quick Start
+
+            ```bash
+            # Run tests
+            python -m pytest tests -v
+
+            # Run scenario inversion
+            python scripts/run_scenario_inversion.py --story "A woman loved a man" --axes E --mode soft
+
+            # Run inference
+            python scripts/run_inference.py --story "She felt grief" --anti-attractor --format json
+            ```
+
+            ## Canon Guardrails
+
+            - **Operators**: +, -, +T, -T, ->, <-, *T, /T, o
+            - **Worlds**: A/B/C/D
+            - **Noetics**: 1-10 (involution pairs: 2<->3, 5<->6, 8<->9; self-duals: 1,4,7,10)
+            - **Foundations**: 1-7
+            - **Sub-foundations**: 7x4=28 combinations
+          draft: false
+          prerelease: false

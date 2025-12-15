@@ -1,0 +1,228 @@
+================================================================================
+TKS AUGMENTATION PIPELINE - VISUAL FLOW DIAGRAM
+================================================================================
+
+INPUT CORPUS (JSONL)
+┌────────────────────────────────────────────────────────────────┐
+│ {"id": "001", "story": "A spiritual teacher causes growth"}    │
+│ {"id": "002", "equation": "A5 -> B2 +T D6"}                    │
+│ {"id": "003", "story": "Mental clarity leads to joy"}          │
+└────────────────────────────────────────────────────────────────┘
+                            ↓
+                    ┌───────────────┐
+                    │  STEP 1: LOAD │
+                    └───────────────┘
+                            ↓
+        ┌──────────────────────────────────────┐
+        │ Parse JSON, extract story/equation   │
+        │ Preserve id & metadata               │
+        │ Skip malformed lines                 │
+        └──────────────────────────────────────┘
+                            ↓
+                ┌───────────────────────┐
+                │  STEP 2: ENCODE       │
+                └───────────────────────┘
+                            ↓
+        ┌──────────────────────────────────────┐
+        │ If story: EncodeStory() → TKSExpr    │
+        │ If equation: parse_equation()        │
+        │ Validate canonical constraints       │
+        └──────────────────────────────────────┘
+                            ↓
+            ┌───────────────────────────┐
+            │ TKS Expression Validated  │
+            │ Elements: [A5, B2, D6]    │
+            │ Ops: [->, +T]             │
+            │ Foundations: [(2, "B")]   │
+            └───────────────────────────┘
+                            ↓
+        ┌───────────────────────────────────────────────┐
+        │           AUGMENTATION FORK                   │
+        └───────────────────────────────────────────────┘
+                 ↓                          ↓
+    ┌─────────────────────┐    ┌────────────────────────┐
+    │  STEP 3: INVERSION  │    │ STEP 4: ANTI-ATTRACTOR │
+    └─────────────────────┘    └────────────────────────┘
+                 ↓                          ↓
+    ┌─────────────────────────────┐  ┌──────────────────────┐
+    │ For each axes combo:        │  │ Compute signature:   │
+    │ - {W}: World inversion      │  │ - Element patterns   │
+    │ - {N}: Noetic inversion     │  │ - Foundation tags    │
+    │ - {W,N}: Combined           │  │ - Net polarity       │
+    │                             │  │                      │
+    │ InvertStory(expr, axes)     │  │ AntiAttractorInvert()│
+    │   ↓                         │  │   ↓                  │
+    │ Inverted TKS Expression     │  │ Counter TKS Expr     │
+    │ Elements: [D6, C3, A5]      │  │ Elements: [B3, D8]   │
+    │ Ops: [<-, -T]               │  │ Ops: [->]            │
+    │   ↓                         │  │   ↓                  │
+    │ DecodeStory() → text        │  │ DecodeStory() → text │
+    └─────────────────────────────┘  └──────────────────────┘
+                 ↓                          ↓
+                 └───────────┬──────────────┘
+                             ↓
+                ┌────────────────────────┐
+                │  STEP 5: VALIDATION    │
+                └────────────────────────┘
+                             ↓
+        ┌────────────────────────────────────────┐
+        │ Canonical Checks:                      │
+        │ ✓ Worlds in {A, B, C, D}               │
+        │ ✓ Noetics in [1..10]                   │
+        │ ✓ Foundations in [1..7]                │
+        │ ✓ Operators in ALLOWED_OPS             │
+        │ ✓ Structure: len(ops)==len(elems)-1    │
+        └────────────────────────────────────────┘
+                             ↓
+            ┌────────────────────────────────┐
+            │ Mark validator_pass: true/false│
+            │ Track validation_errors        │
+            └────────────────────────────────┘
+                             ↓
+                ┌────────────────────────┐
+                │  STEP 6: OUTPUT        │
+                └────────────────────────┘
+                             ↓
+    ┌────────────────────────────────────────────────────┐
+    │ Build output records:                              │
+    │                                                    │
+    │ ORIGINAL:                                          │
+    │ {"id": "001", "story": "...", "equation": "...",   │
+    │  "aug_type": "original", "source_id": "001",       │
+    │  "validator_pass": true}                           │
+    │                                                    │
+    │ INVERSION (W):                                     │
+    │ {"id": "001_inv_W_001", "story": "...",            │
+    │  "aug_type": "inversion", "source_id": "001",      │
+    │  "transform_metadata": {"axes": ["W"], ...}}       │
+    │                                                    │
+    │ INVERSION (N):                                     │
+    │ {"id": "001_inv_N_001", "story": "...",            │
+    │  "aug_type": "inversion", "source_id": "001",      │
+    │  "transform_metadata": {"axes": ["N"], ...}}       │
+    │                                                    │
+    │ INVERSION (W+N):                                   │
+    │ {"id": "001_inv_WN_001", "story": "...",           │
+    │  "aug_type": "inversion", "source_id": "001",      │
+    │  "transform_metadata": {"axes": ["W","N"], ...}}   │
+    │                                                    │
+    │ ANTI-ATTRACTOR:                                    │
+    │ {"id": "001_anti_001", "story": "...",             │
+    │  "aug_type": "anti_attractor", "source_id": "001", │
+    │  "transform_metadata": {"signature": {...}}}       │
+    └────────────────────────────────────────────────────┘
+                             ↓
+                    Write to JSONL file
+                             ↓
+OUTPUT CORPUS (JSONL)
+┌────────────────────────────────────────────────────────────────┐
+│ {"id": "001", "story": "...", "aug_type": "original", ...}     │
+│ {"id": "001_inv_W_001", "story": "...", "aug_type": "inv",...} │
+│ {"id": "001_inv_N_001", "story": "...", "aug_type": "inv",...} │
+│ {"id": "001_inv_WN_001", "story": "...", "aug_type": "inv",...}│
+│ {"id": "001_anti_001", "story": "...", "aug_type": "anti",...} │
+│ ... (repeat for all input scenarios)                          │
+└────────────────────────────────────────────────────────────────┘
+                             ↓
+                ┌────────────────────────┐
+                │  STEP 7: METRICS       │
+                └────────────────────────┘
+                             ↓
+        ┌────────────────────────────────────────┐
+        │ Compute Statistics:                    │
+        │ - original_count = 100                 │
+        │ - inverted_count = 300 (3 per orig)    │
+        │ - anti_attractor_count = 100           │
+        │ - augmentation_ratio = 4.0x            │
+        │ - validator_pass_rate = 0.99           │
+        │ - world_validity = 1.0                 │
+        │ - noetic_validity = 0.98               │
+        │ - operator_validity = 0.99             │
+        └────────────────────────────────────────┘
+                             ↓
+                ┌────────────────────────┐
+                │  STEP 8: SAVE METRICS  │
+                └────────────────────────┘
+                             ↓
+METRICS OUTPUT (JSON)
+┌────────────────────────────────────────────────────────────────┐
+│ {                                                              │
+│   "original_count": 100,                                       │
+│   "inverted_count": 300,                                       │
+│   "anti_attractor_count": 100,                                 │
+│   "augmentation_ratio": 4.0,                                   │
+│   "validator_pass_rate": 0.99,                                 │
+│   "world_validity": 1.0,                                       │
+│   "noetic_validity": 0.98,                                     │
+│   "duration_seconds": 342.5,                                   │
+│   "config": {...}                                              │
+│ }                                                              │
+└────────────────────────────────────────────────────────────────┘
+
+================================================================================
+AUGMENTATION RATIO BREAKDOWN (Default: 3 Inversions per Original)
+================================================================================
+
+Input:   100 original scenarios
+         ↓
+Step 3:  100 × 3 axes ({W}, {N}, {W,N}) = 300 inversions
+         ↓
+Step 4:  100 × 1 anti-attractor = 100 anti-attractors (if enabled)
+         ↓
+Output:  100 originals + 300 inversions + 100 anti = 500 total
+         Augmentation ratio = 4.0x
+
+================================================================================
+VALIDATION FLOW (Strict vs Lenient)
+================================================================================
+
+STRICT MODE (default):
+    TKS Expression → Validate → PASS ✓ → Include in output
+                              → FAIL ✗ → Skip, log error, continue
+
+LENIENT MODE (--lenient):
+    TKS Expression → Validate → PASS ✓ → Include (validator_pass=true)
+                              → FAIL ✗ → Include (validator_pass=false)
+                                         + validation_errors field
+
+================================================================================
+ERROR RECOVERY STRATEGY
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────┐
+│ Malformed JSON line                                             │
+│   → Skip line, log warning, continue with next line             │
+├─────────────────────────────────────────────────────────────────┤
+│ Missing story/equation field                                    │
+│   → Skip entry, log error, continue with next entry             │
+├─────────────────────────────────────────────────────────────────┤
+│ EncodeStory failure (unknown tokens)                            │
+│   → Skip scenario, log detailed error, continue                 │
+├─────────────────────────────────────────────────────────────────┤
+│ InvertStory failure on one axis                                 │
+│   → Skip that axis, continue with other axes                    │
+├─────────────────────────────────────────────────────────────────┤
+│ AntiAttractorInvert failure                                     │
+│   → Skip anti-attractor, keep inversions                        │
+├─────────────────────────────────────────────────────────────────┤
+│ Validation failure (lenient mode)                               │
+│   → Include with validator_pass=false, mark component failures  │
+└─────────────────────────────────────────────────────────────────┘
+
+Result: Pipeline NEVER halts on errors - always produces maximum output
+
+================================================================================
+TYPICAL AUGMENTATION RATIOS
+================================================================================
+
+Configuration                         | Ratio | Scenarios per Original
+--------------------------------------|-------|-------------------------
+Default (W, N, W+N only)              | 3.0x  | 3 inversions
++ Anti-attractor                      | 4.0x  | 3 inv + 1 anti
+All individual axes (W, N, E, F)      | 4.0x  | 4 inversions
+All axes + anti                       | 5.0x  | 4 inv + 1 anti
+Combined axes (W, N, W+N, E, W+E,...) | 10+x  | Many combinations
+
+Recommended for training: 3.0x - 5.0x (balanced diversity vs corpus size)
+
+================================================================================

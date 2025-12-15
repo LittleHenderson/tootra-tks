@@ -1,0 +1,2 @@
+timestamp,duration_seconds,original_count,inversion_count,anti_attractor_count,total_count,augmentation_ratio,inversion_ratio,anti_attractor_ratio,validation_total,validation_passed,validation_failed,pass_rate,world_validity_rate,noetic_validity_rate,operator_validity_rate,structural_validity_rate,foundation_validity_rate
+2025-12-14T16:28:24.947621,0.010307,15,30,15,60,3.0,2.0,1.0,60,60,0,1.0,1.0,1.0,0.7333333333333333,0.7333333333333333,0.0

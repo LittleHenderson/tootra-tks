@@ -1,0 +1,17 @@
+{
+  "original_count": 15,
+  "inverted_count": 30,
+  "anti_attractor_count": 15,
+  "validation_failures": 0,
+  "augmentation_ratio": 3.0,
+  "inversion_ratio": 2.0,
+  "anti_attractor_ratio": 1.0,
+  "validator_pass_rate": 1.0,
+  "world_validity": 1.0,
+  "noetic_validity": 1.0,
+  "operator_validity": 0.7333333333333333,
+  "structural_validity": 0.7333333333333333,
+  "start_time": "2025-12-14T16:28:24.937114",
+  "end_time": "2025-12-14T16:28:24.944170",
+  "duration_seconds": 0.007066488265991211
+}

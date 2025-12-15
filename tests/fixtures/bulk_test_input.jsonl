@@ -1,0 +1,4 @@
+{"equation": "B5 +T D3"}
+{"equation": "A2 -> D5", "axes": "W"}
+{"equation": "B2 -> C2 +T D2", "anti_attractor": true}
+{"story": "power corrupts", "lenient": true}
