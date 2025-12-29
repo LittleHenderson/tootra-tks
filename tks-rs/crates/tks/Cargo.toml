@@ -1,0 +1,9 @@
+[package]
+name = "tks"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tksvm = { path = "../tksvm" }
+tksbytecode = { path = "../tksbytecode" }
+tkscore = { path = "../tkscore" }

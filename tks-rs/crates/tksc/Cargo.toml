@@ -1,0 +1,10 @@
+[package]
+name = "tksc"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tkscore = { path = "../tkscore" }
+tkstypes = { path = "../tkstypes" }
+tksir = { path = "../tksir" }
+tksbytecode = { path = "../tksbytecode" }

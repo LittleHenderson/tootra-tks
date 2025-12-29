@@ -1,0 +1,11 @@
+[workspace]
+resolver = "2"
+members = [
+  "crates/tkscore",
+  "crates/tkstypes",
+  "crates/tksir",
+  "crates/tksbytecode",
+  "crates/tksvm",
+  "crates/tksc",
+  "crates/tks",
+]
