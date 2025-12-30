@@ -1,0 +1,6 @@
+module App {
+  from TKS.RPM import { rpm_return, rpm_bind, rpm_check, rpm_acquire };
+  let flow = rpm_bind (rpm_return 1) (\x -> rpm_return x);
+  let ok = rpm_check A1;
+  let got = rpm_acquire A1;
+}

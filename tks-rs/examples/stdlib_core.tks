@@ -1,0 +1,6 @@
+module App {
+  from TKS.Core import { id, const, unit };
+  let one = id 1;
+  let keep = const 1 2;
+  let u = unit;
+}

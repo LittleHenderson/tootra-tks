@@ -1,0 +1,8 @@
+module App {
+  from TKS.Quantum import { ket, measure_q, entangle_q, type QBit };
+  let a = ket true;
+  let b = ket false;
+  let pair = entangle_q a b;
+  let sample = measure_q a;
+  type Local = QBit;
+}
