@@ -211,6 +211,34 @@ f(1) >>= g(2)
 }
 
 #[test]
+fn lower_extern_decl() {
+    let source = r#"
+external c fn ping(x: Int): Int;
+ping(1)
+"#;
+    let program = parse_program(source).expect("parse program");
+    let term = lower_program(&program).expect("lower program");
+
+    match term {
+        IRTerm::Let(name, comp, body) => {
+            assert_eq!(name, "ping");
+            assert_eq!(
+                *comp,
+                IRComp::Pure(IRVal::Extern("ping".to_string(), 1))
+            );
+            assert_eq!(
+                *body,
+                IRTerm::App(
+                    IRVal::Var("ping".to_string()),
+                    IRVal::Lit(Literal::Int(1))
+                )
+            );
+        }
+        other => panic!("expected extern let, got {other:?}"),
+    }
+}
+
+#[test]
 fn lower_resume_in_handler_clause() {
     let source = r#"
 handle perform log(1) with {

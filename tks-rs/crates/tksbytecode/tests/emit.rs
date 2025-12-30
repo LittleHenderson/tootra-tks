@@ -1,4 +1,4 @@
-use tksbytecode::bytecode::{Instruction, Opcode};
+use tksbytecode::bytecode::{extern_id, Instruction, Opcode};
 use tksbytecode::emit::emit;
 use tkscore::ast::{Expr, Literal, OrdinalLiteral};
 use tkscore::span::Span;
@@ -19,6 +19,15 @@ fn inst1(opcode: Opcode, operand1: u64) -> Instruction {
         flags: 0,
         operand1: Some(operand1),
         operand2: None,
+    }
+}
+
+fn inst2(opcode: Opcode, operand1: u64, operand2: u64) -> Instruction {
+    Instruction {
+        opcode,
+        flags: 0,
+        operand1: Some(operand1),
+        operand2: Some(operand2),
     }
 }
 
@@ -121,6 +130,22 @@ fn emit_noetic_value() {
     let term = IRTerm::Return(IRVal::Noetic(5));
     let code = emit(&term).expect("emit noetic");
     let expected = vec![inst1(Opcode::PushNoetic, 5), inst(Opcode::Ret)];
+    assert_eq!(code, expected);
+}
+
+#[test]
+fn emit_extern_call() {
+    let term = IRTerm::App(
+        IRVal::Extern("ping".to_string(), 1),
+        IRVal::Lit(Literal::Int(7)),
+    );
+    let code = emit(&term).expect("emit extern call");
+    let expected = vec![
+        inst2(Opcode::PushExtern, extern_id("ping"), 1),
+        inst1(Opcode::PushInt, 7),
+        inst(Opcode::Call),
+        inst(Opcode::Ret),
+    ];
     assert_eq!(code, expected);
 }
 

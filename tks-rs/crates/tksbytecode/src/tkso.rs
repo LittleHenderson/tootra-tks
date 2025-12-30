@@ -206,6 +206,7 @@ const OPCODES: &[Opcode] = &[
     Opcode::FoundationLevel,
     Opcode::FoundationAspect,
     Opcode::PushNoetic,
+    Opcode::PushExtern,
     Opcode::ApplyNoetic,
     Opcode::NoeticCompose,
     Opcode::NoeticLevel,

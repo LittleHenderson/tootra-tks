@@ -5,7 +5,7 @@ use std::rc::Rc;
 use tkscore::ast::{Expr, Ident, Literal, OrdinalLiteral, World};
 use tksir::ir::{IRComp, IRTerm, IRVal, OrdOp};
 
-use crate::bytecode::{Instruction, Opcode};
+use crate::bytecode::{extern_id, Instruction, Opcode};
 
 #[derive(Debug, Clone)]
 pub enum EmitError {
@@ -205,6 +205,12 @@ impl EmitState {
             }
             IRVal::Lam(param, body) => {
                 self.emit_closure(&[param.clone()], body)
+            }
+            IRVal::Extern(name, arity) => {
+                let id = extern_id(name);
+                self.code
+                    .push(inst2(Opcode::PushExtern, id, *arity as u64));
+                Ok(())
             }
             IRVal::Noetic(index) => {
                 self.code

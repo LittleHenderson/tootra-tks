@@ -35,6 +35,7 @@ pub enum Opcode {
     FoundationLevel,
     FoundationAspect,
     PushNoetic,
+    PushExtern,
     ApplyNoetic,
     NoeticCompose,
     NoeticLevel,
@@ -91,4 +92,15 @@ pub struct Instruction {
     pub flags: u8,
     pub operand1: Option<u64>,
     pub operand2: Option<u64>,
+}
+
+pub fn extern_id(name: &str) -> u64 {
+    const FNV_OFFSET: u64 = 0xcbf29ce484222325;
+    const FNV_PRIME: u64 = 0x100000001b3;
+    let mut hash = FNV_OFFSET;
+    for byte in name.as_bytes() {
+        hash ^= u64::from(*byte);
+        hash = hash.wrapping_mul(FNV_PRIME);
+    }
+    hash
 }

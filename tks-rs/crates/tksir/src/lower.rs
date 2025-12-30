@@ -36,9 +36,17 @@ pub fn lower_program(program: &Program) -> Result<IRTerm, LowerError> {
     };
 
     for decl in program.decls.iter().rev() {
-        if let TopDecl::LetDecl { name, value, .. } = decl {
-            let comp = lower_comp(&mut state, value)?;
-            term = IRTerm::Let(name.clone(), Box::new(comp), Box::new(term));
+        match decl {
+            TopDecl::LetDecl { name, value, .. } => {
+                let comp = lower_comp(&mut state, value)?;
+                term = IRTerm::Let(name.clone(), Box::new(comp), Box::new(term));
+            }
+            TopDecl::ExternDecl(decl) => {
+                let arity = decl.params.len();
+                let comp = IRComp::Pure(IRVal::Extern(decl.name.clone(), arity));
+                term = IRTerm::Let(decl.name.clone(), Box::new(comp), Box::new(term));
+            }
+            _ => {}
         }
     }
 

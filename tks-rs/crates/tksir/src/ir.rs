@@ -5,6 +5,7 @@ pub enum IRVal {
     Var(Ident),
     Lit(Literal),
     Lam(Ident, Box<IRTerm>),
+    Extern(Ident, usize),
     Element(World, u8),
     Noetic(u8),
     Ordinal(Expr),
