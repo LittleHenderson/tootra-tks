@@ -89,21 +89,19 @@ default output unless Unicode is required.
 
 ## What's Next (Tracking)
 
-## Current Sprint (Parallel)
-
-Status legend: [ ] todo, [~] in progress, [x] done.
-
-[~] Agent A: Effects/Handlers end-to-end (types, lowering, bytecode, VM, tests)
-[~] Agent B: Modules + .tksi + resolver + import/export (+ FFI if time)
-[~] Agent C: Packaging (.exe) + CLI polish + build script + docs
-
-
 Status legend: [ ] todo, [~] in progress, [x] done.
 
 [ ] Effects & handlers end-to-end (type/effect rows, handler typing, resume/perform, IR lowering, bytecode, VM) - Owner: Agent A
-[ ] Modules + .tksi + resolver + import/export + FFI signatures/links - Owner: Agent B
+[~] Modules + .tksi + resolver + import/export (FFI pending) - Owner: Agent B
 [ ] Runtime packaging (.exe) + CLI polish + build scripts + GPU harness gating - Owner: Agent C
 [ ] Fractal/foundation/acquisition semantics in VM + tests - Owner: TBD
 [ ] Stdlib bootstrap (TKS.Core, TKS.RPM, TKS.Quantum) - Owner: TBD
 [ ] Canonical compliance + regression tests (samples, golden files) - Owner: TBD
 
+## Current Sprint (Parallel)
+
+Status legend: [ ] todo, [~] in progress, [x] done.
+
+[~] Agent A: Effects/Handlers end-to-end (types, lowering, bytecode, VM, tests)
+[x] Agent B: Modules + .tksi + resolver + import/export (FFI pending)
+[~] Agent C: Packaging (.exe) + CLI polish + build script + docs
