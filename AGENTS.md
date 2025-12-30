@@ -97,7 +97,7 @@ Status legend: [ ] todo, [~] in progress, [x] done.
 [x] Fractal/foundation/acquisition semantics in VM + tests - Owner: Agent A
 [x] Stdlib bootstrap (TKS.Core, TKS.RPM, TKS.Quantum) - Owner: Agent B
 [x] Canonical compliance + regression tests (samples, golden files) - Owner: Agent C
-[~] FFI runtime binding (extern values + bytecode + VM + CLI registry) - Owner: Agent A/B/C
+[x] FFI runtime binding (extern values + bytecode + VM + CLI registry) - Owner: Agent A/B/C
 
 ## Current Sprint (Parallel)
 
@@ -105,4 +105,4 @@ Status legend: [ ] todo, [~] in progress, [x] done.
 
 [x] Agent A: Extern value plumbing (IR + lowering + emitter + bytecode + tests)
 [x] Agent B: VM extern call semantics + registry API + tests
-[~] Agent C: CLI host registry + builtins + docs/examples
+[x] Agent C: CLI host registry + builtins + docs/examples
