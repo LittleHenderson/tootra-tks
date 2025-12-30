@@ -1,5 +1,5 @@
-use tkscore::ast::{Ident, Literal, World};
-use tksir::ir::{IRComp, IRTerm, IRVal};
+use tkscore::ast::{Expr, Ident, Literal, OrdinalLiteral, World};
+use tksir::ir::{IRComp, IRTerm, IRVal, OrdOp};
 
 use crate::bytecode::{Instruction, Opcode};
 
@@ -67,6 +67,22 @@ impl EmitState {
                 self.patch_jump(jmp_to_end, end_target)?;
                 Ok(())
             }
+            IRTerm::OrdSucc(val) => {
+                self.emit_val(val)?;
+                self.code.push(inst(Opcode::OrdSucc));
+                Ok(())
+            }
+            IRTerm::OrdOp(op, left, right) => {
+                self.emit_val(left)?;
+                self.emit_val(right)?;
+                let opcode = match op {
+                    OrdOp::Add => Opcode::OrdAdd,
+                    OrdOp::Mul => Opcode::OrdMul,
+                    OrdOp::Exp => Opcode::OrdExp,
+                };
+                self.code.push(inst(opcode));
+                Ok(())
+            }
             _ => Err(EmitError::Unimplemented("term emission")),
         }
     }
@@ -114,7 +130,7 @@ impl EmitState {
                 self.code.push(inst(Opcode::MakeKet));
                 Ok(())
             }
-            _ => Err(EmitError::Unimplemented("value emission")),
+            IRVal::Ordinal(expr) => self.emit_ordinal_expr(expr),
         }
     }
 
@@ -134,6 +150,58 @@ impl EmitState {
                 Ok(())
             }
             _ => Err(EmitError::Unimplemented("literal emission")),
+        }
+    }
+
+    fn emit_ordinal_expr(&mut self, expr: &Expr) -> Result<(), EmitError> {
+        match expr {
+            Expr::OrdLit { value, .. } => self.emit_ordinal_literal(value),
+            Expr::OrdOmega { .. } => {
+                self.code.push(inst(Opcode::PushOmega));
+                Ok(())
+            }
+            Expr::OrdEpsilon { index, .. } => {
+                self.code.push(inst1(Opcode::PushEpsilon, *index));
+                Ok(())
+            }
+            Expr::OrdAleph { .. } => Err(EmitError::Unimplemented("ordinal aleph emission")),
+            _ => Err(EmitError::Unimplemented("ordinal literal emission")),
+        }
+    }
+
+    fn emit_ordinal_literal(&mut self, literal: &OrdinalLiteral) -> Result<(), EmitError> {
+        match literal {
+            OrdinalLiteral::Finite(value) => {
+                self.code.push(inst1(Opcode::PushOrd, *value));
+                Ok(())
+            }
+            OrdinalLiteral::Omega => {
+                self.code.push(inst(Opcode::PushOmega));
+                Ok(())
+            }
+            OrdinalLiteral::Epsilon(index) => {
+                self.code.push(inst1(Opcode::PushEpsilon, *index));
+                Ok(())
+            }
+            OrdinalLiteral::OmegaPlus(value) => {
+                self.code.push(inst(Opcode::PushOmega));
+                self.code.push(inst1(Opcode::PushOrd, *value));
+                self.code.push(inst(Opcode::OrdAdd));
+                Ok(())
+            }
+            OrdinalLiteral::OmegaTimes(value) => {
+                self.code.push(inst(Opcode::PushOmega));
+                self.code.push(inst1(Opcode::PushOrd, *value));
+                self.code.push(inst(Opcode::OrdMul));
+                Ok(())
+            }
+            OrdinalLiteral::OmegaPow(value) => {
+                self.code.push(inst(Opcode::PushOmega));
+                self.code.push(inst1(Opcode::PushOrd, *value));
+                self.code.push(inst(Opcode::OrdExp));
+                Ok(())
+            }
+            OrdinalLiteral::Aleph(_) => Err(EmitError::Unimplemented("ordinal aleph emission")),
         }
     }
 

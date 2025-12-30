@@ -8,6 +8,8 @@ version = "0.1.0"
 dependencies = [
  "tksbytecode",
  "tkscore",
+ "tksir",
+ "tkstypes",
  "tksvm",
 ]
 
@@ -15,6 +17,7 @@ dependencies = [
 name = "tksbytecode"
 version = "0.1.0"
 dependencies = [
+ "tkscore",
  "tksir",
 ]
 
