@@ -9,6 +9,8 @@ pub enum Value {
     Element { world: u8, index: u8 },
     Noetic(u8),
     Ket(Box<Value>),
+    Superpose(Vec<(Value, Value)>),
+    Entangle(Box<Value>, Box<Value>),
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -178,6 +180,47 @@ impl VmState {
                 Opcode::MakeKet => {
                     let inner = self.pop()?;
                     self.stack.push(Value::Ket(Box::new(inner)));
+                }
+                Opcode::Superpose => {
+                    let count = Self::expect_operand1_usize(&instr)?;
+                    let mut states = Vec::with_capacity(count);
+                    for _ in 0..count {
+                        let ket = self.pop()?;
+                        let amp = self.pop()?;
+                        states.push((amp, ket));
+                    }
+                    states.reverse();
+                    self.stack.push(Value::Superpose(states));
+                }
+                Opcode::Measure => {
+                    let value = self.pop()?;
+                    match value {
+                        Value::Ket(inner) => {
+                            self.stack.push(*inner);
+                        }
+                        Value::Superpose(states) => {
+                            if states.is_empty() {
+                                return Err(VmError::TypeMismatch {
+                                    expected: "non-empty superpose",
+                                    found: Value::Superpose(states),
+                                });
+                            }
+                            let ket = states.into_iter().next().map(|(_, ket)| ket).unwrap();
+                            self.stack.push(ket);
+                        }
+                        other => {
+                            return Err(VmError::TypeMismatch {
+                                expected: "ket or superpose",
+                                found: other,
+                            })
+                        }
+                    }
+                }
+                Opcode::Entangle => {
+                    let right = self.pop()?;
+                    let left = self.pop()?;
+                    self.stack
+                        .push(Value::Entangle(Box::new(left), Box::new(right)));
                 }
                 Opcode::Ret => {
                     let result = self.stack.pop().unwrap_or(Value::Unit);
