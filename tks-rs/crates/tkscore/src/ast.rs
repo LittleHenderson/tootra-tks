@@ -95,7 +95,7 @@ pub enum HandlerRef {
     },
     Inline {
         span: Span,
-        def: HandlerDef,
+        def: Box<HandlerDef>,
     },
 }
 

@@ -179,7 +179,7 @@ impl Parser {
 
     fn parse_op_sig(&mut self) -> Result<OpSig, ParseError> {
         let start = self.expect(&TokenKind::Op, "expected 'op'")?;
-        let name = self.expect_ident("expected operation name")?;
+        let name = self.expect_op_name("expected operation name")?;
         let mut param_types = Vec::new();
         if self.match_kind(&TokenKind::LParen) {
             if !self.check(&TokenKind::RParen) {
@@ -259,7 +259,7 @@ impl Parser {
         } else {
             self.peek().span
         };
-        let op = self.expect_ident("expected operation name")?;
+        let op = self.expect_op_name("expected operation name")?;
         self.expect(&TokenKind::LParen, "expected '(' after op name")?;
         let arg = self.expect_ident("expected operation argument")?;
         self.expect(&TokenKind::RParen, "expected ')' after op argument")?;
@@ -541,7 +541,11 @@ impl Parser {
     fn parse_handler_ref(&mut self) -> Result<HandlerRef, ParseError> {
         if self.check(&TokenKind::LBrace) {
             let def = self.parse_handler_def_block()?;
-            return Ok(HandlerRef::Inline { span: def.span, def });
+            let span = def.span;
+            return Ok(HandlerRef::Inline {
+                span,
+                def: Box::new(def),
+            });
         }
         let name = self.expect_ident("expected handler name")?;
         let span = self.previous_span();
@@ -709,7 +713,7 @@ impl Parser {
 
     fn parse_perform_expr(&mut self) -> Result<Expr, ParseError> {
         let start = self.expect(&TokenKind::Perform, "expected 'perform'")?;
-        let op = self.expect_ident("expected operation name")?;
+        let op = self.expect_op_name("expected operation name")?;
         self.expect(&TokenKind::LParen, "expected '(' after operation name")?;
         let arg = if self.check(&TokenKind::RParen) {
             Expr::Lit {
@@ -946,10 +950,11 @@ impl Parser {
     }
 
     fn parse_noetic_expr(&mut self) -> Result<Expr, ParseError> {
-        let (start_span, index) = match self.peek_kind() {
+        let token = self.peek().clone();
+        let (start_span, index) = match token.kind {
             TokenKind::Noetic { index } => {
                 let span = self.advance().span;
-                (span, *index)
+                (span, index)
             }
             TokenKind::Nu => {
                 let span = self.advance().span;
@@ -1443,6 +1448,45 @@ impl Parser {
             Ok(name)
         } else {
             Err(self.error_here(message))
+        }
+    }
+
+    fn expect_op_name(&mut self, message: &str) -> Result<Ident, ParseError> {
+        match self.peek_kind() {
+            TokenKind::Ident(name) => {
+                let name = name.clone();
+                self.advance();
+                Ok(name)
+            }
+            TokenKind::Measure => {
+                self.advance();
+                Ok("measure".to_string())
+            }
+            TokenKind::Superpose => {
+                self.advance();
+                Ok("superpose".to_string())
+            }
+            TokenKind::Entangle => {
+                self.advance();
+                Ok("entangle".to_string())
+            }
+            TokenKind::Amplitude => {
+                self.advance();
+                Ok("amplitude".to_string())
+            }
+            TokenKind::Basis => {
+                self.advance();
+                Ok("basis".to_string())
+            }
+            TokenKind::Resume => {
+                self.advance();
+                Ok("resume".to_string())
+            }
+            TokenKind::QState => {
+                self.advance();
+                Ok("qstate".to_string())
+            }
+            _ => Err(self.error_here(message)),
         }
     }
 

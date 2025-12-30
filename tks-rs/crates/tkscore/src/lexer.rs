@@ -276,13 +276,28 @@ impl<'a> Lexer<'a> {
     }
 
     fn lex_element(&mut self, start_pos: usize, start_line: u32, start_col: u32) -> Option<Token> {
+        let snapshot = (self.pos, self.line, self.column);
         let world = self.advance()?;
         let digits = self.read_while(|ch| ch.is_ascii_digit());
         if digits.is_empty() {
+            self.pos = snapshot.0;
+            self.line = snapshot.1;
+            self.column = snapshot.2;
             return None;
         }
-        let value = digits.parse::<u8>().ok()?;
+        let value = match digits.parse::<u8>() {
+            Ok(value) => value,
+            Err(_) => {
+                self.pos = snapshot.0;
+                self.line = snapshot.1;
+                self.column = snapshot.2;
+                return None;
+            }
+        };
         if !(1..=10).contains(&value) {
+            self.pos = snapshot.0;
+            self.line = snapshot.1;
+            self.column = snapshot.2;
             return None;
         }
         Some(Token {
@@ -300,14 +315,21 @@ impl<'a> Lexer<'a> {
         start_line: u32,
         start_col: u32,
     ) -> Option<Token> {
+        let snapshot = (self.pos, self.line, self.column);
         let _prefix = self.advance()?;
         let digit = self.advance()?;
         let aspect = self.advance()?;
         if !digit.is_ascii_digit() || !matches!(aspect, 'a' | 'b' | 'c' | 'd') {
+            self.pos = snapshot.0;
+            self.line = snapshot.1;
+            self.column = snapshot.2;
             return None;
         }
         let level = digit.to_digit(10)? as u8;
         if !(1..=7).contains(&level) {
+            self.pos = snapshot.0;
+            self.line = snapshot.1;
+            self.column = snapshot.2;
             return None;
         }
         Some(Token {
@@ -320,6 +342,7 @@ impl<'a> Lexer<'a> {
     }
 
     fn lex_noetic(&mut self, start_pos: usize, start_line: u32, start_col: u32) -> Option<Token> {
+        let snapshot = (self.pos, self.line, self.column);
         let _n = self.advance()?;
         let _u = self.advance()?;
         let digits = self.read_while(|ch| ch.is_ascii_digit());
@@ -329,8 +352,19 @@ impl<'a> Lexer<'a> {
                 span: Span::new(start_pos, self.pos, start_line, start_col),
             });
         }
-        let value = digits.parse::<u8>().ok()?;
+        let value = match digits.parse::<u8>() {
+            Ok(value) => value,
+            Err(_) => {
+                self.pos = snapshot.0;
+                self.line = snapshot.1;
+                self.column = snapshot.2;
+                return None;
+            }
+        };
         if value > 9 {
+            self.pos = snapshot.0;
+            self.line = snapshot.1;
+            self.column = snapshot.2;
             return None;
         }
         Some(Token {
@@ -518,7 +552,7 @@ impl<'a> Lexer<'a> {
 }
 
 fn is_ident_start(ch: char) -> bool {
-    ch.is_ascii_alphabetic() || ch == '_'
+    ch.is_ascii_alphabetic()
 }
 
 fn is_ident_continue(ch: char) -> bool {
