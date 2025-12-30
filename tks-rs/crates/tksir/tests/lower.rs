@@ -137,3 +137,75 @@ entangle(f(1), f(2))
         other => panic!("expected top-level let, got {other:?}"),
     }
 }
+
+#[test]
+fn lower_rpm_return_with_binding() {
+    let source = r#"
+let f = \x -> x;
+return (f(1))
+"#;
+    let program = parse_program(source).expect("parse program");
+    let term = lower_program(&program).expect("lower program");
+
+    match term {
+        IRTerm::Let(name, _, body) => {
+            assert_eq!(name, "f");
+            match *body {
+                IRTerm::Let(tmp, _, inner) => {
+                    assert_eq!(tmp, "_t0");
+                    match *inner {
+                        IRTerm::RpmReturn(IRVal::Var(var)) => {
+                            assert_eq!(var, tmp);
+                        }
+                        other => panic!("expected rpm return, got {other:?}"),
+                    }
+                }
+                other => panic!("expected temp let, got {other:?}"),
+            }
+        }
+        other => panic!("expected top-level let, got {other:?}"),
+    }
+}
+
+#[test]
+fn lower_rpm_bind_with_bindings() {
+    let source = r#"
+let f = \x -> x;
+let g = \y -> y;
+f(1) >>= g(2)
+"#;
+    let program = parse_program(source).expect("parse program");
+    let term = lower_program(&program).expect("lower program");
+
+    match term {
+        IRTerm::Let(name, _, body) => {
+            assert_eq!(name, "f");
+            match *body {
+                IRTerm::Let(name, _, body) => {
+                    assert_eq!(name, "g");
+                    match *body {
+                        IRTerm::Let(t0, _, body) => {
+                            assert_eq!(t0, "_t0");
+                            match *body {
+                                IRTerm::Let(t1, _, body) => {
+                                    assert_eq!(t1, "_t1");
+                                    match *body {
+                                        IRTerm::RpmBind(IRVal::Var(left), IRVal::Var(right)) => {
+                                            assert_eq!(left, t0);
+                                            assert_eq!(right, t1);
+                                        }
+                                        other => panic!("expected rpm bind, got {other:?}"),
+                                    }
+                                }
+                                other => panic!("expected temp let, got {other:?}"),
+                            }
+                        }
+                        other => panic!("expected temp let, got {other:?}"),
+                    }
+                }
+                other => panic!("expected let g, got {other:?}"),
+            }
+        }
+        other => panic!("expected top-level let, got {other:?}"),
+    }
+}

@@ -168,6 +168,18 @@ fn lower_term(state: &mut LowerState, expr: &Expr) -> Result<IRTerm, LowerError>
             };
             Ok(IRTerm::Handle(Box::new(expr_term), Box::new(handler)))
         }
+        Expr::RPMReturn { expr, .. } => {
+            let (bindings, val) = lower_to_val(state, expr)?;
+            let term = IRTerm::RpmReturn(val);
+            Ok(wrap_lets(bindings, term))
+        }
+        Expr::RPMBind { left, right, .. } => {
+            let (mut bindings, left_val) = lower_to_val(state, left)?;
+            let (right_bindings, right_val) = lower_to_val(state, right)?;
+            bindings.extend(right_bindings);
+            let term = IRTerm::RpmBind(left_val, right_val);
+            Ok(wrap_lets(bindings, term))
+        }
         Expr::RPMCheck { expr, .. } => {
             let (bindings, arg_val) = lower_to_val(state, expr)?;
             let term = IRTerm::RPMCheck(arg_val);
