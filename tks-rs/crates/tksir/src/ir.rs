@@ -14,11 +14,11 @@ pub enum IRVal {
 #[derive(Debug, Clone, PartialEq)]
 pub enum IRTerm {
     Return(IRVal),
-    Let(Ident, IRComp, Box<IRTerm>),
+    Let(Ident, Box<IRComp>, Box<IRTerm>),
     App(IRVal, IRVal),
     If(IRVal, Box<IRTerm>, Box<IRTerm>),
     Perform(Ident, IRVal),
-    Handle(Box<IRTerm>, IRHandler),
+    Handle(Box<IRTerm>, Box<IRHandler>),
     RPMAcquire(IRVal),
     RPMCheck(IRVal),
     RPMFail,
@@ -33,7 +33,7 @@ pub enum IRTerm {
 #[derive(Debug, Clone, PartialEq)]
 pub enum IRComp {
     Pure(IRVal),
-    Effect(IRTerm),
+    Effect(Box<IRTerm>),
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -45,7 +45,7 @@ pub enum OrdOp {
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct IRHandler {
-    pub return_clause: (Ident, IRTerm),
+    pub return_clause: (Ident, Box<IRTerm>),
     pub op_clauses: Vec<IRHandlerClause>,
 }
 
@@ -54,5 +54,5 @@ pub struct IRHandlerClause {
     pub op: Ident,
     pub arg: Ident,
     pub k: Ident,
-    pub body: IRTerm,
+    pub body: Box<IRTerm>,
 }
