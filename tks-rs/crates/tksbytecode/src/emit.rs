@@ -88,6 +88,16 @@ impl EmitState {
                     .push(inst2(Opcode::PushElement, world_id, u64::from(*index)));
                 Ok(())
             }
+            IRVal::Noetic(index) => {
+                self.code
+                    .push(inst1(Opcode::PushNoetic, u64::from(*index)));
+                Ok(())
+            }
+            IRVal::Ket(inner) => {
+                self.emit_val(inner)?;
+                self.code.push(inst(Opcode::MakeKet));
+                Ok(())
+            }
             _ => Err(EmitError::Unimplemented("value emission")),
         }
     }
