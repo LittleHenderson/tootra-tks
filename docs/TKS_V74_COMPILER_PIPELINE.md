@@ -7,6 +7,7 @@ This document defines the implementation pipeline and crate layout for the v7.4 
    - Input: .tks source
    - Output: token stream with spans (file/line/col)
    - Unicode + ASCII supported (Unicode normalized to token kinds; ASCII default output).
+   - Ordinal literal patterns (omega + n, omega * n, omega ^ n) and ket/bra tokens.
 
 2. Parsing
    - Input: tokens
@@ -15,35 +16,45 @@ This document defines the implementation pipeline and crate layout for the v7.4 
      - v7.2 core grammar
      - v7.3 extensions (effects, transfinite, quantum)
      - v6.1 canonical aliases (expr^k, <<...>>)
+   - Precedence notes: handler nesting right-assoc, ordinal exponent right-assoc.
 
 3. Desugaring
    - Normalize aliases to canonical AST forms:
      - expr^k -> Noetic(k, expr)
      - <<k1:k2:...>>(expr) -> Fractal([k1,k2,...], expr)
      - Unicode fractal tokens -> ASCII fractal node
+     - Ordinal literal tokens -> OrdAdd/OrdMul/OrdExp forms
+   - Normalize effect rows (remove duplicates, order-insensitive canonicalization).
 
 4. Name Resolution + Module Loading
    - Build module graph (imports, exports, signatures)
    - Load .tksi interfaces for dependencies
-   - Resolve identifiers, handler names, effect names
+   - Resolve identifiers, handler names, effect names, extern symbols
 
 5. Type + Effect Inference
    - Hindley-Milner inference with row-polymorphic effects
    - Validate effect declarations and handler clauses
    - Assign Type + EffectRow to each AST node
+   - Enforce effect row subtyping and effect boundary safety (imports/exports)
+   - Apply ordinal constraints and bounded quantification rules
 
 6. Lowering to ANF IR
    - Convert to effect-aware ANF IR
-   - Make perform/handle explicit and ready for CPS lowering
+   - Make perform/handle/resume explicit and ready for CPS lowering
+   - Lower transfinite loops and quantum ops to IR terms
 
 7. Bytecode Generation
    - Map IR to v7.3 bytecode instruction set
    - Emit .tkso with metadata (module name, imports, exports, constants)
+   - Encode handler metadata, ordinal tables, quantum constants, FFI linkage info
 
 8. Linking / Execution
    - tksvm loads .tkso and resolves imports
    - Optional module linking step for single-file executables
    - Run on the v7.3 VM state model
+9. Packaging
+   - Package bytecode + runtime into Windows .exe
+   - Emit .pdb and symbol maps for diagnostics (optional)
 
 ## Crate Layout (Proposed)
 - tks-rs/
@@ -63,6 +74,7 @@ This document defines the implementation pipeline and crate layout for the v7.4 
 - tksc fmt <file.tks> (ASCII canonical output; optional)
 - tks run <file.tks|file.tkso>
 - tks repl
+ - tksc package <file.tkso> [-o app.exe] (planned)
 
 ## Error Handling
 - Diagnostics carry span + source line context.
@@ -79,3 +91,6 @@ This document defines the implementation pipeline and crate layout for the v7.4 
 - Exact operator precedence table for v7.2 core + v7.3 extensions + ^ suffix.
 - Default standard library surface (IO, file, time, math, RPM helpers).
 - External FFI ABI subset for initial release.
+- Link directives and @symbol attributes for FFI.
+- Effect row normalization and duplicate handling policy.
+- Resume syntax (special form vs regular function call).
