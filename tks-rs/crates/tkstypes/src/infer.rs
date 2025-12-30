@@ -1458,7 +1458,8 @@ fn infer_handler_def(
                 resume_row.clone(),
             )),
         );
-        clause_env.insert(clause.k.clone(), Scheme::mono(k_ty));
+        clause_env.insert(clause.k.clone(), Scheme::mono(k_ty.clone()));
+        clause_env.insert("resume".to_string(), Scheme::mono(k_ty));
         let clause_out = infer_expr_inner(state, &mut clause_env, &clause.body)?;
         unify_types(&mut state.subst, &clause_out.ty, output_ty)?;
         effect = combine_effects(state, &effect, &clause_out.effect)?;

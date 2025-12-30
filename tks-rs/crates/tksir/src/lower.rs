@@ -264,6 +264,11 @@ fn lower_handler_def(state: &mut LowerState, def: &HandlerDef) -> Result<IRHandl
     let mut clauses = Vec::new();
     for clause in &def.op_clauses {
         let body_term = lower_term(state, &clause.body)?;
+        let body_term = IRTerm::Let(
+            "resume".to_string(),
+            Box::new(IRComp::Pure(IRVal::Var(clause.k.clone()))),
+            Box::new(body_term),
+        );
         clauses.push(IRHandlerClause {
             op: clause.op.clone(),
             arg: clause.arg.clone(),

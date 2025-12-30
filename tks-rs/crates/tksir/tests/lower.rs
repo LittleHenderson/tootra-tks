@@ -1,6 +1,6 @@
 use tkscore::ast::Literal;
 use tkscore::parser::parse_program;
-use tksir::ir::{IRTerm, IRVal};
+use tksir::ir::{IRComp, IRTerm, IRVal};
 use tksir::lower::lower_program;
 
 #[test]
@@ -207,5 +207,41 @@ f(1) >>= g(2)
             }
         }
         other => panic!("expected top-level let, got {other:?}"),
+    }
+}
+
+#[test]
+fn lower_resume_in_handler_clause() {
+    let source = r#"
+handle perform log(1) with {
+  return x -> x;
+  log(msg) k -> resume(msg);
+}
+"#;
+    let program = parse_program(source).expect("parse program");
+    let term = lower_program(&program).expect("lower program");
+
+    match term {
+        IRTerm::Handle(_, handler) => {
+            assert_eq!(handler.op_clauses.len(), 1);
+            let clause = &handler.op_clauses[0];
+            assert_eq!(clause.op, "log");
+            assert_eq!(clause.k, "k");
+            match clause.body.as_ref() {
+                IRTerm::Let(name, comp, body) => {
+                    assert_eq!(name, "resume");
+                    assert_eq!(**comp, IRComp::Pure(IRVal::Var("k".to_string())));
+                    assert_eq!(
+                        **body,
+                        IRTerm::App(
+                            IRVal::Var("resume".to_string()),
+                            IRVal::Var("msg".to_string())
+                        )
+                    );
+                }
+                other => panic!("expected resume let, got {other:?}"),
+            }
+        }
+        other => panic!("expected handle, got {other:?}"),
     }
 }

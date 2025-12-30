@@ -44,3 +44,53 @@ handle perform ping(1) with {
     assert_eq!(ty, Type::Int);
     assert_eq!(effect, EffectRow::Empty);
 }
+
+#[test]
+fn infer_handler_resume_effects() {
+    let source = r#"
+effect Log {
+  op log(msg: Int): Int;
+}
+
+effect Ping {
+  op ping(n: Int): Int;
+}
+
+handler H: Handler[{Log}, Int, Int] {
+  return x -> x;
+  log(msg) k -> resume(perform ping(1));
+}
+
+handle perform log(1) with H
+"#;
+    let (ty, effect) = infer_entry(source);
+    assert_eq!(ty, Type::Int);
+    assert_eq!(
+        effect,
+        EffectRow::Cons("Ping".to_string(), Box::new(EffectRow::Empty))
+    );
+}
+
+#[test]
+fn infer_handle_remainder_row() {
+    let source = r#"
+effect Log {
+  op log(msg: Int): Int;
+}
+
+effect Ping {
+  op ping(n: Int): Int;
+}
+
+handle let x = perform ping(1) in perform log(x) with {
+  return v -> v;
+  log(msg) k -> k(msg);
+}
+"#;
+    let (ty, effect) = infer_entry(source);
+    assert_eq!(ty, Type::Int);
+    assert_eq!(
+        effect,
+        EffectRow::Cons("Ping".to_string(), Box::new(EffectRow::Empty))
+    );
+}
