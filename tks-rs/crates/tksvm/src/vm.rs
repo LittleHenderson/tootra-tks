@@ -18,8 +18,20 @@ pub enum Value {
         handlers: Vec<HandlerFrame>,
     },
     Element { world: u8, index: u8 },
+    Foundation { level: u8, aspect: u8 },
     Noetic(u8),
     NoeticApplied { index: u8, value: Box<Value> },
+    Fractal {
+        seq: Vec<u8>,
+        ellipsis: Option<u8>,
+        subscript: Option<OrdinalValue>,
+        value: Box<Value>,
+    },
+    AcbeState {
+        goal: Box<Value>,
+        current: Box<Value>,
+        complete: bool,
+    },
     RpmState { ok: bool, value: Box<Value> },
     Ket(Box<Value>),
     Superpose(Vec<(Value, Value)>),
@@ -46,6 +58,7 @@ pub enum VmError {
     InvalidOperand { opcode: Opcode, operand: &'static str, value: u64 },
     InvalidLocal { index: usize },
     DivisionByZero,
+    AcbeIncomplete,
     HandlerNotImplemented,
     UnhandledEffect,
     RpmUnwrapFailed,
@@ -138,6 +151,31 @@ impl VmState {
                     };
                     let index = Self::expect_operand2_u8(&instr)?;
                     self.stack.push(Value::Element { world, index });
+                }
+                Opcode::PushFoundation => {
+                    let level_raw = Self::expect_operand1(&instr)?;
+                    let level = match level_raw {
+                        1..=7 => level_raw as u8,
+                        _ => {
+                            return Err(VmError::InvalidOperand {
+                                opcode: instr.opcode,
+                                operand: "operand1",
+                                value: level_raw,
+                            })
+                        }
+                    };
+                    let aspect_raw = Self::expect_operand2(&instr)?;
+                    let aspect = match aspect_raw {
+                        0..=3 => aspect_raw as u8,
+                        _ => {
+                            return Err(VmError::InvalidOperand {
+                                opcode: instr.opcode,
+                                operand: "operand2",
+                                value: aspect_raw,
+                            })
+                        }
+                    };
+                    self.stack.push(Value::Foundation { level, aspect });
                 }
                 Opcode::PushNoetic => {
                     let index = Self::expect_operand1_u8(&instr)?;
@@ -253,6 +291,124 @@ impl VmState {
                         }
                     }
                 }
+                Opcode::FoundationLevel => {
+                    let value = self.pop()?;
+                    match value {
+                        Value::Foundation { level, .. } => {
+                            self.stack.push(Value::Int(level as i64));
+                        }
+                        other => {
+                            return Err(VmError::TypeMismatch {
+                                expected: "foundation",
+                                found: other,
+                            })
+                        }
+                    }
+                }
+                Opcode::FoundationAspect => {
+                    let value = self.pop()?;
+                    match value {
+                        Value::Foundation { aspect, .. } => {
+                            self.stack.push(Value::Int(aspect as i64));
+                        }
+                        other => {
+                            return Err(VmError::TypeMismatch {
+                                expected: "foundation",
+                                found: other,
+                            })
+                        }
+                    }
+                }
+                Opcode::NoeticCompose => {
+                    let right = self.pop()?;
+                    let left = self.pop()?;
+                    match (left, right) {
+                        (Value::Noetic(left), Value::Noetic(right)) => {
+                            let index = ((u16::from(left) + u16::from(right)) % 10) as u8;
+                            self.stack.push(Value::Noetic(index));
+                        }
+                        (Value::Noetic(_), other) | (other, _) => {
+                            return Err(VmError::TypeMismatch {
+                                expected: "noetic",
+                                found: other,
+                            })
+                        }
+                    }
+                }
+                Opcode::NoeticLevel => {
+                    let value = self.pop()?;
+                    match value {
+                        Value::Noetic(index) => {
+                            self.stack.push(Value::Int(index as i64));
+                        }
+                        other => {
+                            return Err(VmError::TypeMismatch {
+                                expected: "noetic",
+                                found: other,
+                            })
+                        }
+                    }
+                }
+                Opcode::MakeFractal => {
+                    let count = Self::expect_operand1_usize(&instr)?;
+                    let flags = instr.operand2.unwrap_or(0);
+                    let has_subscript = flags & 1 == 1;
+                    let has_ellipsis = flags & 2 == 2;
+                    let value = self.pop()?;
+                    let subscript = if has_subscript {
+                        Some(self.pop_ordinal()?)
+                    } else {
+                        None
+                    };
+                    let mut seq = Vec::with_capacity(count);
+                    for _ in 0..count {
+                        let value = self.pop()?;
+                        match value {
+                            Value::Noetic(index) => seq.push(index),
+                            other => {
+                                return Err(VmError::TypeMismatch {
+                                    expected: "noetic",
+                                    found: other,
+                                })
+                            }
+                        }
+                    }
+                    seq.reverse();
+                    if has_ellipsis && seq.is_empty() {
+                        return Err(VmError::TypeMismatch {
+                            expected: "non-empty fractal sequence",
+                            found: Value::Unit,
+                        });
+                    }
+                    let ellipsis = if has_ellipsis {
+                        seq.last().copied()
+                    } else {
+                        None
+                    };
+                    self.stack.push(Value::Fractal {
+                        seq,
+                        ellipsis,
+                        subscript,
+                        value: Box::new(value),
+                    });
+                }
+                Opcode::FractalLevel => {
+                    let value = self.pop()?;
+                    match value {
+                        Value::Fractal { seq, subscript, .. } => {
+                            let level = subscript.unwrap_or_else(|| {
+                                OrdinalValue::Finite(seq.len() as u64)
+                            });
+                            self.stack.push(Value::Ordinal(level));
+                        }
+                        other => {
+                            return Err(VmError::TypeMismatch {
+                                expected: "fractal",
+                                found: other,
+                            })
+                        }
+                    }
+                }
                 Opcode::ApplyNoetic => {
                     let arg = self.pop()?;
                     let callee = self.pop()?;
@@ -269,6 +425,74 @@ impl VmState {
                         index,
                         value: Box::new(arg),
                     });
+                }
+                Opcode::AcbeInit => {
+                    let expr = self.pop()?;
+                    let goal = self.pop()?;
+                    self.stack.push(Value::AcbeState {
+                        goal: Box::new(goal),
+                        current: Box::new(expr),
+                        complete: false,
+                    });
+                }
+                Opcode::AcbeDescend => {
+                    let current = self.pop()?;
+                    let state = self.pop()?;
+                    match state {
+                        Value::AcbeState { goal, .. } => {
+                            self.stack.push(Value::AcbeState {
+                                goal,
+                                current: Box::new(current),
+                                complete: false,
+                            });
+                        }
+                        other => {
+                            return Err(VmError::TypeMismatch {
+                                expected: "acbe state",
+                                found: other,
+                            })
+                        }
+                    }
+                }
+                Opcode::AcbeComplete => {
+                    let state = self.pop()?;
+                    match state {
+                        Value::AcbeState {
+                            goal,
+                            current,
+                            ..
+                        } => {
+                            self.stack.push(Value::AcbeState {
+                                goal,
+                                current,
+                                complete: true,
+                            });
+                        }
+                        other => {
+                            return Err(VmError::TypeMismatch {
+                                expected: "acbe state",
+                                found: other,
+                            })
+                        }
+                    }
+                }
+                Opcode::AcbeResult => {
+                    let state = self.pop()?;
+                    match state {
+                        Value::AcbeState { current, complete, .. } => {
+                            if complete {
+                                self.stack.push(*current);
+                            } else {
+                                return Err(VmError::AcbeIncomplete);
+                            }
+                        }
+                        other => {
+                            return Err(VmError::TypeMismatch {
+                                expected: "acbe state",
+                                found: other,
+                            })
+                        }
+                    }
                 }
                 Opcode::RpmAcquire => {
                     let value = self.pop()?;

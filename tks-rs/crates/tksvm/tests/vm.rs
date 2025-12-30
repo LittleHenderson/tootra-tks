@@ -86,6 +86,47 @@ fn run_apply_noetic_program() {
 }
 
 #[test]
+fn run_foundation_level_program() {
+    let code = vec![
+        instr2(Opcode::PushFoundation, 3, 1),
+        instr(Opcode::FoundationLevel, None),
+        instr(Opcode::Ret, None),
+    ];
+
+    let mut vm = VmState::new(code);
+    let result = vm.run().expect("run program");
+    assert_eq!(result, Value::Int(3));
+}
+
+#[test]
+fn run_foundation_aspect_program() {
+    let code = vec![
+        instr2(Opcode::PushFoundation, 2, 3),
+        instr(Opcode::FoundationAspect, None),
+        instr(Opcode::Ret, None),
+    ];
+
+    let mut vm = VmState::new(code);
+    let result = vm.run().expect("run program");
+    assert_eq!(result, Value::Int(3));
+}
+
+#[test]
+fn run_noetic_compose_level_program() {
+    let code = vec![
+        instr(Opcode::PushNoetic, Some(4)),
+        instr(Opcode::PushNoetic, Some(7)),
+        instr(Opcode::NoeticCompose, None),
+        instr(Opcode::NoeticLevel, None),
+        instr(Opcode::Ret, None),
+    ];
+
+    let mut vm = VmState::new(code);
+    let result = vm.run().expect("run program");
+    assert_eq!(result, Value::Int(1));
+}
+
+#[test]
 fn run_rpm_acquire_program() {
     let code = vec![
         instr(Opcode::PushInt, Some(7)),
@@ -285,6 +326,93 @@ fn run_push_noetic_program() {
     let mut vm = VmState::new(code);
     let result = vm.run().expect("run program");
     assert_eq!(result, Value::Noetic(4));
+}
+
+#[test]
+fn run_make_fractal_program() {
+    let code = vec![
+        instr(Opcode::PushNoetic, Some(1)),
+        instr(Opcode::PushNoetic, Some(2)),
+        instr(Opcode::PushInt, Some(9)),
+        instr2(Opcode::MakeFractal, 2, 0),
+        instr(Opcode::Ret, None),
+    ];
+
+    let mut vm = VmState::new(code);
+    let result = vm.run().expect("run program");
+    assert_eq!(
+        result,
+        Value::Fractal {
+            seq: vec![1, 2],
+            ellipsis: None,
+            subscript: None,
+            value: Box::new(Value::Int(9)),
+        }
+    );
+}
+
+#[test]
+fn run_fractal_level_with_subscript_program() {
+    let code = vec![
+        instr(Opcode::PushNoetic, Some(3)),
+        instr(Opcode::PushOrd, Some(5)),
+        instr(Opcode::PushInt, Some(8)),
+        instr2(Opcode::MakeFractal, 1, 1),
+        instr(Opcode::FractalLevel, None),
+        instr(Opcode::Ret, None),
+    ];
+
+    let mut vm = VmState::new(code);
+    let result = vm.run().expect("run program");
+    assert_eq!(result, Value::Ordinal(OrdinalValue::Finite(5)));
+}
+
+#[test]
+fn run_acbe_result_program() {
+    let code = vec![
+        instr(Opcode::PushInt, Some(1)),
+        instr(Opcode::PushInt, Some(7)),
+        instr(Opcode::AcbeInit, None),
+        instr(Opcode::AcbeComplete, None),
+        instr(Opcode::AcbeResult, None),
+        instr(Opcode::Ret, None),
+    ];
+
+    let mut vm = VmState::new(code);
+    let result = vm.run().expect("run program");
+    assert_eq!(result, Value::Int(7));
+}
+
+#[test]
+fn run_acbe_descend_program() {
+    let code = vec![
+        instr(Opcode::PushInt, Some(2)),
+        instr(Opcode::PushInt, Some(4)),
+        instr(Opcode::AcbeInit, None),
+        instr(Opcode::PushInt, Some(9)),
+        instr(Opcode::AcbeDescend, None),
+        instr(Opcode::AcbeComplete, None),
+        instr(Opcode::AcbeResult, None),
+        instr(Opcode::Ret, None),
+    ];
+
+    let mut vm = VmState::new(code);
+    let result = vm.run().expect("run program");
+    assert_eq!(result, Value::Int(9));
+}
+
+#[test]
+fn run_acbe_incomplete_program() {
+    let code = vec![
+        instr(Opcode::PushInt, Some(1)),
+        instr(Opcode::PushInt, Some(2)),
+        instr(Opcode::AcbeInit, None),
+        instr(Opcode::AcbeResult, None),
+    ];
+
+    let mut vm = VmState::new(code);
+    let err = vm.run().expect_err("expected incomplete acbe");
+    assert_eq!(err, VmError::AcbeIncomplete);
 }
 
 #[test]
