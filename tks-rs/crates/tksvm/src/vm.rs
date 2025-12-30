@@ -1,4 +1,8 @@
+use std::collections::HashMap;
+use std::sync::Arc;
+
 use tksbytecode::bytecode::{Instruction, Opcode};
+use tksbytecode::extern_id;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Value {
@@ -6,6 +10,7 @@ pub enum Value {
     Bool(bool),
     Unit,
     Closure { entry: usize },
+    Extern { id: u64, arity: usize, args: Vec<Value> },
     Handler {
         return_entry: usize,
         op_clauses: Vec<(u64, usize)>,
@@ -58,6 +63,7 @@ pub enum VmError {
     InvalidOperand { opcode: Opcode, operand: &'static str, value: u64 },
     InvalidLocal { index: usize },
     DivisionByZero,
+    UnknownExtern(u64),
     AcbeIncomplete,
     HandlerNotImplemented,
     UnhandledEffect,
@@ -86,7 +92,9 @@ pub struct HandlerFrame {
     pub op_clauses: Vec<(u64, usize)>,
 }
 
-#[derive(Debug, Clone)]
+pub type ExternRegistry = HashMap<u64, Arc<dyn Fn(Vec<Value>) -> Result<Value, VmError>>>;
+
+#[derive(Clone)]
 pub struct VmState {
     pub code: Vec<Instruction>,
     pub pc: usize,
@@ -94,6 +102,21 @@ pub struct VmState {
     pub locals: Vec<Value>,
     pub frames: Vec<CallFrame>,
     pub handlers: Vec<HandlerFrame>,
+    pub externs: ExternRegistry,
+}
+
+impl std::fmt::Debug for VmState {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("VmState")
+            .field("code", &self.code)
+            .field("pc", &self.pc)
+            .field("stack", &self.stack)
+            .field("locals", &self.locals)
+            .field("frames", &self.frames)
+            .field("handlers", &self.handlers)
+            .field("externs", &self.externs.len())
+            .finish()
+    }
 }
 
 impl VmState {
@@ -105,7 +128,28 @@ impl VmState {
             locals: Vec::new(),
             frames: Vec::new(),
             handlers: Vec::new(),
+            externs: HashMap::new(),
         }
+    }
+
+    pub fn with_externs(code: Vec<Instruction>, externs: ExternRegistry) -> Self {
+        Self {
+            code,
+            pc: 0,
+            stack: Vec::new(),
+            locals: Vec::new(),
+            frames: Vec::new(),
+            handlers: Vec::new(),
+            externs,
+        }
+    }
+
+    pub fn register_extern<F>(&mut self, name: &str, func: F)
+    where
+        F: Fn(Vec<Value>) -> Result<Value, VmError> + 'static,
+    {
+        let id = extern_id(name);
+        self.externs.insert(id, Arc::new(func));
     }
 
     pub fn run(&mut self) -> Result<Value, VmError> {
@@ -283,9 +327,18 @@ impl VmState {
                         cont @ Value::Continuation { .. } => {
                             self.resume_continuation(cont, arg)?;
                         }
+                        Value::Extern { id, arity, mut args } => {
+                            args.push(arg);
+                            if args.len() < arity {
+                                self.stack.push(Value::Extern { id, arity, args });
+                            } else {
+                                let value = self.call_extern(id, args)?;
+                                self.stack.push(value);
+                            }
+                        }
                         other => {
                             return Err(VmError::TypeMismatch {
-                                expected: "closure or continuation",
+                                expected: "closure, continuation, or extern",
                                 found: other,
                             })
                         }
@@ -764,6 +817,13 @@ impl VmState {
                 }
             }
         }
+    }
+
+    fn call_extern(&self, id: u64, args: Vec<Value>) -> Result<Value, VmError> {
+        let Some(func) = self.externs.get(&id) else {
+            return Err(VmError::UnknownExtern(id));
+        };
+        (func)(args)
     }
 
     fn pop(&mut self) -> Result<Value, VmError> {
