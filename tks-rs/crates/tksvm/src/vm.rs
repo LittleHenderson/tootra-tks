@@ -79,6 +79,24 @@ impl VmState {
                     }
                     self.locals[index] = value;
                 }
+                Opcode::Jmp => {
+                    let target = Self::expect_operand1_usize(&instr)?;
+                    self.pc = target;
+                }
+                Opcode::JmpIf => {
+                    let target = Self::expect_operand1_usize(&instr)?;
+                    let cond = self.pop_bool()?;
+                    if cond {
+                        self.pc = target;
+                    }
+                }
+                Opcode::JmpUnless => {
+                    let target = Self::expect_operand1_usize(&instr)?;
+                    let cond = self.pop_bool()?;
+                    if !cond {
+                        self.pc = target;
+                    }
+                }
                 Opcode::Add => {
                     let rhs = self.pop_int()?;
                     let lhs = self.pop_int()?;
@@ -122,6 +140,16 @@ impl VmState {
             Value::Int(value) => Ok(value),
             other => Err(VmError::TypeMismatch {
                 expected: "int",
+                found: other,
+            }),
+        }
+    }
+
+    fn pop_bool(&mut self) -> Result<bool, VmError> {
+        match self.pop()? {
+            Value::Bool(value) => Ok(value),
+            other => Err(VmError::TypeMismatch {
+                expected: "bool",
                 found: other,
             }),
         }

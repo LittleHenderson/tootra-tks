@@ -6,12 +6,16 @@ use crate::bytecode::{Instruction, Opcode};
 #[derive(Debug, Clone)]
 pub enum EmitError {
     Unimplemented(&'static str),
+    InvalidJumpTarget(usize),
 }
 
 impl std::fmt::Display for EmitError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             EmitError::Unimplemented(feature) => write!(f, "{feature} not implemented"),
+            EmitError::InvalidJumpTarget(index) => {
+                write!(f, "invalid jump target at instruction {index}")
+            }
         }
     }
 }
@@ -35,21 +39,36 @@ impl EmitState {
         match term {
             IRTerm::Return(val) => {
                 self.emit_val(val)?;
-                self.code.push(inst(Opcode::Ret));
                 Ok(())
             }
-            IRTerm::Let(name, comp, body) => match comp.as_ref() {
-                IRComp::Pure(val) => {
-                    self.emit_val(val)?;
-                    let slot = self.alloc_local(name.clone());
-                    self.code.push(inst1(Opcode::Store, slot));
-                    self.emit_term(body)?;
-                    self.locals.pop();
-                    Ok(())
-                }
-                _ => Err(EmitError::Unimplemented("let emission")),
-            },
+            IRTerm::Let(name, comp, body) => {
+                self.emit_comp(comp)?;
+                let slot = self.alloc_local(name.clone());
+                self.code.push(inst1(Opcode::Store, slot));
+                self.emit_term(body)?;
+                self.locals.pop();
+                Ok(())
+            }
+            IRTerm::If(cond, then_term, else_term) => {
+                self.emit_val(cond)?;
+                let jmp_to_else = self.emit_jump_placeholder(Opcode::JmpUnless);
+                self.emit_term(then_term)?;
+                let jmp_to_end = self.emit_jump_placeholder(Opcode::Jmp);
+                let else_target = self.code.len();
+                self.patch_jump(jmp_to_else, else_target)?;
+                self.emit_term(else_term)?;
+                let end_target = self.code.len();
+                self.patch_jump(jmp_to_end, end_target)?;
+                Ok(())
+            }
             _ => Err(EmitError::Unimplemented("term emission")),
+        }
+    }
+
+    fn emit_comp(&mut self, comp: &IRComp) -> Result<(), EmitError> {
+        match comp {
+            IRComp::Pure(val) => self.emit_val(val),
+            IRComp::Effect(term) => self.emit_term(term),
         }
     }
 
@@ -108,6 +127,20 @@ impl EmitState {
             }
         })
     }
+
+    fn emit_jump_placeholder(&mut self, opcode: Opcode) -> usize {
+        let index = self.code.len();
+        self.code.push(inst1(opcode, 0));
+        index
+    }
+
+    fn patch_jump(&mut self, index: usize, target: usize) -> Result<(), EmitError> {
+        let Some(instr) = self.code.get_mut(index) else {
+            return Err(EmitError::InvalidJumpTarget(index));
+        };
+        instr.operand1 = Some(target as u64);
+        Ok(())
+    }
 }
 
 fn inst(opcode: Opcode) -> Instruction {
@@ -149,5 +182,6 @@ fn world_to_u64(world: World) -> u64 {
 pub fn emit(term: &IRTerm) -> Result<Vec<Instruction>, EmitError> {
     let mut state = EmitState::new();
     state.emit_term(term)?;
+    state.code.push(inst(Opcode::Ret));
     Ok(state.code)
 }
