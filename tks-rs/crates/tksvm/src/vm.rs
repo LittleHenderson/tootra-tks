@@ -6,6 +6,9 @@ pub enum Value {
     Bool(bool),
     Unit,
     Closure { entry: usize },
+    Element { world: u8, index: u8 },
+    Noetic(u8),
+    Ket(Box<Value>),
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -74,6 +77,25 @@ impl VmState {
                 Opcode::PushClosure => {
                     let entry = Self::expect_operand1_usize(&instr)?;
                     self.stack.push(Value::Closure { entry });
+                }
+                Opcode::PushElement => {
+                    let world_raw = Self::expect_operand1(&instr)?;
+                    let world = match world_raw {
+                        0..=3 => world_raw as u8,
+                        _ => {
+                            return Err(VmError::InvalidOperand {
+                                opcode: instr.opcode,
+                                operand: "operand1",
+                                value: world_raw,
+                            })
+                        }
+                    };
+                    let index = Self::expect_operand2_u8(&instr)?;
+                    self.stack.push(Value::Element { world, index });
+                }
+                Opcode::PushNoetic => {
+                    let index = Self::expect_operand1_u8(&instr)?;
+                    self.stack.push(Value::Noetic(index));
                 }
                 Opcode::Load => {
                     let index = Self::expect_operand1_usize(&instr)?;
@@ -153,6 +175,10 @@ impl VmState {
                     self.locals = vec![arg];
                     self.pc = entry;
                 }
+                Opcode::MakeKet => {
+                    let inner = self.pop()?;
+                    self.stack.push(Value::Ket(Box::new(inner)));
+                }
                 Opcode::Ret => {
                     let result = self.stack.pop().unwrap_or(Value::Unit);
                     if let Some(frame) = self.frames.pop() {
@@ -198,6 +224,31 @@ impl VmState {
         instr.operand1.ok_or(VmError::MissingOperand {
             opcode: instr.opcode,
             operand: "operand1",
+        })
+    }
+
+    fn expect_operand1_u8(instr: &Instruction) -> Result<u8, VmError> {
+        let raw = Self::expect_operand1(instr)?;
+        u8::try_from(raw).map_err(|_| VmError::InvalidOperand {
+            opcode: instr.opcode,
+            operand: "operand1",
+            value: raw,
+        })
+    }
+
+    fn expect_operand2(instr: &Instruction) -> Result<u64, VmError> {
+        instr.operand2.ok_or(VmError::MissingOperand {
+            opcode: instr.opcode,
+            operand: "operand2",
+        })
+    }
+
+    fn expect_operand2_u8(instr: &Instruction) -> Result<u8, VmError> {
+        let raw = Self::expect_operand2(instr)?;
+        u8::try_from(raw).map_err(|_| VmError::InvalidOperand {
+            opcode: instr.opcode,
+            operand: "operand2",
+            value: raw,
         })
     }
 
