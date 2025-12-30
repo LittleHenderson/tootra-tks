@@ -119,6 +119,17 @@ impl EmitState {
                 self.code.push(inst(Opcode::RemoveHandler));
                 Ok(())
             }
+            IRTerm::RpmReturn(val) => {
+                self.emit_val(val)?;
+                self.code.push(inst(Opcode::RpmReturn));
+                Ok(())
+            }
+            IRTerm::RpmBind(left, right) => {
+                self.emit_val(left)?;
+                self.emit_val(right)?;
+                self.code.push(inst(Opcode::RpmBind));
+                Ok(())
+            }
             IRTerm::OrdSucc(val) => {
                 self.emit_val(val)?;
                 self.code.push(inst(Opcode::OrdSucc));
