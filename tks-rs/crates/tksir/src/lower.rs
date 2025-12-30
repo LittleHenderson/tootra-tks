@@ -57,6 +57,10 @@ fn lower_to_val(
     state: &mut LowerState,
     expr: &Expr,
 ) -> Result<(Vec<(String, IRComp)>, IRVal), LowerError> {
+    if let Expr::Ket { expr: inner, .. } = expr {
+        let (bindings, inner_val) = lower_to_val(state, inner.as_ref())?;
+        return Ok((bindings, IRVal::Ket(Box::new(inner_val))));
+    }
     match lower_comp(state, expr)? {
         IRComp::Pure(val) => Ok((Vec::new(), val)),
         comp => {
@@ -172,6 +176,36 @@ fn lower_term(state: &mut LowerState, expr: &Expr) -> Result<IRTerm, LowerError>
         Expr::RPMAcquire { expr, .. } => {
             let (bindings, arg_val) = lower_to_val(state, expr)?;
             let term = IRTerm::RPMAcquire(arg_val);
+            Ok(wrap_lets(bindings, term))
+        }
+        Expr::Superpose { states, .. } => {
+            let mut bindings = Vec::new();
+            let mut lowered_states = Vec::new();
+            for (amp, ket) in states {
+                let (amp_bindings, amp_val) = lower_to_val(state, amp)?;
+                bindings.extend(amp_bindings);
+                let (ket_bindings, ket_val) = lower_to_val(state, ket)?;
+                bindings.extend(ket_bindings);
+                lowered_states.push((amp_val, ket_val));
+            }
+            let term = IRTerm::Superpose(lowered_states);
+            Ok(wrap_lets(bindings, term))
+        }
+        Expr::Measure { expr, .. } => {
+            let (bindings, arg_val) = lower_to_val(state, expr)?;
+            let term = IRTerm::Measure(arg_val);
+            Ok(wrap_lets(bindings, term))
+        }
+        Expr::Entangle { left, right, .. } => {
+            let (mut bindings, left_val) = lower_to_val(state, left)?;
+            let (right_bindings, right_val) = lower_to_val(state, right)?;
+            bindings.extend(right_bindings);
+            let term = IRTerm::Entangle(left_val, right_val);
+            Ok(wrap_lets(bindings, term))
+        }
+        Expr::Ket { expr, .. } => {
+            let (bindings, inner_val) = lower_to_val(state, expr)?;
+            let term = IRTerm::Return(IRVal::Ket(Box::new(inner_val)));
             Ok(wrap_lets(bindings, term))
         }
         Expr::OrdSucc { expr, .. } => {
