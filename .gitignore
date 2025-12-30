@@ -1,0 +1,33 @@
+.venv*/
+.venv311/
+venv/
+.env/
+__pycache__/
+*.pyc
+
+# Python virtual environments
+.venv*/
+venv*/
+.env*/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Codex/Claude scratch
+.claude/
+
+# Training outputs / artifacts
+output/
+checkpoints/
+*.pt
+*.onnx
+*.bin
+*.ckpt
+
+# Logs / reports
+*.log
+*.jsonl
+
+# Rust build artifacts
+tks-rs/target/
