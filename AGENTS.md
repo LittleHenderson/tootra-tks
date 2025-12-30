@@ -92,7 +92,7 @@ default output unless Unicode is required.
 Status legend: [ ] todo, [~] in progress, [x] done.
 
 [x] Effects & handlers end-to-end (type/effect rows + IR lowering + bytecode/VM) - Owner: Agent A
-[~] Modules + .tksi + resolver + import/export (FFI pending) - Owner: Agent B
+[x] Modules + .tksi + resolver + import/export + FFI signatures/links - Owner: Agent B
 [x] Runtime packaging (.exe) + CLI polish + build scripts + GPU harness gating - Owner: Agent C
 [ ] Fractal/foundation/acquisition semantics in VM + tests - Owner: TBD
 [ ] Stdlib bootstrap (TKS.Core, TKS.RPM, TKS.Quantum) - Owner: TBD
@@ -103,5 +103,5 @@ Status legend: [ ] todo, [~] in progress, [x] done.
 Status legend: [ ] todo, [~] in progress, [x] done.
 
 [x] Agent A: Effects/Handlers types + IR lowering (bytecode/VM done)
-[~] Agent B: FFI signatures/links + module integration (resolver done)
+[x] Agent B: FFI signatures/links + module integration
 [x] Agent C: Packaging (.exe) + CLI polish + build script + docs
