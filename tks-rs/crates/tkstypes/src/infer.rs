@@ -1,6 +1,8 @@
 use std::collections::{HashMap, HashSet};
 
-use tkscore::ast::{EffectRow, Expr, Literal, Type, TypeScheme};
+use tkscore::ast::{
+    EffectRow, Expr, HandlerDef, HandlerRef, Literal, Program, TopDecl, Type, TypeScheme,
+};
 
 #[derive(Debug, Clone)]
 pub enum TypeError {
@@ -9,6 +11,10 @@ pub enum TypeError {
     RowOccurs(String, EffectRow),
     RowMismatch(EffectRow, EffectRow),
     UnknownVar(String),
+    UnknownOp(String),
+    UnknownHandler(String),
+    DuplicateOp(String),
+    HandlerEffectMismatch { handler: String, expected: String, found: String },
     InvalidAnnotation(String),
     Unimplemented(&'static str),
 }
@@ -25,6 +31,17 @@ impl std::fmt::Display for TypeError {
                 write!(f, "effect row mismatch: {left:?} vs {right:?}")
             }
             TypeError::UnknownVar(name) => write!(f, "unknown variable: {name}"),
+            TypeError::UnknownOp(name) => write!(f, "unknown effect operation: {name}"),
+            TypeError::UnknownHandler(name) => write!(f, "unknown handler: {name}"),
+            TypeError::DuplicateOp(name) => write!(f, "duplicate effect operation: {name}"),
+            TypeError::HandlerEffectMismatch {
+                handler,
+                expected,
+                found,
+            } => write!(
+                f,
+                "handler {handler} expected effect {expected}, found {found}"
+            ),
             TypeError::InvalidAnnotation(message) => write!(f, "invalid annotation: {message}"),
             TypeError::Unimplemented(feature) => write!(f, "{feature} not implemented"),
         }
@@ -35,6 +52,47 @@ impl std::fmt::Display for TypeError {
 pub struct InferOutput {
     pub ty: Type,
     pub effect: EffectRow,
+}
+
+#[derive(Debug, Clone)]
+pub struct InferProgramOutput {
+    pub env: TypeEnv,
+    pub entry: Option<InferOutput>,
+}
+
+#[derive(Debug, Clone)]
+pub struct OpSigEntry {
+    pub effect: String,
+    pub type_vars: Vec<String>,
+    pub input: Type,
+    pub output: Type,
+}
+
+#[derive(Debug, Clone)]
+pub struct HandlerInfo {
+    pub effect: String,
+    pub type_vars: Vec<String>,
+    pub row_vars: Vec<String>,
+    pub input: Type,
+    pub output: Type,
+    pub effect_row: EffectRow,
+}
+
+impl HandlerInfo {
+    fn instantiate(&self, state: &mut InferState) -> (Type, Type, EffectRow) {
+        let mut subst = Subst::default();
+        for var in &self.type_vars {
+            subst.type_subst.insert(var.clone(), state.fresh_type_var());
+        }
+        for var in &self.row_vars {
+            subst.row_subst.insert(var.clone(), state.fresh_row_var());
+        }
+        (
+            subst.apply_type(&self.input),
+            subst.apply_type(&self.output),
+            subst.apply_row(&self.effect_row),
+        )
+    }
 }
 
 #[derive(Debug, Clone, Default)]
@@ -181,12 +239,16 @@ impl Scheme {
 #[derive(Debug, Clone, Default)]
 pub struct TypeEnv {
     values: HashMap<String, Scheme>,
+    ops: HashMap<String, OpSigEntry>,
+    handlers: HashMap<String, HandlerInfo>,
 }
 
 impl TypeEnv {
     pub fn new() -> Self {
         Self {
             values: HashMap::new(),
+            ops: HashMap::new(),
+            handlers: HashMap::new(),
         }
     }
 
@@ -204,6 +266,33 @@ impl TypeEnv {
             .iter()
             .map(|(name, scheme)| (name.clone(), scheme.apply_subst(subst)))
             .collect();
+    }
+
+    pub fn insert_op(&mut self, name: impl Into<String>, entry: OpSigEntry) -> Result<(), TypeError> {
+        let name = name.into();
+        if self.ops.contains_key(&name) {
+            return Err(TypeError::DuplicateOp(name));
+        }
+        self.ops.insert(name, entry);
+        Ok(())
+    }
+
+    pub fn get_op(&self, name: &str) -> Option<&OpSigEntry> {
+        self.ops.get(name)
+    }
+
+    pub fn insert_handler(
+        &mut self,
+        name: impl Into<String>,
+        info: HandlerInfo,
+    ) -> Result<(), TypeError> {
+        let name = name.into();
+        self.handlers.insert(name, info);
+        Ok(())
+    }
+
+    pub fn get_handler(&self, name: &str) -> Option<&HandlerInfo> {
+        self.handlers.get(name)
     }
 }
 
@@ -379,6 +468,91 @@ pub fn infer_expr(env: &TypeEnv, expr: &Expr) -> Result<InferOutput, TypeError> 
     })
 }
 
+pub fn infer_program(program: &Program) -> Result<InferProgramOutput, TypeError> {
+    let mut state = InferState::default();
+    let mut env = TypeEnv::new();
+    let mut decl_effect = EffectRow::Empty;
+
+    for decl in &program.decls {
+        let effect = infer_decl(&mut state, &mut env, decl)?;
+        decl_effect = combine_effects(&mut state, &decl_effect, &effect)?;
+    }
+
+    let entry = match &program.entry {
+        Some(expr) => {
+            let out = infer_expr_inner(&mut state, &mut env, expr)?;
+            let effect = combine_effects(&mut state, &decl_effect, &out.effect)?;
+            Some(InferOutput {
+                ty: state.subst.apply_type(&out.ty),
+                effect: state.subst.apply_row(&effect),
+            })
+        }
+        None => None,
+    };
+
+    env.apply_subst(&state.subst);
+
+    Ok(InferProgramOutput { env, entry })
+}
+
+fn infer_decl(
+    state: &mut InferState,
+    env: &mut TypeEnv,
+    decl: &TopDecl,
+) -> Result<EffectRow, TypeError> {
+    match decl {
+        TopDecl::LetDecl { name, scheme, value, .. } => {
+            let value_out = infer_expr_inner(state, env, value)?;
+            if let Some(annotation) = scheme {
+                check_annotation(state, annotation, &value_out)?;
+            }
+            env.apply_subst(&state.subst);
+            let value_ty = state.subst.apply_type(&value_out.ty);
+            let scheme = generalize(env, &value_ty);
+            env.insert(name.clone(), scheme);
+            Ok(value_out.effect)
+        }
+        TopDecl::EffectDecl { name, params, ops, .. } => {
+            for op in ops {
+                let entry = OpSigEntry {
+                    effect: name.clone(),
+                    type_vars: params.clone(),
+                    input: op.input.clone(),
+                    output: op.output.clone(),
+                };
+                env.insert_op(op.name.clone(), entry)?;
+            }
+            Ok(EffectRow::Empty)
+        }
+        TopDecl::HandlerDecl {
+            name,
+            handler_type,
+            def,
+            ..
+        } => {
+            let info = infer_handler_info(state, env, name, handler_type.as_ref(), def)?;
+            env.insert_handler(name.clone(), info)?;
+            Ok(EffectRow::Empty)
+        }
+        TopDecl::ExternDecl(decl) => {
+            let mut param_types = Vec::new();
+            for param in &decl.params {
+                param_types.push(param.ty.clone());
+            }
+            let return_ty = match &decl.effects {
+                Some(row) => Type::Effectful(Box::new(decl.return_type.clone()), row.clone()),
+                None => decl.return_type.clone(),
+            };
+            let ty = build_fun_type(&param_types, return_ty);
+            let scheme = generalize(env, &ty);
+            env.insert(decl.name.clone(), scheme);
+            Ok(EffectRow::Empty)
+        }
+        TopDecl::TypeDecl { .. } => Err(TypeError::Unimplemented("type declarations")),
+        TopDecl::ModuleDecl(_) => Err(TypeError::Unimplemented("modules")),
+    }
+}
+
 fn infer_expr_inner(
     state: &mut InferState,
     env: &mut TypeEnv,
@@ -543,8 +717,8 @@ fn infer_expr_inner(
             })
         }
         Expr::ACBE { .. } => Err(TypeError::Unimplemented("acbe")),
-        Expr::Handle { .. } => Err(TypeError::Unimplemented("handle expressions")),
-        Expr::Perform { .. } => Err(TypeError::Unimplemented("perform expressions")),
+        Expr::Handle { expr, handler, .. } => infer_handle(state, env, expr, handler),
+        Expr::Perform { op, arg, .. } => infer_perform(state, env, op, arg),
         Expr::OrdLit { .. }
         | Expr::OrdOmega { .. }
         | Expr::OrdEpsilon { .. }
@@ -581,6 +755,261 @@ fn infer_expr_inner(
         Expr::Ket { .. } => Err(TypeError::Unimplemented("ket")),
         Expr::Bra { .. } => Err(TypeError::Unimplemented("bra")),
         Expr::BraKet { .. } => Err(TypeError::Unimplemented("bra-ket")),
+    }
+}
+
+fn infer_perform(
+    state: &mut InferState,
+    env: &mut TypeEnv,
+    op: &str,
+    arg: &Expr,
+) -> Result<InferOutput, TypeError> {
+    let entry = env
+        .get_op(op)
+        .ok_or_else(|| TypeError::UnknownOp(op.to_string()))?
+        .clone();
+    let (input_ty, output_ty) = instantiate_op(&entry, state);
+    let arg_out = infer_expr_inner(state, env, arg)?;
+    unify_types(&mut state.subst, &arg_out.ty, &input_ty)?;
+    let effect = combine_effects(
+        state,
+        &arg_out.effect,
+        &effect_row_single(&entry.effect),
+    )?;
+    Ok(InferOutput {
+        ty: output_ty,
+        effect,
+    })
+}
+
+fn infer_handle(
+    state: &mut InferState,
+    env: &mut TypeEnv,
+    expr: &Expr,
+    handler: &HandlerRef,
+) -> Result<InferOutput, TypeError> {
+    let expr_out = infer_expr_inner(state, env, expr)?;
+    let (effect_name, input_ty, output_ty, handler_effect) = match handler {
+        HandlerRef::Named { name, .. } => {
+            let info = env
+                .get_handler(name)
+                .ok_or_else(|| TypeError::UnknownHandler(name.clone()))?;
+            let (input, output, effect_row) = info.instantiate(state);
+            (info.effect.clone(), input, output, effect_row)
+        }
+        HandlerRef::Inline { def, .. } => {
+            infer_inline_handler(state, env, def, &expr_out.ty)?
+        }
+    };
+
+    unify_types(&mut state.subst, &expr_out.ty, &input_ty)?;
+    let remainder = state.fresh_row_var();
+    let expected = EffectRow::Cons(effect_name, Box::new(remainder.clone()));
+    unify_rows(&mut state.subst, &expr_out.effect, &expected)?;
+    let applied_handler_effect = state.subst.apply_row(&handler_effect);
+    let (_, tail) = flatten_row(&applied_handler_effect);
+    if let Some(tail) = tail {
+        let tail_row = EffectRow::Var(tail);
+        unify_rows(&mut state.subst, &tail_row, &remainder)?;
+    }
+    let effect = combine_effects(state, &remainder, &handler_effect)?;
+    Ok(InferOutput {
+        ty: output_ty,
+        effect,
+    })
+}
+
+fn infer_inline_handler(
+    state: &mut InferState,
+    env: &mut TypeEnv,
+    def: &HandlerDef,
+    input_ty: &Type,
+) -> Result<(String, Type, Type, EffectRow), TypeError> {
+    let effect_name = resolve_handler_effect(env, def, "<inline>")?;
+    let output_ty = state.fresh_type_var();
+    let handler_effect =
+        infer_handler_def(state, env, def, "<inline>", &effect_name, input_ty, &output_ty)?;
+    Ok((
+        effect_name,
+        input_ty.clone(),
+        output_ty,
+        handler_effect,
+    ))
+}
+
+fn infer_handler_info(
+    state: &mut InferState,
+    env: &mut TypeEnv,
+    name: &str,
+    handler_type: Option<&Type>,
+    def: &HandlerDef,
+) -> Result<HandlerInfo, TypeError> {
+    let (effect_name, input_ty, output_ty) = match handler_type {
+        Some(ty) => match ty {
+            Type::Handler {
+                effect,
+                input,
+                output,
+            } => {
+                let effect_name = extract_single_effect(effect)?;
+                if !def.op_clauses.is_empty() {
+                    let inferred = resolve_handler_effect(env, def, name)?;
+                    if inferred != effect_name {
+                        return Err(TypeError::HandlerEffectMismatch {
+                            handler: name.to_string(),
+                            expected: effect_name,
+                            found: inferred,
+                        });
+                    }
+                }
+                (effect_name, input.as_ref().clone(), output.as_ref().clone())
+            }
+            _ => {
+                return Err(TypeError::InvalidAnnotation(format!(
+                    "handler {name} annotation must be Handler[...]",
+                )))
+            }
+        },
+        None => {
+            let effect_name = resolve_handler_effect(env, def, name)?;
+            let input_ty = state.fresh_type_var();
+            let output_ty = state.fresh_type_var();
+            (effect_name, input_ty, output_ty)
+        }
+    };
+
+    let handler_effect =
+        infer_handler_def(state, env, def, name, &effect_name, &input_ty, &output_ty)?;
+    env.apply_subst(&state.subst);
+
+    let input_ty = state.subst.apply_type(&input_ty);
+    let output_ty = state.subst.apply_type(&output_ty);
+    let handler_effect = state.subst.apply_row(&handler_effect);
+    let (type_vars, row_vars) = generalize_handler(env, &input_ty, &output_ty, &handler_effect);
+    Ok(HandlerInfo {
+        effect: effect_name,
+        type_vars,
+        row_vars,
+        input: input_ty,
+        output: output_ty,
+        effect_row: handler_effect,
+    })
+}
+
+fn resolve_handler_effect(
+    env: &TypeEnv,
+    def: &HandlerDef,
+    handler_name: &str,
+) -> Result<String, TypeError> {
+    let mut effect = None;
+    for clause in &def.op_clauses {
+        let entry = env
+            .get_op(&clause.op)
+            .ok_or_else(|| TypeError::UnknownOp(clause.op.clone()))?;
+        match &effect {
+            None => {
+                effect = Some(entry.effect.clone());
+            }
+            Some(existing) if existing != &entry.effect => {
+                return Err(TypeError::HandlerEffectMismatch {
+                    handler: handler_name.to_string(),
+                    expected: existing.clone(),
+                    found: entry.effect.clone(),
+                });
+            }
+            _ => {}
+        }
+    }
+    effect.ok_or_else(|| {
+        TypeError::InvalidAnnotation(format!(
+            "handler {handler_name} has no operations to infer effect"
+        ))
+    })
+}
+
+fn infer_handler_def(
+    state: &mut InferState,
+    env: &TypeEnv,
+    def: &HandlerDef,
+    handler_name: &str,
+    effect_name: &str,
+    input_ty: &Type,
+    output_ty: &Type,
+) -> Result<EffectRow, TypeError> {
+    let resume_row = state.fresh_row_var();
+    let mut effect = EffectRow::Empty;
+
+    let (ret_name, ret_expr) = &def.return_clause;
+    let mut ret_env = env.clone();
+    ret_env.insert(ret_name.clone(), Scheme::mono(input_ty.clone()));
+    let ret_out = infer_expr_inner(state, &mut ret_env, ret_expr)?;
+    unify_types(&mut state.subst, &ret_out.ty, output_ty)?;
+    effect = combine_effects(state, &effect, &ret_out.effect)?;
+
+    for clause in &def.op_clauses {
+        let entry = env
+            .get_op(&clause.op)
+            .ok_or_else(|| TypeError::UnknownOp(clause.op.clone()))?;
+        if entry.effect != effect_name {
+            return Err(TypeError::HandlerEffectMismatch {
+                handler: handler_name.to_string(),
+                expected: effect_name.to_string(),
+                found: entry.effect.clone(),
+            });
+        }
+        let (input_ty, output_ty_op) = instantiate_op(entry, state);
+        let mut clause_env = env.clone();
+        clause_env.insert(clause.arg.clone(), Scheme::mono(input_ty));
+        let k_ty = Type::Fun(
+            Box::new(output_ty_op),
+            Box::new(Type::Effectful(
+                Box::new(output_ty.clone()),
+                resume_row.clone(),
+            )),
+        );
+        clause_env.insert(clause.k.clone(), Scheme::mono(k_ty));
+        let clause_out = infer_expr_inner(state, &mut clause_env, &clause.body)?;
+        unify_types(&mut state.subst, &clause_out.ty, output_ty)?;
+        effect = combine_effects(state, &effect, &clause_out.effect)?;
+    }
+
+    Ok(effect)
+}
+
+fn generalize_handler(
+    env: &TypeEnv,
+    input: &Type,
+    output: &Type,
+    effect: &EffectRow,
+) -> (Vec<String>, Vec<String>) {
+    let mut type_vars = free_type_vars_type(input);
+    type_vars.extend(free_type_vars_type(output));
+    let env_type_vars = free_type_vars_env(env);
+    type_vars.retain(|var| !env_type_vars.contains(var));
+
+    let mut row_vars = free_row_vars_type(input);
+    row_vars.extend(free_row_vars_type(output));
+    row_vars.extend(free_row_vars_row(effect));
+    let env_row_vars = free_row_vars_env(env);
+    row_vars.retain(|var| !env_row_vars.contains(var));
+
+    (
+        type_vars.into_iter().collect(),
+        row_vars.into_iter().collect(),
+    )
+}
+
+fn extract_single_effect(effect: &EffectRow) -> Result<String, TypeError> {
+    match effect {
+        EffectRow::Cons(name, tail) => match tail.as_ref() {
+            EffectRow::Empty => Ok(name.clone()),
+            _ => Err(TypeError::InvalidAnnotation(
+                "handler effect row must contain a single effect".to_string(),
+            )),
+        },
+        _ => Err(TypeError::InvalidAnnotation(
+            "handler effect row must contain a single effect".to_string(),
+        )),
     }
 }
 
@@ -664,6 +1093,18 @@ fn combine_effects(
     Ok(build_row(labels_left, tail))
 }
 
+fn effect_row_single(name: &str) -> EffectRow {
+    EffectRow::Cons(name.to_string(), Box::new(EffectRow::Empty))
+}
+
+fn instantiate_op(entry: &OpSigEntry, state: &mut InferState) -> (Type, Type) {
+    let mut subst = Subst::default();
+    for var in &entry.type_vars {
+        subst.type_subst.insert(var.clone(), state.fresh_type_var());
+    }
+    (subst.apply_type(&entry.input), subst.apply_type(&entry.output))
+}
+
 fn check_annotation(
     state: &mut InferState,
     annotation: &TypeScheme,
@@ -681,6 +1122,12 @@ fn check_annotation(
             unify_rows(&mut state.subst, &out.effect, &EffectRow::Empty)
         }
     }
+}
+
+fn build_fun_type(param_types: &[Type], return_type: Type) -> Type {
+    param_types.iter().rev().fold(return_type, |acc, ty| {
+        Type::Fun(Box::new(ty.clone()), Box::new(acc))
+    })
 }
 
 fn scheme_from_annotation(annotation: &TypeScheme) -> Scheme {
