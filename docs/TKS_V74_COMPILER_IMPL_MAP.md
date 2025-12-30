@@ -117,7 +117,8 @@ Goals:
 
 ## Implementation Status (Current)
 - Implemented: noetic apply (expr^k alias + IR Noetic form), quantum ops (AST/IR forms + opcode definitions),
-  ordinals (parser + symbolic bytecode/VM ops), tkso (encode/decode + roundtrip tests).
+  ordinals (parser + symbolic bytecode/VM ops), tkso (encode/decode + roundtrip tests),
+  GPU compute scaffold (tksgpu crate + tks gpu subcommand).
 
 ## Open Questions / Spec Gaps
 - Precedence/associativity for ^ suffix vs nu form (define in parser).

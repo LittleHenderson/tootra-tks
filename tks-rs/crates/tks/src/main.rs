@@ -11,6 +11,9 @@ use tksir::lower::{lower_program, LowerError};
 use tksvm::vm::{VmError, VmState};
 use tkstypes::infer::{infer_program, TypeError};
 
+#[cfg(feature = "gpu")]
+use tksgpu::GpuContext;
+
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 {
@@ -21,6 +24,12 @@ fn main() {
     match args[1].as_str() {
         "run" => {
             if let Err(message) = cmd_run(&args[2..]) {
+                eprintln!("{message}");
+                process::exit(1);
+            }
+        }
+        "gpu" => {
+            if let Err(message) = cmd_gpu(&args[2..]) {
                 eprintln!("{message}");
                 process::exit(1);
             }
@@ -69,6 +78,62 @@ fn cmd_run(args: &[String]) -> Result<(), String> {
     Ok(())
 }
 
+#[cfg(feature = "gpu")]
+fn cmd_gpu(args: &[String]) -> Result<(), String> {
+    let cmd = args.first().map(|s| s.as_str()).unwrap_or("info");
+    match cmd {
+        "info" => cmd_gpu_info(),
+        "add" => cmd_gpu_add(&args[1..]),
+        _ => Err("tks gpu: expected 'info' or 'add <len>'".to_string()),
+    }
+}
+
+#[cfg(not(feature = "gpu"))]
+fn cmd_gpu(_args: &[String]) -> Result<(), String> {
+    Err("tks gpu: build with --features gpu".to_string())
+}
+
+#[cfg(feature = "gpu")]
+fn cmd_gpu_info() -> Result<(), String> {
+    let ctx = GpuContext::new().map_err(|err| format!("gpu init: {err}"))?;
+    let info = ctx.adapter_info();
+    println!("name: {}", info.name);
+    println!("backend: {:?}", info.backend);
+    println!("device_type: {:?}", info.device_type);
+    println!("vendor: 0x{:04x}", info.vendor);
+    println!("device: 0x{:04x}", info.device);
+    Ok(())
+}
+
+#[cfg(feature = "gpu")]
+fn cmd_gpu_add(args: &[String]) -> Result<(), String> {
+    let Some(len_str) = args.first() else {
+        return Err("tks gpu add: missing length".to_string());
+    };
+    let len: usize = len_str
+        .parse()
+        .map_err(|_| "tks gpu add: length must be a positive integer".to_string())?;
+    let ctx = GpuContext::new().map_err(|err| format!("gpu init: {err}"))?;
+    let left: Vec<f32> = (0..len).map(|i| i as f32).collect();
+    let right: Vec<f32> = (0..len).map(|i| (len - i) as f32).collect();
+    let out = ctx.add_f32(&left, &right).map_err(|err| format!("gpu add: {err}"))?;
+    for (idx, ((a, b), got)) in left
+        .iter()
+        .zip(right.iter())
+        .zip(out.iter())
+        .enumerate()
+    {
+        let expected = a + b;
+        if (got - expected).abs() > 1e-4 {
+            return Err(format!(
+                "gpu add mismatch at {idx}: got {got}, expected {expected}"
+            ));
+        }
+    }
+    println!("gpu add ok: {len} elements");
+    Ok(())
+}
+
 fn read_source(path: &str) -> Result<String, String> {
     if path == "-" {
         let mut input = String::new();
@@ -110,5 +175,14 @@ fn format_vm_error(path: &str, err: &VmError) -> String {
 fn print_usage() {
     eprintln!("Usage:");
     eprintln!("  tks run <file.tks|file.tkso>");
+    #[cfg(feature = "gpu")]
+    {
+        eprintln!("  tks gpu info");
+        eprintln!("  tks gpu add <len>");
+    }
+    #[cfg(not(feature = "gpu"))]
+    {
+        eprintln!("  tks gpu (build with --features gpu)");
+    }
     eprintln!("  tks repl");
 }

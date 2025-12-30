@@ -3,9 +3,13 @@ name = "tks"
 version = "0.1.0"
 edition = "2021"
 
+[features]
+gpu = ["tksgpu"]
+
 [dependencies]
 tksvm = { path = "../tksvm" }
 tksbytecode = { path = "../tksbytecode" }
 tkscore = { path = "../tkscore" }
 tkstypes = { path = "../tkstypes" }
 tksir = { path = "../tksir" }
+tksgpu = { path = "../tksgpu", optional = true }

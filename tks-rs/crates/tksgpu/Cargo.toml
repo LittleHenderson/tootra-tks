@@ -1,0 +1,8 @@
+[package]
+name = "tksgpu"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+pollster = "0.3"
+wgpu = "0.19"

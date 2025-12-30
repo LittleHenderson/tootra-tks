@@ -8,4 +8,5 @@ members = [
   "crates/tksvm",
   "crates/tksc",
   "crates/tks",
+  "crates/tksgpu",
 ]
