@@ -95,7 +95,7 @@ Status legend: [ ] todo, [~] in progress, [x] done.
 [x] Modules + .tksi + resolver + import/export + FFI signatures/links - Owner: Agent B
 [x] Runtime packaging (.exe) + CLI polish + build scripts + GPU harness gating - Owner: Agent C
 [x] Fractal/foundation/acquisition semantics in VM + tests - Owner: Agent A
-[ ] Stdlib bootstrap (TKS.Core, TKS.RPM, TKS.Quantum) - Owner: TBD
+[x] Stdlib bootstrap (TKS.Core, TKS.RPM, TKS.Quantum) - Owner: Agent B
 [x] Canonical compliance + regression tests (samples, golden files) - Owner: Agent C
 
 ## Current Sprint (Parallel)
