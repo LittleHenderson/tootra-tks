@@ -187,7 +187,7 @@ fn emit_perform_term() {
     let code = emit(&term).expect("emit perform");
     let expected = vec![
         inst1(Opcode::PushInt, 6),
-        inst(Opcode::PerformEffect),
+        inst1(Opcode::PerformEffect, 0),
         inst(Opcode::Ret),
     ];
     assert_eq!(code, expected);
@@ -208,10 +208,14 @@ fn emit_handle_term() {
     );
     let code = emit(&term).expect("emit handle");
     let expected = vec![
+        inst1(Opcode::PushClosure, 2),
+        inst1(Opcode::Jmp, 4),
         inst(Opcode::PushUnit),
-        inst(Opcode::InstallHandler),
+        inst(Opcode::Ret),
+        inst1(Opcode::PushInt, 0),
+        inst1(Opcode::InstallHandler, 8),
         inst1(Opcode::PushInt, 2),
-        inst(Opcode::RemoveHandler),
+        inst(Opcode::HandlerReturn),
         inst(Opcode::Ret),
     ];
     assert_eq!(code, expected);

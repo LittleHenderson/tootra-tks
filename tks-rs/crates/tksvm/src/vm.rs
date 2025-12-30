@@ -6,6 +6,17 @@ pub enum Value {
     Bool(bool),
     Unit,
     Closure { entry: usize },
+    Handler {
+        return_entry: usize,
+        op_clauses: Vec<(u64, usize)>,
+    },
+    Continuation {
+        pc: usize,
+        stack: Vec<Value>,
+        locals: Vec<Value>,
+        frames: Vec<CallFrame>,
+        handlers: Vec<HandlerFrame>,
+    },
     Element { world: u8, index: u8 },
     Noetic(u8),
     NoeticApplied { index: u8, value: Box<Value> },
@@ -42,17 +53,24 @@ pub enum VmError {
     NoReturn,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum CallFrameKind {
     Normal,
     RpmBind,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct CallFrame {
     pub return_pc: usize,
     pub locals: Vec<Value>,
     pub kind: CallFrameKind,
+    pub handler: Option<HandlerFrame>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct HandlerFrame {
+    pub return_entry: usize,
+    pub op_clauses: Vec<(u64, usize)>,
 }
 
 #[derive(Debug, Clone)]
@@ -62,6 +80,7 @@ pub struct VmState {
     pub stack: Vec<Value>,
     pub locals: Vec<Value>,
     pub frames: Vec<CallFrame>,
+    pub handlers: Vec<HandlerFrame>,
 }
 
 impl VmState {
@@ -72,6 +91,7 @@ impl VmState {
             stack: Vec::new(),
             locals: Vec::new(),
             frames: Vec::new(),
+            handlers: Vec::new(),
         }
     }
 
@@ -218,16 +238,20 @@ impl VmState {
                 Opcode::Call => {
                     let arg = self.pop()?;
                     let callee = self.pop()?;
-                    let entry = match callee {
-                        Value::Closure { entry } => entry,
+                    match callee {
+                        Value::Closure { entry } => {
+                            self.enter_call(entry, arg, CallFrameKind::Normal);
+                        }
+                        cont @ Value::Continuation { .. } => {
+                            self.resume_continuation(cont, arg)?;
+                        }
                         other => {
                             return Err(VmError::TypeMismatch {
-                                expected: "closure",
+                                expected: "closure or continuation",
                                 found: other,
                             })
                         }
-                    };
-                    self.enter_call(entry, arg, CallFrameKind::Normal);
+                    }
                 }
                 Opcode::ApplyNoetic => {
                     let arg = self.pop()?;
@@ -343,9 +367,108 @@ impl VmState {
                         }
                     }
                 }
-                Opcode::InstallHandler | Opcode::RemoveHandler => {}
+                Opcode::InstallHandler => {
+                    let count = self.pop_int()? as usize;
+                    let mut op_clauses = Vec::with_capacity(count);
+                    for _ in 0..count {
+                        let clause = self.pop()?;
+                        let op_id = self.pop_int()? as u64;
+                        let entry = match clause {
+                            Value::Closure { entry } => entry,
+                            other => {
+                                return Err(VmError::TypeMismatch {
+                                    expected: "closure",
+                                    found: other,
+                                })
+                            }
+                        };
+                        op_clauses.push((op_id, entry));
+                    }
+                    let return_value = self.pop()?;
+                    let return_entry = match return_value {
+                        Value::Closure { entry } => entry,
+                        other => {
+                            return Err(VmError::TypeMismatch {
+                                expected: "closure",
+                                found: other,
+                            })
+                        }
+                    };
+                    self.handlers.push(HandlerFrame {
+                        return_entry,
+                        op_clauses,
+                    });
+                }
+                Opcode::RemoveHandler => {
+                    if self.handlers.pop().is_none() {
+                        return Err(VmError::HandlerNotImplemented);
+                    }
+                }
                 Opcode::PerformEffect => {
-                    return Err(VmError::UnhandledEffect);
+                    let op_id = Self::expect_operand1(&instr)?;
+                    let arg = self.pop()?;
+                    let mut handler_index = None;
+                    let mut entry = None;
+                    for (idx, handler) in self.handlers.iter().enumerate().rev() {
+                        if let Some((_, clause_entry)) =
+                            handler.op_clauses.iter().find(|(id, _)| *id == op_id)
+                        {
+                            handler_index = Some(idx);
+                            entry = Some(*clause_entry);
+                            break;
+                        }
+                    }
+                    let Some(handler_index) = handler_index else {
+                        return Err(VmError::UnhandledEffect);
+                    };
+                    let Some(entry) = entry else {
+                        return Err(VmError::UnhandledEffect);
+                    };
+                    let handler = self.handlers.remove(handler_index);
+                    let continuation = Value::Continuation {
+                        pc: self.pc,
+                        stack: self.stack.clone(),
+                        locals: self.locals.clone(),
+                        frames: self.frames.clone(),
+                        handlers: {
+                            let mut handlers = self.handlers.clone();
+                            handlers.insert(handler_index, handler.clone());
+                            handlers
+                        },
+                    };
+                    let locals = std::mem::take(&mut self.locals);
+                    self.frames.push(CallFrame {
+                        return_pc: self.pc,
+                        locals,
+                        kind: CallFrameKind::Normal,
+                        handler: Some(handler),
+                    });
+                    self.locals = vec![arg, continuation];
+                    self.pc = entry;
+                    self.stack.clear();
+                }
+                Opcode::Resume => {
+                    let cont = self.pop()?;
+                    self.resume_continuation(cont, Value::Unit)?;
+                }
+                Opcode::ResumeWith => {
+                    let value = self.pop()?;
+                    let cont = self.pop()?;
+                    self.resume_continuation(cont, value)?;
+                }
+                Opcode::HandlerReturn => {
+                    let value = self.pop()?;
+                    let handler = self.handlers.pop().ok_or(VmError::UnhandledEffect)?;
+                    let locals = std::mem::take(&mut self.locals);
+                    self.frames.push(CallFrame {
+                        return_pc: self.pc,
+                        locals,
+                        kind: CallFrameKind::Normal,
+                        handler: None,
+                    });
+                    self.locals = vec![value];
+                    self.pc = handler.return_entry;
+                    self.stack.clear();
                 }
                 Opcode::MakeKet => {
                     let inner = self.pop()?;
@@ -397,6 +520,9 @@ impl VmState {
                     if let Some(frame) = self.frames.pop() {
                         self.locals = frame.locals;
                         self.pc = frame.return_pc;
+                        if let Some(handler) = frame.handler {
+                            self.handlers.push(handler);
+                        }
                         let result = match frame.kind {
                             CallFrameKind::Normal => result,
                             CallFrameKind::RpmBind => Value::RpmState {
@@ -497,8 +623,33 @@ impl VmState {
             return_pc: self.pc,
             locals,
             kind,
+            handler: None,
         });
         self.locals = vec![arg];
         self.pc = entry;
+    }
+
+    fn resume_continuation(&mut self, cont: Value, value: Value) -> Result<(), VmError> {
+        match cont {
+            Value::Continuation {
+                pc,
+                mut stack,
+                locals,
+                frames,
+                handlers,
+            } => {
+                stack.push(value);
+                self.pc = pc;
+                self.stack = stack;
+                self.locals = locals;
+                self.frames = frames;
+                self.handlers = handlers;
+                Ok(())
+            }
+            other => Err(VmError::TypeMismatch {
+                expected: "continuation",
+                found: other,
+            }),
+        }
     }
 }

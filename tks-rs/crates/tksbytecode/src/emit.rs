@@ -1,3 +1,7 @@
+use std::cell::RefCell;
+use std::collections::HashMap;
+use std::rc::Rc;
+
 use tkscore::ast::{Expr, Ident, Literal, OrdinalLiteral, World};
 use tksir::ir::{IRComp, IRTerm, IRVal, OrdOp};
 
@@ -24,6 +28,7 @@ struct EmitState {
     locals: Vec<(Ident, u64)>,
     next_local: u64,
     code: Vec<Instruction>,
+    op_table: Rc<RefCell<OpTable>>,
 }
 
 impl EmitState {
@@ -32,6 +37,16 @@ impl EmitState {
             locals: Vec::new(),
             next_local: 0,
             code: Vec::new(),
+            op_table: Rc::new(RefCell::new(OpTable::new())),
+        }
+    }
+
+    fn with_shared_ops(op_table: Rc<RefCell<OpTable>>) -> Self {
+        Self {
+            locals: Vec::new(),
+            next_local: 0,
+            code: Vec::new(),
+            op_table,
         }
     }
 
@@ -107,16 +122,31 @@ impl EmitState {
                 self.code.push(inst(Opcode::RpmFail));
                 Ok(())
             }
-            IRTerm::Perform(_op, arg) => {
+            IRTerm::Perform(op, arg) => {
                 self.emit_val(arg)?;
-                self.code.push(inst(Opcode::PerformEffect));
+                let op_id = self.op_id(op);
+                self.code.push(inst1(Opcode::PerformEffect, op_id));
                 Ok(())
             }
-            IRTerm::Handle(expr, _handler) => {
-                self.code.push(inst(Opcode::PushUnit));
-                self.code.push(inst(Opcode::InstallHandler));
+            IRTerm::Handle(expr, handler) => {
+                let (ret_name, ret_term) = &handler.return_clause;
+                self.emit_closure(&[ret_name.clone()], ret_term)?;
+                for clause in &handler.op_clauses {
+                    let op_id = self.op_id(&clause.op);
+                    self.code.push(inst1(Opcode::PushInt, op_id));
+                    self.emit_closure(
+                        &[clause.arg.clone(), clause.k.clone()],
+                        &clause.body,
+                    )?;
+                }
+                self.code
+                    .push(inst1(Opcode::PushInt, handler.op_clauses.len() as u64));
+                let install_index = self.code.len();
+                self.code.push(inst1(Opcode::InstallHandler, 0));
                 self.emit_term(expr)?;
-                self.code.push(inst(Opcode::RemoveHandler));
+                self.code.push(inst(Opcode::HandlerReturn));
+                let resume_pc = self.code.len();
+                self.patch_jump(install_index, resume_pc)?;
                 Ok(())
             }
             IRTerm::RpmReturn(val) => {
@@ -174,14 +204,7 @@ impl EmitState {
                 Ok(())
             }
             IRVal::Lam(param, body) => {
-                let body_code = self.emit_lambda_body(param, body)?;
-                let entry = self.code.len() + 2;
-                let target = entry + body_code.len();
-                self.code
-                    .push(inst1(Opcode::PushClosure, entry as u64));
-                self.code.push(inst1(Opcode::Jmp, target as u64));
-                self.code.extend(body_code);
-                Ok(())
+                self.emit_closure(&[param.clone()], body)
             }
             IRVal::Noetic(index) => {
                 self.code
@@ -299,12 +322,52 @@ impl EmitState {
         Ok(())
     }
 
-    fn emit_lambda_body(&self, param: &Ident, body: &IRTerm) -> Result<Vec<Instruction>, EmitError> {
-        let mut lambda_state = EmitState::new();
-        lambda_state.alloc_local(param.clone());
-        lambda_state.emit_term(body)?;
-        lambda_state.code.push(inst(Opcode::Ret));
-        Ok(lambda_state.code)
+    fn emit_closure(&mut self, params: &[Ident], body: &IRTerm) -> Result<(), EmitError> {
+        let body_code = self.emit_closure_body(params, body)?;
+        let entry = self.code.len() + 2;
+        let target = entry + body_code.len();
+        self.code
+            .push(inst1(Opcode::PushClosure, entry as u64));
+        self.code.push(inst1(Opcode::Jmp, target as u64));
+        self.code.extend(body_code);
+        Ok(())
+    }
+
+    fn emit_closure_body(&self, params: &[Ident], body: &IRTerm) -> Result<Vec<Instruction>, EmitError> {
+        let mut state = EmitState::with_shared_ops(Rc::clone(&self.op_table));
+        for param in params {
+            state.alloc_local(param.clone());
+        }
+        state.emit_term(body)?;
+        state.code.push(inst(Opcode::Ret));
+        Ok(state.code)
+    }
+
+    fn op_id(&self, op: &str) -> u64 {
+        let mut table = self.op_table.borrow_mut();
+        table.id_for(op)
+    }
+}
+
+#[derive(Debug, Default)]
+struct OpTable {
+    next_id: u64,
+    ids: HashMap<String, u64>,
+}
+
+impl OpTable {
+    fn new() -> Self {
+        Self::default()
+    }
+
+    fn id_for(&mut self, name: &str) -> u64 {
+        if let Some(id) = self.ids.get(name) {
+            return *id;
+        }
+        let id = self.next_id;
+        self.next_id += 1;
+        self.ids.insert(name.to_string(), id);
+        id
     }
 }
 

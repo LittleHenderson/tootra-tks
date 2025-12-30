@@ -338,9 +338,41 @@ fn run_ord_add_program() {
 
 #[test]
 fn run_perform_effect_unhandled() {
-    let code = vec![instr(Opcode::PushInt, Some(1)), instr(Opcode::PerformEffect, None)];
+    let code = vec![
+        instr(Opcode::PushInt, Some(1)),
+        instr(Opcode::PerformEffect, Some(0)),
+    ];
 
     let mut vm = VmState::new(code);
     let err = vm.run().expect_err("expected unhandled effect");
     assert_eq!(err, VmError::UnhandledEffect);
+}
+
+#[test]
+fn run_handle_perform_with_resume() {
+    let code = vec![
+        instr(Opcode::PushClosure, Some(2)),
+        instr(Opcode::Jmp, Some(4)),
+        instr(Opcode::Load, Some(0)),
+        instr(Opcode::Ret, None),
+        instr(Opcode::PushInt, Some(0)),
+        instr(Opcode::PushClosure, Some(7)),
+        instr(Opcode::Jmp, Some(11)),
+        instr(Opcode::Load, Some(1)),
+        instr(Opcode::Load, Some(0)),
+        instr(Opcode::Call, None),
+        instr(Opcode::Ret, None),
+        instr(Opcode::PushInt, Some(1)),
+        instr(Opcode::InstallHandler, None),
+        instr(Opcode::PushInt, Some(7)),
+        instr(Opcode::PerformEffect, Some(0)),
+        instr(Opcode::PushInt, Some(1)),
+        instr(Opcode::Add, None),
+        instr(Opcode::HandlerReturn, None),
+        instr(Opcode::Ret, None),
+    ];
+
+    let mut vm = VmState::new(code);
+    let result = vm.run().expect("run program");
+    assert_eq!(result, Value::Int(8));
 }
