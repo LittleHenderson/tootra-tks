@@ -37,14 +37,22 @@ pub enum VmError {
     DivisionByZero,
     HandlerNotImplemented,
     UnhandledEffect,
+    RpmUnwrapFailed,
     UnsupportedOpcode(Opcode),
     NoReturn,
+}
+
+#[derive(Debug, Clone)]
+pub enum CallFrameKind {
+    Normal,
+    RpmBind,
 }
 
 #[derive(Debug, Clone)]
 pub struct CallFrame {
     pub return_pc: usize,
     pub locals: Vec<Value>,
+    pub kind: CallFrameKind,
 }
 
 #[derive(Debug, Clone)]
@@ -219,13 +227,7 @@ impl VmState {
                             })
                         }
                     };
-                    let locals = std::mem::take(&mut self.locals);
-                    self.frames.push(CallFrame {
-                        return_pc: self.pc,
-                        locals,
-                    });
-                    self.locals = vec![arg];
-                    self.pc = entry;
+                    self.enter_call(entry, arg, CallFrameKind::Normal);
                 }
                 Opcode::ApplyNoetic => {
                     let arg = self.pop()?;
@@ -251,6 +253,13 @@ impl VmState {
                         value: Box::new(value),
                     });
                 }
+                Opcode::RpmReturn => {
+                    let value = self.pop()?;
+                    self.stack.push(Value::RpmState {
+                        ok: true,
+                        value: Box::new(value),
+                    });
+                }
                 Opcode::RpmFail => {
                     self.stack.push(Value::RpmState {
                         ok: false,
@@ -262,6 +271,69 @@ impl VmState {
                     match state {
                         Value::RpmState { ok, .. } => {
                             self.stack.push(Value::Bool(ok));
+                        }
+                        other => {
+                            return Err(VmError::TypeMismatch {
+                                expected: "rpm state",
+                                found: other,
+                            })
+                        }
+                    }
+                }
+                Opcode::RpmIsSuccess => {
+                    let state = self.pop()?;
+                    match state {
+                        Value::RpmState { ok, .. } => {
+                            self.stack.push(Value::Bool(ok));
+                        }
+                        other => {
+                            return Err(VmError::TypeMismatch {
+                                expected: "rpm state",
+                                found: other,
+                            })
+                        }
+                    }
+                }
+                Opcode::RpmUnwrap => {
+                    let state = self.pop()?;
+                    match state {
+                        Value::RpmState { ok, value } => {
+                            if ok {
+                                self.stack.push(*value);
+                            } else {
+                                return Err(VmError::RpmUnwrapFailed);
+                            }
+                        }
+                        other => {
+                            return Err(VmError::TypeMismatch {
+                                expected: "rpm state",
+                                found: other,
+                            })
+                        }
+                    }
+                }
+                Opcode::RpmState => {
+                    self.stack.push(Value::Unit);
+                }
+                Opcode::RpmBind => {
+                    let func = self.pop()?;
+                    let state = self.pop()?;
+                    match state {
+                        Value::RpmState { ok, value } => {
+                            if ok {
+                                let entry = match func {
+                                    Value::Closure { entry } => entry,
+                                    other => {
+                                        return Err(VmError::TypeMismatch {
+                                            expected: "closure",
+                                            found: other,
+                                        })
+                                    }
+                                };
+                                self.enter_call(entry, *value, CallFrameKind::RpmBind);
+                            } else {
+                                self.stack.push(Value::RpmState { ok, value });
+                            }
                         }
                         other => {
                             return Err(VmError::TypeMismatch {
@@ -325,6 +397,13 @@ impl VmState {
                     if let Some(frame) = self.frames.pop() {
                         self.locals = frame.locals;
                         self.pc = frame.return_pc;
+                        let result = match frame.kind {
+                            CallFrameKind::Normal => result,
+                            CallFrameKind::RpmBind => Value::RpmState {
+                                ok: true,
+                                value: Box::new(result),
+                            },
+                        };
                         self.stack.push(result);
                     } else {
                         return Ok(result);
@@ -410,5 +489,16 @@ impl VmState {
             operand: "operand1",
             value: raw,
         })
+    }
+
+    fn enter_call(&mut self, entry: usize, arg: Value, kind: CallFrameKind) {
+        let locals = std::mem::take(&mut self.locals);
+        self.frames.push(CallFrame {
+            return_pc: self.pc,
+            locals,
+            kind,
+        });
+        self.locals = vec![arg];
+        self.pc = entry;
     }
 }
