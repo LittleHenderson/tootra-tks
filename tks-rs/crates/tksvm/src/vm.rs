@@ -35,6 +35,8 @@ pub enum VmError {
     InvalidOperand { opcode: Opcode, operand: &'static str, value: u64 },
     InvalidLocal { index: usize },
     DivisionByZero,
+    HandlerNotImplemented,
+    UnhandledEffect,
     UnsupportedOpcode(Opcode),
     NoReturn,
 }
@@ -268,6 +270,10 @@ impl VmState {
                             })
                         }
                     }
+                }
+                Opcode::InstallHandler | Opcode::RemoveHandler => {}
+                Opcode::PerformEffect => {
+                    return Err(VmError::UnhandledEffect);
                 }
                 Opcode::MakeKet => {
                     let inner = self.pop()?;
