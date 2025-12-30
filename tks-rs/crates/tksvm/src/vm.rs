@@ -1,6 +1,8 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
+use std::path::Path;
 use std::sync::Arc;
 
+use libloading::Library;
 use tksbytecode::bytecode::{Instruction, Opcode};
 use tksbytecode::extern_id;
 
@@ -64,6 +66,10 @@ pub enum VmError {
     InvalidLocal { index: usize },
     DivisionByZero,
     UnknownExtern(u64),
+    ExternDenied(u64),
+    ExternUnsafe(u64),
+    ExternEffectDenied { id: u64, effect: String },
+    ExternLoadFailed(String),
     AcbeIncomplete,
     HandlerNotImplemented,
     UnhandledEffect,
@@ -92,7 +98,42 @@ pub struct HandlerFrame {
     pub op_clauses: Vec<(u64, usize)>,
 }
 
-pub type ExternRegistry = HashMap<u64, Arc<dyn Fn(Vec<Value>) -> Result<Value, VmError>>>;
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ExternSafety {
+    Safe,
+    Unsafe,
+}
+
+#[derive(Clone)]
+pub struct ExternEntry {
+    pub name: String,
+    pub arity: usize,
+    pub safety: ExternSafety,
+    pub effects: Vec<String>,
+    pub func: Arc<dyn Fn(Vec<Value>) -> Result<Value, VmError>>,
+}
+
+impl std::fmt::Debug for ExternEntry {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("ExternEntry")
+            .field("name", &self.name)
+            .field("arity", &self.arity)
+            .field("safety", &self.safety)
+            .field("effects", &self.effects)
+            .finish()
+    }
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct ExternPolicy {
+    pub allowlist: HashSet<u64>,
+    pub denylist: HashSet<u64>,
+    pub allowed_effects: HashSet<String>,
+    pub denied_effects: HashSet<String>,
+    pub allow_unsafe: bool,
+}
+
+pub type ExternRegistry = HashMap<u64, ExternEntry>;
 
 #[derive(Clone)]
 pub struct VmState {
@@ -103,6 +144,8 @@ pub struct VmState {
     pub frames: Vec<CallFrame>,
     pub handlers: Vec<HandlerFrame>,
     pub externs: ExternRegistry,
+    pub extern_policy: ExternPolicy,
+    pub extern_libs: Vec<Arc<Library>>,
 }
 
 impl std::fmt::Debug for VmState {
@@ -115,6 +158,8 @@ impl std::fmt::Debug for VmState {
             .field("frames", &self.frames)
             .field("handlers", &self.handlers)
             .field("externs", &self.externs.len())
+            .field("extern_policy", &self.extern_policy)
+            .field("extern_libs", &self.extern_libs.len())
             .finish()
     }
 }
@@ -129,6 +174,8 @@ impl VmState {
             frames: Vec::new(),
             handlers: Vec::new(),
             externs: HashMap::new(),
+            extern_policy: ExternPolicy::default(),
+            extern_libs: Vec::new(),
         }
     }
 
@@ -141,15 +188,115 @@ impl VmState {
             frames: Vec::new(),
             handlers: Vec::new(),
             externs,
+            extern_policy: ExternPolicy::default(),
+            extern_libs: Vec::new(),
         }
     }
 
-    pub fn register_extern<F>(&mut self, name: &str, func: F)
+    pub fn register_extern<F>(&mut self, name: &str, arity: usize, func: F)
     where
         F: Fn(Vec<Value>) -> Result<Value, VmError> + 'static,
     {
+        self.register_extern_with(
+            name,
+            arity,
+            ExternSafety::Safe,
+            std::iter::empty::<&str>(),
+            func,
+        );
+    }
+
+    pub fn register_extern_with<F, I, S>(
+        &mut self,
+        name: &str,
+        arity: usize,
+        safety: ExternSafety,
+        effects: I,
+        func: F,
+    ) where
+        F: Fn(Vec<Value>) -> Result<Value, VmError> + 'static,
+        I: IntoIterator<Item = S>,
+        S: AsRef<str>,
+    {
         let id = extern_id(name);
-        self.externs.insert(id, Arc::new(func));
+        let effects = effects
+            .into_iter()
+            .map(|effect| effect.as_ref().to_string())
+            .collect();
+        self.externs.insert(
+            id,
+            ExternEntry {
+                name: name.to_string(),
+                arity,
+                safety,
+                effects,
+                func: Arc::new(func),
+            },
+        );
+    }
+
+    pub fn allow_extern_names<I, S>(&mut self, names: I)
+    where
+        I: IntoIterator<Item = S>,
+        S: AsRef<str>,
+    {
+        for name in names {
+            self.extern_policy.allowlist.insert(extern_id(name.as_ref()));
+        }
+    }
+
+    pub fn deny_extern_names<I, S>(&mut self, names: I)
+    where
+        I: IntoIterator<Item = S>,
+        S: AsRef<str>,
+    {
+        for name in names {
+            self.extern_policy.denylist.insert(extern_id(name.as_ref()));
+        }
+    }
+
+    pub fn allow_extern_effects<I, S>(&mut self, effects: I)
+    where
+        I: IntoIterator<Item = S>,
+        S: AsRef<str>,
+    {
+        self.extern_policy.allowed_effects = effects
+            .into_iter()
+            .map(|effect| effect.as_ref().to_string())
+            .collect();
+    }
+
+    pub fn deny_extern_effects<I, S>(&mut self, effects: I)
+    where
+        I: IntoIterator<Item = S>,
+        S: AsRef<str>,
+    {
+        self.extern_policy.denied_effects = effects
+            .into_iter()
+            .map(|effect| effect.as_ref().to_string())
+            .collect();
+    }
+
+    pub fn set_allow_unsafe_externs(&mut self, allow: bool) {
+        self.extern_policy.allow_unsafe = allow;
+    }
+
+    /// Loads externs from a library exporting `tks_register_externs`.
+    pub fn load_externs_from_library<P: AsRef<Path>>(&mut self, path: P) -> Result<(), VmError> {
+        let lib = unsafe {
+            Library::new(path.as_ref())
+                .map_err(|err| VmError::ExternLoadFailed(err.to_string()))?
+        };
+        let lib = Arc::new(lib);
+        let register = unsafe {
+            lib.get::<unsafe extern "C" fn(&mut VmState)>(b"tks_register_externs")
+                .map_err(|err| VmError::ExternLoadFailed(err.to_string()))?
+        };
+        unsafe {
+            register(self);
+        }
+        self.extern_libs.push(lib);
+        Ok(())
     }
 
     pub fn run(&mut self) -> Result<Value, VmError> {
@@ -269,9 +416,10 @@ impl VmState {
                 }
                 Opcode::LoadGlobal => {
                     let id = Self::expect_operand1(&instr)?;
+                    let arity = self.externs.get(&id).map(|entry| entry.arity).unwrap_or(1);
                     self.stack.push(Value::Extern {
                         id,
-                        arity: 1,
+                        arity,
                         args: Vec::new(),
                     });
                 }
@@ -842,10 +990,42 @@ impl VmState {
     }
 
     fn call_extern(&self, id: u64, args: Vec<Value>) -> Result<Value, VmError> {
-        let Some(func) = self.externs.get(&id) else {
+        let Some(entry) = self.externs.get(&id) else {
             return Err(VmError::UnknownExtern(id));
         };
-        (func)(args)
+        self.check_extern_policy(id, entry)?;
+        (entry.func)(args)
+    }
+
+    fn check_extern_policy(&self, id: u64, entry: &ExternEntry) -> Result<(), VmError> {
+        if self.extern_policy.denylist.contains(&id) {
+            return Err(VmError::ExternDenied(id));
+        }
+        if !self.extern_policy.allowlist.is_empty()
+            && !self.extern_policy.allowlist.contains(&id)
+        {
+            return Err(VmError::ExternDenied(id));
+        }
+        if entry.safety == ExternSafety::Unsafe && !self.extern_policy.allow_unsafe {
+            return Err(VmError::ExternUnsafe(id));
+        }
+        for effect in &entry.effects {
+            if self.extern_policy.denied_effects.contains(effect) {
+                return Err(VmError::ExternEffectDenied {
+                    id,
+                    effect: effect.clone(),
+                });
+            }
+            if !self.extern_policy.allowed_effects.is_empty()
+                && !self.extern_policy.allowed_effects.contains(effect)
+            {
+                return Err(VmError::ExternEffectDenied {
+                    id,
+                    effect: effect.clone(),
+                });
+            }
+        }
+        Ok(())
     }
 
     fn pop(&mut self) -> Result<Value, VmError> {

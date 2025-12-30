@@ -8,7 +8,7 @@ use tksbytecode::emit::{emit, EmitError};
 use tksbytecode::tkso::{decode as decode_tkso, TksoError};
 use tkscore::parser::{parse_program, ParseError};
 use tksir::lower::{lower_program, LowerError};
-use tksvm::vm::{Value, VmError, VmState};
+use tksvm::vm::{ExternSafety, Value, VmError, VmState};
 use tkstypes::infer::{infer_program, TypeError};
 
 #[cfg(feature = "gpu")]
@@ -219,8 +219,8 @@ fn print_version() {
 }
 
 fn register_default_externs(vm: &mut VmState) {
-    vm.register_extern("print_int", ffi_print_int);
-    vm.register_extern("print_bool", ffi_print_bool);
+    vm.register_extern_with("print_int", 1, ExternSafety::Safe, ["IO"], ffi_print_int);
+    vm.register_extern_with("print_bool", 1, ExternSafety::Safe, ["IO"], ffi_print_bool);
 }
 
 fn ffi_print_int(args: Vec<Value>) -> Result<Value, VmError> {
