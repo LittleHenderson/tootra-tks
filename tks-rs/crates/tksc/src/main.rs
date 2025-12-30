@@ -4,6 +4,7 @@ use std::io::{self, Read};
 use std::process;
 
 use tkscore::parser::{parse_program, ParseError};
+use tkstypes::infer::{infer_program, TypeError};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum EmitKind {
@@ -48,7 +49,8 @@ fn cmd_check(args: &[String]) -> Result<(), String> {
         return Err("tksc check: missing input file".to_string());
     };
     let source = read_source(path)?;
-    parse_program(&source).map_err(|err| format_parse_error(path, &err))?;
+    let program = parse_program(&source).map_err(|err| format_parse_error(path, &err))?;
+    infer_program(&program).map_err(|err| format_type_error(path, &err))?;
     eprintln!("ok");
     Ok(())
 }
@@ -142,6 +144,10 @@ fn format_parse_error(path: &str, err: &ParseError) -> String {
         Some(span) => format!("{path}:{line}:{col}: {message}", line = span.line, col = span.column, message = err.message),
         None => format!("{path}: {message}", message = err.message),
     }
+}
+
+fn format_type_error(path: &str, err: &TypeError) -> String {
+    format!("{path}: type error: {err}")
 }
 
 fn print_usage() {
