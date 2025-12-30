@@ -1,0 +1,5 @@
+module App {
+  from TKS.Noetics import { apply_n1, apply_n2 };
+  let a = apply_n1 3;
+  let b = apply_n2 4;
+}

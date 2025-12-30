@@ -1,0 +1,6 @@
+module TKS.Foundations {
+  export { foundation_1a, foundation_4d }
+
+  let foundation_1a = 1a;
+  let foundation_4d = 4d;
+}

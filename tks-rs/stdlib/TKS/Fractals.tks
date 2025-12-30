@@ -1,0 +1,6 @@
+module TKS.Fractals {
+  export { fractal_once, fractal_pair }
+
+  let fractal_once = \x -> <1>(x);
+  let fractal_pair = \x -> <1:2>(x);
+}

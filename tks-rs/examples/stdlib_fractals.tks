@@ -1,0 +1,5 @@
+module App {
+  from TKS.Fractals import { fractal_once, fractal_pair };
+  let a = fractal_once 7;
+  let b = fractal_pair 9;
+}

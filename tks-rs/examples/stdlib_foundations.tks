@@ -1,0 +1,5 @@
+module App {
+  from TKS.Foundations import { foundation_1a, foundation_4d };
+  let f1 = foundation_1a;
+  let f2 = foundation_4d;
+}
