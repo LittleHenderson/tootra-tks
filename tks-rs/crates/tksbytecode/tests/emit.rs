@@ -130,3 +130,48 @@ fn emit_ket_value() {
     ];
     assert_eq!(code, expected);
 }
+
+#[test]
+fn emit_superpose_term() {
+    let term = IRTerm::Superpose(vec![
+        (IRVal::Lit(Literal::Int(1)), IRVal::Lit(Literal::Int(10))),
+        (IRVal::Lit(Literal::Int(2)), IRVal::Lit(Literal::Int(20))),
+    ]);
+
+    let instructions = emit(&term).expect("emit superpose");
+    let opcodes: Vec<Opcode> = instructions.iter().map(|inst| inst.opcode).collect();
+
+    assert_eq!(
+        opcodes,
+        vec![
+            Opcode::PushInt,
+            Opcode::PushInt,
+            Opcode::PushInt,
+            Opcode::PushInt,
+            Opcode::Superpose,
+            Opcode::Ret
+        ]
+    );
+    assert_eq!(instructions[4].operand1, Some(2));
+}
+
+#[test]
+fn emit_measure_term() {
+    let term = IRTerm::Measure(IRVal::Lit(Literal::Int(3)));
+    let code = emit(&term).expect("emit measure");
+    let expected = vec![inst1(Opcode::PushInt, 3), inst(Opcode::Measure), inst(Opcode::Ret)];
+    assert_eq!(code, expected);
+}
+
+#[test]
+fn emit_entangle_term() {
+    let term = IRTerm::Entangle(IRVal::Lit(Literal::Int(4)), IRVal::Lit(Literal::Int(5)));
+    let code = emit(&term).expect("emit entangle");
+    let expected = vec![
+        inst1(Opcode::PushInt, 4),
+        inst1(Opcode::PushInt, 5),
+        inst(Opcode::Entangle),
+        inst(Opcode::Ret),
+    ];
+    assert_eq!(code, expected);
+}

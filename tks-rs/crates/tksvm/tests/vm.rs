@@ -86,6 +86,62 @@ fn run_apply_noetic_program() {
 }
 
 #[test]
+fn run_superpose_program() {
+    let code = vec![
+        instr(Opcode::PushInt, Some(1)),
+        instr(Opcode::PushInt, Some(10)),
+        instr(Opcode::PushInt, Some(2)),
+        instr(Opcode::PushInt, Some(20)),
+        instr(Opcode::Superpose, Some(2)),
+        instr(Opcode::Ret, None),
+    ];
+
+    let mut vm = VmState::new(code);
+    let result = vm.run().expect("run program");
+    assert_eq!(
+        result,
+        Value::Superpose(vec![
+            (Value::Int(1), Value::Int(10)),
+            (Value::Int(2), Value::Int(20)),
+        ])
+    );
+}
+
+#[test]
+fn run_measure_superpose_program() {
+    let code = vec![
+        instr(Opcode::PushInt, Some(1)),
+        instr(Opcode::PushInt, Some(10)),
+        instr(Opcode::PushInt, Some(2)),
+        instr(Opcode::PushInt, Some(20)),
+        instr(Opcode::Superpose, Some(2)),
+        instr(Opcode::Measure, None),
+        instr(Opcode::Ret, None),
+    ];
+
+    let mut vm = VmState::new(code);
+    let result = vm.run().expect("run program");
+    assert_eq!(result, Value::Int(10));
+}
+
+#[test]
+fn run_entangle_program() {
+    let code = vec![
+        instr(Opcode::PushInt, Some(4)),
+        instr(Opcode::PushInt, Some(5)),
+        instr(Opcode::Entangle, None),
+        instr(Opcode::Ret, None),
+    ];
+
+    let mut vm = VmState::new(code);
+    let result = vm.run().expect("run program");
+    assert_eq!(
+        result,
+        Value::Entangle(Box::new(Value::Int(4)), Box::new(Value::Int(5)))
+    );
+}
+
+#[test]
 fn run_push_element_program() {
     let code = vec![instr2(Opcode::PushElement, 1, 7), instr(Opcode::Ret, None)];
 

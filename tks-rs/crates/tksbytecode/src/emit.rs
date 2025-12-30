@@ -73,6 +73,26 @@ impl EmitState {
                 self.patch_jump(jmp_to_end, end_target)?;
                 Ok(())
             }
+            IRTerm::Superpose(states) => {
+                for (amp, ket) in states {
+                    self.emit_val(amp)?;
+                    self.emit_val(ket)?;
+                }
+                self.code
+                    .push(inst1(Opcode::Superpose, states.len() as u64));
+                Ok(())
+            }
+            IRTerm::Measure(val) => {
+                self.emit_val(val)?;
+                self.code.push(inst(Opcode::Measure));
+                Ok(())
+            }
+            IRTerm::Entangle(left, right) => {
+                self.emit_val(left)?;
+                self.emit_val(right)?;
+                self.code.push(inst(Opcode::Entangle));
+                Ok(())
+            }
             _ => Err(EmitError::Unimplemented("term emission")),
         }
     }
