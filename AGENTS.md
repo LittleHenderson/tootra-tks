@@ -89,6 +89,15 @@ default output unless Unicode is required.
 
 ## What's Next (Tracking)
 
+## Current Sprint (Parallel)
+
+Status legend: [ ] todo, [~] in progress, [x] done.
+
+[~] Agent A: Effects/Handlers end-to-end (types, lowering, bytecode, VM, tests)
+[~] Agent B: Modules + .tksi + resolver + import/export (+ FFI if time)
+[~] Agent C: Packaging (.exe) + CLI polish + build script + docs
+
+
 Status legend: [ ] todo, [~] in progress, [x] done.
 
 [ ] Effects & handlers end-to-end (type/effect rows, handler typing, resume/perform, IR lowering, bytecode, VM) - Owner: Agent A
