@@ -41,6 +41,12 @@ impl EmitState {
                 self.emit_val(val)?;
                 Ok(())
             }
+            IRTerm::App(func, arg) => {
+                self.emit_val(func)?;
+                self.emit_val(arg)?;
+                self.code.push(inst(Opcode::Call));
+                Ok(())
+            }
             IRTerm::Let(name, comp, body) => {
                 self.emit_comp(comp)?;
                 let slot = self.alloc_local(name.clone());
@@ -86,6 +92,16 @@ impl EmitState {
                 let world_id = world_to_u64(*world);
                 self.code
                     .push(inst2(Opcode::PushElement, world_id, u64::from(*index)));
+                Ok(())
+            }
+            IRVal::Lam(param, body) => {
+                let body_code = self.emit_lambda_body(param, body)?;
+                let entry = self.code.len() + 2;
+                let target = entry + body_code.len();
+                self.code
+                    .push(inst1(Opcode::PushClosure, entry as u64));
+                self.code.push(inst1(Opcode::Jmp, target as u64));
+                self.code.extend(body_code);
                 Ok(())
             }
             _ => Err(EmitError::Unimplemented("value emission")),
@@ -140,6 +156,14 @@ impl EmitState {
         };
         instr.operand1 = Some(target as u64);
         Ok(())
+    }
+
+    fn emit_lambda_body(&self, param: &Ident, body: &IRTerm) -> Result<Vec<Instruction>, EmitError> {
+        let mut lambda_state = EmitState::new();
+        lambda_state.alloc_local(param.clone());
+        lambda_state.emit_term(body)?;
+        lambda_state.code.push(inst(Opcode::Ret));
+        Ok(lambda_state.code)
     }
 }
 

@@ -5,6 +5,7 @@ pub enum Value {
     Int(i64),
     Bool(bool),
     Unit,
+    Closure { entry: usize },
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -20,11 +21,18 @@ pub enum VmError {
 }
 
 #[derive(Debug, Clone)]
+pub struct CallFrame {
+    pub return_pc: usize,
+    pub locals: Vec<Value>,
+}
+
+#[derive(Debug, Clone)]
 pub struct VmState {
     pub code: Vec<Instruction>,
     pub pc: usize,
     pub stack: Vec<Value>,
     pub locals: Vec<Value>,
+    pub frames: Vec<CallFrame>,
 }
 
 impl VmState {
@@ -34,6 +42,7 @@ impl VmState {
             pc: 0,
             stack: Vec::new(),
             locals: Vec::new(),
+            frames: Vec::new(),
         }
     }
 
@@ -61,6 +70,10 @@ impl VmState {
                 }
                 Opcode::PushUnit => {
                     self.stack.push(Value::Unit);
+                }
+                Opcode::PushClosure => {
+                    let entry = Self::expect_operand1_usize(&instr)?;
+                    self.stack.push(Value::Closure { entry });
                 }
                 Opcode::Load => {
                     let index = Self::expect_operand1_usize(&instr)?;
@@ -120,9 +133,35 @@ impl VmState {
                     let lhs = self.pop_int()?;
                     self.stack.push(Value::Int(lhs / rhs));
                 }
+                Opcode::Call => {
+                    let arg = self.pop()?;
+                    let callee = self.pop()?;
+                    let entry = match callee {
+                        Value::Closure { entry } => entry,
+                        other => {
+                            return Err(VmError::TypeMismatch {
+                                expected: "closure",
+                                found: other,
+                            })
+                        }
+                    };
+                    let locals = std::mem::take(&mut self.locals);
+                    self.frames.push(CallFrame {
+                        return_pc: self.pc,
+                        locals,
+                    });
+                    self.locals = vec![arg];
+                    self.pc = entry;
+                }
                 Opcode::Ret => {
                     let result = self.stack.pop().unwrap_or(Value::Unit);
-                    return Ok(result);
+                    if let Some(frame) = self.frames.pop() {
+                        self.locals = frame.locals;
+                        self.pc = frame.return_pc;
+                        self.stack.push(result);
+                    } else {
+                        return Ok(result);
+                    }
                 }
                 _ => {
                     return Err(VmError::UnsupportedOpcode(instr.opcode));
