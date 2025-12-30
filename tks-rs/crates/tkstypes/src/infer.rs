@@ -1026,7 +1026,7 @@ fn infer_expr_inner(
                 effect,
             })
         }
-        Expr::ACBE { .. } => Err(TypeError::Unimplemented("acbe")),
+        Expr::ACBE { goal, expr, .. } => infer_acbe(state, env, goal, expr),
         Expr::Handle { expr, handler, .. } => infer_handle(state, env, expr, handler),
         Expr::Perform { op, arg, .. } => infer_perform(state, env, op, arg),
         Expr::OrdLit { .. }
@@ -1058,13 +1058,32 @@ fn infer_expr_inner(
                 effect,
             })
         }
-        Expr::TransfiniteLoop { .. } => Err(TypeError::Unimplemented("transfinite loop")),
-        Expr::Superpose { .. } => Err(TypeError::Unimplemented("quantum superpose")),
-        Expr::Measure { .. } => Err(TypeError::Unimplemented("quantum measure")),
-        Expr::Entangle { .. } => Err(TypeError::Unimplemented("quantum entangle")),
-        Expr::Ket { .. } => Err(TypeError::Unimplemented("ket")),
-        Expr::Bra { .. } => Err(TypeError::Unimplemented("bra")),
-        Expr::BraKet { .. } => Err(TypeError::Unimplemented("bra-ket")),
+        Expr::TransfiniteLoop {
+            index,
+            ordinal,
+            init,
+            step_param,
+            step_body,
+            limit_param,
+            limit_body,
+            ..
+        } => infer_transfinite_loop(
+            state,
+            env,
+            index,
+            ordinal,
+            init,
+            step_param,
+            step_body,
+            limit_param,
+            limit_body,
+        ),
+        Expr::Superpose { states, .. } => infer_superpose(state, env, states),
+        Expr::Measure { expr, .. } => infer_measure(state, env, expr),
+        Expr::Entangle { left, right, .. } => infer_entangle(state, env, left, right),
+        Expr::Ket { expr, .. } => infer_ket(state, env, expr),
+        Expr::Bra { expr, .. } => infer_bra(state, env, expr),
+        Expr::BraKet { left, right, .. } => infer_braket(state, env, left, right),
     }
 }
 
@@ -1145,6 +1164,168 @@ fn infer_inline_handler(
         output_ty,
         handler_effect,
     ))
+}
+
+fn infer_acbe(
+    state: &mut InferState,
+    env: &mut TypeEnv,
+    goal: &Expr,
+    expr: &Expr,
+) -> Result<InferOutput, TypeError> {
+    let goal_out = infer_expr_inner(state, env, goal)?;
+    let expr_out = infer_expr_inner(state, env, expr)?;
+    unify_types(&mut state.subst, &goal_out.ty, &expr_out.ty)?;
+    let effect = combine_effects(state, &goal_out.effect, &expr_out.effect)?;
+    Ok(InferOutput {
+        ty: state.subst.apply_type(&expr_out.ty),
+        effect,
+    })
+}
+
+fn infer_ket(
+    state: &mut InferState,
+    env: &mut TypeEnv,
+    expr: &Expr,
+) -> Result<InferOutput, TypeError> {
+    let inner = infer_expr_inner(state, env, expr)?;
+    Ok(InferOutput {
+        ty: Type::QState(Box::new(inner.ty)),
+        effect: inner.effect,
+    })
+}
+
+fn infer_bra(
+    state: &mut InferState,
+    env: &mut TypeEnv,
+    expr: &Expr,
+) -> Result<InferOutput, TypeError> {
+    let inner = infer_expr_inner(state, env, expr)?;
+    Ok(InferOutput {
+        ty: Type::QState(Box::new(inner.ty)),
+        effect: inner.effect,
+    })
+}
+
+fn infer_braket(
+    state: &mut InferState,
+    env: &mut TypeEnv,
+    left: &Expr,
+    right: &Expr,
+) -> Result<InferOutput, TypeError> {
+    let left_out = infer_expr_inner(state, env, left)?;
+    let right_out = infer_expr_inner(state, env, right)?;
+    unify_types(&mut state.subst, &left_out.ty, &right_out.ty)?;
+    let effect = combine_effects(state, &left_out.effect, &right_out.effect)?;
+    Ok(InferOutput {
+        ty: Type::Domain,
+        effect,
+    })
+}
+
+fn infer_superpose(
+    state: &mut InferState,
+    env: &mut TypeEnv,
+    states: &[(Expr, Expr)],
+) -> Result<InferOutput, TypeError> {
+    let mut effect = EffectRow::Empty;
+    let state_ty = state.fresh_type_var();
+    let amp_ty = state.fresh_type_var();
+    for (amp, val) in states {
+        let amp_out = infer_expr_inner(state, env, amp)?;
+        unify_types(&mut state.subst, &amp_out.ty, &amp_ty)?;
+        effect = combine_effects(state, &effect, &amp_out.effect)?;
+        let val_out = infer_expr_inner(state, env, val)?;
+        let expected = Type::QState(Box::new(state_ty.clone()));
+        unify_types(&mut state.subst, &val_out.ty, &expected)?;
+        effect = combine_effects(state, &effect, &val_out.effect)?;
+    }
+    Ok(InferOutput {
+        ty: Type::QState(Box::new(state.subst.apply_type(&state_ty))),
+        effect,
+    })
+}
+
+fn infer_measure(
+    state: &mut InferState,
+    env: &mut TypeEnv,
+    expr: &Expr,
+) -> Result<InferOutput, TypeError> {
+    let inner = infer_expr_inner(state, env, expr)?;
+    let result_ty = state.fresh_type_var();
+    let expected = Type::QState(Box::new(result_ty.clone()));
+    unify_types(&mut state.subst, &inner.ty, &expected)?;
+    Ok(InferOutput {
+        ty: state.subst.apply_type(&result_ty),
+        effect: inner.effect,
+    })
+}
+
+fn infer_entangle(
+    state: &mut InferState,
+    env: &mut TypeEnv,
+    left: &Expr,
+    right: &Expr,
+) -> Result<InferOutput, TypeError> {
+    let left_out = infer_expr_inner(state, env, left)?;
+    let right_out = infer_expr_inner(state, env, right)?;
+    let left_ty = state.fresh_type_var();
+    let right_ty = state.fresh_type_var();
+    unify_types(
+        &mut state.subst,
+        &left_out.ty,
+        &Type::QState(Box::new(left_ty.clone())),
+    )?;
+    unify_types(
+        &mut state.subst,
+        &right_out.ty,
+        &Type::QState(Box::new(right_ty.clone())),
+    )?;
+    let effect = combine_effects(state, &left_out.effect, &right_out.effect)?;
+    Ok(InferOutput {
+        ty: Type::QState(Box::new(Type::Product(
+            Box::new(left_ty),
+            Box::new(right_ty),
+        ))),
+        effect,
+    })
+}
+
+fn infer_transfinite_loop(
+    state: &mut InferState,
+    env: &mut TypeEnv,
+    index: &str,
+    ordinal: &Expr,
+    init: &Expr,
+    step_param: &str,
+    step_body: &Expr,
+    limit_param: &str,
+    limit_body: &Expr,
+) -> Result<InferOutput, TypeError> {
+    let ord_out = infer_expr_inner(state, env, ordinal)?;
+    unify_types(&mut state.subst, &ord_out.ty, &Type::Ordinal)?;
+    let init_out = infer_expr_inner(state, env, init)?;
+    let result_ty = init_out.ty.clone();
+
+    let mut step_env = env.clone();
+    step_env.insert(step_param.to_string(), Scheme::mono(result_ty.clone()));
+    step_env.insert(index.to_string(), Scheme::mono(Type::Ordinal));
+    let step_out = infer_expr_inner(state, &mut step_env, step_body)?;
+    unify_types(&mut state.subst, &step_out.ty, &result_ty)?;
+
+    let mut limit_env = env.clone();
+    limit_env.insert(limit_param.to_string(), Scheme::mono(result_ty.clone()));
+    limit_env.insert(index.to_string(), Scheme::mono(Type::Ordinal));
+    let limit_out = infer_expr_inner(state, &mut limit_env, limit_body)?;
+    unify_types(&mut state.subst, &limit_out.ty, &result_ty)?;
+
+    let effect = combine_effects(state, &ord_out.effect, &init_out.effect)?;
+    let effect = combine_effects(state, &effect, &step_out.effect)?;
+    let effect = combine_effects(state, &effect, &limit_out.effect)?;
+
+    Ok(InferOutput {
+        ty: state.subst.apply_type(&result_ty),
+        effect,
+    })
 }
 
 fn infer_handler_info(
@@ -1327,8 +1508,8 @@ fn infer_literal_type(literal: &Literal) -> Result<Type, TypeError> {
     match literal {
         Literal::Int(_) => Ok(Type::Int),
         Literal::Bool(_) => Ok(Type::Bool),
-        Literal::Float(_) => Err(TypeError::Unimplemented("float literals")),
-        Literal::Complex { .. } => Err(TypeError::Unimplemented("complex literals")),
+        Literal::Float(_) => Ok(Type::Domain),
+        Literal::Complex { .. } => Ok(Type::Domain),
         Literal::Unit => Ok(Type::Unit),
     }
 }
