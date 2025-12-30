@@ -19,6 +19,8 @@ pub enum IRTerm {
     If(IRVal, Box<IRTerm>, Box<IRTerm>),
     Perform(Ident, IRVal),
     Handle(Box<IRTerm>, Box<IRHandler>),
+    RPMReturn(IRVal),
+    RPMBind(IRVal, IRVal),
     RPMAcquire(IRVal),
     RPMCheck(IRVal),
     RPMFail,

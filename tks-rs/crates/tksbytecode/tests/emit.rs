@@ -250,6 +250,31 @@ fn emit_rpm_fail_term() {
 }
 
 #[test]
+fn emit_rpm_return_term() {
+    let term = IRTerm::RPMReturn(IRVal::Lit(Literal::Int(3)));
+    let code = emit(&term).expect("emit rpm return");
+    let expected = vec![
+        inst1(Opcode::PushInt, 3),
+        inst(Opcode::RpmReturn),
+        inst(Opcode::Ret),
+    ];
+    assert_eq!(code, expected);
+}
+
+#[test]
+fn emit_rpm_bind_term() {
+    let term = IRTerm::RPMBind(IRVal::Lit(Literal::Int(1)), IRVal::Lit(Literal::Int(2)));
+    let code = emit(&term).expect("emit rpm bind");
+    let expected = vec![
+        inst1(Opcode::PushInt, 1),
+        inst1(Opcode::PushInt, 2),
+        inst(Opcode::RpmBind),
+        inst(Opcode::Ret),
+    ];
+    assert_eq!(code, expected);
+}
+
+#[test]
 fn emit_ordinal_finite_literal() {
     let expr = Expr::OrdLit {
         span: span(),
