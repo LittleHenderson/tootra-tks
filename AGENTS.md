@@ -94,7 +94,7 @@ Status legend: [ ] todo, [~] in progress, [x] done.
 [x] Effects & handlers end-to-end (type/effect rows + IR lowering + bytecode/VM) - Owner: Agent A
 [x] Modules + .tksi + resolver + import/export + FFI signatures/links - Owner: Agent B
 [x] Runtime packaging (.exe) + CLI polish + build scripts + GPU harness gating - Owner: Agent C
-[ ] Fractal/foundation/acquisition semantics in VM + tests - Owner: TBD
+[x] Fractal/foundation/acquisition semantics in VM + tests - Owner: Agent A
 [ ] Stdlib bootstrap (TKS.Core, TKS.RPM, TKS.Quantum) - Owner: TBD
 [x] Canonical compliance + regression tests (samples, golden files) - Owner: Agent C
 
