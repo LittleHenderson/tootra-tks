@@ -66,6 +66,26 @@ fn run_jump_unless_program() {
 }
 
 #[test]
+fn run_apply_noetic_program() {
+    let code = vec![
+        instr(Opcode::PushNoetic, Some(4)),
+        instr(Opcode::PushInt, Some(9)),
+        instr(Opcode::ApplyNoetic, None),
+        instr(Opcode::Ret, None),
+    ];
+
+    let mut vm = VmState::new(code);
+    let result = vm.run().expect("run program");
+    assert_eq!(
+        result,
+        Value::NoeticApplied {
+            index: 4,
+            value: Box::new(Value::Int(9))
+        }
+    );
+}
+
+#[test]
 fn run_push_element_program() {
     let code = vec![instr2(Opcode::PushElement, 1, 7), instr(Opcode::Ret, None)];
 

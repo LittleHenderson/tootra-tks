@@ -42,9 +42,15 @@ impl EmitState {
                 Ok(())
             }
             IRTerm::App(func, arg) => {
-                self.emit_val(func)?;
-                self.emit_val(arg)?;
-                self.code.push(inst(Opcode::Call));
+                if let IRVal::Noetic(index) = func {
+                    self.code.push(inst1(Opcode::PushNoetic, u64::from(*index)));
+                    self.emit_val(arg)?;
+                    self.code.push(inst(Opcode::ApplyNoetic));
+                } else {
+                    self.emit_val(func)?;
+                    self.emit_val(arg)?;
+                    self.code.push(inst(Opcode::Call));
+                }
                 Ok(())
             }
             IRTerm::Let(name, comp, body) => {

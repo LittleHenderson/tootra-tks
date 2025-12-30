@@ -65,6 +65,23 @@ fn emit_if_jumps() {
 }
 
 #[test]
+fn emit_noetic_apply() {
+    let term = IRTerm::App(
+        IRVal::Noetic(3),
+        IRVal::Lit(Literal::Int(7)),
+    );
+
+    let instructions = emit(&term).expect("emit bytecode");
+    let opcodes: Vec<Opcode> = instructions.iter().map(|inst| inst.opcode).collect();
+
+    assert_eq!(
+        opcodes,
+        vec![Opcode::PushNoetic, Opcode::PushInt, Opcode::ApplyNoetic, Opcode::Ret]
+    );
+    assert_eq!(instructions[0].operand1, Some(3));
+}
+
+#[test]
 fn emit_app_with_lambda() {
     let term = IRTerm::App(
         IRVal::Lam(

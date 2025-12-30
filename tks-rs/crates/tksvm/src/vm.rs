@@ -8,6 +8,7 @@ pub enum Value {
     Closure { entry: usize },
     Element { world: u8, index: u8 },
     Noetic(u8),
+    NoeticApplied { index: u8, value: Box<Value> },
     Ket(Box<Value>),
 }
 
@@ -174,6 +175,23 @@ impl VmState {
                     });
                     self.locals = vec![arg];
                     self.pc = entry;
+                }
+                Opcode::ApplyNoetic => {
+                    let arg = self.pop()?;
+                    let callee = self.pop()?;
+                    let index = match callee {
+                        Value::Noetic(index) => index,
+                        other => {
+                            return Err(VmError::TypeMismatch {
+                                expected: "noetic",
+                                found: other,
+                            })
+                        }
+                    };
+                    self.stack.push(Value::NoeticApplied {
+                        index,
+                        value: Box::new(arg),
+                    });
                 }
                 Opcode::MakeKet => {
                     let inner = self.pop()?;
