@@ -1,4 +1,4 @@
-use tkscore::ast::{Expr, TopDecl};
+use tkscore::ast::{Convention, Expr, Safety, TopDecl};
 use tkscore::parser::parse_program;
 
 #[test]
@@ -57,4 +57,19 @@ fn parses_braket_expression() {
     let source = "<A1|A2>";
     let program = parse_program(source).expect("parse program");
     assert!(matches!(program.entry, Some(Expr::BraKet { .. })));
+}
+
+#[test]
+fn parses_extern_decl_alias() {
+    let source = "extern c unsafe fn ping(x: Int): Int !{IO}";
+    let program = parse_program(source).expect("parse program");
+    assert_eq!(program.decls.len(), 1);
+    match &program.decls[0] {
+        TopDecl::ExternDecl(decl) => {
+            assert_eq!(decl.name, "ping");
+            assert_eq!(decl.convention, Convention::C);
+            assert_eq!(decl.safety, Safety::Unsafe);
+        }
+        _ => panic!("expected extern declaration"),
+    }
 }

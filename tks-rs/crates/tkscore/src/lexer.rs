@@ -404,6 +404,7 @@ impl<'a> Lexer<'a> {
             "step" => TokenKind::Step,
             "as" => TokenKind::As,
             "type" => TokenKind::TypeKw,
+            "extern" => TokenKind::External,
             "external" => TokenKind::External,
             "fn" => TokenKind::FnKw,
             "safe" => TokenKind::Safe,

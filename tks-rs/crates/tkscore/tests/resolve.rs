@@ -42,3 +42,32 @@ module B {
     let err = resolve_program(&program).expect_err("expected resolve error");
     assert!(matches!(err, ResolveError::UnknownImportItem { .. }));
 }
+
+#[test]
+fn resolve_effect_and_extern_exports() {
+    let source = r#"
+module A {
+  export { effect IO, ping }
+  effect IO {
+    op log(msg: Int): Unit;
+  }
+  external c safe fn ping(x: Int): Int !{IO};
+}
+module B {
+  from A import { IO, ping };
+  let use = ping;
+}
+"#;
+
+    let program = parse_program(source).expect("parse program");
+    let resolved = resolve_program(&program).expect("resolve program");
+    let module_a = resolved.module(&["A"]).expect("module A resolved");
+    let module_b = resolved.module(&["B"]).expect("module B resolved");
+
+    assert_eq!(module_a.exports.effects.len(), 1);
+    assert_eq!(module_a.exports.effects[0].name, "IO");
+    assert_eq!(module_a.exports.externs.len(), 1);
+    assert_eq!(module_a.exports.externs[0].name, "ping");
+    assert!(module_b.scope.effects.contains_key("IO"));
+    assert!(module_b.scope.externs.contains_key("ping"));
+}

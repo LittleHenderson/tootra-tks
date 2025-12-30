@@ -1,10 +1,11 @@
 use std::collections::{BTreeMap, BTreeSet};
 
 use crate::ast::{
-    ExportDecl, ExportItem, ImportDecl, ImportItem, ModuleBody, ModuleDecl, Program, TopDecl,
+    Convention, EffectRow, ExportDecl, ExportItem, ExternDecl, ExternParam, ImportDecl, ImportItem,
+    ModuleBody, ModuleDecl, OpSig, Program, Safety, TopDecl, Type,
 };
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct ResolvedProgram {
     pub modules: Vec<ResolvedModule>,
 }
@@ -17,17 +18,19 @@ impl ResolvedProgram {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct ResolvedModule {
     pub path: Vec<String>,
     pub exports: ModuleExports,
     pub scope: ModuleScope,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct ModuleExports {
     pub values: Vec<String>,
     pub types: Vec<ExportedType>,
+    pub effects: Vec<EffectSignature>,
+    pub externs: Vec<ExternSignature>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -36,11 +39,42 @@ pub struct ExportedType {
     pub transparent: bool,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq)]
+pub struct EffectSignature {
+    pub name: String,
+    pub ops: Vec<EffectOpSignature>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct EffectOpSignature {
+    pub name: String,
+    pub input: Type,
+    pub output: Type,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ExternSignature {
+    pub name: String,
+    pub convention: Convention,
+    pub safety: Safety,
+    pub params: Vec<ExternParamSignature>,
+    pub return_type: Type,
+    pub effects: Option<EffectRow>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ExternParamSignature {
+    pub name: String,
+    pub ty: Type,
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct ModuleScope {
     pub values: BTreeSet<String>,
     pub types: BTreeSet<String>,
     pub modules: BTreeMap<String, Vec<String>>,
+    pub effects: BTreeMap<String, EffectSignature>,
+    pub externs: BTreeMap<String, ExternSignature>,
 }
 
 impl ModuleScope {
@@ -49,6 +83,8 @@ impl ModuleScope {
             values: BTreeSet::new(),
             types: BTreeSet::new(),
             modules: BTreeMap::new(),
+            effects: BTreeMap::new(),
+            externs: BTreeMap::new(),
         }
     }
 
@@ -71,6 +107,23 @@ impl ModuleScope {
             return Err(ResolveError::DuplicateImport(alias));
         }
         self.modules.insert(alias, path);
+        Ok(())
+    }
+
+    fn insert_effect(&mut self, effect: EffectSignature) -> Result<(), ResolveError> {
+        if self.effects.contains_key(&effect.name) {
+            return Err(ResolveError::DuplicateImport(effect.name));
+        }
+        self.effects.insert(effect.name.clone(), effect);
+        Ok(())
+    }
+
+    fn insert_extern(&mut self, extern_sig: ExternSignature) -> Result<(), ResolveError> {
+        if self.externs.contains_key(&extern_sig.name) {
+            return Err(ResolveError::DuplicateImport(extern_sig.name));
+        }
+        self.externs
+            .insert(extern_sig.name.clone(), extern_sig);
         Ok(())
     }
 }
@@ -125,6 +178,8 @@ struct ModuleSymbols {
     values: BTreeSet<String>,
     types: BTreeSet<String>,
     modules: BTreeMap<String, Vec<String>>,
+    effects: BTreeMap<String, EffectSignature>,
+    externs: BTreeMap<String, ExternSignature>,
 }
 
 pub fn resolve_program(program: &Program) -> Result<ResolvedProgram, ResolveError> {
@@ -215,6 +270,12 @@ fn resolve_module(table: &mut ModuleTable, path: &[String]) -> Result<ResolvedMo
     for (alias, target) in &symbols.modules {
         scope.insert_module(alias.clone(), target.clone())?;
     }
+    for effect in symbols.effects.values() {
+        scope.insert_effect(effect.clone())?;
+    }
+    for extern_sig in symbols.externs.values() {
+        scope.insert_extern(extern_sig.clone())?;
+    }
 
     for import in &body.imports {
         apply_import(table, path, import, &mut scope)?;
@@ -253,6 +314,8 @@ fn collect_symbols(path: &[String], body: &ModuleBody) -> ModuleSymbols {
     let mut values = BTreeSet::new();
     let mut types = BTreeSet::new();
     let mut modules = BTreeMap::new();
+    let mut effects = BTreeMap::new();
+    let mut externs = BTreeMap::new();
 
     for decl in &body.decls {
         match decl {
@@ -260,10 +323,10 @@ fn collect_symbols(path: &[String], body: &ModuleBody) -> ModuleSymbols {
                 values.insert(name.clone());
             }
             TopDecl::ExternDecl(decl) => {
-                values.insert(decl.name.clone());
+                externs.insert(decl.name.clone(), extern_signature(decl));
             }
-            TopDecl::EffectDecl { name, .. } => {
-                values.insert(name.clone());
+            TopDecl::EffectDecl { name, ops, .. } => {
+                effects.insert(name.clone(), effect_signature(name, ops));
             }
             TopDecl::HandlerDecl { name, .. } => {
                 values.insert(name.clone());
@@ -286,6 +349,8 @@ fn collect_symbols(path: &[String], body: &ModuleBody) -> ModuleSymbols {
         values,
         types,
         modules,
+        effects,
+        externs,
     }
 }
 
@@ -308,7 +373,16 @@ fn resolve_exports(
                 })
                 .collect();
             types.sort_by(|left, right| left.name.cmp(&right.name));
-            Ok(ModuleExports { values, types })
+            let mut effects: Vec<EffectSignature> = symbols.effects.values().cloned().collect();
+            effects.sort_by(|left, right| left.name.cmp(&right.name));
+            let mut externs: Vec<ExternSignature> = symbols.externs.values().cloned().collect();
+            externs.sort_by(|left, right| left.name.cmp(&right.name));
+            Ok(ModuleExports {
+                values,
+                types,
+                effects,
+                externs,
+            })
         }
     }
 }
@@ -319,14 +393,21 @@ fn resolve_export_list(
 ) -> Result<ModuleExports, ResolveError> {
     let mut values = Vec::new();
     let mut types = Vec::new();
+    let mut effects = Vec::new();
+    let mut externs = Vec::new();
 
     for item in &export_decl.items {
         match item {
             ExportItem::Value(name) => {
-                if !scope.values.contains(name) {
+                if let Some(effect) = scope.effects.get(name) {
+                    effects.push(effect.clone());
+                } else if let Some(extern_sig) = scope.externs.get(name) {
+                    externs.push(extern_sig.clone());
+                } else if scope.values.contains(name) {
+                    values.push(name.clone());
+                } else {
                     return Err(ResolveError::UnknownExport(name.clone()));
                 }
-                values.push(name.clone());
             }
             ExportItem::Type { name, transparent } => {
                 if !scope.types.contains(name) {
@@ -342,8 +423,15 @@ fn resolve_export_list(
 
     values.sort();
     types.sort_by(|left, right| left.name.cmp(&right.name));
+    effects.sort_by(|left, right| left.name.cmp(&right.name));
+    externs.sort_by(|left, right| left.name.cmp(&right.name));
 
-    Ok(ModuleExports { values, types })
+    Ok(ModuleExports {
+        values,
+        types,
+        effects,
+        externs,
+    })
 }
 
 fn apply_import(
@@ -374,6 +462,12 @@ fn apply_import(
             for ty in exports.types {
                 scope.insert_type(ty.name)?;
             }
+            for effect in exports.effects {
+                scope.insert_effect(effect)?;
+            }
+            for extern_sig in exports.externs {
+                scope.insert_extern(extern_sig)?;
+            }
         }
         ImportDecl::Selective { path, items, .. } => {
             let target = resolve_import_path(table, current_path, path)?;
@@ -394,6 +488,22 @@ fn apply_selective_import(
     for item in items {
         let import_name = &item.name;
         let target_name = item.alias.as_ref().unwrap_or(import_name);
+        if let Some(effect) = exports.effects.iter().find(|effect| effect.name == *import_name) {
+            let mut effect_sig = effect.clone();
+            effect_sig.name = target_name.clone();
+            scope.insert_effect(effect_sig)?;
+            continue;
+        }
+        if let Some(extern_sig) = exports
+            .externs
+            .iter()
+            .find(|extern_sig| extern_sig.name == *import_name)
+        {
+            let mut extern_sig = extern_sig.clone();
+            extern_sig.name = target_name.clone();
+            scope.insert_extern(extern_sig)?;
+            continue;
+        }
         let is_value = exports.values.iter().any(|name| name == import_name);
         let ty = exports
             .types
@@ -403,13 +513,7 @@ fn apply_selective_import(
         match (is_value, ty) {
             (true, None) => scope.insert_value(target_name.clone())?,
             (false, Some(_)) => scope.insert_type(target_name.clone())?,
-            (true, Some(_)) => {
-                return Err(ResolveError::UnknownImportItem {
-                    module: module_name,
-                    name: import_name.clone(),
-                })
-            }
-            (false, None) => {
+            _ => {
                 return Err(ResolveError::UnknownImportItem {
                     module: module_name,
                     name: import_name.clone(),
@@ -434,6 +538,43 @@ fn resolve_import_path(
         return Ok(relative);
     }
     Err(ResolveError::UnknownModule(module_path_string(path)))
+}
+
+fn effect_signature(name: &str, ops: &[OpSig]) -> EffectSignature {
+    let mut entries = Vec::new();
+    for op in ops {
+        entries.push(EffectOpSignature {
+            name: op.name.clone(),
+            input: op.input.clone(),
+            output: op.output.clone(),
+        });
+    }
+    EffectSignature {
+        name: name.to_string(),
+        ops: entries,
+    }
+}
+
+fn extern_signature(decl: &ExternDecl) -> ExternSignature {
+    ExternSignature {
+        name: decl.name.clone(),
+        convention: decl.convention.clone(),
+        safety: decl.safety.clone(),
+        params: extern_params(&decl.params),
+        return_type: decl.return_type.clone(),
+        effects: decl.effects.clone(),
+    }
+}
+
+fn extern_params(params: &[ExternParam]) -> Vec<ExternParamSignature> {
+    let mut out = Vec::new();
+    for param in params {
+        out.push(ExternParamSignature {
+            name: param.name.clone(),
+            ty: param.ty.clone(),
+        });
+    }
+    out
 }
 
 fn module_path_string(path: &[String]) -> String {
