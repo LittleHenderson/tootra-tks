@@ -30,6 +30,7 @@ pub enum Literal {
 #[derive(Debug, Clone, PartialEq)]
 pub struct Program {
     pub decls: Vec<TopDecl>,
+    pub entry: Option<Expr>,
 }
 
 #[derive(Debug, Clone, PartialEq)]

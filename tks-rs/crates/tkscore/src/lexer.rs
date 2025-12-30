@@ -34,6 +34,7 @@ pub enum TokenKind {
     Import,
     Export,
     From,
+    Step,
     As,
     TypeKw,
     External,
@@ -138,6 +139,9 @@ impl<'a> Lexer<'a> {
             }
         };
 
+        if self.match_str(">>=") {
+            return Ok(self.make_token(TokenKind::Bind, start_pos, start_line, start_col));
+        }
         if self.match_str("->") {
             return Ok(self.make_token(TokenKind::Arrow, start_pos, start_line, start_col));
         }
@@ -188,6 +192,7 @@ impl<'a> Lexer<'a> {
             ':' => TokenKind::Colon,
             '(' => TokenKind::LParen,
             ')' => TokenKind::RParen,
+            '\\' => TokenKind::Lambda,
             '[' => TokenKind::LBracket,
             ']' => TokenKind::RBracket,
             '<' => TokenKind::LAngle,
@@ -348,7 +353,6 @@ impl<'a> Lexer<'a> {
             "then" => TokenKind::Then,
             "else" => TokenKind::Else,
             "return" => TokenKind::Return,
-            "bind" => TokenKind::Bind,
             "check" => TokenKind::Check,
             "acquire" => TokenKind::Acquire,
             "acbe" => TokenKind::Acbe,
@@ -363,6 +367,7 @@ impl<'a> Lexer<'a> {
             "import" => TokenKind::Import,
             "export" => TokenKind::Export,
             "from" => TokenKind::From,
+            "step" => TokenKind::Step,
             "as" => TokenKind::As,
             "type" => TokenKind::TypeKw,
             "external" => TokenKind::External,
@@ -550,3 +555,5 @@ impl LexerError {
         }
     }
 }
+
+
