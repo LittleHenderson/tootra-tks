@@ -134,6 +134,86 @@ fn run_rpm_check_program() {
 }
 
 #[test]
+fn run_rpm_return_program() {
+    let code = vec![
+        instr(Opcode::PushInt, Some(5)),
+        instr(Opcode::RpmReturn, None),
+        instr(Opcode::Ret, None),
+    ];
+
+    let mut vm = VmState::new(code);
+    let result = vm.run().expect("run program");
+    assert_eq!(
+        result,
+        Value::RpmState {
+            ok: true,
+            value: Box::new(Value::Int(5))
+        }
+    );
+}
+
+#[test]
+fn run_rpm_is_success_program() {
+    let code = vec![
+        instr(Opcode::PushInt, Some(1)),
+        instr(Opcode::RpmReturn, None),
+        instr(Opcode::RpmIsSuccess, None),
+        instr(Opcode::Ret, None),
+    ];
+
+    let mut vm = VmState::new(code);
+    let result = vm.run().expect("run program");
+    assert_eq!(result, Value::Bool(true));
+}
+
+#[test]
+fn run_rpm_unwrap_program() {
+    let code = vec![
+        instr(Opcode::PushInt, Some(7)),
+        instr(Opcode::RpmReturn, None),
+        instr(Opcode::RpmUnwrap, None),
+        instr(Opcode::Ret, None),
+    ];
+
+    let mut vm = VmState::new(code);
+    let result = vm.run().expect("run program");
+    assert_eq!(result, Value::Int(7));
+}
+
+#[test]
+fn run_rpm_unwrap_fail_program() {
+    let code = vec![instr(Opcode::RpmFail, None), instr(Opcode::RpmUnwrap, None)];
+
+    let mut vm = VmState::new(code);
+    let err = vm.run().expect_err("unwrap should fail");
+    assert!(matches!(err, VmError::RpmUnwrapFailed));
+}
+
+#[test]
+fn run_rpm_bind_program() {
+    let code = vec![
+        instr(Opcode::PushInt, Some(5)),
+        instr(Opcode::RpmReturn, None),
+        instr(Opcode::PushClosure, Some(4)),
+        instr(Opcode::Jmp, Some(6)),
+        instr(Opcode::Load, Some(0)),
+        instr(Opcode::Ret, None),
+        instr(Opcode::RpmBind, None),
+        instr(Opcode::Ret, None),
+    ];
+
+    let mut vm = VmState::new(code);
+    let result = vm.run().expect("run program");
+    assert_eq!(
+        result,
+        Value::RpmState {
+            ok: true,
+            value: Box::new(Value::Int(5))
+        }
+    );
+}
+
+#[test]
 fn run_superpose_program() {
     let code = vec![
         instr(Opcode::PushInt, Some(1)),
