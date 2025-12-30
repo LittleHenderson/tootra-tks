@@ -4,6 +4,7 @@ pub enum Opcode {
     PushInt,
     PushBool,
     PushUnit,
+    PushClosure,
     Pop,
     Dup,
     Swap,
