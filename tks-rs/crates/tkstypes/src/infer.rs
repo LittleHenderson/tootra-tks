@@ -14,6 +14,8 @@ pub enum TypeError {
     UnknownOp(String),
     UnknownHandler(String),
     DuplicateOp(String),
+    DuplicateType(String),
+    RecursiveTypeAlias(String),
     HandlerEffectMismatch { handler: String, expected: String, found: String },
     InvalidAnnotation(String),
     Unimplemented(&'static str),
@@ -34,6 +36,10 @@ impl std::fmt::Display for TypeError {
             TypeError::UnknownOp(name) => write!(f, "unknown effect operation: {name}"),
             TypeError::UnknownHandler(name) => write!(f, "unknown handler: {name}"),
             TypeError::DuplicateOp(name) => write!(f, "duplicate effect operation: {name}"),
+            TypeError::DuplicateType(name) => write!(f, "duplicate type alias: {name}"),
+            TypeError::RecursiveTypeAlias(name) => {
+                write!(f, "recursive type alias: {name}")
+            }
             TypeError::HandlerEffectMismatch {
                 handler,
                 expected,
@@ -93,6 +99,12 @@ impl HandlerInfo {
             subst.apply_row(&self.effect_row),
         )
     }
+}
+
+#[derive(Debug, Clone)]
+pub struct TypeAlias {
+    pub params: Vec<String>,
+    pub body: Type,
 }
 
 #[derive(Debug, Clone, Default)]
@@ -241,6 +253,7 @@ pub struct TypeEnv {
     values: HashMap<String, Scheme>,
     ops: HashMap<String, OpSigEntry>,
     handlers: HashMap<String, HandlerInfo>,
+    type_aliases: HashMap<String, TypeAlias>,
 }
 
 impl TypeEnv {
@@ -249,6 +262,7 @@ impl TypeEnv {
             values: HashMap::new(),
             ops: HashMap::new(),
             handlers: HashMap::new(),
+            type_aliases: HashMap::new(),
         }
     }
 
@@ -293,6 +307,23 @@ impl TypeEnv {
 
     pub fn get_handler(&self, name: &str) -> Option<&HandlerInfo> {
         self.handlers.get(name)
+    }
+
+    pub fn insert_type_alias(
+        &mut self,
+        name: impl Into<String>,
+        alias: TypeAlias,
+    ) -> Result<(), TypeError> {
+        let name = name.into();
+        if self.type_aliases.contains_key(&name) {
+            return Err(TypeError::DuplicateType(name));
+        }
+        self.type_aliases.insert(name, alias);
+        Ok(())
+    }
+
+    pub fn get_type_alias(&self, name: &str) -> Option<&TypeAlias> {
+        self.type_aliases.get(name)
     }
 }
 
@@ -504,7 +535,7 @@ fn infer_decl(
         TopDecl::LetDecl { name, scheme, value, .. } => {
             let value_out = infer_expr_inner(state, env, value)?;
             if let Some(annotation) = scheme {
-                check_annotation(state, annotation, &value_out)?;
+                check_annotation(state, env, annotation, &value_out)?;
             }
             env.apply_subst(&state.subst);
             let value_ty = state.subst.apply_type(&value_out.ty);
@@ -513,12 +544,15 @@ fn infer_decl(
             Ok(value_out.effect)
         }
         TopDecl::EffectDecl { name, params, ops, .. } => {
+            let bound: HashSet<String> = params.iter().cloned().collect();
             for op in ops {
+                let input = resolve_type(env, &op.input, &bound)?;
+                let output = resolve_type(env, &op.output, &bound)?;
                 let entry = OpSigEntry {
                     effect: name.clone(),
                     type_vars: params.clone(),
-                    input: op.input.clone(),
-                    output: op.output.clone(),
+                    input,
+                    output,
                 };
                 env.insert_op(op.name.clone(), entry)?;
             }
@@ -530,25 +564,43 @@ fn infer_decl(
             def,
             ..
         } => {
-            let info = infer_handler_info(state, env, name, handler_type.as_ref(), def)?;
+            let resolved_handler_type = match handler_type {
+                Some(ty) => Some(resolve_type(env, ty, &HashSet::new())?),
+                None => None,
+            };
+            let info =
+                infer_handler_info(state, env, name, resolved_handler_type.as_ref(), def)?;
             env.insert_handler(name.clone(), info)?;
             Ok(EffectRow::Empty)
         }
         TopDecl::ExternDecl(decl) => {
             let mut param_types = Vec::new();
             for param in &decl.params {
-                param_types.push(param.ty.clone());
+                param_types.push(resolve_type(env, &param.ty, &HashSet::new())?);
             }
             let return_ty = match &decl.effects {
-                Some(row) => Type::Effectful(Box::new(decl.return_type.clone()), row.clone()),
-                None => decl.return_type.clone(),
+                Some(row) => Type::Effectful(
+                    Box::new(resolve_type(env, &decl.return_type, &HashSet::new())?),
+                    row.clone(),
+                ),
+                None => resolve_type(env, &decl.return_type, &HashSet::new())?,
             };
             let ty = build_fun_type(&param_types, return_ty);
             let scheme = generalize(env, &ty);
             env.insert(decl.name.clone(), scheme);
             Ok(EffectRow::Empty)
         }
-        TopDecl::TypeDecl { .. } => Err(TypeError::Unimplemented("type declarations")),
+        TopDecl::TypeDecl { name, params, body, .. } => {
+            if !params.is_empty() {
+                return Err(TypeError::Unimplemented("parametric type aliases"));
+            }
+            let alias = TypeAlias {
+                params: params.clone(),
+                body: body.clone(),
+            };
+            env.insert_type_alias(name.clone(), alias)?;
+            Ok(EffectRow::Empty)
+        }
         TopDecl::ModuleDecl(_) => Err(TypeError::Unimplemented("modules")),
     }
 }
@@ -587,7 +639,7 @@ fn infer_expr_inner(
             ..
         } => {
             let param_ty = match param_type {
-                Some(ty) => extract_param_type(ty)?,
+                Some(ty) => extract_param_type(env, ty)?,
                 None => state.fresh_type_var(),
             };
             let mut local = env.clone();
@@ -633,7 +685,7 @@ fn infer_expr_inner(
         } => {
             let value_out = infer_expr_inner(state, env, value)?;
             if let Some(annotation) = scheme {
-                check_annotation(state, annotation, &value_out)?;
+                check_annotation(state, env, annotation, &value_out)?;
             }
             env.apply_subst(&state.subst);
             let value_ty = state.subst.apply_type(&value_out.ty);
@@ -1023,12 +1075,13 @@ fn infer_literal_type(literal: &Literal) -> Result<Type, TypeError> {
     }
 }
 
-fn extract_param_type(ty: &Type) -> Result<Type, TypeError> {
-    match ty {
+fn extract_param_type(env: &TypeEnv, ty: &Type) -> Result<Type, TypeError> {
+    let resolved = resolve_type(env, ty, &HashSet::new())?;
+    match resolved {
         Type::Effectful(_, _) => Err(TypeError::InvalidAnnotation(
             "parameter types cannot be effectful".to_string(),
         )),
-        _ => Ok(ty.clone()),
+        _ => Ok(resolved),
     }
 }
 
@@ -1107,10 +1160,11 @@ fn instantiate_op(entry: &OpSigEntry, state: &mut InferState) -> (Type, Type) {
 
 fn check_annotation(
     state: &mut InferState,
+    env: &TypeEnv,
     annotation: &TypeScheme,
     out: &InferOutput,
 ) -> Result<(), TypeError> {
-    let scheme = scheme_from_annotation(annotation);
+    let scheme = scheme_from_annotation(env, annotation)?;
     let inst = scheme.instantiate(state);
     match inst {
         Type::Effectful(inner, row) => {
@@ -1130,12 +1184,88 @@ fn build_fun_type(param_types: &[Type], return_type: Type) -> Type {
     })
 }
 
-fn scheme_from_annotation(annotation: &TypeScheme) -> Scheme {
-    let row_vars = free_row_vars_type(&annotation.ty);
-    Scheme {
+fn scheme_from_annotation(env: &TypeEnv, annotation: &TypeScheme) -> Result<Scheme, TypeError> {
+    let bound: HashSet<String> = annotation.vars.iter().cloned().collect();
+    let resolved = resolve_type(env, &annotation.ty, &bound)?;
+    let row_vars = free_row_vars_type(&resolved);
+    Ok(Scheme {
         type_vars: annotation.vars.clone(),
         row_vars: row_vars.into_iter().collect(),
-        ty: annotation.ty.clone(),
+        ty: resolved,
+    })
+}
+
+fn resolve_type(
+    env: &TypeEnv,
+    ty: &Type,
+    bound: &HashSet<String>,
+) -> Result<Type, TypeError> {
+    let mut seen = HashSet::new();
+    resolve_type_inner(env, ty, bound, &mut seen)
+}
+
+fn resolve_type_inner(
+    env: &TypeEnv,
+    ty: &Type,
+    bound: &HashSet<String>,
+    seen: &mut HashSet<String>,
+) -> Result<Type, TypeError> {
+    match ty {
+        Type::Var(name) => {
+            if bound.contains(name) {
+                return Ok(Type::Var(name.clone()));
+            }
+            if let Some(alias) = env.get_type_alias(name) {
+                if !alias.params.is_empty() {
+                    return Err(TypeError::Unimplemented("parametric type aliases"));
+                }
+                if !seen.insert(name.clone()) {
+                    return Err(TypeError::RecursiveTypeAlias(name.clone()));
+                }
+                let resolved = resolve_type_inner(env, &alias.body, bound, seen)?;
+                seen.remove(name);
+                return Ok(resolved);
+            }
+            Ok(Type::Var(name.clone()))
+        }
+        Type::Noetic(inner) => Ok(Type::Noetic(Box::new(resolve_type_inner(
+            env, inner, bound, seen,
+        )?))),
+        Type::Fractal(inner) => Ok(Type::Fractal(Box::new(resolve_type_inner(
+            env, inner, bound, seen,
+        )?))),
+        Type::RPM(inner) => Ok(Type::RPM(Box::new(resolve_type_inner(
+            env, inner, bound, seen,
+        )?))),
+        Type::QState(inner) => Ok(Type::QState(Box::new(resolve_type_inner(
+            env, inner, bound, seen,
+        )?))),
+        Type::Fun(left, right) => Ok(Type::Fun(
+            Box::new(resolve_type_inner(env, left, bound, seen)?),
+            Box::new(resolve_type_inner(env, right, bound, seen)?),
+        )),
+        Type::Product(left, right) => Ok(Type::Product(
+            Box::new(resolve_type_inner(env, left, bound, seen)?),
+            Box::new(resolve_type_inner(env, right, bound, seen)?),
+        )),
+        Type::Sum(left, right) => Ok(Type::Sum(
+            Box::new(resolve_type_inner(env, left, bound, seen)?),
+            Box::new(resolve_type_inner(env, right, bound, seen)?),
+        )),
+        Type::Effectful(inner, row) => Ok(Type::Effectful(
+            Box::new(resolve_type_inner(env, inner, bound, seen)?),
+            row.clone(),
+        )),
+        Type::Handler {
+            effect,
+            input,
+            output,
+        } => Ok(Type::Handler {
+            effect: effect.clone(),
+            input: Box::new(resolve_type_inner(env, input, bound, seen)?),
+            output: Box::new(resolve_type_inner(env, output, bound, seen)?),
+        }),
+        _ => Ok(ty.clone()),
     }
 }
 
