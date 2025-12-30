@@ -1,5 +1,5 @@
 use tksbytecode::bytecode::{Instruction, Opcode};
-use tksvm::vm::{OrdinalValue, Value, VmState};
+use tksvm::vm::{OrdinalValue, Value, VmError, VmState};
 
 fn instr(opcode: Opcode, operand1: Option<u64>) -> Instruction {
     Instruction {
@@ -206,4 +206,13 @@ fn run_ord_add_program() {
             Box::new(OrdinalValue::Finite(2))
         ))
     );
+}
+
+#[test]
+fn run_perform_effect_unhandled() {
+    let code = vec![instr(Opcode::PushInt, Some(1)), instr(Opcode::PerformEffect, None)];
+
+    let mut vm = VmState::new(code);
+    let err = vm.run().expect_err("expected unhandled effect");
+    assert_eq!(err, VmError::UnhandledEffect);
 }

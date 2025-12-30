@@ -2,7 +2,7 @@ use tksbytecode::bytecode::{Instruction, Opcode};
 use tksbytecode::emit::emit;
 use tkscore::ast::{Expr, Literal, OrdinalLiteral};
 use tkscore::span::Span;
-use tksir::ir::{IRComp, IRTerm, IRVal, OrdOp};
+use tksir::ir::{IRComp, IRHandler, IRTerm, IRVal, OrdOp};
 
 fn inst(opcode: Opcode) -> Instruction {
     Instruction {
@@ -176,6 +176,42 @@ fn emit_entangle_term() {
         inst1(Opcode::PushInt, 4),
         inst1(Opcode::PushInt, 5),
         inst(Opcode::Entangle),
+        inst(Opcode::Ret),
+    ];
+    assert_eq!(code, expected);
+}
+
+#[test]
+fn emit_perform_term() {
+    let term = IRTerm::Perform("ping".to_string(), IRVal::Lit(Literal::Int(6)));
+    let code = emit(&term).expect("emit perform");
+    let expected = vec![
+        inst1(Opcode::PushInt, 6),
+        inst(Opcode::PerformEffect),
+        inst(Opcode::Ret),
+    ];
+    assert_eq!(code, expected);
+}
+
+#[test]
+fn emit_handle_term() {
+    let handler = IRHandler {
+        return_clause: (
+            "r".to_string(),
+            Box::new(IRTerm::Return(IRVal::Lit(Literal::Unit))),
+        ),
+        op_clauses: Vec::new(),
+    };
+    let term = IRTerm::Handle(
+        Box::new(IRTerm::Return(IRVal::Lit(Literal::Int(2)))),
+        Box::new(handler),
+    );
+    let code = emit(&term).expect("emit handle");
+    let expected = vec![
+        inst(Opcode::PushUnit),
+        inst(Opcode::InstallHandler),
+        inst1(Opcode::PushInt, 2),
+        inst(Opcode::RemoveHandler),
         inst(Opcode::Ret),
     ];
     assert_eq!(code, expected);

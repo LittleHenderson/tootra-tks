@@ -93,6 +93,18 @@ impl EmitState {
                 self.code.push(inst(Opcode::Entangle));
                 Ok(())
             }
+            IRTerm::Perform(_op, arg) => {
+                self.emit_val(arg)?;
+                self.code.push(inst(Opcode::PerformEffect));
+                Ok(())
+            }
+            IRTerm::Handle(expr, _handler) => {
+                self.code.push(inst(Opcode::PushUnit));
+                self.code.push(inst(Opcode::InstallHandler));
+                self.emit_term(expr)?;
+                self.code.push(inst(Opcode::RemoveHandler));
+                Ok(())
+            }
             IRTerm::OrdSucc(val) => {
                 self.emit_val(val)?;
                 self.code.push(inst(Opcode::OrdSucc));
