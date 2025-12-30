@@ -61,6 +61,9 @@ This document defines the implementation pipeline and crate layout for the v7.4 
 9. Packaging
    - Package bytecode + runtime into Windows .exe
    - Emit .pdb and symbol maps for diagnostics (optional)
+   - Packaging helper (PowerShell):
+     - `.\scripts\package_tks.ps1 -OutDir .\packaging\windows`
+     - Run: `.\packaging\windows\tks.exe run path\to\file.tks`
 
 ## Crate Layout (Proposed)
 - tks-rs/

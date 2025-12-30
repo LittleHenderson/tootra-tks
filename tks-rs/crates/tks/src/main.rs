@@ -41,8 +41,11 @@ fn main() {
         "help" | "-h" | "--help" => {
             print_usage();
         }
+        "version" | "-V" | "--version" => {
+            print_version();
+        }
         _ => {
-            eprintln!("tks: unknown command");
+            eprintln!("tks: unknown command '{}'", args[1]);
             print_usage();
             process::exit(2);
         }
@@ -173,6 +176,7 @@ fn format_vm_error(path: &str, err: &VmError) -> String {
 }
 
 fn print_usage() {
+    eprintln!("tks {}", env!("CARGO_PKG_VERSION"));
     eprintln!("Usage:");
     eprintln!("  tks run <file.tks|file.tkso>");
     #[cfg(feature = "gpu")]
@@ -185,4 +189,10 @@ fn print_usage() {
         eprintln!("  tks gpu (build with --features gpu)");
     }
     eprintln!("  tks repl");
+    eprintln!("  tks --help");
+    eprintln!("  tks --version");
+}
+
+fn print_version() {
+    println!("tks {}", env!("CARGO_PKG_VERSION"));
 }
