@@ -9,6 +9,7 @@ pub enum Value {
     Element { world: u8, index: u8 },
     Noetic(u8),
     NoeticApplied { index: u8, value: Box<Value> },
+    RpmState { ok: bool, value: Box<Value> },
     Ket(Box<Value>),
     Superpose(Vec<(Value, Value)>),
     Entangle(Box<Value>, Box<Value>),
@@ -240,6 +241,33 @@ impl VmState {
                         index,
                         value: Box::new(arg),
                     });
+                }
+                Opcode::RpmAcquire => {
+                    let value = self.pop()?;
+                    self.stack.push(Value::RpmState {
+                        ok: true,
+                        value: Box::new(value),
+                    });
+                }
+                Opcode::RpmFail => {
+                    self.stack.push(Value::RpmState {
+                        ok: false,
+                        value: Box::new(Value::Unit),
+                    });
+                }
+                Opcode::RpmCheck => {
+                    let state = self.pop()?;
+                    match state {
+                        Value::RpmState { ok, .. } => {
+                            self.stack.push(Value::Bool(ok));
+                        }
+                        other => {
+                            return Err(VmError::TypeMismatch {
+                                expected: "rpm state",
+                                found: other,
+                            })
+                        }
+                    }
                 }
                 Opcode::MakeKet => {
                     let inner = self.pop()?;

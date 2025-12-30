@@ -86,6 +86,54 @@ fn run_apply_noetic_program() {
 }
 
 #[test]
+fn run_rpm_acquire_program() {
+    let code = vec![
+        instr(Opcode::PushInt, Some(7)),
+        instr(Opcode::RpmAcquire, None),
+        instr(Opcode::Ret, None),
+    ];
+
+    let mut vm = VmState::new(code);
+    let result = vm.run().expect("run program");
+    assert_eq!(
+        result,
+        Value::RpmState {
+            ok: true,
+            value: Box::new(Value::Int(7))
+        }
+    );
+}
+
+#[test]
+fn run_rpm_fail_program() {
+    let code = vec![instr(Opcode::RpmFail, None), instr(Opcode::Ret, None)];
+
+    let mut vm = VmState::new(code);
+    let result = vm.run().expect("run program");
+    assert_eq!(
+        result,
+        Value::RpmState {
+            ok: false,
+            value: Box::new(Value::Unit)
+        }
+    );
+}
+
+#[test]
+fn run_rpm_check_program() {
+    let code = vec![
+        instr(Opcode::PushInt, Some(1)),
+        instr(Opcode::RpmAcquire, None),
+        instr(Opcode::RpmCheck, None),
+        instr(Opcode::Ret, None),
+    ];
+
+    let mut vm = VmState::new(code);
+    let result = vm.run().expect("run program");
+    assert_eq!(result, Value::Bool(true));
+}
+
+#[test]
 fn run_superpose_program() {
     let code = vec![
         instr(Opcode::PushInt, Some(1)),

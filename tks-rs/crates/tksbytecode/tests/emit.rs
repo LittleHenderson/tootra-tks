@@ -182,6 +182,38 @@ fn emit_entangle_term() {
 }
 
 #[test]
+fn emit_rpm_check_term() {
+    let term = IRTerm::RPMCheck(IRVal::Lit(Literal::Int(1)));
+    let code = emit(&term).expect("emit rpm check");
+    let expected = vec![
+        inst1(Opcode::PushInt, 1),
+        inst(Opcode::RpmCheck),
+        inst(Opcode::Ret),
+    ];
+    assert_eq!(code, expected);
+}
+
+#[test]
+fn emit_rpm_acquire_term() {
+    let term = IRTerm::RPMAcquire(IRVal::Lit(Literal::Int(2)));
+    let code = emit(&term).expect("emit rpm acquire");
+    let expected = vec![
+        inst1(Opcode::PushInt, 2),
+        inst(Opcode::RpmAcquire),
+        inst(Opcode::Ret),
+    ];
+    assert_eq!(code, expected);
+}
+
+#[test]
+fn emit_rpm_fail_term() {
+    let term = IRTerm::RPMFail;
+    let code = emit(&term).expect("emit rpm fail");
+    let expected = vec![inst(Opcode::RpmFail), inst(Opcode::Ret)];
+    assert_eq!(code, expected);
+}
+
+#[test]
 fn emit_ordinal_finite_literal() {
     let expr = Expr::OrdLit {
         span: span(),

@@ -93,6 +93,20 @@ impl EmitState {
                 self.code.push(inst(Opcode::Entangle));
                 Ok(())
             }
+            IRTerm::RPMCheck(val) => {
+                self.emit_val(val)?;
+                self.code.push(inst(Opcode::RpmCheck));
+                Ok(())
+            }
+            IRTerm::RPMAcquire(val) => {
+                self.emit_val(val)?;
+                self.code.push(inst(Opcode::RpmAcquire));
+                Ok(())
+            }
+            IRTerm::RPMFail => {
+                self.code.push(inst(Opcode::RpmFail));
+                Ok(())
+            }
             IRTerm::OrdSucc(val) => {
                 self.emit_val(val)?;
                 self.code.push(inst(Opcode::OrdSucc));
