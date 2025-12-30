@@ -1,9 +1,11 @@
 use std::env;
 use std::fs;
 use std::io::{self, Read};
+use std::path::Path;
 use std::process;
 
 use tksbytecode::emit::{emit, EmitError};
+use tksbytecode::tkso::{encode as encode_tkso, TksoError};
 use tksbytecode::bytecode::Instruction;
 use tkscore::parser::{parse_program, ParseError};
 use tksir::lower::{lower_program, LowerError};
@@ -61,7 +63,7 @@ fn cmd_check(args: &[String]) -> Result<(), String> {
 fn cmd_build(args: &[String]) -> Result<(), String> {
     let mut input = None;
     let mut output = None;
-    let mut emit = EmitKind::Ast;
+    let mut emit_kind = EmitKind::Ast;
     let mut idx = 0;
     while idx < args.len() {
         match args[idx].as_str() {
@@ -77,7 +79,7 @@ fn cmd_build(args: &[String]) -> Result<(), String> {
                 let Some(kind) = args.get(idx) else {
                     return Err("tksc build: missing value after --emit".to_string());
                 };
-                emit = parse_emit(kind).ok_or_else(|| {
+                emit_kind = parse_emit(kind).ok_or_else(|| {
                     format!("tksc build: unknown emit kind '{kind}' (use ast, ir, bc)")
                 })?;
             }
@@ -100,7 +102,7 @@ fn cmd_build(args: &[String]) -> Result<(), String> {
     };
 
     let source = read_source(path)?;
-    match emit {
+    match emit_kind {
         EmitKind::Ast => {
             let program = parse_program(&source).map_err(|err| format_parse_error(path, &err))?;
             let out = format!("{program:#?}\n");
@@ -119,6 +121,15 @@ fn cmd_build(args: &[String]) -> Result<(), String> {
             let ir = lower_program(&program).map_err(|err| format_lower_error(path, &err))?;
             let bytecode = emit(&ir).map_err(|err| format_emit_error(path, &err))?;
             let out = format_bytecode(&bytecode);
+            if let Some(path) = output {
+                if is_tkso_path(path) {
+                    let encoded =
+                        encode_tkso(&bytecode).map_err(|err| format_tkso_error(path, &err))?;
+                    fs::write(path, encoded).map_err(|err| format!("{path}: {err}"))?;
+                    print!("{out}");
+                    return Ok(());
+                }
+            }
             write_output(output, &out)?;
             Ok(())
         }
@@ -174,6 +185,10 @@ fn format_emit_error(path: &str, err: &EmitError) -> String {
     format!("{path}: emit error: {err}")
 }
 
+fn format_tkso_error(path: &str, err: &TksoError) -> String {
+    format!("{path}: tkso error: {err}")
+}
+
 fn print_usage() {
     eprintln!("Usage:");
     eprintln!("  tksc check <file.tks>");
@@ -200,4 +215,11 @@ fn format_bytecode(code: &[Instruction]) -> String {
         out.push('\n');
     }
     out
+}
+
+fn is_tkso_path(path: &str) -> bool {
+    Path::new(path)
+        .extension()
+        .and_then(|ext| ext.to_str())
+        == Some("tkso")
 }

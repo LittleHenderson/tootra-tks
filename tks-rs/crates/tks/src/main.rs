@@ -5,6 +5,7 @@ use std::path::Path;
 use std::process;
 
 use tksbytecode::emit::{emit, EmitError};
+use tksbytecode::tkso::{decode as decode_tkso, TksoError};
 use tkscore::parser::{parse_program, ParseError};
 use tksir::lower::{lower_program, LowerError};
 use tksvm::vm::{VmError, VmState};
@@ -47,7 +48,13 @@ fn cmd_run(args: &[String]) -> Result<(), String> {
     if path != "-" {
         let ext = Path::new(path).extension().and_then(|ext| ext.to_str());
         if matches!(ext, Some("tkso")) {
-            return Err("tks run: bytecode execution not implemented".to_string());
+            let bytes = fs::read(path).map_err(|err| format!("{path}: {err}"))?;
+            let bytecode =
+                decode_tkso(&bytes).map_err(|err| format_tkso_error(path, &err))?;
+            let mut vm = VmState::new(bytecode);
+            let result = vm.run().map_err(|err| format_vm_error(path, &err))?;
+            println!("{result:?}");
+            return Ok(());
         }
     }
 
@@ -90,6 +97,10 @@ fn format_lower_error(path: &str, err: &LowerError) -> String {
 
 fn format_emit_error(path: &str, err: &EmitError) -> String {
     format!("{path}: emit error: {err}")
+}
+
+fn format_tkso_error(path: &str, err: &TksoError) -> String {
+    format!("{path}: tkso error: {err}")
 }
 
 fn format_vm_error(path: &str, err: &VmError) -> String {
