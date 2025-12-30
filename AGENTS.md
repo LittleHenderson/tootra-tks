@@ -96,7 +96,7 @@ Status legend: [ ] todo, [~] in progress, [x] done.
 [x] Runtime packaging (.exe) + CLI polish + build scripts + GPU harness gating - Owner: Agent C
 [ ] Fractal/foundation/acquisition semantics in VM + tests - Owner: TBD
 [ ] Stdlib bootstrap (TKS.Core, TKS.RPM, TKS.Quantum) - Owner: TBD
-[ ] Canonical compliance + regression tests (samples, golden files) - Owner: TBD
+[x] Canonical compliance + regression tests (samples, golden files) - Owner: Agent C
 
 ## Current Sprint (Parallel)
 
@@ -105,3 +105,4 @@ Status legend: [ ] todo, [~] in progress, [x] done.
 [x] Agent A: Effects/Handlers types + IR lowering (bytecode/VM done)
 [x] Agent B: FFI signatures/links + module integration
 [x] Agent C: Packaging (.exe) + CLI polish + build script + docs
+[x] Agent C: Canonical compliance + regression tests
