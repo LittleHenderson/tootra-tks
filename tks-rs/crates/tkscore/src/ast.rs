@@ -50,6 +50,7 @@ pub enum TopDecl {
     EffectDecl {
         span: Span,
         name: Ident,
+        params: Vec<Ident>,
         ops: Vec<OpSig>,
     },
     HandlerDecl {

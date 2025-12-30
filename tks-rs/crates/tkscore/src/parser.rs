@@ -32,11 +32,16 @@ pub fn parse_program(source: &str) -> Result<Program, ParseError> {
 pub struct Parser {
     tokens: Vec<Token>,
     pos: usize,
+    stop_at_pipe: bool,
 }
 
 impl Parser {
     pub fn new(tokens: Vec<Token>) -> Self {
-        Self { tokens, pos: 0 }
+        Self {
+            tokens,
+            pos: 0,
+            stop_at_pipe: false,
+        }
     }
 
     pub fn parse_program(&mut self) -> Result<Program, ParseError> {
@@ -144,10 +149,11 @@ impl Parser {
     fn parse_effect_decl(&mut self) -> Result<TopDecl, ParseError> {
         let start = self.expect(&TokenKind::Effect, "expected 'effect'")?;
         let name = self.expect_ident("expected effect name")?;
+        let mut params = Vec::new();
         if self.match_kind(&TokenKind::LBracket) {
             if !self.check(&TokenKind::RBracket) {
                 loop {
-                    self.expect_ident("expected effect type parameter")?;
+                    params.push(self.expect_ident("expected effect type parameter")?);
                     if !self.match_kind(&TokenKind::Comma) {
                         break;
                     }
@@ -163,7 +169,12 @@ impl Parser {
         }
         let end = self.expect(&TokenKind::RBrace, "expected '}' after effect body")?;
         let span = span_join(start.span, end.span);
-        Ok(TopDecl::EffectDecl { span, name, ops })
+        Ok(TopDecl::EffectDecl {
+            span,
+            name,
+            params,
+            ops,
+        })
     }
 
     fn parse_op_sig(&mut self) -> Result<OpSig, ParseError> {
@@ -628,7 +639,7 @@ impl Parser {
         if self.check(&TokenKind::FracOpen) {
             return self.parse_fractal_expr();
         }
-        if self.check(&TokenKind::Pipe) {
+        if !self.stop_at_pipe && self.check(&TokenKind::Pipe) {
             return self.parse_ket_expr();
         }
         if self.check(&TokenKind::LAngle) {
@@ -876,7 +887,11 @@ impl Parser {
 
     fn parse_bra_or_braket(&mut self) -> Result<Expr, ParseError> {
         let start = self.expect(&TokenKind::LAngle, "expected '<' for bra")?;
-        let left = self.parse_expr()?;
+        let prev = self.stop_at_pipe;
+        self.stop_at_pipe = true;
+        let left = self.parse_expr();
+        self.stop_at_pipe = prev;
+        let left = left?;
         self.expect(&TokenKind::Pipe, "expected '|' in bra")?;
         if self.check(&TokenKind::RAngle) {
             let end = self.expect(&TokenKind::RAngle, "expected '>' after bra")?;
@@ -1446,7 +1461,7 @@ impl Parser {
     }
 
     fn can_start_primary(&self) -> bool {
-        matches!(
+        let can = matches!(
             self.peek_kind(),
             TokenKind::Ident(_)
                 | TokenKind::Int(_)
@@ -1480,7 +1495,11 @@ impl Parser {
                 | TokenKind::Basis
                 | TokenKind::Resume
                 | TokenKind::QState
-        )
+        );
+        if self.stop_at_pipe && matches!(self.peek_kind(), TokenKind::Pipe) {
+            return false;
+        }
+        can
     }
 
     fn looks_like_fractal(&self) -> bool {
