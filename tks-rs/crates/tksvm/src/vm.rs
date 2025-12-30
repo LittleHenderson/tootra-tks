@@ -12,6 +12,18 @@ pub enum Value {
     Ket(Box<Value>),
     Superpose(Vec<(Value, Value)>),
     Entangle(Box<Value>, Box<Value>),
+    Ordinal(OrdinalValue),
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum OrdinalValue {
+    Finite(u64),
+    Omega,
+    Epsilon(u64),
+    Succ(Box<OrdinalValue>),
+    Add(Box<OrdinalValue>, Box<OrdinalValue>),
+    Mul(Box<OrdinalValue>, Box<OrdinalValue>),
+    Exp(Box<OrdinalValue>, Box<OrdinalValue>),
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -100,6 +112,17 @@ impl VmState {
                     let index = Self::expect_operand1_u8(&instr)?;
                     self.stack.push(Value::Noetic(index));
                 }
+                Opcode::PushOrd => {
+                    let value = Self::expect_operand1(&instr)?;
+                    self.stack.push(Value::Ordinal(OrdinalValue::Finite(value)));
+                }
+                Opcode::PushOmega => {
+                    self.stack.push(Value::Ordinal(OrdinalValue::Omega));
+                }
+                Opcode::PushEpsilon => {
+                    let value = Self::expect_operand1(&instr)?;
+                    self.stack.push(Value::Ordinal(OrdinalValue::Epsilon(value)));
+                }
                 Opcode::Load => {
                     let index = Self::expect_operand1_usize(&instr)?;
                     let value = self
@@ -157,6 +180,29 @@ impl VmState {
                     }
                     let lhs = self.pop_int()?;
                     self.stack.push(Value::Int(lhs / rhs));
+                }
+                Opcode::OrdSucc => {
+                    let inner = self.pop_ordinal()?;
+                    self.stack
+                        .push(Value::Ordinal(OrdinalValue::Succ(Box::new(inner))));
+                }
+                Opcode::OrdAdd => {
+                    let rhs = self.pop_ordinal()?;
+                    let lhs = self.pop_ordinal()?;
+                    self.stack
+                        .push(Value::Ordinal(OrdinalValue::Add(Box::new(lhs), Box::new(rhs))));
+                }
+                Opcode::OrdMul => {
+                    let rhs = self.pop_ordinal()?;
+                    let lhs = self.pop_ordinal()?;
+                    self.stack
+                        .push(Value::Ordinal(OrdinalValue::Mul(Box::new(lhs), Box::new(rhs))));
+                }
+                Opcode::OrdExp => {
+                    let rhs = self.pop_ordinal()?;
+                    let lhs = self.pop_ordinal()?;
+                    self.stack
+                        .push(Value::Ordinal(OrdinalValue::Exp(Box::new(lhs), Box::new(rhs))));
                 }
                 Opcode::Call => {
                     let arg = self.pop()?;
@@ -276,6 +322,16 @@ impl VmState {
             Value::Bool(value) => Ok(value),
             other => Err(VmError::TypeMismatch {
                 expected: "bool",
+                found: other,
+            }),
+        }
+    }
+
+    fn pop_ordinal(&mut self) -> Result<OrdinalValue, VmError> {
+        match self.pop()? {
+            Value::Ordinal(value) => Ok(value),
+            other => Err(VmError::TypeMismatch {
+                expected: "ordinal",
                 found: other,
             }),
         }

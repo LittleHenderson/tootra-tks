@@ -1,5 +1,5 @@
 use tksbytecode::bytecode::{Instruction, Opcode};
-use tksvm::vm::{Value, VmState};
+use tksvm::vm::{OrdinalValue, Value, VmState};
 
 fn instr(opcode: Opcode, operand1: Option<u64>) -> Instruction {
     Instruction {
@@ -170,4 +170,40 @@ fn run_make_ket_program() {
     let mut vm = VmState::new(code);
     let result = vm.run().expect("run program");
     assert_eq!(result, Value::Ket(Box::new(Value::Int(9))));
+}
+
+#[test]
+fn run_ord_succ_program() {
+    let code = vec![
+        instr(Opcode::PushOrd, Some(1)),
+        instr(Opcode::OrdSucc, None),
+        instr(Opcode::Ret, None),
+    ];
+
+    let mut vm = VmState::new(code);
+    let result = vm.run().expect("run program");
+    assert_eq!(
+        result,
+        Value::Ordinal(OrdinalValue::Succ(Box::new(OrdinalValue::Finite(1))))
+    );
+}
+
+#[test]
+fn run_ord_add_program() {
+    let code = vec![
+        instr(Opcode::PushOmega, None),
+        instr(Opcode::PushOrd, Some(2)),
+        instr(Opcode::OrdAdd, None),
+        instr(Opcode::Ret, None),
+    ];
+
+    let mut vm = VmState::new(code);
+    let result = vm.run().expect("run program");
+    assert_eq!(
+        result,
+        Value::Ordinal(OrdinalValue::Add(
+            Box::new(OrdinalValue::Omega),
+            Box::new(OrdinalValue::Finite(2))
+        ))
+    );
 }

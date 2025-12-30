@@ -1,7 +1,8 @@
 use tksbytecode::bytecode::{Instruction, Opcode};
 use tksbytecode::emit::emit;
-use tkscore::ast::Literal;
-use tksir::ir::{IRComp, IRTerm, IRVal};
+use tkscore::ast::{Expr, Literal, OrdinalLiteral};
+use tkscore::span::Span;
+use tksir::ir::{IRComp, IRTerm, IRVal, OrdOp};
 
 fn inst(opcode: Opcode) -> Instruction {
     Instruction {
@@ -19,6 +20,10 @@ fn inst1(opcode: Opcode, operand1: u64) -> Instruction {
         operand1: Some(operand1),
         operand2: None,
     }
+}
+
+fn span() -> Span {
+    Span::new(0, 0, 0, 0)
 }
 
 #[test]
@@ -171,6 +176,65 @@ fn emit_entangle_term() {
         inst1(Opcode::PushInt, 4),
         inst1(Opcode::PushInt, 5),
         inst(Opcode::Entangle),
+        inst(Opcode::Ret),
+    ];
+    assert_eq!(code, expected);
+}
+
+#[test]
+fn emit_ordinal_finite_literal() {
+    let expr = Expr::OrdLit {
+        span: span(),
+        value: OrdinalLiteral::Finite(3),
+    };
+    let term = IRTerm::Return(IRVal::Ordinal(expr));
+    let code = emit(&term).expect("emit ordinal");
+    let expected = vec![inst1(Opcode::PushOrd, 3), inst(Opcode::Ret)];
+    assert_eq!(code, expected);
+}
+
+#[test]
+fn emit_ordinal_omega_plus_literal() {
+    let expr = Expr::OrdLit {
+        span: span(),
+        value: OrdinalLiteral::OmegaPlus(2),
+    };
+    let term = IRTerm::Return(IRVal::Ordinal(expr));
+    let code = emit(&term).expect("emit ordinal");
+    let expected = vec![
+        inst(Opcode::PushOmega),
+        inst1(Opcode::PushOrd, 2),
+        inst(Opcode::OrdAdd),
+        inst(Opcode::Ret),
+    ];
+    assert_eq!(code, expected);
+}
+
+#[test]
+fn emit_ordinal_succ_term() {
+    let expr = Expr::OrdLit {
+        span: span(),
+        value: OrdinalLiteral::Finite(1),
+    };
+    let term = IRTerm::OrdSucc(IRVal::Ordinal(expr));
+    let code = emit(&term).expect("emit ordinal");
+    let expected = vec![inst1(Opcode::PushOrd, 1), inst(Opcode::OrdSucc), inst(Opcode::Ret)];
+    assert_eq!(code, expected);
+}
+
+#[test]
+fn emit_ordinal_op_mul_term() {
+    let left = IRVal::Ordinal(Expr::OrdOmega { span: span() });
+    let right = IRVal::Ordinal(Expr::OrdLit {
+        span: span(),
+        value: OrdinalLiteral::Finite(2),
+    });
+    let term = IRTerm::OrdOp(OrdOp::Mul, left, right);
+    let code = emit(&term).expect("emit ordinal");
+    let expected = vec![
+        inst(Opcode::PushOmega),
+        inst1(Opcode::PushOrd, 2),
+        inst(Opcode::OrdMul),
         inst(Opcode::Ret),
     ];
     assert_eq!(code, expected);
