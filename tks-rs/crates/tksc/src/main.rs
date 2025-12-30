@@ -8,6 +8,8 @@ use tksbytecode::emit::{emit, EmitError};
 use tksbytecode::tkso::{encode as encode_tkso, TksoError};
 use tksbytecode::bytecode::Instruction;
 use tkscore::parser::{parse_program, ParseError};
+use tkscore::resolve::{resolve_program, ResolveError};
+use tkscore::tksi::emit_tksi;
 use tksir::lower::{lower_program, LowerError};
 use tkstypes::infer::{infer_program, TypeError};
 
@@ -16,6 +18,7 @@ enum EmitKind {
     Ast,
     Ir,
     Bc,
+    Tksi,
 }
 
 fn main() {
@@ -55,6 +58,7 @@ fn cmd_check(args: &[String]) -> Result<(), String> {
     };
     let source = read_source(path)?;
     let program = parse_program(&source).map_err(|err| format_parse_error(path, &err))?;
+    resolve_program(&program).map_err(|err| format_resolve_error(path, &err))?;
     infer_program(&program).map_err(|err| format_type_error(path, &err))?;
     eprintln!("ok");
     Ok(())
@@ -102,22 +106,26 @@ fn cmd_build(args: &[String]) -> Result<(), String> {
     };
 
     let source = read_source(path)?;
+    let program = parse_program(&source).map_err(|err| format_parse_error(path, &err))?;
+    let resolved = resolve_program(&program).map_err(|err| format_resolve_error(path, &err))?;
     match emit_kind {
         EmitKind::Ast => {
-            let program = parse_program(&source).map_err(|err| format_parse_error(path, &err))?;
             let out = format!("{program:#?}\n");
             write_output(output, &out)?;
             Ok(())
         }
         EmitKind::Ir => {
-            let program = parse_program(&source).map_err(|err| format_parse_error(path, &err))?;
             let ir = lower_program(&program).map_err(|err| format_lower_error(path, &err))?;
             let out = format!("{ir:#?}\n");
             write_output(output, &out)?;
             Ok(())
         }
+        EmitKind::Tksi => {
+            let out = emit_tksi(&resolved);
+            write_output(output, &out)?;
+            Ok(())
+        }
         EmitKind::Bc => {
-            let program = parse_program(&source).map_err(|err| format_parse_error(path, &err))?;
             let ir = lower_program(&program).map_err(|err| format_lower_error(path, &err))?;
             let bytecode = emit(&ir).map_err(|err| format_emit_error(path, &err))?;
             let out = format_bytecode(&bytecode);
@@ -141,6 +149,7 @@ fn parse_emit(value: &str) -> Option<EmitKind> {
         "ast" => Some(EmitKind::Ast),
         "ir" => Some(EmitKind::Ir),
         "bc" => Some(EmitKind::Bc),
+        "tksi" => Some(EmitKind::Tksi),
         _ => None,
     }
 }
@@ -177,6 +186,10 @@ fn format_type_error(path: &str, err: &TypeError) -> String {
     format!("{path}: type error: {err}")
 }
 
+fn format_resolve_error(path: &str, err: &ResolveError) -> String {
+    format!("{path}: resolve error: {err}")
+}
+
 fn format_lower_error(path: &str, err: &LowerError) -> String {
     format!("{path}: lower error: {err}")
 }
@@ -192,12 +205,12 @@ fn format_tkso_error(path: &str, err: &TksoError) -> String {
 fn print_usage() {
     eprintln!("Usage:");
     eprintln!("  tksc check <file.tks>");
-    eprintln!("  tksc build <file.tks> [--emit ast|ir|bc] [-o out]");
+    eprintln!("  tksc build <file.tks> [--emit ast|ir|bc|tksi] [-o out]");
 }
 
 fn print_build_usage() {
     eprintln!("Usage:");
-    eprintln!("  tksc build <file.tks> [--emit ast|ir|bc] [-o out]");
+    eprintln!("  tksc build <file.tks> [--emit ast|ir|bc|tksi] [-o out]");
 }
 
 fn format_bytecode(code: &[Instruction]) -> String {
