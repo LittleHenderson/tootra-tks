@@ -103,6 +103,6 @@ Status legend: [ ] todo, [~] in progress, [x] done.
 
 Status legend: [ ] todo, [~] in progress, [x] done.
 
-[~] Agent A: Extern value plumbing (IR + lowering + emitter + bytecode + tests)
+[x] Agent A: Extern value plumbing (IR + lowering + emitter + bytecode + tests)
 [~] Agent B: VM extern call semantics + registry API + tests
 [~] Agent C: CLI host registry + builtins + docs/examples
