@@ -87,3 +87,14 @@ default output unless Unicode is required.
 - Interim reviews at each milestone checkpoint.
 - Final review at milestone completion.
 
+## What's Next (Tracking)
+
+Status legend: [ ] todo, [~] in progress, [x] done.
+
+[ ] Effects & handlers end-to-end (type/effect rows, handler typing, resume/perform, IR lowering, bytecode, VM) - Owner: Agent A
+[ ] Modules + .tksi + resolver + import/export + FFI signatures/links - Owner: Agent B
+[ ] Runtime packaging (.exe) + CLI polish + build scripts + GPU harness gating - Owner: Agent C
+[ ] Fractal/foundation/acquisition semantics in VM + tests - Owner: TBD
+[ ] Stdlib bootstrap (TKS.Core, TKS.RPM, TKS.Quantum) - Owner: TBD
+[ ] Canonical compliance + regression tests (samples, golden files) - Owner: TBD
+
