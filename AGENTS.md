@@ -102,6 +102,6 @@ Status legend: [ ] todo, [~] in progress, [x] done.
 
 Status legend: [ ] todo, [~] in progress, [x] done.
 
-[~] Agent A: Effects/Handlers end-to-end (bytecode/VM done; types + lowering pending)
-[x] Agent B: Modules + .tksi + resolver + import/export (FFI pending)
+[~] Agent A: Effects/Handlers types + IR lowering (bytecode/VM done)
+[~] Agent B: FFI signatures/links + module integration (resolver done)
 [x] Agent C: Packaging (.exe) + CLI polish + build script + docs
