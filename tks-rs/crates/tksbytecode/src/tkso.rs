@@ -175,6 +175,7 @@ const OPCODES: &[Opcode] = &[
     Opcode::PushInt,
     Opcode::PushBool,
     Opcode::PushUnit,
+    Opcode::PushClosure,
     Opcode::Pop,
     Opcode::Dup,
     Opcode::Swap,
