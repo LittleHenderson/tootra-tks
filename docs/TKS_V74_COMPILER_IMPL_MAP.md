@@ -115,6 +115,10 @@ Goals:
 - safe/unsafe annotations; effect annotations on externs.
 - Optional attributes: link directives and explicit symbol names.
 
+## Implementation Status (Current)
+- Implemented: noetic apply (expr^k alias + IR Noetic form), quantum ops (AST/IR forms + opcode definitions),
+  ordinals (parser + symbolic bytecode/VM ops), tkso (encode/decode + roundtrip tests).
+
 ## Open Questions / Spec Gaps
 - Precedence/associativity for ^ suffix vs nu form (define in parser).
 - Ordinal literal surface syntax beyond omega (epsilon/aleph) vs generic ordinal expressions.
