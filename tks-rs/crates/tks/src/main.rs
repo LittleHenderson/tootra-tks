@@ -4,7 +4,11 @@ use std::io::{self, Read};
 use std::path::Path;
 use std::process;
 
+use tksbytecode::emit::{emit, EmitError};
 use tkscore::parser::{parse_program, ParseError};
+use tksir::lower::{lower_program, LowerError};
+use tksvm::vm::{VmError, VmState};
+use tkstypes::infer::{infer_program, TypeError};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -48,8 +52,14 @@ fn cmd_run(args: &[String]) -> Result<(), String> {
     }
 
     let source = read_source(path)?;
-    parse_program(&source).map_err(|err| format_parse_error(path, &err))?;
-    Err("tks run: VM execution not implemented".to_string())
+    let program = parse_program(&source).map_err(|err| format_parse_error(path, &err))?;
+    infer_program(&program).map_err(|err| format_type_error(path, &err))?;
+    let ir = lower_program(&program).map_err(|err| format_lower_error(path, &err))?;
+    let bytecode = emit(&ir).map_err(|err| format_emit_error(path, &err))?;
+    let mut vm = VmState::new(bytecode);
+    let result = vm.run().map_err(|err| format_vm_error(path, &err))?;
+    println!("{result:?}");
+    Ok(())
 }
 
 fn read_source(path: &str) -> Result<String, String> {
@@ -68,6 +78,22 @@ fn format_parse_error(path: &str, err: &ParseError) -> String {
         Some(span) => format!("{path}:{line}:{col}: {message}", line = span.line, col = span.column, message = err.message),
         None => format!("{path}: {message}", message = err.message),
     }
+}
+
+fn format_type_error(path: &str, err: &TypeError) -> String {
+    format!("{path}: type error: {err}")
+}
+
+fn format_lower_error(path: &str, err: &LowerError) -> String {
+    format!("{path}: lower error: {err}")
+}
+
+fn format_emit_error(path: &str, err: &EmitError) -> String {
+    format!("{path}: emit error: {err}")
+}
+
+fn format_vm_error(path: &str, err: &VmError) -> String {
+    format!("{path}: vm error: {err:?}")
 }
 
 fn print_usage() {

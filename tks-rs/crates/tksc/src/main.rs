@@ -3,6 +3,8 @@ use std::fs;
 use std::io::{self, Read};
 use std::process;
 
+use tksbytecode::emit::{emit, EmitError};
+use tksbytecode::bytecode::Instruction;
 use tkscore::parser::{parse_program, ParseError};
 use tksir::lower::{lower_program, LowerError};
 use tkstypes::infer::{infer_program, TypeError};
@@ -112,7 +114,14 @@ fn cmd_build(args: &[String]) -> Result<(), String> {
             write_output(output, &out)?;
             Ok(())
         }
-        EmitKind::Bc => Err("tksc build: bytecode emission not implemented".to_string()),
+        EmitKind::Bc => {
+            let program = parse_program(&source).map_err(|err| format_parse_error(path, &err))?;
+            let ir = lower_program(&program).map_err(|err| format_lower_error(path, &err))?;
+            let bytecode = emit(&ir).map_err(|err| format_emit_error(path, &err))?;
+            let out = format_bytecode(&bytecode);
+            write_output(output, &out)?;
+            Ok(())
+        }
     }
 }
 
@@ -161,6 +170,10 @@ fn format_lower_error(path: &str, err: &LowerError) -> String {
     format!("{path}: lower error: {err}")
 }
 
+fn format_emit_error(path: &str, err: &EmitError) -> String {
+    format!("{path}: emit error: {err}")
+}
+
 fn print_usage() {
     eprintln!("Usage:");
     eprintln!("  tksc check <file.tks>");
@@ -170,4 +183,21 @@ fn print_usage() {
 fn print_build_usage() {
     eprintln!("Usage:");
     eprintln!("  tksc build <file.tks> [--emit ast|ir|bc] [-o out]");
+}
+
+fn format_bytecode(code: &[Instruction]) -> String {
+    let mut out = String::new();
+    for instr in code {
+        out.push_str(&format!("{:?}", instr.opcode));
+        if let Some(op1) = instr.operand1 {
+            out.push(' ');
+            out.push_str(&op1.to_string());
+        }
+        if let Some(op2) = instr.operand2 {
+            out.push(' ');
+            out.push_str(&op2.to_string());
+        }
+        out.push('\n');
+    }
+    out
 }

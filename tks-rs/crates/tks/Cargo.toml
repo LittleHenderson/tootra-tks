@@ -7,3 +7,5 @@ edition = "2021"
 tksvm = { path = "../tksvm" }
 tksbytecode = { path = "../tksbytecode" }
 tkscore = { path = "../tkscore" }
+tkstypes = { path = "../tkstypes" }
+tksir = { path = "../tksir" }
