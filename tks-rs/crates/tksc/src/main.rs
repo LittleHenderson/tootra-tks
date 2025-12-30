@@ -4,6 +4,7 @@ use std::io::{self, Read};
 use std::process;
 
 use tkscore::parser::{parse_program, ParseError};
+use tksir::lower::{lower_program, LowerError};
 use tkstypes::infer::{infer_program, TypeError};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -104,7 +105,13 @@ fn cmd_build(args: &[String]) -> Result<(), String> {
             write_output(output, &out)?;
             Ok(())
         }
-        EmitKind::Ir => Err("tksc build: IR emission not implemented".to_string()),
+        EmitKind::Ir => {
+            let program = parse_program(&source).map_err(|err| format_parse_error(path, &err))?;
+            let ir = lower_program(&program).map_err(|err| format_lower_error(path, &err))?;
+            let out = format!("{ir:#?}\n");
+            write_output(output, &out)?;
+            Ok(())
+        }
         EmitKind::Bc => Err("tksc build: bytecode emission not implemented".to_string()),
     }
 }
@@ -148,6 +155,10 @@ fn format_parse_error(path: &str, err: &ParseError) -> String {
 
 fn format_type_error(path: &str, err: &TypeError) -> String {
     format!("{path}: type error: {err}")
+}
+
+fn format_lower_error(path: &str, err: &LowerError) -> String {
+    format!("{path}: lower error: {err}")
 }
 
 fn print_usage() {
