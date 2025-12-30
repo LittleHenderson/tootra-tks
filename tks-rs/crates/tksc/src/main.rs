@@ -1,14 +1,15 @@
 use std::env;
 use std::fs;
 use std::io::{self, Read};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process;
 
 use tksbytecode::emit::{emit, EmitError};
 use tksbytecode::tkso::{encode as encode_tkso, TksoError};
 use tksbytecode::bytecode::Instruction;
+use tkscore::ast::{Program, TopDecl};
 use tkscore::parser::{parse_program, ParseError};
-use tkscore::resolve::{resolve_program, ResolveError};
+use tkscore::resolve::{resolve_program, ResolveError, ResolvedProgram};
 use tkscore::tksi::emit_tksi;
 use tksir::lower::{lower_program, LowerError};
 use tkstypes::infer::{infer_program, TypeError};
@@ -19,6 +20,12 @@ enum EmitKind {
     Ir,
     Bc,
     Tksi,
+}
+
+#[derive(Debug, Default)]
+struct Stdlib {
+    decls: Vec<TopDecl>,
+    module_paths: Vec<Vec<String>>,
 }
 
 fn main() {
@@ -58,6 +65,8 @@ fn cmd_check(args: &[String]) -> Result<(), String> {
     };
     let source = read_source(path)?;
     let program = parse_program(&source).map_err(|err| format_parse_error(path, &err))?;
+    let stdlib = load_stdlib()?;
+    let program = merge_program_with_stdlib(program, &stdlib);
     resolve_program(&program).map_err(|err| format_resolve_error(path, &err))?;
     infer_program(&program).map_err(|err| format_type_error(path, &err))?;
     eprintln!("ok");
@@ -84,7 +93,7 @@ fn cmd_build(args: &[String]) -> Result<(), String> {
                     return Err("tksc build: missing value after --emit".to_string());
                 };
                 emit_kind = parse_emit(kind).ok_or_else(|| {
-                    format!("tksc build: unknown emit kind '{kind}' (use ast, ir, bc)")
+                    format!("tksc build: unknown emit kind '{kind}' (use ast, ir, bc, tksi)")
                 })?;
             }
             "-h" | "--help" => {
@@ -107,7 +116,9 @@ fn cmd_build(args: &[String]) -> Result<(), String> {
 
     let source = read_source(path)?;
     let program = parse_program(&source).map_err(|err| format_parse_error(path, &err))?;
-    let resolved = resolve_program(&program).map_err(|err| format_resolve_error(path, &err))?;
+    let stdlib = load_stdlib()?;
+    let merged = merge_program_with_stdlib(program.clone(), &stdlib);
+    let resolved = resolve_program(&merged).map_err(|err| format_resolve_error(path, &err))?;
     match emit_kind {
         EmitKind::Ast => {
             let out = format!("{program:#?}\n");
@@ -115,18 +126,18 @@ fn cmd_build(args: &[String]) -> Result<(), String> {
             Ok(())
         }
         EmitKind::Ir => {
-            let ir = lower_program(&program).map_err(|err| format_lower_error(path, &err))?;
+            let ir = lower_program(&merged).map_err(|err| format_lower_error(path, &err))?;
             let out = format!("{ir:#?}\n");
             write_output(output, &out)?;
             Ok(())
         }
         EmitKind::Tksi => {
-            let out = emit_tksi(&resolved);
+            let out = emit_tksi(&filter_stdlib_modules(resolved, &stdlib));
             write_output(output, &out)?;
             Ok(())
         }
         EmitKind::Bc => {
-            let ir = lower_program(&program).map_err(|err| format_lower_error(path, &err))?;
+            let ir = lower_program(&merged).map_err(|err| format_lower_error(path, &err))?;
             let bytecode = emit(&ir).map_err(|err| format_emit_error(path, &err))?;
             let out = format_bytecode(&bytecode);
             if let Some(path) = output {
@@ -152,6 +163,97 @@ fn parse_emit(value: &str) -> Option<EmitKind> {
         "tksi" => Some(EmitKind::Tksi),
         _ => None,
     }
+}
+
+fn stdlib_root() -> Option<PathBuf> {
+    if let Ok(value) = env::var("TKS_STDLIB_DIR") {
+        if !value.trim().is_empty() {
+            return Some(PathBuf::from(value));
+        }
+    }
+    let default = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("..")
+        .join("..")
+        .join("stdlib");
+    if default.exists() {
+        Some(default)
+    } else {
+        None
+    }
+}
+
+fn collect_tks_files(root: &Path) -> Result<Vec<PathBuf>, String> {
+    let mut files = Vec::new();
+    let mut dirs = vec![root.to_path_buf()];
+    while let Some(dir) = dirs.pop() {
+        let entries = fs::read_dir(&dir).map_err(|err| format!("{}: {err}", dir.display()))?;
+        for entry in entries {
+            let entry = entry.map_err(|err| format!("{}: {err}", dir.display()))?;
+            let path = entry.path();
+            if path.is_dir() {
+                dirs.push(path);
+            } else if path.extension().and_then(|ext| ext.to_str()) == Some("tks") {
+                files.push(path);
+            }
+        }
+    }
+    files.sort();
+    Ok(files)
+}
+
+fn load_stdlib() -> Result<Stdlib, String> {
+    let Some(root) = stdlib_root() else {
+        return Ok(Stdlib::default());
+    };
+    let files = collect_tks_files(&root)?;
+    let mut decls = Vec::new();
+    let mut module_paths = Vec::new();
+    for path in files {
+        let source =
+            fs::read_to_string(&path).map_err(|err| format!("{}: {err}", path.display()))?;
+        let path_string = path.to_string_lossy();
+        let program =
+            parse_program(&source).map_err(|err| format_parse_error(&path_string, &err))?;
+        if program.entry.is_some() {
+            return Err(format!(
+                "{}: stdlib modules must not include an entry expression",
+                path.display()
+            ));
+        }
+        for decl in &program.decls {
+            if let TopDecl::ModuleDecl(module) = decl {
+                module_paths.push(module.path.clone());
+            }
+        }
+        decls.extend(program.decls);
+    }
+    module_paths.sort();
+    module_paths.dedup();
+    Ok(Stdlib { decls, module_paths })
+}
+
+fn merge_program_with_stdlib(mut program: Program, stdlib: &Stdlib) -> Program {
+    if stdlib.decls.is_empty() {
+        return program;
+    }
+    let mut decls = stdlib.decls.clone();
+    decls.append(&mut program.decls);
+    Program {
+        decls,
+        entry: program.entry,
+    }
+}
+
+fn filter_stdlib_modules(resolved: ResolvedProgram, stdlib: &Stdlib) -> ResolvedProgram {
+    if stdlib.module_paths.is_empty() {
+        return resolved;
+    }
+    let modules = resolved
+        .modules
+        .into_iter()
+        .filter(|module| !stdlib.module_paths.iter().any(|path| *path == module.path))
+        .collect();
+    ResolvedProgram { modules }
 }
 
 fn read_source(path: &str) -> Result<String, String> {

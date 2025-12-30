@@ -1,0 +1,9 @@
+module TKS.Quantum {
+  export { ket, measure_q, entangle_q, type QBit }
+
+  let ket = \x -> |x>;
+  let measure_q = \q -> measure(q);
+  let entangle_q = \l -> \r -> entangle(l, r);
+
+  type QBit = QState[Bool];
+}

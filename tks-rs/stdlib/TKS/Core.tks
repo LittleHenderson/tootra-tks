@@ -1,0 +1,7 @@
+module TKS.Core {
+  export { id, const, unit }
+
+  let id = \x -> x;
+  let const = \x -> \y -> x;
+  let unit = ();
+}

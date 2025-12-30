@@ -1,0 +1,8 @@
+module TKS.RPM {
+  export { rpm_return, rpm_bind, rpm_check, rpm_acquire }
+
+  let rpm_return = \x -> return x;
+  let rpm_bind = \m -> \f -> m >>= f;
+  let rpm_check = \e -> check e;
+  let rpm_acquire = \e -> acquire e;
+}
