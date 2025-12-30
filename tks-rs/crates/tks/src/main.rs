@@ -8,7 +8,7 @@ use tksbytecode::emit::{emit, EmitError};
 use tksbytecode::tkso::{decode as decode_tkso, TksoError};
 use tkscore::parser::{parse_program, ParseError};
 use tksir::lower::{lower_program, LowerError};
-use tksvm::vm::{VmError, VmState};
+use tksvm::vm::{Value, VmError, VmState};
 use tkstypes::infer::{infer_program, TypeError};
 
 #[cfg(feature = "gpu")]
@@ -53,7 +53,21 @@ fn main() {
 }
 
 fn cmd_run(args: &[String]) -> Result<(), String> {
-    let Some(path) = args.first() else {
+    let mut enable_ffi = false;
+    let mut path = None;
+    for arg in args {
+        if arg == "--ffi" {
+            enable_ffi = true;
+            continue;
+        }
+        if path.is_none() {
+            path = Some(arg.as_str());
+        } else {
+            return Err("tks run: unexpected extra argument".to_string());
+        }
+    }
+
+    let Some(path) = path else {
         return Err("tks run: missing input file".to_string());
     };
 
@@ -64,6 +78,9 @@ fn cmd_run(args: &[String]) -> Result<(), String> {
             let bytecode =
                 decode_tkso(&bytes).map_err(|err| format_tkso_error(path, &err))?;
             let mut vm = VmState::new(bytecode);
+            if enable_ffi {
+                register_default_externs(&mut vm);
+            }
             let result = vm.run().map_err(|err| format_vm_error(path, &err))?;
             println!("{result:?}");
             return Ok(());
@@ -76,6 +93,9 @@ fn cmd_run(args: &[String]) -> Result<(), String> {
     let ir = lower_program(&program).map_err(|err| format_lower_error(path, &err))?;
     let bytecode = emit(&ir).map_err(|err| format_emit_error(path, &err))?;
     let mut vm = VmState::new(bytecode);
+    if enable_ffi {
+        register_default_externs(&mut vm);
+    }
     let result = vm.run().map_err(|err| format_vm_error(path, &err))?;
     println!("{result:?}");
     Ok(())
@@ -178,7 +198,7 @@ fn format_vm_error(path: &str, err: &VmError) -> String {
 fn print_usage() {
     eprintln!("tks {}", env!("CARGO_PKG_VERSION"));
     eprintln!("Usage:");
-    eprintln!("  tks run <file.tks|file.tkso>");
+    eprintln!("  tks run [--ffi] <file.tks|file.tkso>");
     #[cfg(feature = "gpu")]
     {
         eprintln!("  tks gpu info");
@@ -189,10 +209,54 @@ fn print_usage() {
         eprintln!("  tks gpu (build with --features gpu)");
     }
     eprintln!("  tks repl");
+    eprintln!("  tks run --ffi <file.tks|file.tkso>");
     eprintln!("  tks --help");
     eprintln!("  tks --version");
 }
 
 fn print_version() {
     println!("tks {}", env!("CARGO_PKG_VERSION"));
+}
+
+fn register_default_externs(vm: &mut VmState) {
+    vm.register_extern("print_int", ffi_print_int);
+    vm.register_extern("print_bool", ffi_print_bool);
+}
+
+fn ffi_print_int(args: Vec<Value>) -> Result<Value, VmError> {
+    if args.len() != 1 {
+        return Err(VmError::TypeMismatch {
+            expected: "int (1 arg)",
+            found: Value::Unit,
+        });
+    }
+    match args.into_iter().next().unwrap() {
+        Value::Int(value) => {
+            println!("{value}");
+            Ok(Value::Unit)
+        }
+        other => Err(VmError::TypeMismatch {
+            expected: "int",
+            found: other,
+        }),
+    }
+}
+
+fn ffi_print_bool(args: Vec<Value>) -> Result<Value, VmError> {
+    if args.len() != 1 {
+        return Err(VmError::TypeMismatch {
+            expected: "bool (1 arg)",
+            found: Value::Unit,
+        });
+    }
+    match args.into_iter().next().unwrap() {
+        Value::Bool(value) => {
+            println!("{value}");
+            Ok(Value::Unit)
+        }
+        other => Err(VmError::TypeMismatch {
+            expected: "bool",
+            found: other,
+        }),
+    }
 }

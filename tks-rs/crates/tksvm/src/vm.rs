@@ -225,6 +225,20 @@ impl VmState {
                     let index = Self::expect_operand1_u8(&instr)?;
                     self.stack.push(Value::Noetic(index));
                 }
+                Opcode::PushExtern => {
+                    let id = Self::expect_operand1(&instr)?;
+                    let arity_raw = Self::expect_operand2(&instr)?;
+                    let arity = usize::try_from(arity_raw).map_err(|_| VmError::InvalidOperand {
+                        opcode: instr.opcode,
+                        operand: "operand2",
+                        value: arity_raw,
+                    })?;
+                    self.stack.push(Value::Extern {
+                        id,
+                        arity,
+                        args: Vec::new(),
+                    });
+                }
                 Opcode::PushOrd => {
                     let value = Self::expect_operand1(&instr)?;
                     self.stack.push(Value::Ordinal(OrdinalValue::Finite(value)));
@@ -252,6 +266,14 @@ impl VmState {
                         self.locals.resize(index + 1, Value::Unit);
                     }
                     self.locals[index] = value;
+                }
+                Opcode::LoadGlobal => {
+                    let id = Self::expect_operand1(&instr)?;
+                    self.stack.push(Value::Extern {
+                        id,
+                        arity: 1,
+                        args: Vec::new(),
+                    });
                 }
                 Opcode::Jmp => {
                     let target = Self::expect_operand1_usize(&instr)?;
