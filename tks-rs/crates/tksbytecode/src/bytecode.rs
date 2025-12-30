@@ -92,3 +92,14 @@ pub struct Instruction {
     pub operand1: Option<u64>,
     pub operand2: Option<u64>,
 }
+
+pub fn extern_id(name: &str) -> u64 {
+    const OFFSET: u64 = 14695981039346656037;
+    const PRIME: u64 = 1099511628211;
+    let mut hash = OFFSET;
+    for byte in name.as_bytes() {
+        hash ^= u64::from(*byte);
+        hash = hash.wrapping_mul(PRIME);
+    }
+    hash
+}

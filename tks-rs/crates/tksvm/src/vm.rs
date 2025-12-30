@@ -1,4 +1,8 @@
+use std::collections::HashMap;
+
 use tksbytecode::bytecode::{Instruction, Opcode};
+
+pub type ExternFn = fn(Value) -> Result<Value, VmError>;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Value {
@@ -6,6 +10,7 @@ pub enum Value {
     Bool(bool),
     Unit,
     Closure { entry: usize },
+    Extern { id: u64 },
     Handler {
         return_entry: usize,
         op_clauses: Vec<(u64, usize)>,
@@ -62,6 +67,7 @@ pub enum VmError {
     HandlerNotImplemented,
     UnhandledEffect,
     RpmUnwrapFailed,
+    UnknownExtern(u64),
     UnsupportedOpcode(Opcode),
     NoReturn,
 }
@@ -94,6 +100,7 @@ pub struct VmState {
     pub locals: Vec<Value>,
     pub frames: Vec<CallFrame>,
     pub handlers: Vec<HandlerFrame>,
+    pub externs: HashMap<u64, ExternFn>,
 }
 
 impl VmState {
@@ -105,6 +112,19 @@ impl VmState {
             locals: Vec::new(),
             frames: Vec::new(),
             handlers: Vec::new(),
+            externs: HashMap::new(),
+        }
+    }
+
+    pub fn with_externs(code: Vec<Instruction>, externs: HashMap<u64, ExternFn>) -> Self {
+        Self {
+            code,
+            pc: 0,
+            stack: Vec::new(),
+            locals: Vec::new(),
+            frames: Vec::new(),
+            handlers: Vec::new(),
+            externs,
         }
     }
 
@@ -209,6 +229,10 @@ impl VmState {
                     }
                     self.locals[index] = value;
                 }
+                Opcode::LoadGlobal => {
+                    let id = Self::expect_operand1(&instr)?;
+                    self.stack.push(Value::Extern { id });
+                }
                 Opcode::Jmp => {
                     let target = Self::expect_operand1_usize(&instr)?;
                     self.pc = target;
@@ -279,6 +303,11 @@ impl VmState {
                     match callee {
                         Value::Closure { entry } => {
                             self.enter_call(entry, arg, CallFrameKind::Normal);
+                        }
+                        Value::Extern { id } => {
+                            let func = self.externs.get(&id).ok_or(VmError::UnknownExtern(id))?;
+                            let result = func(arg)?;
+                            self.stack.push(result);
                         }
                         cont @ Value::Continuation { .. } => {
                             self.resume_continuation(cont, arg)?;

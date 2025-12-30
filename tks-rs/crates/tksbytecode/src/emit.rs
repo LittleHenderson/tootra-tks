@@ -5,7 +5,7 @@ use std::rc::Rc;
 use tkscore::ast::{Expr, Ident, Literal, OrdinalLiteral, World};
 use tksir::ir::{IRComp, IRTerm, IRVal, OrdOp};
 
-use crate::bytecode::{Instruction, Opcode};
+use crate::bytecode::{extern_id, Instruction, Opcode};
 
 #[derive(Debug, Clone)]
 pub enum EmitError {
@@ -191,10 +191,12 @@ impl EmitState {
         match val {
             IRVal::Lit(literal) => self.emit_literal(literal),
             IRVal::Var(name) => {
-                let slot = self
-                    .lookup_local(name)
-                    .ok_or(EmitError::Unimplemented("unknown local"))?;
-                self.code.push(inst1(Opcode::Load, slot));
+                if let Some(slot) = self.lookup_local(name) {
+                    self.code.push(inst1(Opcode::Load, slot));
+                } else {
+                    let id = extern_id(name);
+                    self.code.push(inst1(Opcode::LoadGlobal, id));
+                }
                 Ok(())
             }
             IRVal::Element(world, index) => {

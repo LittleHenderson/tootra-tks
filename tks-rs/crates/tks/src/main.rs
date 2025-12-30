@@ -1,14 +1,16 @@
+use std::collections::HashMap;
 use std::env;
 use std::fs;
 use std::io::{self, Read};
 use std::path::Path;
 use std::process;
 
+use tksbytecode::bytecode::extern_id;
 use tksbytecode::emit::{emit, EmitError};
 use tksbytecode::tkso::{decode as decode_tkso, TksoError};
 use tkscore::parser::{parse_program, ParseError};
 use tksir::lower::{lower_program, LowerError};
-use tksvm::vm::{VmError, VmState};
+use tksvm::vm::{ExternFn, Value, VmError, VmState};
 use tkstypes::infer::{infer_program, TypeError};
 
 #[cfg(feature = "gpu")]
@@ -53,7 +55,21 @@ fn main() {
 }
 
 fn cmd_run(args: &[String]) -> Result<(), String> {
-    let Some(path) = args.first() else {
+    let mut enable_ffi = false;
+    let mut path = None;
+    for arg in args {
+        if arg == "--ffi" {
+            enable_ffi = true;
+            continue;
+        }
+        if path.is_none() {
+            path = Some(arg.as_str());
+        } else {
+            return Err("tks run: unexpected extra argument".to_string());
+        }
+    }
+
+    let Some(path) = path else {
         return Err("tks run: missing input file".to_string());
     };
 
@@ -63,7 +79,11 @@ fn cmd_run(args: &[String]) -> Result<(), String> {
             let bytes = fs::read(path).map_err(|err| format!("{path}: {err}"))?;
             let bytecode =
                 decode_tkso(&bytes).map_err(|err| format_tkso_error(path, &err))?;
-            let mut vm = VmState::new(bytecode);
+            let mut vm = if enable_ffi {
+                VmState::with_externs(bytecode, build_ffi_registry())
+            } else {
+                VmState::new(bytecode)
+            };
             let result = vm.run().map_err(|err| format_vm_error(path, &err))?;
             println!("{result:?}");
             return Ok(());
@@ -75,7 +95,11 @@ fn cmd_run(args: &[String]) -> Result<(), String> {
     infer_program(&program).map_err(|err| format_type_error(path, &err))?;
     let ir = lower_program(&program).map_err(|err| format_lower_error(path, &err))?;
     let bytecode = emit(&ir).map_err(|err| format_emit_error(path, &err))?;
-    let mut vm = VmState::new(bytecode);
+    let mut vm = if enable_ffi {
+        VmState::with_externs(bytecode, build_ffi_registry())
+    } else {
+        VmState::new(bytecode)
+    };
     let result = vm.run().map_err(|err| format_vm_error(path, &err))?;
     println!("{result:?}");
     Ok(())
@@ -178,7 +202,7 @@ fn format_vm_error(path: &str, err: &VmError) -> String {
 fn print_usage() {
     eprintln!("tks {}", env!("CARGO_PKG_VERSION"));
     eprintln!("Usage:");
-    eprintln!("  tks run <file.tks|file.tkso>");
+    eprintln!("  tks run [--ffi] <file.tks|file.tkso>");
     #[cfg(feature = "gpu")]
     {
         eprintln!("  tks gpu info");
@@ -189,10 +213,44 @@ fn print_usage() {
         eprintln!("  tks gpu (build with --features gpu)");
     }
     eprintln!("  tks repl");
+    eprintln!("  tks run --ffi <file.tks|file.tkso>");
     eprintln!("  tks --help");
     eprintln!("  tks --version");
 }
 
 fn print_version() {
     println!("tks {}", env!("CARGO_PKG_VERSION"));
+}
+
+fn build_ffi_registry() -> HashMap<u64, ExternFn> {
+    let mut externs = HashMap::new();
+    externs.insert(extern_id("print_int"), ffi_print_int as ExternFn);
+    externs.insert(extern_id("print_bool"), ffi_print_bool as ExternFn);
+    externs
+}
+
+fn ffi_print_int(value: Value) -> Result<Value, VmError> {
+    match value {
+        Value::Int(value) => {
+            println!("{value}");
+            Ok(Value::Unit)
+        }
+        other => Err(VmError::TypeMismatch {
+            expected: "int",
+            found: other,
+        }),
+    }
+}
+
+fn ffi_print_bool(value: Value) -> Result<Value, VmError> {
+    match value {
+        Value::Bool(value) => {
+            println!("{value}");
+            Ok(Value::Unit)
+        }
+        other => Err(VmError::TypeMismatch {
+            expected: "bool",
+            found: other,
+        }),
+    }
 }

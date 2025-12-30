@@ -1,0 +1,2 @@
+extern c safe fn print_int(x: Int): Unit !{IO};
+print_int(42)

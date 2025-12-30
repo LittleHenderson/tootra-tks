@@ -82,6 +82,7 @@ This document defines the implementation pipeline and crate layout for the v7.4 
 - tksc check <file.tks> (parse + type + effect)
 - tksc fmt <file.tks> (ASCII canonical output; optional)
 - tks run <file.tks|file.tkso>
+- tks run --ffi <file.tks|file.tkso> (enable extern registry for builtins like print_int/print_bool)
 - tks repl
  - tksc package <file.tkso> [-o app.exe] (planned)
 
