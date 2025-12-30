@@ -47,11 +47,17 @@ This document defines the implementation pipeline and crate layout for the v7.4 
    - Map IR to v7.3 bytecode instruction set
    - Emit .tkso with metadata (module name, imports, exports, constants)
    - Encode handler metadata, ordinal tables, quantum constants, FFI linkage info
+   - Current emission supports: PushInt/PushBool/PushUnit, Load/Store, Call/Ret,
+     Jmp/JmpIf/JmpUnless, Add/Sub/Mul/Div, PushElement, PushNoetic, MakeKet,
+     PushOrd/PushOmega/PushEpsilon, OrdSucc/OrdAdd/OrdMul/OrdExp.
+   - tkso encode/decode roundtrip tests are in place.
 
 8. Linking / Execution
    - tksvm loads .tkso and resolves imports
    - Optional module linking step for single-file executables
    - Run on the v7.3 VM state model
+   - Current VM executes the same opcode subset as emitted above (symbolic ordinals included).
+   - Quantum ops are parsed/typed with opcode definitions; VM execution remains pending.
 9. Packaging
    - Package bytecode + runtime into Windows .exe
    - Emit .pdb and symbol maps for diagnostics (optional)

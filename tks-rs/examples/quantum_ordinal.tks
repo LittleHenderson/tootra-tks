@@ -1,0 +1,6 @@
+let state = superpose {
+  1: |ord(3)>,
+  2: |omega>
+};
+
+measure(state)
