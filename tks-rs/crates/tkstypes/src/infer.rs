@@ -1,7 +1,8 @@
 use std::collections::{HashMap, HashSet};
 
 use tkscore::ast::{
-    EffectRow, Expr, HandlerDef, HandlerRef, Literal, Program, TopDecl, Type, TypeScheme,
+    EffectRow, ExportDecl, ExportItem, Expr, HandlerDef, HandlerRef, ImportDecl, ImportItem,
+    Literal, ModuleBody, ModuleDecl, Program, TopDecl, Type, TypeScheme,
 };
 
 #[derive(Debug, Clone)]
@@ -13,8 +14,10 @@ pub enum TypeError {
     UnknownVar(String),
     UnknownOp(String),
     UnknownHandler(String),
+    UnknownModule(String),
     DuplicateOp(String),
     DuplicateType(String),
+    DuplicateModule(String),
     RecursiveTypeAlias(String),
     HandlerEffectMismatch { handler: String, expected: String, found: String },
     InvalidAnnotation(String),
@@ -35,8 +38,10 @@ impl std::fmt::Display for TypeError {
             TypeError::UnknownVar(name) => write!(f, "unknown variable: {name}"),
             TypeError::UnknownOp(name) => write!(f, "unknown effect operation: {name}"),
             TypeError::UnknownHandler(name) => write!(f, "unknown handler: {name}"),
+            TypeError::UnknownModule(name) => write!(f, "unknown module: {name}"),
             TypeError::DuplicateOp(name) => write!(f, "duplicate effect operation: {name}"),
             TypeError::DuplicateType(name) => write!(f, "duplicate type alias: {name}"),
+            TypeError::DuplicateModule(name) => write!(f, "duplicate module: {name}"),
             TypeError::RecursiveTypeAlias(name) => {
                 write!(f, "recursive type alias: {name}")
             }
@@ -105,6 +110,25 @@ impl HandlerInfo {
 pub struct TypeAlias {
     pub params: Vec<String>,
     pub body: Type,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum ModuleStatus {
+    Pending,
+    InProgress,
+    Done,
+}
+
+#[derive(Debug, Clone)]
+struct ModuleEntry {
+    body: ModuleBody,
+    status: ModuleStatus,
+    exports: Option<TypeEnv>,
+}
+
+#[derive(Debug, Default)]
+struct ModuleTable {
+    modules: HashMap<Vec<String>, ModuleEntry>,
 }
 
 #[derive(Debug, Clone, Default)]
@@ -502,11 +526,27 @@ pub fn infer_expr(env: &TypeEnv, expr: &Expr) -> Result<InferOutput, TypeError> 
 pub fn infer_program(program: &Program) -> Result<InferProgramOutput, TypeError> {
     let mut state = InferState::default();
     let mut env = TypeEnv::new();
+    let mut modules = ModuleTable::default();
     let mut decl_effect = EffectRow::Empty;
 
+    collect_modules(&program.decls, &[], &mut modules)?;
+
     for decl in &program.decls {
-        let effect = infer_decl(&mut state, &mut env, decl)?;
-        decl_effect = combine_effects(&mut state, &decl_effect, &effect)?;
+        match decl {
+            TopDecl::ModuleDecl(module) => {
+                let full_path = module.path.clone();
+                infer_module_exports(&mut state, &mut modules, &full_path)?;
+            }
+            _ => {
+                let effect = infer_decl(&mut state, &mut env, decl)?;
+                decl_effect = combine_effects(&mut state, &decl_effect, &effect)?;
+            }
+        }
+    }
+
+    let module_paths: Vec<Vec<String>> = modules.modules.keys().cloned().collect();
+    for path in module_paths {
+        infer_module_exports(&mut state, &mut modules, &path)?;
     }
 
     let entry = match &program.entry {
@@ -524,6 +564,224 @@ pub fn infer_program(program: &Program) -> Result<InferProgramOutput, TypeError>
     env.apply_subst(&state.subst);
 
     Ok(InferProgramOutput { env, entry })
+}
+
+fn collect_modules(
+    decls: &[TopDecl],
+    prefix: &[String],
+    modules: &mut ModuleTable,
+) -> Result<(), TypeError> {
+    for decl in decls {
+        if let TopDecl::ModuleDecl(module) = decl {
+            collect_module_decl(module, prefix, modules)?;
+        }
+    }
+    Ok(())
+}
+
+fn collect_module_decl(
+    module: &ModuleDecl,
+    prefix: &[String],
+    modules: &mut ModuleTable,
+) -> Result<(), TypeError> {
+    let mut full_path = prefix.to_vec();
+    full_path.extend(module.path.iter().cloned());
+    let name = module_path_string(&full_path);
+    if modules.modules.contains_key(&full_path) {
+        return Err(TypeError::DuplicateModule(name));
+    }
+    modules.modules.insert(
+        full_path.clone(),
+        ModuleEntry {
+            body: module.body.clone(),
+            status: ModuleStatus::Pending,
+            exports: None,
+        },
+    );
+    collect_modules(&module.body.decls, &full_path, modules)?;
+    Ok(())
+}
+
+fn infer_module_exports(
+    state: &mut InferState,
+    modules: &mut ModuleTable,
+    path: &[String],
+) -> Result<TypeEnv, TypeError> {
+    let (status, body, cached_exports) = {
+        let entry = modules
+            .modules
+            .get(path)
+            .ok_or_else(|| TypeError::UnknownModule(module_path_string(path)))?;
+        (entry.status, entry.body.clone(), entry.exports.clone())
+    };
+
+    match status {
+        ModuleStatus::Done => {
+            return Ok(cached_exports.unwrap_or_else(TypeEnv::new));
+        }
+        ModuleStatus::InProgress => {
+            return Err(TypeError::Unimplemented("recursive modules"));
+        }
+        ModuleStatus::Pending => {}
+    }
+
+    if let Some(entry) = modules.modules.get_mut(path) {
+        entry.status = ModuleStatus::InProgress;
+    }
+
+    let mut env = TypeEnv::new();
+
+    for import in &body.imports {
+        apply_import(state, modules, path, import, &mut env)?;
+    }
+
+    for decl in &body.decls {
+        match decl {
+            TopDecl::ModuleDecl(child) => {
+                let child_path = extend_module_path(path, &child.path);
+                infer_module_exports(state, modules, &child_path)?;
+            }
+            _ => {
+                let _ = infer_decl(state, &mut env, decl)?;
+            }
+        }
+    }
+
+    env.apply_subst(&state.subst);
+    let exports = match &body.exports {
+        Some(export_decl) => select_exports(&env, export_decl)?,
+        None => env.clone(),
+    };
+
+    if let Some(entry) = modules.modules.get_mut(path) {
+        entry.exports = Some(exports.clone());
+        entry.status = ModuleStatus::Done;
+    }
+
+    Ok(exports)
+}
+
+fn apply_import(
+    state: &mut InferState,
+    modules: &mut ModuleTable,
+    current_path: &[String],
+    import: &ImportDecl,
+    env: &mut TypeEnv,
+) -> Result<(), TypeError> {
+    match import {
+        ImportDecl::Qualified { path, .. } => {
+            let exports = resolve_module_exports(state, modules, current_path, path)?;
+            merge_env(env, &exports)?;
+        }
+        ImportDecl::Aliased { path, .. } => {
+            let exports = resolve_module_exports(state, modules, current_path, path)?;
+            merge_env(env, &exports)?;
+        }
+        ImportDecl::Wildcard { path, .. } => {
+            let exports = resolve_module_exports(state, modules, current_path, path)?;
+            merge_env(env, &exports)?;
+        }
+        ImportDecl::Selective { path, items, .. } => {
+            let exports = resolve_module_exports(state, modules, current_path, path)?;
+            merge_selected(env, &exports, items)?;
+        }
+    }
+    Ok(())
+}
+
+fn resolve_module_exports(
+    state: &mut InferState,
+    modules: &mut ModuleTable,
+    current_path: &[String],
+    path: &[String],
+) -> Result<TypeEnv, TypeError> {
+    if modules.modules.contains_key(path) {
+        return infer_module_exports(state, modules, path);
+    }
+    let mut relative = current_path.to_vec();
+    relative.extend(path.iter().cloned());
+    if modules.modules.contains_key(&relative) {
+        return infer_module_exports(state, modules, &relative);
+    }
+    Err(TypeError::UnknownModule(module_path_string(path)))
+}
+
+fn merge_env(dest: &mut TypeEnv, src: &TypeEnv) -> Result<(), TypeError> {
+    for (name, scheme) in &src.values {
+        dest.values.insert(name.clone(), scheme.clone());
+    }
+    for (name, entry) in &src.ops {
+        dest.insert_op(name.clone(), entry.clone())?;
+    }
+    for (name, info) in &src.handlers {
+        dest.insert_handler(name.clone(), info.clone())?;
+    }
+    for (name, alias) in &src.type_aliases {
+        dest.insert_type_alias(name.clone(), alias.clone())?;
+    }
+    Ok(())
+}
+
+fn merge_selected(
+    dest: &mut TypeEnv,
+    src: &TypeEnv,
+    items: &[ImportItem],
+) -> Result<(), TypeError> {
+    for item in items {
+        let target = item.alias.as_ref().unwrap_or(&item.name);
+        if let Some(scheme) = src.values.get(&item.name) {
+            dest.values.insert(target.clone(), scheme.clone());
+        }
+        if let Some(entry) = src.ops.get(&item.name) {
+            dest.insert_op(target.clone(), entry.clone())?;
+        }
+        if let Some(info) = src.handlers.get(&item.name) {
+            dest.insert_handler(target.clone(), info.clone())?;
+        }
+        if let Some(alias) = src.type_aliases.get(&item.name) {
+            dest.insert_type_alias(target.clone(), alias.clone())?;
+        }
+    }
+    Ok(())
+}
+
+fn select_exports(env: &TypeEnv, export_decl: &ExportDecl) -> Result<TypeEnv, TypeError> {
+    let mut out = TypeEnv::new();
+    for item in &export_decl.items {
+        match item {
+            ExportItem::Type { name, .. } => {
+                if let Some(alias) = env.type_aliases.get(name) {
+                    out.insert_type_alias(name.clone(), alias.clone())?;
+                }
+            }
+            ExportItem::Value(name) => {
+                if let Some(scheme) = env.values.get(name) {
+                    out.values.insert(name.clone(), scheme.clone());
+                }
+                if let Some(entry) = env.ops.get(name) {
+                    out.insert_op(name.clone(), entry.clone())?;
+                }
+                if let Some(info) = env.handlers.get(name) {
+                    out.insert_handler(name.clone(), info.clone())?;
+                }
+            }
+        }
+    }
+    Ok(out)
+}
+
+fn extend_module_path(base: &[String], path: &[String]) -> Vec<String> {
+    let mut out = base.to_vec();
+    out.extend(path.iter().cloned());
+    out
+}
+
+fn module_path_string(path: &[String]) -> String {
+    if path.is_empty() {
+        "<root>".to_string()
+    } else {
+        path.join(".")
+    }
 }
 
 fn infer_decl(
