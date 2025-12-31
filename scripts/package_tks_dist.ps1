@@ -20,11 +20,15 @@ if ([string]::IsNullOrWhiteSpace($Version)) {
     $cargoToml = Join-Path $cargoToml "crates"
     $cargoToml = Join-Path $cargoToml "tks"
     $cargoToml = Join-Path $cargoToml "Cargo.toml"
-    $match = Select-String -Path $cargoToml -Pattern '^[\\s]*version\\s*=\\s*\"([^\"]+)\"' | Select-Object -First 1
-    if (-not $match) {
+    $versionLine = Get-Content -Path $cargoToml | Where-Object { $_ -match '^\s*version\s*=' } | Select-Object -First 1
+    if (-not $versionLine) {
         throw "Unable to read version from $cargoToml"
     }
-    $Version = $match.Matches[0].Groups[1].Value
+    if ($versionLine -match '^\s*version\s*=\s*"([^"]+)"') {
+        $Version = $Matches[1]
+    } else {
+        throw "Unable to parse version from $cargoToml"
+    }
 }
 
 $bundleDir = Join-Path $OutDir "tks-$Version-windows"
