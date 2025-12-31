@@ -357,6 +357,7 @@ pub enum Type {
         output: Box<Type>,
     },
     Ordinal,
+    Class(Ident),
     QState(Box<Type>),
 }
 

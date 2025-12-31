@@ -6,11 +6,11 @@ use tkstypes::infer::infer_program;
 fn infer_class_member_access_and_method_call() {
     let source = r#"
 class Point {
-  field x: Int;
-  property y: Int = identity.x;
-  method add(delta: Int): Int = self.y;
+  specifics { x: Int; }
+  details { y: Int = identity.x; }
+  actions { add(self, delta: Int): Int = self.y; }
 }
-\p: Point -> let a = p.x in let b = p.y in p.add(a)
+\p -> let a = p.x in let b = p.y in p.add(a)
 "#;
     let program = parse_program(source).expect("parse program");
     let out = infer_program(&program).expect("infer program");

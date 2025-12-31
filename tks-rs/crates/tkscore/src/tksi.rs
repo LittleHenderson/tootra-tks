@@ -164,6 +164,7 @@ fn format_type_prec(ty: &Type, prec: u8) -> String {
                 format_type_prec(right, 5)
             ),
         ),
+        Type::Class(name) => name.clone(),
         Type::Ordinal => "Ordinal".to_string(),
     }
 }

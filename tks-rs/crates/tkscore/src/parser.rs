@@ -33,6 +33,7 @@ pub struct Parser {
     tokens: Vec<Token>,
     pos: usize,
     stop_at_pipe: bool,
+    type_vars: Vec<Ident>,
 }
 
 impl Parser {
@@ -41,6 +42,7 @@ impl Parser {
             tokens,
             pos: 0,
             stop_at_pipe: false,
+            type_vars: Vec::new(),
         }
     }
 
@@ -116,7 +118,10 @@ impl Parser {
             self.expect(&TokenKind::RBracket, "expected ']' after type variables")?;
         }
         if self.match_kind(&TokenKind::Colon) {
-            let ty = self.parse_type()?;
+            let prev = std::mem::replace(&mut self.type_vars, vars.clone());
+            let ty = self.parse_type();
+            self.type_vars = prev;
+            let ty = ty?;
             return Ok(Some(TypeScheme { vars, ty }));
         }
         if !vars.is_empty() {
@@ -141,7 +146,10 @@ impl Parser {
             self.expect(&TokenKind::RBracket, "expected ']' after type parameters")?;
         }
         self.expect(&TokenKind::Equals, "expected '=' in type declaration")?;
-        let body = self.parse_type()?;
+        let prev = std::mem::replace(&mut self.type_vars, params.clone());
+        let body = self.parse_type();
+        self.type_vars = prev;
+        let body = body?;
         let span = span_join(start.span, self.previous_span());
         Ok(TopDecl::TypeDecl {
             span,
@@ -166,11 +174,13 @@ impl Parser {
             self.expect(&TokenKind::RBracket, "expected ']' after effect parameters")?;
         }
         self.expect(&TokenKind::LBrace, "expected '{' to start effect body")?;
+        let prev = std::mem::replace(&mut self.type_vars, params.clone());
         let mut ops = Vec::new();
         while !self.check(&TokenKind::RBrace) && !self.check(&TokenKind::Eof) {
             ops.push(self.parse_op_sig()?);
             self.match_kind(&TokenKind::Semicolon);
         }
+        self.type_vars = prev;
         let end = self.expect(&TokenKind::RBrace, "expected '}' after effect body")?;
         let span = span_join(start.span, end.span);
         Ok(TopDecl::EffectDecl {
@@ -1526,7 +1536,9 @@ impl Parser {
                 "Handler" => {
                     return self.parse_handler_type_impl();
                 }
-                _ => return Ok(Type::Var(name)),
+                _ => {
+                    return Ok(Type::Var(name));
+                }
             }
         }
 

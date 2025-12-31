@@ -214,24 +214,27 @@ f(1) >>= g(2)
 fn lower_class_decl_and_constructor() {
     let source = r#"
 class Counter {
-  field value: Int;
-  property current: Int = 0;
-  method inc(delta: Int): Int = delta;
+  specifics { value: Int; }
+  details { current: Int = 0; }
+  actions { inc(self, delta: Int): Int = delta; }
 }
-repeat Counter(value: 1)
+repeat Counter { value: 1 }
 "#;
     let program = parse_program(source).expect("parse program");
     let term = lower_program(&program).expect("lower program");
 
     match term {
-        IRTerm::Let(name, IRComp::Pure(_), body) => {
+        IRTerm::Let(name, comp, body) => {
             assert_eq!(name, "Counter");
+            assert!(matches!(*comp, IRComp::Pure(_)));
             match *body {
-                IRTerm::Let(prop_name, IRComp::Pure(_), body) => {
+                IRTerm::Let(prop_name, comp, body) => {
                     assert_eq!(prop_name, "Counter::current");
+                    assert!(matches!(*comp, IRComp::Pure(_)));
                     match *body {
-                        IRTerm::Let(method_name, IRComp::Pure(_), body) => {
+                        IRTerm::Let(method_name, comp, body) => {
                             assert_eq!(method_name, "Counter::inc");
+                            assert!(matches!(*comp, IRComp::Pure(_)));
                             match *body {
                                 IRTerm::App(IRVal::Var(func), IRVal::Lit(Literal::Int(value))) => {
                                     assert_eq!(func, "Counter");

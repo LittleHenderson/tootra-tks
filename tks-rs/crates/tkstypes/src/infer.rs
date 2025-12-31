@@ -1022,7 +1022,7 @@ fn infer_class_decl(
     let mut seen = HashSet::new();
     let mut info = ClassInfo::default();
 
-    for field in &decl.fields {
+    for field in &decl.specifics {
         if !seen.insert(field.name.clone()) {
             return Err(TypeError::DuplicateMember {
                 class: class_name.clone(),
@@ -1033,7 +1033,7 @@ fn infer_class_decl(
         info.fields.insert(field.name.clone(), ty);
     }
 
-    for prop in &decl.properties {
+    for prop in &decl.details {
         if !seen.insert(prop.name.clone()) {
             return Err(TypeError::DuplicateMember {
                 class: class_name.clone(),
@@ -1049,7 +1049,7 @@ fn infer_class_decl(
             .insert(prop.name.clone(), PropertySig { ty, effect });
     }
 
-    for method in &decl.methods {
+    for method in &decl.actions {
         if !seen.insert(method.name.clone()) {
             return Err(TypeError::DuplicateMember {
                 class: class_name.clone(),
@@ -1058,16 +1058,10 @@ fn infer_class_decl(
         }
         let mut params = Vec::new();
         for param in &method.params {
-            let ty = match &param.ty {
-                Some(ty) => resolve_type(env, ty, &HashSet::new())?,
-                None => state.fresh_type_var(),
-            };
+            let ty = resolve_type(env, &param.ty, &HashSet::new())?;
             params.push(ty);
         }
-        let output = match &method.return_type {
-            Some(ty) => resolve_type(env, ty, &HashSet::new())?,
-            None => state.fresh_type_var(),
-        };
+        let output = resolve_type(env, &method.return_type, &HashSet::new())?;
         let effect = state.fresh_row_var();
         info.methods.insert(
             method.name.clone(),
@@ -1081,7 +1075,7 @@ fn infer_class_decl(
 
     env.update_class(&class_name, info);
 
-    for prop in &decl.properties {
+    for prop in &decl.details {
         let info = env
             .get_class(&class_name)
             .ok_or_else(|| TypeError::UnknownClass(class_name.clone()))?;
@@ -1095,13 +1089,13 @@ fn infer_class_decl(
             .clone();
         let mut local = env.clone();
         insert_self_bindings(&mut local, &class_ty);
-        let out = infer_expr_inner(state, &mut local, &prop.body)?;
+        let out = infer_expr_inner(state, &mut local, &prop.value)?;
         unify_types(&mut state.subst, &out.ty, &sig.ty)?;
         unify_rows(&mut state.subst, &out.effect, &sig.effect)?;
         env.apply_subst(&state.subst);
     }
 
-    for method in &decl.methods {
+    for method in &decl.actions {
         let info = env
             .get_class(&class_name)
             .ok_or_else(|| TypeError::UnknownClass(class_name.clone()))?;
@@ -1209,9 +1203,7 @@ fn infer_expr_inner(
                 effect: state.subst.apply_row(&effect),
             })
         }
-        Expr::Member { object, member, .. } => {
-            infer_member_access(state, env, object, member)
-        }
+        Expr::Member { object, field, .. } => infer_member_access(state, env, object, field),
         Expr::Let {
             name,
             scheme,
@@ -1305,7 +1297,7 @@ fn infer_expr_inner(
             })
         }
         Expr::ACBE { goal, expr, .. } => infer_acbe(state, env, goal, expr),
-        Expr::Constructor { name, args, .. } => infer_constructor(state, env, name, args),
+        Expr::Constructor { name, fields, .. } => infer_constructor(state, env, name, fields),
         Expr::Handle { expr, handler, .. } => infer_handle(state, env, expr, handler),
         Expr::Perform { op, arg, .. } => infer_perform(state, env, op, arg),
         Expr::OrdLit { .. }
@@ -1376,6 +1368,31 @@ fn infer_member_access(
     let object_ty = state.subst.apply_type(&object_out.ty);
     let class_name = match object_ty {
         Type::Class(name) => name,
+        Type::Var(var) => {
+            let mut candidates = Vec::new();
+            for (name, info) in env.classes.iter() {
+                if info.fields.contains_key(member)
+                    || info.properties.contains_key(member)
+                    || info.methods.contains_key(member)
+                {
+                    candidates.push(name.clone());
+                }
+            }
+            if candidates.len() == 1 {
+                let name = candidates[0].clone();
+                unify_types(
+                    &mut state.subst,
+                    &Type::Var(var),
+                    &Type::Class(name.clone()),
+                )?;
+                name
+            } else {
+                return Err(TypeError::InvalidMemberAccess {
+                    member: member.to_string(),
+                    ty: Type::Var(var),
+                });
+            }
+        }
         ty => {
             return Err(TypeError::InvalidMemberAccess {
                 member: member.to_string(),
@@ -1418,27 +1435,28 @@ fn infer_constructor(
     state: &mut InferState,
     env: &mut TypeEnv,
     name: &str,
-    args: &[tkscore::ast::ConstructorArg],
+    fields: &[(String, Expr)],
 ) -> Result<InferOutput, TypeError> {
     let info = env
         .get_class(name)
-        .ok_or_else(|| TypeError::UnknownClass(name.to_string()))?;
+        .ok_or_else(|| TypeError::UnknownClass(name.to_string()))?
+        .clone();
     let mut seen = HashSet::new();
     let mut effect = EffectRow::Empty;
-    for arg in args {
-        if !seen.insert(arg.name.clone()) {
+    for (field_name, field_value) in fields {
+        if !seen.insert(field_name.clone()) {
             return Err(TypeError::DuplicateMember {
                 class: name.to_string(),
-                member: arg.name.clone(),
+                member: field_name.clone(),
             });
         }
-        let field_ty = info.fields.get(&arg.name).ok_or_else(|| {
+        let field_ty = info.fields.get(field_name).ok_or_else(|| {
             TypeError::UnknownMember {
                 class: name.to_string(),
-                member: arg.name.clone(),
+                member: field_name.clone(),
             }
         })?;
-        let value_out = infer_expr_inner(state, env, &arg.value)?;
+        let value_out = infer_expr_inner(state, env, field_value)?;
         unify_types(&mut state.subst, &value_out.ty, field_ty)?;
         effect = combine_effects(state, &effect, &value_out.effect)?;
     }

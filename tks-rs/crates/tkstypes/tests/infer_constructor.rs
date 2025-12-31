@@ -6,10 +6,11 @@ use tkstypes::infer::infer_program;
 fn infer_constructor_expression() {
     let source = r#"
 class Point {
-  field x: Int;
-  field y: Int;
+  specifics { x: Int; y: Int; }
+  details { }
+  actions { }
 }
-repeat Point(x: 1, y: 2)
+repeat Point { x: 1, y: 2 }
 "#;
     let program = parse_program(source).expect("parse program");
     let out = infer_program(&program).expect("infer program");

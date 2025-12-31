@@ -1,4 +1,5 @@
-use tkscore::ast::{ClassDecl, Expr, HandlerDef, Literal, Program, Span, TopDecl};
+use tkscore::ast::{ClassDecl, Expr, HandlerDef, Literal, Program, TopDecl};
+use tkscore::span::Span;
 
 use crate::ir::{IRComp, IRHandler, IRHandlerClause, IRTerm, IRVal};
 
@@ -64,15 +65,19 @@ fn lower_class_decl(
 ) -> Result<IRTerm, LowerError> {
     let previous_class = state.current_class.clone();
     state.current_class = Some(decl.name.clone());
-    for method in decl.methods.iter().rev() {
+    for method in decl.actions.iter().rev() {
         let name = format!("{}::{}", decl.name, method.name);
-        let expr = build_member_lambda(method.body.clone(), method_param_names(method));
+        let expr = build_member_lambda(
+            method.body.clone(),
+            &method.self_param,
+            method_param_names(method),
+        );
         let val = lower_val(state, &expr)?;
         term = IRTerm::Let(name, Box::new(IRComp::Pure(val)), Box::new(term));
     }
-    for prop in decl.properties.iter().rev() {
+    for prop in decl.details.iter().rev() {
         let name = format!("{}::{}", decl.name, prop.name);
-        let expr = build_member_lambda(prop.body.clone(), vec!["self".to_string()]);
+        let expr = build_member_lambda(prop.value.clone(), "self", vec!["self".to_string()]);
         let val = lower_val(state, &expr)?;
         term = IRTerm::Let(name, Box::new(IRComp::Pure(val)), Box::new(term));
     }
@@ -87,8 +92,8 @@ fn lower_class_decl(
     Ok(term)
 }
 
-fn build_member_lambda(body: Expr, params: Vec<String>) -> Expr {
-    let mut expr = wrap_identity_binding(body);
+fn build_member_lambda(body: Expr, self_param: &str, params: Vec<String>) -> Expr {
+    let mut expr = wrap_self_alias(body, self_param);
     for param in params.into_iter().rev() {
         expr = Expr::Lam {
             span: dummy_span(),
@@ -100,22 +105,27 @@ fn build_member_lambda(body: Expr, params: Vec<String>) -> Expr {
     expr
 }
 
-fn wrap_identity_binding(body: Expr) -> Expr {
+fn wrap_self_alias(body: Expr, self_param: &str) -> Expr {
+    let (alias, target) = if self_param == "identity" {
+        ("self", "identity")
+    } else {
+        ("identity", "self")
+    };
     Expr::Let {
         span: dummy_span(),
-        name: "identity".to_string(),
+        name: alias.to_string(),
         scheme: None,
         value: Box::new(Expr::Var {
             span: dummy_span(),
-            name: "self".to_string(),
+            name: target.to_string(),
         }),
         body: Box::new(body),
     }
 }
 
-fn method_param_names(method: &tkscore::ast::ClassMethod) -> Vec<String> {
+fn method_param_names(method: &tkscore::ast::MethodDecl) -> Vec<String> {
     let mut params = Vec::with_capacity(method.params.len() + 1);
-    params.push("self".to_string());
+    params.push(method.self_param.clone());
     for param in &method.params {
         params.push(param.name.clone());
     }
@@ -123,7 +133,10 @@ fn method_param_names(method: &tkscore::ast::ClassMethod) -> Vec<String> {
 }
 
 fn constructor_param_names(decl: &ClassDecl) -> Vec<String> {
-    decl.fields.iter().map(|field| field.name.clone()).collect()
+    decl.specifics
+        .iter()
+        .map(|field| field.name.clone())
+        .collect()
 }
 
 fn build_constructor_lambda(params: Vec<String>) -> Expr {
@@ -226,7 +239,7 @@ fn lower_term(state: &mut LowerState, expr: &Expr) -> Result<IRTerm, LowerError>
             let term = IRTerm::App(func_val, arg_val);
             Ok(wrap_lets(bindings, term))
         }
-        Expr::Member { object, member, .. } => lower_member_term(state, object, member),
+        Expr::Member { object, field, .. } => lower_member_term(state, object, field),
         Expr::Let { name, value, body, .. } => {
             let comp = lower_comp(state, value)?;
             let body_term = lower_term(state, body)?;
@@ -292,7 +305,7 @@ fn lower_term(state: &mut LowerState, expr: &Expr) -> Result<IRTerm, LowerError>
             let term = IRTerm::RPMAcquire(arg_val);
             Ok(wrap_lets(bindings, term))
         }
-        Expr::Constructor { name, args, .. } => lower_constructor_term(state, name, args),
+        Expr::Constructor { name, fields, .. } => lower_constructor_term(state, name, fields),
         Expr::Superpose { states, .. } => {
             let mut bindings = Vec::new();
             let mut lowered_states = Vec::new();
@@ -364,7 +377,7 @@ fn lower_term(state: &mut LowerState, expr: &Expr) -> Result<IRTerm, LowerError>
 fn lower_member_term(
     state: &mut LowerState,
     object: &Expr,
-    member: &str,
+    field: &str,
 ) -> Result<IRTerm, LowerError> {
     let class_name = match &state.current_class {
         Some(name) => name.clone(),
@@ -377,7 +390,7 @@ fn lower_member_term(
     if !is_self {
         return Err(LowerError::Unimplemented("member access lowering"));
     }
-    let member_name = format!("{}::{}", class_name, member);
+    let member_name = format!("{}::{}", class_name, field);
     let expr = Expr::App {
         span: dummy_span(),
         func: Box::new(Expr::Var {
@@ -392,17 +405,17 @@ fn lower_member_term(
 fn lower_constructor_term(
     state: &mut LowerState,
     name: &str,
-    args: &[tkscore::ast::ConstructorArg],
+    fields: &[(String, Expr)],
 ) -> Result<IRTerm, LowerError> {
     let mut expr = Expr::Var {
         span: dummy_span(),
         name: name.to_string(),
     };
-    for arg in args {
+    for (_, field_value) in fields {
         expr = Expr::App {
             span: dummy_span(),
             func: Box::new(expr),
-            arg: Box::new(arg.value.clone()),
+            arg: Box::new(field_value.clone()),
         };
     }
     lower_term(state, &expr)
