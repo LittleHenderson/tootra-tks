@@ -285,6 +285,35 @@ Stdlib modules (loaded by `tksc`):
 
 Set `TKS_STDLIB_DIR` to use a custom stdlib location.
 
+## Hybrid OOP Keyword Map (Draft)
+This is a planned OOP layer that compiles down into the current core. It uses
+TKS-flavored keywords you specified.
+
+- `blueprint` / `plan` = class
+- `specifics` / `description` = fields (stored data)
+- `details` = properties (computed accessors)
+- `actions` = methods
+- `identity` = self
+- `repeat` = new
+
+Example (conceptual syntax):
+```tks
+blueprint Counter {
+  specifics {
+    value: Ordinal;
+  }
+
+  details {
+    current = identity.value;
+  }
+
+  actions {
+    inc(identity): Counter = repeat Counter(value: succ(identity.value));
+  }
+}
+```
+Note: this syntax is a design target and is not implemented yet.
+
 ### Types (Common Ones)
 ```tks
 Int, Bool, Unit, Domain, Foundation, Ordinal
