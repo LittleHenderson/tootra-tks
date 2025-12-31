@@ -1,4 +1,4 @@
-use tkscore::ast::{Expr, HandlerDef, Literal, Program, TopDecl};
+use tkscore::ast::{ClassDecl, Expr, HandlerDef, Literal, Program, Span, TopDecl};
 
 use crate::ir::{IRComp, IRHandler, IRHandlerClause, IRTerm, IRVal};
 
@@ -18,6 +18,7 @@ impl std::fmt::Display for LowerError {
 #[derive(Default)]
 struct LowerState {
     next_tmp: usize,
+    current_class: Option<String>,
 }
 
 impl LowerState {
@@ -46,11 +47,103 @@ pub fn lower_program(program: &Program) -> Result<IRTerm, LowerError> {
                 let comp = IRComp::Pure(IRVal::Extern(decl.name.clone(), arity));
                 term = IRTerm::Let(decl.name.clone(), Box::new(comp), Box::new(term));
             }
+            TopDecl::ClassDecl(decl) => {
+                term = lower_class_decl(&mut state, decl, term)?;
+            }
             _ => {}
         }
     }
 
     Ok(term)
+}
+
+fn lower_class_decl(
+    state: &mut LowerState,
+    decl: &ClassDecl,
+    mut term: IRTerm,
+) -> Result<IRTerm, LowerError> {
+    let previous_class = state.current_class.clone();
+    state.current_class = Some(decl.name.clone());
+    for method in decl.methods.iter().rev() {
+        let name = format!("{}::{}", decl.name, method.name);
+        let expr = build_member_lambda(method.body.clone(), method_param_names(method));
+        let val = lower_val(state, &expr)?;
+        term = IRTerm::Let(name, Box::new(IRComp::Pure(val)), Box::new(term));
+    }
+    for prop in decl.properties.iter().rev() {
+        let name = format!("{}::{}", decl.name, prop.name);
+        let expr = build_member_lambda(prop.body.clone(), vec!["self".to_string()]);
+        let val = lower_val(state, &expr)?;
+        term = IRTerm::Let(name, Box::new(IRComp::Pure(val)), Box::new(term));
+    }
+    let ctor_expr = build_constructor_lambda(constructor_param_names(decl));
+    let ctor_val = lower_val(state, &ctor_expr)?;
+    term = IRTerm::Let(
+        decl.name.clone(),
+        Box::new(IRComp::Pure(ctor_val)),
+        Box::new(term),
+    );
+    state.current_class = previous_class;
+    Ok(term)
+}
+
+fn build_member_lambda(body: Expr, params: Vec<String>) -> Expr {
+    let mut expr = wrap_identity_binding(body);
+    for param in params.into_iter().rev() {
+        expr = Expr::Lam {
+            span: dummy_span(),
+            param,
+            param_type: None,
+            body: Box::new(expr),
+        };
+    }
+    expr
+}
+
+fn wrap_identity_binding(body: Expr) -> Expr {
+    Expr::Let {
+        span: dummy_span(),
+        name: "identity".to_string(),
+        scheme: None,
+        value: Box::new(Expr::Var {
+            span: dummy_span(),
+            name: "self".to_string(),
+        }),
+        body: Box::new(body),
+    }
+}
+
+fn method_param_names(method: &tkscore::ast::ClassMethod) -> Vec<String> {
+    let mut params = Vec::with_capacity(method.params.len() + 1);
+    params.push("self".to_string());
+    for param in &method.params {
+        params.push(param.name.clone());
+    }
+    params
+}
+
+fn constructor_param_names(decl: &ClassDecl) -> Vec<String> {
+    decl.fields.iter().map(|field| field.name.clone()).collect()
+}
+
+fn build_constructor_lambda(params: Vec<String>) -> Expr {
+    let mut expr = Expr::Lit {
+        span: dummy_span(),
+        literal: Literal::Unit,
+    };
+    for param in params.into_iter().rev() {
+        expr = Expr::Lam {
+            span: dummy_span(),
+            param,
+            param_type: None,
+            body: Box::new(expr),
+        };
+    }
+    expr
+}
+
+fn dummy_span() -> Span {
+    Span::new(0, 0, 0, 0)
 }
 
 fn lower_comp(state: &mut LowerState, expr: &Expr) -> Result<IRComp, LowerError> {
@@ -133,6 +226,7 @@ fn lower_term(state: &mut LowerState, expr: &Expr) -> Result<IRTerm, LowerError>
             let term = IRTerm::App(func_val, arg_val);
             Ok(wrap_lets(bindings, term))
         }
+        Expr::Member { object, member, .. } => lower_member_term(state, object, member),
         Expr::Let { name, value, body, .. } => {
             let comp = lower_comp(state, value)?;
             let body_term = lower_term(state, body)?;
@@ -198,6 +292,7 @@ fn lower_term(state: &mut LowerState, expr: &Expr) -> Result<IRTerm, LowerError>
             let term = IRTerm::RPMAcquire(arg_val);
             Ok(wrap_lets(bindings, term))
         }
+        Expr::Constructor { name, args, .. } => lower_constructor_term(state, name, args),
         Expr::Superpose { states, .. } => {
             let mut bindings = Vec::new();
             let mut lowered_states = Vec::new();
@@ -264,6 +359,53 @@ fn lower_term(state: &mut LowerState, expr: &Expr) -> Result<IRTerm, LowerError>
         }
         _ => Err(LowerError::Unimplemented("expression lowering")),
     }
+}
+
+fn lower_member_term(
+    state: &mut LowerState,
+    object: &Expr,
+    member: &str,
+) -> Result<IRTerm, LowerError> {
+    let class_name = match &state.current_class {
+        Some(name) => name.clone(),
+        None => return Err(LowerError::Unimplemented("member access lowering")),
+    };
+    let is_self = matches!(
+        object,
+        Expr::Var { name, .. } if name == "self" || name == "identity"
+    );
+    if !is_self {
+        return Err(LowerError::Unimplemented("member access lowering"));
+    }
+    let member_name = format!("{}::{}", class_name, member);
+    let expr = Expr::App {
+        span: dummy_span(),
+        func: Box::new(Expr::Var {
+            span: dummy_span(),
+            name: member_name,
+        }),
+        arg: Box::new(object.clone()),
+    };
+    lower_term(state, &expr)
+}
+
+fn lower_constructor_term(
+    state: &mut LowerState,
+    name: &str,
+    args: &[tkscore::ast::ConstructorArg],
+) -> Result<IRTerm, LowerError> {
+    let mut expr = Expr::Var {
+        span: dummy_span(),
+        name: name.to_string(),
+    };
+    for arg in args {
+        expr = Expr::App {
+            span: dummy_span(),
+            func: Box::new(expr),
+            arg: Box::new(arg.value.clone()),
+        };
+    }
+    lower_term(state, &expr)
 }
 
 fn lower_handler_def(state: &mut LowerState, def: &HandlerDef) -> Result<IRHandler, LowerError> {

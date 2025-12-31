@@ -1,8 +1,8 @@
 use std::collections::{HashMap, HashSet};
 
 use tkscore::ast::{
-    EffectRow, ExportDecl, ExportItem, Expr, HandlerDef, HandlerRef, ImportDecl, ImportItem,
-    Literal, ModuleBody, ModuleDecl, Program, TopDecl, Type, TypeScheme,
+    ClassDecl, EffectRow, ExportDecl, ExportItem, Expr, HandlerDef, HandlerRef, ImportDecl,
+    ImportItem, Literal, ModuleBody, ModuleDecl, Program, TopDecl, Type, TypeScheme,
 };
 
 #[derive(Debug, Clone)]
@@ -15,12 +15,19 @@ pub enum TypeError {
     UnknownOp(String),
     UnknownHandler(String),
     UnknownModule(String),
+    UnknownClass(String),
+    UnknownMember { class: String, member: String },
+    MissingMember { class: String, member: String },
     DuplicateOp(String),
     DuplicateType(String),
+    DuplicateClass(String),
+    DuplicateMember { class: String, member: String },
     DuplicateModule(String),
     RecursiveTypeAlias(String),
     HandlerEffectMismatch { handler: String, expected: String, found: String },
     InvalidAnnotation(String),
+    InvalidMemberAccess { member: String, ty: Type },
+    InvalidMethodCall { class: String, method: String },
     Unimplemented(&'static str),
 }
 
@@ -39,8 +46,19 @@ impl std::fmt::Display for TypeError {
             TypeError::UnknownOp(name) => write!(f, "unknown effect operation: {name}"),
             TypeError::UnknownHandler(name) => write!(f, "unknown handler: {name}"),
             TypeError::UnknownModule(name) => write!(f, "unknown module: {name}"),
+            TypeError::UnknownClass(name) => write!(f, "unknown class: {name}"),
+            TypeError::UnknownMember { class, member } => {
+                write!(f, "unknown member {member} on class {class}")
+            }
+            TypeError::MissingMember { class, member } => {
+                write!(f, "missing member {member} on class {class}")
+            }
             TypeError::DuplicateOp(name) => write!(f, "duplicate effect operation: {name}"),
             TypeError::DuplicateType(name) => write!(f, "duplicate type alias: {name}"),
+            TypeError::DuplicateClass(name) => write!(f, "duplicate class: {name}"),
+            TypeError::DuplicateMember { class, member } => {
+                write!(f, "duplicate member {member} on class {class}")
+            }
             TypeError::DuplicateModule(name) => write!(f, "duplicate module: {name}"),
             TypeError::RecursiveTypeAlias(name) => {
                 write!(f, "recursive type alias: {name}")
@@ -54,6 +72,12 @@ impl std::fmt::Display for TypeError {
                 "handler {handler} expected effect {expected}, found {found}"
             ),
             TypeError::InvalidAnnotation(message) => write!(f, "invalid annotation: {message}"),
+            TypeError::InvalidMemberAccess { member, ty } => {
+                write!(f, "invalid member access {member} on {ty:?}")
+            }
+            TypeError::InvalidMethodCall { class, method } => {
+                write!(f, "invalid call to method {method} on class {class}")
+            }
             TypeError::Unimplemented(feature) => write!(f, "{feature} not implemented"),
         }
     }
@@ -112,6 +136,74 @@ pub struct TypeAlias {
     pub body: Type,
 }
 
+#[derive(Debug, Clone)]
+pub struct PropertySig {
+    pub ty: Type,
+    pub effect: EffectRow,
+}
+
+impl PropertySig {
+    fn apply_subst(&self, subst: &Subst) -> Self {
+        Self {
+            ty: subst.apply_type(&self.ty),
+            effect: subst.apply_row(&self.effect),
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct MethodSig {
+    pub params: Vec<Type>,
+    pub output: Type,
+    pub effect: EffectRow,
+}
+
+impl MethodSig {
+    fn apply_subst(&self, subst: &Subst) -> Self {
+        Self {
+            params: self
+                .params
+                .iter()
+                .map(|param| subst.apply_type(param))
+                .collect(),
+            output: subst.apply_type(&self.output),
+            effect: subst.apply_row(&self.effect),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct ClassInfo {
+    pub fields: HashMap<String, Type>,
+    pub properties: HashMap<String, PropertySig>,
+    pub methods: HashMap<String, MethodSig>,
+}
+
+impl ClassInfo {
+    fn apply_subst(&self, subst: &Subst) -> Self {
+        let fields = self
+            .fields
+            .iter()
+            .map(|(name, ty)| (name.clone(), subst.apply_type(ty)))
+            .collect();
+        let properties = self
+            .properties
+            .iter()
+            .map(|(name, sig)| (name.clone(), sig.apply_subst(subst)))
+            .collect();
+        let methods = self
+            .methods
+            .iter()
+            .map(|(name, sig)| (name.clone(), sig.apply_subst(subst)))
+            .collect();
+        Self {
+            fields,
+            properties,
+            methods,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum ModuleStatus {
     Pending,
@@ -145,6 +237,7 @@ impl Subst {
                 .get(name)
                 .map(|t| self.apply_type(t))
                 .unwrap_or_else(|| Type::Var(name.clone())),
+            Type::Class(name) => Type::Class(name.clone()),
             Type::Int => Type::Int,
             Type::Bool => Type::Bool,
             Type::Unit => Type::Unit,
@@ -278,6 +371,7 @@ pub struct TypeEnv {
     ops: HashMap<String, OpSigEntry>,
     handlers: HashMap<String, HandlerInfo>,
     type_aliases: HashMap<String, TypeAlias>,
+    classes: HashMap<String, ClassInfo>,
 }
 
 impl TypeEnv {
@@ -287,6 +381,7 @@ impl TypeEnv {
             ops: HashMap::new(),
             handlers: HashMap::new(),
             type_aliases: HashMap::new(),
+            classes: HashMap::new(),
         }
     }
 
@@ -303,6 +398,11 @@ impl TypeEnv {
             .values
             .iter()
             .map(|(name, scheme)| (name.clone(), scheme.apply_subst(subst)))
+            .collect();
+        self.classes = self
+            .classes
+            .iter()
+            .map(|(name, info)| (name.clone(), info.apply_subst(subst)))
             .collect();
     }
 
@@ -342,12 +442,36 @@ impl TypeEnv {
         if self.type_aliases.contains_key(&name) {
             return Err(TypeError::DuplicateType(name));
         }
+        if self.classes.contains_key(&name) {
+            return Err(TypeError::DuplicateType(name));
+        }
         self.type_aliases.insert(name, alias);
         Ok(())
     }
 
     pub fn get_type_alias(&self, name: &str) -> Option<&TypeAlias> {
         self.type_aliases.get(name)
+    }
+
+    pub fn insert_class(
+        &mut self,
+        name: impl Into<String>,
+        info: ClassInfo,
+    ) -> Result<(), TypeError> {
+        let name = name.into();
+        if self.classes.contains_key(&name) || self.type_aliases.contains_key(&name) {
+            return Err(TypeError::DuplicateClass(name));
+        }
+        self.classes.insert(name, info);
+        Ok(())
+    }
+
+    pub fn update_class(&mut self, name: &str, info: ClassInfo) {
+        self.classes.insert(name.to_string(), info);
+    }
+
+    pub fn get_class(&self, name: &str) -> Option<&ClassInfo> {
+        self.classes.get(name)
     }
 }
 
@@ -387,6 +511,16 @@ pub fn unify_types(subst: &mut Subst, left: &Type, right: &Type) -> Result<(), T
                 | (Type::Foundation, Type::Foundation)
                 | (Type::Domain, Type::Domain)
                 | (Type::Ordinal, Type::Ordinal) => Ok(()),
+                (Type::Class(left_name), Type::Class(right_name)) => {
+                    if left_name == right_name {
+                        Ok(())
+                    } else {
+                        Err(TypeError::Mismatch(
+                            Type::Class(left_name),
+                            Type::Class(right_name),
+                        ))
+                    }
+                }
                 (Type::Element(left_world), Type::Element(right_world)) => {
                     match (left_world, right_world) {
                         (Some(l), Some(r)) if l != r => Err(TypeError::Mismatch(
@@ -719,6 +853,9 @@ fn merge_env(dest: &mut TypeEnv, src: &TypeEnv) -> Result<(), TypeError> {
     for (name, alias) in &src.type_aliases {
         dest.insert_type_alias(name.clone(), alias.clone())?;
     }
+    for (name, info) in &src.classes {
+        dest.insert_class(name.clone(), info.clone())?;
+    }
     Ok(())
 }
 
@@ -741,6 +878,9 @@ fn merge_selected(
         if let Some(alias) = src.type_aliases.get(&item.name) {
             dest.insert_type_alias(target.clone(), alias.clone())?;
         }
+        if let Some(info) = src.classes.get(&item.name) {
+            dest.insert_class(target.clone(), info.clone())?;
+        }
     }
     Ok(())
 }
@@ -752,6 +892,9 @@ fn select_exports(env: &TypeEnv, export_decl: &ExportDecl) -> Result<TypeEnv, Ty
             ExportItem::Type { name, .. } => {
                 if let Some(alias) = env.type_aliases.get(name) {
                     out.insert_type_alias(name.clone(), alias.clone())?;
+                }
+                if let Some(info) = env.classes.get(name) {
+                    out.insert_class(name.clone(), info.clone())?;
                 }
             }
             ExportItem::Value(name) => {
@@ -859,8 +1002,140 @@ fn infer_decl(
             env.insert_type_alias(name.clone(), alias)?;
             Ok(EffectRow::Empty)
         }
+        TopDecl::ClassDecl(decl) => {
+            infer_class_decl(state, env, decl)?;
+            Ok(EffectRow::Empty)
+        }
         TopDecl::ModuleDecl(_) => Err(TypeError::Unimplemented("modules")),
     }
+}
+
+fn infer_class_decl(
+    state: &mut InferState,
+    env: &mut TypeEnv,
+    decl: &ClassDecl,
+) -> Result<(), TypeError> {
+    let class_name = decl.name.clone();
+    env.insert_class(class_name.clone(), ClassInfo::default())?;
+    let class_ty = Type::Class(class_name.clone());
+
+    let mut seen = HashSet::new();
+    let mut info = ClassInfo::default();
+
+    for field in &decl.fields {
+        if !seen.insert(field.name.clone()) {
+            return Err(TypeError::DuplicateMember {
+                class: class_name.clone(),
+                member: field.name.clone(),
+            });
+        }
+        let ty = resolve_type(env, &field.ty, &HashSet::new())?;
+        info.fields.insert(field.name.clone(), ty);
+    }
+
+    for prop in &decl.properties {
+        if !seen.insert(prop.name.clone()) {
+            return Err(TypeError::DuplicateMember {
+                class: class_name.clone(),
+                member: prop.name.clone(),
+            });
+        }
+        let ty = match &prop.ty {
+            Some(ty) => resolve_type(env, ty, &HashSet::new())?,
+            None => state.fresh_type_var(),
+        };
+        let effect = state.fresh_row_var();
+        info.properties
+            .insert(prop.name.clone(), PropertySig { ty, effect });
+    }
+
+    for method in &decl.methods {
+        if !seen.insert(method.name.clone()) {
+            return Err(TypeError::DuplicateMember {
+                class: class_name.clone(),
+                member: method.name.clone(),
+            });
+        }
+        let mut params = Vec::new();
+        for param in &method.params {
+            let ty = match &param.ty {
+                Some(ty) => resolve_type(env, ty, &HashSet::new())?,
+                None => state.fresh_type_var(),
+            };
+            params.push(ty);
+        }
+        let output = match &method.return_type {
+            Some(ty) => resolve_type(env, ty, &HashSet::new())?,
+            None => state.fresh_type_var(),
+        };
+        let effect = state.fresh_row_var();
+        info.methods.insert(
+            method.name.clone(),
+            MethodSig {
+                params,
+                output,
+                effect,
+            },
+        );
+    }
+
+    env.update_class(&class_name, info);
+
+    for prop in &decl.properties {
+        let info = env
+            .get_class(&class_name)
+            .ok_or_else(|| TypeError::UnknownClass(class_name.clone()))?;
+        let sig = info
+            .properties
+            .get(&prop.name)
+            .ok_or_else(|| TypeError::UnknownMember {
+                class: class_name.clone(),
+                member: prop.name.clone(),
+            })?
+            .clone();
+        let mut local = env.clone();
+        insert_self_bindings(&mut local, &class_ty);
+        let out = infer_expr_inner(state, &mut local, &prop.body)?;
+        unify_types(&mut state.subst, &out.ty, &sig.ty)?;
+        unify_rows(&mut state.subst, &out.effect, &sig.effect)?;
+        env.apply_subst(&state.subst);
+    }
+
+    for method in &decl.methods {
+        let info = env
+            .get_class(&class_name)
+            .ok_or_else(|| TypeError::UnknownClass(class_name.clone()))?;
+        let sig = info
+            .methods
+            .get(&method.name)
+            .ok_or_else(|| TypeError::UnknownMember {
+                class: class_name.clone(),
+                member: method.name.clone(),
+            })?
+            .clone();
+        let mut local = env.clone();
+        insert_self_bindings(&mut local, &class_ty);
+        for (idx, param) in method.params.iter().enumerate() {
+            let param_ty = sig.params.get(idx).ok_or_else(|| {
+                TypeError::InvalidMethodCall {
+                    class: class_name.clone(),
+                    method: method.name.clone(),
+                }
+            })?;
+            local.insert(param.name.clone(), Scheme::mono(param_ty.clone()));
+        }
+        let out = infer_expr_inner(state, &mut local, &method.body)?;
+        unify_types(&mut state.subst, &out.ty, &sig.output)?;
+        unify_rows(&mut state.subst, &out.effect, &sig.effect)?;
+        env.apply_subst(&state.subst);
+    }
+
+    Ok(())
+}
+
+fn insert_self_bindings(env: &mut TypeEnv, class_ty: &Type) {
+    env.insert("self".to_string(), Scheme::mono(class_ty.clone()));
+    env.insert("identity".to_string(), Scheme::mono(class_ty.clone()));
 }
 
 fn infer_expr_inner(
@@ -933,6 +1208,9 @@ fn infer_expr_inner(
                 ty: state.subst.apply_type(&result_ty),
                 effect: state.subst.apply_row(&effect),
             })
+        }
+        Expr::Member { object, member, .. } => {
+            infer_member_access(state, env, object, member)
         }
         Expr::Let {
             name,
@@ -1027,6 +1305,7 @@ fn infer_expr_inner(
             })
         }
         Expr::ACBE { goal, expr, .. } => infer_acbe(state, env, goal, expr),
+        Expr::Constructor { name, args, .. } => infer_constructor(state, env, name, args),
         Expr::Handle { expr, handler, .. } => infer_handle(state, env, expr, handler),
         Expr::Perform { op, arg, .. } => infer_perform(state, env, op, arg),
         Expr::OrdLit { .. }
@@ -1085,6 +1364,96 @@ fn infer_expr_inner(
         Expr::Bra { expr, .. } => infer_bra(state, env, expr),
         Expr::BraKet { left, right, .. } => infer_braket(state, env, left, right),
     }
+}
+
+fn infer_member_access(
+    state: &mut InferState,
+    env: &mut TypeEnv,
+    object: &Expr,
+    member: &str,
+) -> Result<InferOutput, TypeError> {
+    let object_out = infer_expr_inner(state, env, object)?;
+    let object_ty = state.subst.apply_type(&object_out.ty);
+    let class_name = match object_ty {
+        Type::Class(name) => name,
+        ty => {
+            return Err(TypeError::InvalidMemberAccess {
+                member: member.to_string(),
+                ty,
+            })
+        }
+    };
+    let info = env
+        .get_class(&class_name)
+        .ok_or_else(|| TypeError::UnknownClass(class_name.clone()))?;
+    if let Some(ty) = info.fields.get(member) {
+        return Ok(InferOutput {
+            ty: state.subst.apply_type(ty),
+            effect: object_out.effect,
+        });
+    }
+    if let Some(sig) = info.properties.get(member) {
+        let sig = sig.apply_subst(&state.subst);
+        let effect = combine_effects(state, &object_out.effect, &sig.effect)?;
+        return Ok(InferOutput {
+            ty: sig.ty,
+            effect: state.subst.apply_row(&effect),
+        });
+    }
+    if let Some(sig) = info.methods.get(member) {
+        let sig = sig.apply_subst(&state.subst);
+        let ty = method_value_type(&sig);
+        return Ok(InferOutput {
+            ty: state.subst.apply_type(&ty),
+            effect: object_out.effect,
+        });
+    }
+    Err(TypeError::UnknownMember {
+        class: class_name,
+        member: member.to_string(),
+    })
+}
+
+fn infer_constructor(
+    state: &mut InferState,
+    env: &mut TypeEnv,
+    name: &str,
+    args: &[tkscore::ast::ConstructorArg],
+) -> Result<InferOutput, TypeError> {
+    let info = env
+        .get_class(name)
+        .ok_or_else(|| TypeError::UnknownClass(name.to_string()))?;
+    let mut seen = HashSet::new();
+    let mut effect = EffectRow::Empty;
+    for arg in args {
+        if !seen.insert(arg.name.clone()) {
+            return Err(TypeError::DuplicateMember {
+                class: name.to_string(),
+                member: arg.name.clone(),
+            });
+        }
+        let field_ty = info.fields.get(&arg.name).ok_or_else(|| {
+            TypeError::UnknownMember {
+                class: name.to_string(),
+                member: arg.name.clone(),
+            }
+        })?;
+        let value_out = infer_expr_inner(state, env, &arg.value)?;
+        unify_types(&mut state.subst, &value_out.ty, field_ty)?;
+        effect = combine_effects(state, &effect, &value_out.effect)?;
+    }
+    for field in info.fields.keys() {
+        if !seen.contains(field) {
+            return Err(TypeError::MissingMember {
+                class: name.to_string(),
+                member: field.clone(),
+            });
+        }
+    }
+    Ok(InferOutput {
+        ty: Type::Class(name.to_string()),
+        effect: state.subst.apply_row(&effect),
+    })
 }
 
 fn infer_perform(
@@ -1624,6 +1993,11 @@ fn build_fun_type(param_types: &[Type], return_type: Type) -> Type {
     })
 }
 
+fn method_value_type(sig: &MethodSig) -> Type {
+    let ret = Type::Effectful(Box::new(sig.output.clone()), sig.effect.clone());
+    build_fun_type(&sig.params, ret)
+}
+
 fn scheme_from_annotation(env: &TypeEnv, annotation: &TypeScheme) -> Result<Scheme, TypeError> {
     let bound: HashSet<String> = annotation.vars.iter().cloned().collect();
     let resolved = resolve_type(env, &annotation.ty, &bound)?;
@@ -1654,6 +2028,9 @@ fn resolve_type_inner(
         Type::Var(name) => {
             if bound.contains(name) {
                 return Ok(Type::Var(name.clone()));
+            }
+            if env.get_class(name).is_some() {
+                return Ok(Type::Class(name.clone()));
             }
             if let Some(alias) = env.get_type_alias(name) {
                 if !alias.params.is_empty() {
@@ -1705,6 +2082,7 @@ fn resolve_type_inner(
             input: Box::new(resolve_type_inner(env, input, bound, seen)?),
             output: Box::new(resolve_type_inner(env, output, bound, seen)?),
         }),
+        Type::Class(name) => Ok(Type::Class(name.clone())),
         _ => Ok(ty.clone()),
     }
 }
@@ -1726,17 +2104,27 @@ fn generalize(env: &TypeEnv, ty: &Type) -> Scheme {
 }
 
 fn free_type_vars_env(env: &TypeEnv) -> HashSet<String> {
-    env.values
+    let mut vars: HashSet<String> = env
+        .values
         .values()
         .flat_map(|scheme| free_type_vars_scheme(scheme))
-        .collect()
+        .collect();
+    for info in env.classes.values() {
+        vars.extend(free_type_vars_class(info));
+    }
+    vars
 }
 
 fn free_row_vars_env(env: &TypeEnv) -> HashSet<String> {
-    env.values
+    let mut vars: HashSet<String> = env
+        .values
         .values()
         .flat_map(|scheme| free_row_vars_scheme(scheme))
-        .collect()
+        .collect();
+    for info in env.classes.values() {
+        vars.extend(free_row_vars_class(info));
+    }
+    vars
 }
 
 fn free_type_vars_scheme(scheme: &Scheme) -> HashSet<String> {
@@ -1817,6 +2205,34 @@ fn free_row_vars_row(row: &EffectRow) -> HashSet<String> {
         EffectRow::Cons(_, tail) => free_row_vars_row(tail),
         EffectRow::Var(name) => HashSet::from([name.clone()]),
     }
+}
+
+fn free_type_vars_class(info: &ClassInfo) -> HashSet<String> {
+    let mut vars = HashSet::new();
+    for ty in info.fields.values() {
+        vars.extend(free_type_vars_type(ty));
+    }
+    for sig in info.properties.values() {
+        vars.extend(free_type_vars_type(&sig.ty));
+    }
+    for sig in info.methods.values() {
+        for param in &sig.params {
+            vars.extend(free_type_vars_type(param));
+        }
+        vars.extend(free_type_vars_type(&sig.output));
+    }
+    vars
+}
+
+fn free_row_vars_class(info: &ClassInfo) -> HashSet<String> {
+    let mut vars = HashSet::new();
+    for sig in info.properties.values() {
+        vars.extend(free_row_vars_row(&sig.effect));
+    }
+    for sig in info.methods.values() {
+        vars.extend(free_row_vars_row(&sig.effect));
+    }
+    vars
 }
 
 fn type_contains_var(ty: &Type, name: &str, subst: &Subst) -> bool {
