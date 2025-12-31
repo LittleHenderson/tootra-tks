@@ -18,6 +18,10 @@
   box-sizing: border-box;
 }
 
+.hidden {
+  display: none;
+}
+
 body {
   margin: 0;
   font-family: var(--sans);
@@ -122,6 +126,20 @@ textarea {
   font-size: 0.95rem;
   line-height: 1.5;
   resize: vertical;
+}
+
+.error-banner {
+  display: none;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(162, 53, 53, 0.3);
+  background: rgba(200, 74, 74, 0.14);
+  color: #912b2b;
+  font-size: 0.9rem;
+}
+
+.error-banner.visible {
+  display: block;
 }
 
 .controls {

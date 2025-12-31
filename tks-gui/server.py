@@ -4,6 +4,7 @@ import os
 import subprocess
 import sys
 import time
+import tempfile
 from functools import partial
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
@@ -107,7 +108,12 @@ class TksGuiHandler(SimpleHTTPRequestHandler):
         super().do_GET()
 
     def do_POST(self) -> None:
-        if self.path not in ("/api/validate", "/api/run", "/api/emit"):
+        if self.path not in (
+            "/api/validate",
+            "/api/run",
+            "/api/run_bytecode",
+            "/api/emit",
+        ):
             self.send_error(404, "unknown endpoint")
             return
         data = self._read_json()
@@ -136,6 +142,51 @@ class TksGuiHandler(SimpleHTTPRequestHandler):
                 cmd, source, self.server.repo_root, self.server.stdlib_dir
             )
             self._send_json(200, payload)
+            return
+
+        if self.path == "/api/run_bytecode":
+            ffi = bool(data.get("ffi", False))
+            tmp_path = None
+            try:
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".tkso") as tmp:
+                    tmp_path = tmp.name
+                compile_cmd = [
+                    str(self.server.tksc_path),
+                    "build",
+                    "--emit",
+                    "bc",
+                    "-o",
+                    tmp_path,
+                    "-",
+                ]
+                compile_result = run_command(
+                    compile_cmd, source, self.server.repo_root, self.server.stdlib_dir
+                )
+                if not compile_result["ok"]:
+                    compile_result["stderr"] = (
+                        compile_result["stderr"] + compile_result["stdout"]
+                    )
+                    compile_result["stdout"] = ""
+                    self._send_json(200, compile_result)
+                    return
+
+                run_cmd = [str(self.server.tks_path), "run"]
+                if ffi:
+                    run_cmd.append("--ffi")
+                run_cmd.append(tmp_path)
+                run_result = run_command(
+                    run_cmd, "", self.server.repo_root, self.server.stdlib_dir
+                )
+                run_result["bytecode"] = compile_result["stdout"]
+                run_result["compile_ms"] = compile_result["duration_ms"]
+                run_result["duration_ms"] += compile_result["duration_ms"]
+                self._send_json(200, run_result)
+            finally:
+                if tmp_path:
+                    try:
+                        os.remove(tmp_path)
+                    except OSError:
+                        pass
             return
 
         if self.path == "/api/emit":

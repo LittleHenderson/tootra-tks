@@ -47,3 +47,5 @@ python .\tks-gui\server.py --tks .\dist\tks-0.1.0-windows\tks.exe --tksc .\dist\
 - Validate uses `tksc check`.
 - Run uses `tks run`.
 - `tks run` does not resolve modules yet; use `tksc check` for module validation.
+- The GUI can save/load snippets and projects in local storage.
+- Run Bytecode compiles to `.tkso` and executes the bytecode in one step.

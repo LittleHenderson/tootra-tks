@@ -28,10 +28,12 @@
           spellcheck="false"
           placeholder="Type TKS code here..."
         ></textarea>
+        <div id="editor-error" class="error-banner hidden"></div>
 
         <div class="controls">
           <div class="row">
             <button id="run-btn" class="primary">Run</button>
+            <button id="run-bc-btn">Run Bytecode</button>
             <button id="validate-btn">Validate</button>
             <button id="emit-btn">Emit</button>
             <select id="emit-kind">
@@ -67,6 +69,24 @@
             <button id="insert-btn">Insert</button>
             <button id="clear-btn" class="ghost">Clear Editor</button>
           </div>
+
+          <div class="row">
+            <select id="saved-snippet-select">
+              <option value="">Saved snippets...</option>
+            </select>
+            <button id="load-snippet-btn">Load Snippet</button>
+            <button id="save-snippet-btn">Save Snippet</button>
+            <button id="delete-snippet-btn" class="ghost">Delete Snippet</button>
+          </div>
+
+          <div class="row">
+            <select id="saved-project-select">
+              <option value="">Saved projects...</option>
+            </select>
+            <button id="load-project-btn">Load Project</button>
+            <button id="save-project-btn">Save Project</button>
+            <button id="delete-project-btn" class="ghost">Delete Project</button>
+          </div>
         </div>
       </section>
 
@@ -79,6 +99,11 @@
         <div class="output-block">
           <h3>Stdout</h3>
           <pre id="stdout"></pre>
+        </div>
+
+        <div class="output-block">
+          <h3>Bytecode</h3>
+          <pre id="bytecode"></pre>
         </div>
 
         <div class="output-block">

@@ -265,3 +265,4 @@ http://127.0.0.1:8747
 ```
 
 See `tks-gui/README.md` for details.
+The GUI includes save/load for snippets and projects, plus a Run Bytecode button.
