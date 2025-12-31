@@ -510,6 +510,15 @@ omega + 2
 .\dist\tks-0.1.0-windows\tks.exe run .\calc.tkso
 ```
 
+### One-Liner Cheat Sheet
+```powershell
+.\scripts\package_tks_dist.ps1 -Configuration Release
+@'let x = 2 + 3; x * 4'@ | .\dist\tks-0.1.0-windows\tks.exe run -
+@'let idea = A1; idea^2'@ | .\dist\tks-0.1.0-windows\tksc.exe check -
+@'omega + 2'@ | .\dist\tks-0.1.0-windows\tksc.exe build --emit bc -o .\calc.tkso -
+.\dist\tks-0.1.0-windows\tks.exe run .\calc.tkso
+```
+
 ## GUI Equation Lab (Optional)
 You can use the local GUI to validate and run code:
 
