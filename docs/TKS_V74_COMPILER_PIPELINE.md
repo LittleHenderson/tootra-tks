@@ -86,6 +86,12 @@ This document defines the implementation pipeline and crate layout for the v7.4 
 - tks repl
  - tksc package <file.tkso> [-o app.exe] (planned)
 
+## Stdlib Loading
+- tksc loads stdlib modules from `TKS_STDLIB_DIR` or `tks-rs/stdlib` by default.
+- Current stdlib modules: `TKS.Core`, `TKS.Quantum`, `TKS.RPM`, `TKS.Noetics`,
+  `TKS.Fractals`, `TKS.Foundations`.
+- Example: `tksc check tks-rs/examples/stdlib_noetics.tks`
+
 ## Error Handling
 - Diagnostics carry span + source line context.
 - Errors classified: lexer, parse, resolve, type, effect, codegen, VM runtime.

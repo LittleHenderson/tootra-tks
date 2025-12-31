@@ -1,0 +1,7 @@
+module TKS.Noetics {
+  export { apply_n0, apply_n1, apply_n2 }
+
+  let apply_n0 = \x -> x^0;
+  let apply_n1 = \x -> x^1;
+  let apply_n2 = \x -> x^2;
+}
