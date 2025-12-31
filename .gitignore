@@ -31,3 +31,6 @@ checkpoints/
 
 # Rust build artifacts
 tks-rs/target/
+
+# Distribution bundles
+dist/
