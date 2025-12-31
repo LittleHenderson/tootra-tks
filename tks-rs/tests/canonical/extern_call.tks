@@ -1,0 +1,2 @@
+external c fn ping(x: Int): Int;
+ping(7)

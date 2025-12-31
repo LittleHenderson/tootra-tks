@@ -1,0 +1,8 @@
+effect Log {
+  op log(msg: Int): Int;
+}
+
+handle let x = perform log(2) in x with {
+  return v -> v;
+  log(msg) k -> resume(msg);
+}

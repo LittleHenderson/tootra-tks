@@ -1,0 +1,8 @@
+effect Found {
+  op mark(f: Foundation): Foundation;
+}
+
+handler HF: Handler[{Found}, Foundation, Foundation] {
+  return x -> <<1:2:...>>(x);
+  mark(f) k -> k(3a);
+}
