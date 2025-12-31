@@ -1,4 +1,4 @@
-use tksbytecode::bytecode::{Instruction, Opcode};
+use tksbytecode::bytecode::{field_id, Instruction, Opcode};
 use tksvm::vm::{OrdinalValue, Value, VmError, VmState};
 
 fn instr(opcode: Opcode, operand1: Option<u64>) -> Instruction {
@@ -47,6 +47,32 @@ fn run_load_store_program() {
     let mut vm = VmState::new(code);
     let result = vm.run().expect("run program");
     assert_eq!(result, Value::Int(5));
+}
+
+#[test]
+fn run_record_get_set_program() {
+    let code = vec![
+        instr(Opcode::MakeRecord, None),
+        instr(Opcode::PushInt, Some(1)),
+        instr(Opcode::RecordSet, Some(field_id("x"))),
+        instr(Opcode::Store, Some(0)),
+        instr(Opcode::Load, Some(0)),
+        instr(Opcode::RecordGet, Some(field_id("x"))),
+        instr(Opcode::Store, Some(1)),
+        instr(Opcode::Load, Some(0)),
+        instr(Opcode::PushInt, Some(7)),
+        instr(Opcode::RecordSet, Some(field_id("x"))),
+        instr(Opcode::Store, Some(0)),
+        instr(Opcode::Load, Some(0)),
+        instr(Opcode::RecordGet, Some(field_id("x"))),
+        instr(Opcode::Load, Some(1)),
+        instr(Opcode::Add, None),
+        instr(Opcode::Ret, None),
+    ];
+
+    let mut vm = VmState::new(code);
+    let result = vm.run().expect("run program");
+    assert_eq!(result, Value::Int(8));
 }
 
 #[test]

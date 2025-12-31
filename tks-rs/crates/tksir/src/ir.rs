@@ -10,6 +10,7 @@ pub enum IRVal {
     Noetic(u8),
     Ordinal(Expr),
     Ket(Box<IRVal>),
+    Record(Vec<(Ident, IRVal)>),
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -18,6 +19,8 @@ pub enum IRTerm {
     Let(Ident, Box<IRComp>, Box<IRTerm>),
     App(IRVal, IRVal),
     If(IRVal, Box<IRTerm>, Box<IRTerm>),
+    RecordGet(IRVal, Ident),
+    RecordSet(IRVal, Ident, IRVal),
     Perform(Ident, IRVal),
     Handle(Box<IRTerm>, Box<IRHandler>),
     RpmReturn(IRVal),

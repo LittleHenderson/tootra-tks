@@ -1,4 +1,4 @@
-use tksbytecode::bytecode::{extern_id, Instruction, Opcode};
+use tksbytecode::bytecode::{extern_id, field_id, Instruction, Opcode};
 use tksbytecode::emit::emit;
 use tkscore::ast::{Expr, Literal, OrdinalLiteral};
 use tkscore::span::Span;
@@ -156,6 +156,57 @@ fn emit_ket_value() {
     let expected = vec![
         inst1(Opcode::PushInt, 9),
         inst(Opcode::MakeKet),
+        inst(Opcode::Ret),
+    ];
+    assert_eq!(code, expected);
+}
+
+#[test]
+fn emit_record_get() {
+    let term = IRTerm::Let(
+        "r".to_string(),
+        Box::new(IRComp::Pure(IRVal::Record(vec![(
+            "x".to_string(),
+            IRVal::Lit(Literal::Int(1)),
+        )]))),
+        Box::new(IRTerm::RecordGet(
+            IRVal::Var("r".to_string()),
+            "x".to_string(),
+        )),
+    );
+
+    let code = emit(&term).expect("emit record get");
+    let expected = vec![
+        inst(Opcode::MakeRecord),
+        inst1(Opcode::PushInt, 1),
+        inst1(Opcode::RecordSet, field_id("x")),
+        inst1(Opcode::Store, 0),
+        inst1(Opcode::Load, 0),
+        inst1(Opcode::RecordGet, field_id("x")),
+        inst(Opcode::Ret),
+    ];
+    assert_eq!(code, expected);
+}
+
+#[test]
+fn emit_record_set() {
+    let term = IRTerm::Let(
+        "r".to_string(),
+        Box::new(IRComp::Pure(IRVal::Record(Vec::new()))),
+        Box::new(IRTerm::RecordSet(
+            IRVal::Var("r".to_string()),
+            "x".to_string(),
+            IRVal::Lit(Literal::Int(2)),
+        )),
+    );
+
+    let code = emit(&term).expect("emit record set");
+    let expected = vec![
+        inst(Opcode::MakeRecord),
+        inst1(Opcode::Store, 0),
+        inst1(Opcode::Load, 0),
+        inst1(Opcode::PushInt, 2),
+        inst1(Opcode::RecordSet, field_id("x")),
         inst(Opcode::Ret),
     ];
     assert_eq!(code, expected);

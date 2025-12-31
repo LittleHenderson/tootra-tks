@@ -84,6 +84,9 @@ pub enum Opcode {
     Entangle,
     Tensor,
     QApply,
+    MakeRecord,
+    RecordGet,
+    RecordSet,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -94,7 +97,7 @@ pub struct Instruction {
     pub operand2: Option<u64>,
 }
 
-pub fn extern_id(name: &str) -> u64 {
+fn name_id(name: &str) -> u64 {
     const FNV_OFFSET: u64 = 0xcbf29ce484222325;
     const FNV_PRIME: u64 = 0x100000001b3;
     let mut hash = FNV_OFFSET;
@@ -103,4 +106,12 @@ pub fn extern_id(name: &str) -> u64 {
         hash = hash.wrapping_mul(FNV_PRIME);
     }
     hash
+}
+
+pub fn extern_id(name: &str) -> u64 {
+    name_id(name)
+}
+
+pub fn field_id(name: &str) -> u64 {
+    name_id(name)
 }
