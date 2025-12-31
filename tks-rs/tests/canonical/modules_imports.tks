@@ -1,0 +1,9 @@
+module A {
+  export { value }
+  let value = 10;
+}
+
+module B {
+  from A import { value };
+  let doubled = value;
+}

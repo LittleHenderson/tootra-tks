@@ -4,7 +4,7 @@ use std::path::{Path, PathBuf};
 use tksbytecode::emit::emit;
 use tkscore::parser::parse_program;
 use tksir::lower::lower_program;
-use tksvm::vm::VmState;
+use tksvm::vm::{Value, VmError, VmState};
 use tkstypes::infer::infer_program;
 
 fn canonical_dir() -> PathBuf {
@@ -24,8 +24,23 @@ fn run_sample(path: &Path) -> Result<String, String> {
     let ir = lower_program(&program).map_err(|err| format!("lower error: {err}"))?;
     let bytecode = emit(&ir).map_err(|err| format!("emit error: {err}"))?;
     let mut vm = VmState::new(bytecode);
+    register_externs(&mut vm);
     let result = vm.run().map_err(|err| format!("vm error: {err:?}"))?;
     Ok(format!("{result:?}"))
+}
+
+fn register_externs(vm: &mut VmState) {
+    vm.register_extern("ping", |args| match args.as_slice() {
+        [Value::Int(value)] => Ok(Value::Int(*value)),
+        [other] => Err(VmError::TypeMismatch {
+            expected: "int",
+            found: other.clone(),
+        }),
+        _ => Err(VmError::TypeMismatch {
+            expected: "one arg",
+            found: Value::Unit,
+        }),
+    });
 }
 
 #[test]
