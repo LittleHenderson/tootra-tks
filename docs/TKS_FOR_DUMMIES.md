@@ -1,4 +1,4 @@
-# TKS Language Manual (For First-Time Users)
+﻿# TKS Language Manual (For First-Time Users)
 
 This is a practical "how to use it" guide for the current Rust implementation of
 the TKS v7.4 language. It focuses on running code and the real syntax that is
@@ -53,6 +53,13 @@ x * 4
 .\dist\tks-0.1.0-windows-gpu\tks.exe gpu info
 ```
 
+## Why GPU (Short Explanation)
+TKS work can be highly parallel (fractals, quantum state sets, large ordinal
+iterations). GPUs accelerate these workloads by running many small operations
+at once. Today the GPU build exposes basic GPU commands (`tks gpu info`,
+`tks gpu add`). As fractal/quantum kernels land, the same build will be used
+to accelerate those transforms.
+
 ## Step-by-Step: Compile to Bytecode
 ```powershell
 .\dist\tks-0.1.0-windows\tksc.exe build --emit bc -o .\play.tkso .\play.tks
@@ -70,6 +77,45 @@ print_int(42)
 ```
 
 Built-in externs: `print_int`, `print_bool`.
+
+## First Program (Empowerment Style, Working Today)
+This example runs on the current runtime. We treat an Element as a symbolic
+stand-in for an idea and apply a noetic operator to reframe it.
+
+```tks
+-- idea: "I am strong" (symbolic label)
+let idea = A1;
+idea^2
+```
+
+Run it:
+```powershell
+@'
+-- idea: "I am strong" (symbolic label)
+let idea = A1;
+idea^2
+'@ | Set-Content -NoNewline .\affirm.tks
+
+.\dist\tks-0.1.0-windows\tks.exe run .\affirm.tks
+```
+
+Why hook (interpretive): noetic operators (nu0-nu9) transform a value. In a
+personal-growth frame, that is like re-framing the same idea in a new light.
+
+### Conceptual (Book-Inspired, Not Implemented Yet)
+The book discusses inversion axes and affirmations. The current language does
+not include strings or an `invert(...)` builtin, so this is pseudocode only:
+
+```tks
+-- pseudocode only (not valid in current runtime)
+invert("I am strong", axes: N,E)
+```
+
+Conceptual output: "You are weak" (noetic inversion flips polarity; the axis
+shift moves the subject perspective). This is illustrative only.
+
+If you want this today, implement an extern and map text to symbols (Elements or
+Noetics) on the host side.
 
 ## Language Outline (Syntax You Can Use)
 
@@ -104,6 +150,8 @@ Elements are `A1`..`D10`:
 A1
 C7
 ```
+Why hook: Elements are symbolic anchors. In a personal-growth frame, they let
+you tag an idea with a stable archetype before transforming it.
 
 ### Foundations (7 x 4)
 Foundations are `1a`..`7d` (prefix `F` also works):
@@ -112,14 +160,18 @@ Foundations are `1a`..`7d` (prefix `F` also works):
 4d
 F3b
 ```
+Why hook: Foundations are stable contexts. They represent the "ground" an idea
+stands on before you apply noetic change.
 
-### Noetics (0–9)
+### Noetics (0-9)
 Suffix and prefix forms:
 ```tks
 3^1
 nu2(7)
 nu3 10
 ```
+Why hook: Noetics (nu0-nu9) reframe a value. They are the core "transform
+ideas" operators in TKS.
 
 ### Fractals
 ASCII forms:
@@ -135,9 +187,12 @@ Unicode fractal delimiters:
 ```
 
 Notes:
-- Digits are 0–9.
+- Digits are 0-9.
 - `...` marks ellipsis.
 - `_omega` (or any ordinal expression) is optional.
+
+Why hook: Fractals repeat a transform across scales, which mirrors how patterns
+recur in beliefs and behaviors.
 
 ### Ordinals
 ```tks
@@ -158,6 +213,8 @@ superpose[(0.5, |A1>), (0.5, |A2>)]
 measure(superpose { 1: |10>, 2: |20> })
 entangle(|1>, |2>)
 ```
+Why hook: Quantum forms let you hold multiple possibilities, then measure to
+choose a realized path. This mirrors exploring alternate perspectives.
 
 ### RPM (Rule of Progressive Manifestation)
 ```tks
@@ -166,6 +223,8 @@ check 3
 acquire 7
 (return 1) >>= (\x -> return x)
 ```
+Why hook: RPM encodes progress and acquisition steps, which makes growth
+stages explicit and testable.
 
 ### Effects + Handlers
 ```tks
@@ -180,6 +239,9 @@ handle let x = perform log(2) in x with {
 ```
 
 You can also call the continuation directly (`k(value)`).
+
+Why hook: Effects separate "what happened" from "how you respond," which is a
+useful mental model for conscious action.
 
 ### Externs (FFI)
 ```tks
@@ -266,3 +328,10 @@ http://127.0.0.1:8747
 
 See `tks-gui/README.md` for details.
 The GUI includes save/load for snippets and projects, plus a Run Bytecode button.
+
+## Video Demos + Online Playground (Optional)
+If you want a low-friction "try it now" path, add links here:
+- Video demo: [ADD_LINK_HERE]
+- Online playground: [ADD_LINK_HERE]
+
+These are placeholders until you publish the content.
