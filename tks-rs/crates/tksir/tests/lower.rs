@@ -211,6 +211,46 @@ f(1) >>= g(2)
 }
 
 #[test]
+fn lower_class_decl_and_constructor() {
+    let source = r#"
+class Counter {
+  field value: Int;
+  property current: Int = 0;
+  method inc(delta: Int): Int = delta;
+}
+repeat Counter(value: 1)
+"#;
+    let program = parse_program(source).expect("parse program");
+    let term = lower_program(&program).expect("lower program");
+
+    match term {
+        IRTerm::Let(name, IRComp::Pure(_), body) => {
+            assert_eq!(name, "Counter");
+            match *body {
+                IRTerm::Let(prop_name, IRComp::Pure(_), body) => {
+                    assert_eq!(prop_name, "Counter::current");
+                    match *body {
+                        IRTerm::Let(method_name, IRComp::Pure(_), body) => {
+                            assert_eq!(method_name, "Counter::inc");
+                            match *body {
+                                IRTerm::App(IRVal::Var(func), IRVal::Lit(Literal::Int(value))) => {
+                                    assert_eq!(func, "Counter");
+                                    assert_eq!(value, 1);
+                                }
+                                other => panic!("expected constructor app, got {other:?}"),
+                            }
+                        }
+                        other => panic!("expected method binding, got {other:?}"),
+                    }
+                }
+                other => panic!("expected property binding, got {other:?}"),
+            }
+        }
+        other => panic!("expected constructor binding, got {other:?}"),
+    }
+}
+
+#[test]
 fn lower_extern_decl() {
     let source = r#"
 external c fn ping(x: Int): Int;
