@@ -30,7 +30,7 @@ fn run_sample(path: &Path) -> Result<String, String> {
 }
 
 fn register_externs(vm: &mut VmState) {
-    vm.register_extern("ping", |args| match args.as_slice() {
+    vm.register_extern("ping", 1, |args: Vec<Value>| match args.as_slice() {
         [Value::Int(value)] => Ok(Value::Int(*value)),
         [other] => Err(VmError::TypeMismatch {
             expected: "int",
