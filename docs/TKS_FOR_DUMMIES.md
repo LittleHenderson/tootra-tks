@@ -476,6 +476,40 @@ Notes:
 - REPL is not implemented yet.
 
 
+## CLI Calculator (Optional)
+If you want a terminal-only workflow (no GUI), you can run code directly
+from stdin:
+
+1) Build the binaries:
+```powershell
+.\scripts\package_tks_dist.ps1 -Configuration Release
+```
+
+2) Run a quick calculation:
+```powershell
+@'
+let x = 10;
+x + 5
+'@ | .\dist\tks-0.1.0-windows\tks.exe run -
+```
+
+3) Validate without running:
+```powershell
+@'
+let idea = A2;
+idea^3
+'@ | .\dist\tks-0.1.0-windows\tksc.exe check -
+```
+
+4) Compile to bytecode and run:
+```powershell
+@'
+omega + 2
+'@ | .\dist\tks-0.1.0-windows\tksc.exe build --emit bc -o .\calc.tkso -
+
+.\dist\tks-0.1.0-windows\tks.exe run .\calc.tkso
+```
+
 ## GUI Equation Lab (Optional)
 You can use the local GUI to validate and run code:
 
