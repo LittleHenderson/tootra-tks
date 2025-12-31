@@ -289,6 +289,98 @@ Function types:
 Int -> Int
 ```
 
+## Raw TKS Snippets (1:1 With Explanations)
+Each snippet below shows real, runnable syntax. The explanation directly
+maps to the code so readers can see how the language expresses different
+ideas.
+If a snippet is currently check-only (not lowered to bytecode), it is
+explicitly labeled.
+
+### 1) Arithmetic + Binding
+```tks
+let x = 2 + 3;
+x * 4
+```
+Explanation: bind `x` to a computed value, then reuse it in a second
+expression.
+
+### 2) Functions + Application
+```tks
+let inc = \n -> n + 1;
+inc 41
+```
+Explanation: define a lambda and apply it to a value.
+
+### 3) Elements + Noetics
+```tks
+let idea = A1;
+idea^2
+```
+Explanation: treat an Element as a symbolic anchor and apply a noetic
+operator to reframe it.
+
+### 4) Foundations (Context Grounding)
+```tks
+let ground = F3b;
+ground
+```
+Explanation: foundations are first-class values that represent a stable
+context you can reference or pass around. Note: currently check-only
+(not lowered to bytecode).
+
+### 5) Ordinals
+```tks
+omega + 2
+```
+Explanation: ordinal literals and arithmetic are supported as values.
+
+### 6) Quantum Forms
+```tks
+let q = superpose { 1: |10>, 2: |20> };
+measure(q)
+```
+Explanation: build a superposition, then measure to choose a value.
+
+### 7) RPM Flow
+```tks
+return 5 >>= (\x -> return (x + 1))
+```
+Explanation: RPM chaining (`>>=`) sequences progressive steps.
+
+### 8) Effects + Handlers
+```tks
+effect Log { op log(msg: Int): Int; }
+
+handle let x = perform log(2) in x with {
+  return v -> v;
+  log(msg) k -> resume(msg);
+}
+```
+Explanation: define an effect, perform it, and handle it by resuming the
+continuation.
+
+### 9) Extern Calls (FFI)
+```tks
+extern c safe fn print_int(x: Int): Unit !{IO};
+print_int(7)
+```
+Explanation: call a host function via FFI (run with `tks run --ffi`).
+
+### 10) Modules + Imports
+```tks
+module A {
+  export { value }
+  let value = 10;
+}
+
+module B {
+  from A import { value };
+  let doubled = value + value;
+}
+```
+Explanation: define modules and import values across them.
+Note: module bodies are currently check-only; use `tksc check`/`tksc build`.
+
 ## What You Can Build (Practical Uses)
 - TKS equation calculators and canonical validators.
 - Symbolic or numeric pipelines with TKS constructs as data.
