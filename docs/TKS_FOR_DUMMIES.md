@@ -235,7 +235,7 @@ Int -> Int
 - GPU experiments using `tks gpu ...` (GPU build only).
 
 ## Current Implementation Status (Important)
-End-to-end supported (parse → type → lower → bytecode → VM):
+End-to-end supported (parse -> type -> lower -> bytecode -> VM):
 - Int/Bool/Unit, `let`, lambdas, application, arithmetic.
 - Noetic apply (`x^n`), ordinals, ket/superpose/measure/entangle.
 - Effects/handlers/resume.
@@ -249,3 +249,19 @@ Parsed + typed but not yet lowered to bytecode:
 Notes:
 - `tks run` does not resolve modules; use `tksc` to check/build.
 - REPL is not implemented yet.
+
+
+## GUI Equation Lab (Optional)
+You can use the local GUI to validate and run code:
+
+```powershell
+.\scripts\package_tks_dist.ps1 -Configuration Release
+python .\tks-gui\server.py
+```
+
+Then open:
+```
+http://127.0.0.1:8747
+```
+
+See `tks-gui/README.md` for details.

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TKS Equation Lab</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero-badge">TKS v7.4</div>
+      <h1>TKS Equation Lab</h1>
+      <p>
+        A local GUI for validating and running TKS expressions. Validate uses
+        <span class="code">tksc check</span>. Run uses
+        <span class="code">tks run</span>.
+      </p>
+    </header>
+
+    <main class="grid">
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Editor</h2>
+          <div class="pill">source.tks</div>
+        </div>
+        <textarea
+          id="source"
+          spellcheck="false"
+          placeholder="Type TKS code here..."
+        ></textarea>
+
+        <div class="controls">
+          <div class="row">
+            <button id="run-btn" class="primary">Run</button>
+            <button id="validate-btn">Validate</button>
+            <button id="emit-btn">Emit</button>
+            <select id="emit-kind">
+              <option value="bc">Bytecode</option>
+              <option value="ast">AST</option>
+              <option value="ir">IR</option>
+              <option value="tksi">TKSI</option>
+            </select>
+          </div>
+
+          <div class="row">
+            <label class="toggle">
+              <input type="checkbox" id="ffi-toggle" />
+              Use FFI
+            </label>
+            <label class="toggle">
+              <input type="checkbox" id="clear-toggle" checked />
+              Clear output on run
+            </label>
+          </div>
+
+          <div class="row">
+            <select id="snippet-select">
+              <option value="">Insert snippet...</option>
+              <option value="arith">Arithmetic</option>
+              <option value="noetic">Noetic</option>
+              <option value="ordinal">Ordinal</option>
+              <option value="quantum">Quantum</option>
+              <option value="rpm">RPM</option>
+              <option value="effect">Effect + Handler</option>
+              <option value="foundation">Foundation</option>
+            </select>
+            <button id="insert-btn">Insert</button>
+            <button id="clear-btn" class="ghost">Clear Editor</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Output</h2>
+          <div id="status" class="status idle">Idle</div>
+        </div>
+
+        <div class="output-block">
+          <h3>Stdout</h3>
+          <pre id="stdout"></pre>
+        </div>
+
+        <div class="output-block">
+          <h3>Stderr</h3>
+          <pre id="stderr"></pre>
+        </div>
+
+        <div class="hint">
+          Note: <span class="code">tks run</span> does not resolve modules yet.
+          Use <span class="code">tksc check</span> for module validation.
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div>
+        Need help? See <span class="code">docs/TKS_FOR_DUMMIES.md</span> and
+        <span class="code">tks-gui/README.md</span>.
+      </div>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>
