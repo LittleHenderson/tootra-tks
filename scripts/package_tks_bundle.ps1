@@ -1,6 +1,7 @@
 param(
     [string]$Configuration = "Release",
-    [string]$OutDir = ""
+    [string]$OutDir = "",
+    [switch]$Gpu
 )
 
 $ErrorActionPreference = "Stop"
@@ -14,7 +15,7 @@ if ([string]::IsNullOrWhiteSpace($OutDir)) {
     $OutDir = Join-Path $repoRoot $OutDir
 }
 
-& (Join-Path $scriptRoot "package_tks.ps1") -Configuration $Configuration -OutDir $OutDir
+& (Join-Path $scriptRoot "package_tks.ps1") -Configuration $Configuration -OutDir $OutDir -Gpu:$Gpu
 & (Join-Path $scriptRoot "package_tksc.ps1") -Configuration $Configuration -OutDir $OutDir
 
 Write-Host "Bundle staged to $OutDir"
