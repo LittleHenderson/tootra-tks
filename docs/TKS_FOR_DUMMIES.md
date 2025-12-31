@@ -408,26 +408,27 @@ module C {
 Explanation: combine multiple modules by importing from more than one source.
 Note: module bodies are currently check-only; use `tksc check`/`tksc build`.
 
-### 13) Suggested Project Layout (Real-World)
+### 13) Suggested Project Layout (Canon/Engine/CLI)
 ```tks
 module Canon {
   export { seed }
   let seed = 7;
 }
 
-module Ops {
+module Engine {
   export { step }
   let step = \x -> x + 1;
 }
 
-module App {
+module CLI {
   from Canon import { seed };
-  from Ops import { step };
+  from Engine import { step };
   let result = step seed;
 }
 ```
 Explanation: split the project into canonical data (`Canon`), reusable
-transformations (`Ops`), and an entrypoint (`App`) that wires them together.
+transformations (`Engine`), and a command/entry layer (`CLI`) that wires them
+together.
 Note: module bodies are currently check-only; use `tksc check`/`tksc build`.
 
 ### GUI-Ready Snippets (Paste Into GUI)
