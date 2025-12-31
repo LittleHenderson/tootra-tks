@@ -295,6 +295,8 @@ TKS-flavored keywords you specified.
 - `actions` = methods
 - `identity` = self
 - `repeat` = new
+- Standard aliases allowed: `class`, `field`, `method`, `new`, `self`
+- Mutability: fields are immutable by default; `mut` marks mutable fields
 
 Example (conceptual syntax):
 ```tks

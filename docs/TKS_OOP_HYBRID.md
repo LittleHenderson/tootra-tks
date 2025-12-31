@@ -10,6 +10,7 @@ syntax that lowers into the existing core (functions, values, effects).
 - `actions` = methods
 - `identity` = self
 - `repeat` = new
+- `mut` = mutable field marker
 
 Optional aliases (if you want standard keywords too):
 - `class`, `field`, `method`, `new`, `self`
@@ -50,7 +51,7 @@ let Counter.inc = \self -> Counter(succ(self.value));
 
 ## Mutability
 Default: immutable fields. Updates return a new instance.
-If mutability is needed later, introduce `mut` fields explicitly.
+Mutable fields are allowed via `mut`.
 
 ## Inheritance
 Default: none (composition + interfaces/traits if added later).
