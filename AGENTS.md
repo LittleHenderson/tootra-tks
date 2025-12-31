@@ -99,7 +99,7 @@ Status legend: [ ] todo, [~] in progress, [x] done.
 [x] Canonical compliance + regression tests (samples, golden files) - Owner: Agent C
 [x] FFI runtime binding (extern values + bytecode + VM + CLI registry) - Owner: Agent A/B/C
 [x] Test + polish pass (full workspace tests, fix failures, expand canon/golden coverage) - Owner: Agent A
-[ ] Stdlib expansion + examples/docs (TKS.Noetics, TKS.Fractals, TKS.Foundations) - Owner: Agent C
+[x] Stdlib expansion + examples/docs (TKS.Noetics, TKS.Fractals, TKS.Foundations) - Owner: Agent C
 [x] FFI/runtime extensions (dynamic loading, symbol aliasing, effect enforcement, safety gating) - Owner: Agent B
 
 ## Current Sprint (Parallel)
@@ -108,4 +108,4 @@ Status legend: [ ] todo, [~] in progress, [x] done.
 
 [x] Agent A: Full test pass + fix failures + widen canonical tests
 [x] Agent B: FFI/runtime extensions (dynamic loading, symbol aliasing, effect enforcement)
-[~] Agent C: Stdlib expansion + examples/docs
+[x] Agent C: Stdlib expansion + examples/docs
