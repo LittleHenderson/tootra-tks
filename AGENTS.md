@@ -100,12 +100,12 @@ Status legend: [ ] todo, [~] in progress, [x] done.
 [x] FFI runtime binding (extern values + bytecode + VM + CLI registry) - Owner: Agent A/B/C
 [ ] Test + polish pass (full workspace tests, fix failures, expand canon/golden coverage) - Owner: Agent A
 [ ] Stdlib expansion + examples/docs (TKS.Noetics, TKS.Fractals, TKS.Foundations) - Owner: Agent C
-[ ] FFI/runtime extensions (dynamic loading, symbol aliasing, effect enforcement, safety gating) - Owner: Agent B
+[x] FFI/runtime extensions (dynamic loading, symbol aliasing, effect enforcement, safety gating) - Owner: Agent B
 
 ## Current Sprint (Parallel)
 
 Status legend: [ ] todo, [~] in progress, [x] done.
 
 [~] Agent A: Full test pass + fix failures + widen canonical tests
-[~] Agent B: FFI/runtime extensions (dynamic loading, symbol aliasing, effect enforcement)
+[x] Agent B: FFI/runtime extensions (dynamic loading, symbol aliasing, effect enforcement)
 [~] Agent C: Stdlib expansion + examples/docs
