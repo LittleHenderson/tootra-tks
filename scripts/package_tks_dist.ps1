@@ -1,7 +1,8 @@
 param(
     [string]$Configuration = "Release",
     [string]$OutDir = "",
-    [string]$Version = ""
+    [string]$Version = "",
+    [switch]$Gpu
 )
 
 $ErrorActionPreference = "Stop"
@@ -44,3 +45,48 @@ Compress-Archive -Path (Join-Path $bundleDir "*") -DestinationPath $zipPath
 
 Write-Host "Bundle staged to $bundleDir"
 Write-Host "Zip written to $zipPath"
+
+if ($Gpu) {
+    $tksRoot = Join-Path $repoRoot "tks-rs"
+    $profileArgs = @()
+    if ($Configuration -ine "Debug") {
+        $profileArgs = @("--release")
+    }
+
+    Push-Location $tksRoot
+    try {
+        cargo build -p tks @profileArgs --features gpu
+    } finally {
+        Pop-Location
+    }
+
+    $buildDir = if ($Configuration -ieq "Debug") {
+        Join-Path $tksRoot "target\\debug"
+    } else {
+        Join-Path $tksRoot "target\\release"
+    }
+
+    $gpuDir = Join-Path $OutDir "tks-$Version-windows-gpu"
+    New-Item -ItemType Directory -Force -Path $gpuDir | Out-Null
+
+    $tksExe = Join-Path $buildDir "tks.exe"
+    if (-not (Test-Path $tksExe)) {
+        throw "expected GPU executable not found: $tksExe"
+    }
+    Copy-Item -Force $tksExe (Join-Path $gpuDir "tks.exe")
+
+    $tkscExe = Join-Path $bundleDir "tksc.exe"
+    if (-not (Test-Path $tkscExe)) {
+        throw "expected tksc.exe not found in bundle: $tkscExe"
+    }
+    Copy-Item -Force $tkscExe (Join-Path $gpuDir "tksc.exe")
+
+    $gpuZipPath = Join-Path $OutDir "tks-$Version-windows-gpu.zip"
+    if (Test-Path $gpuZipPath) {
+        Remove-Item -Force $gpuZipPath
+    }
+    Compress-Archive -Path (Join-Path $gpuDir "*") -DestinationPath $gpuZipPath
+
+    Write-Host "GPU bundle staged to $gpuDir"
+    Write-Host "GPU zip written to $gpuZipPath"
+}

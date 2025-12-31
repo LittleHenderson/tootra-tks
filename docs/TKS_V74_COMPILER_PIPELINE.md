@@ -63,7 +63,9 @@ This document defines the implementation pipeline and crate layout for the v7.4 
    - Emit .pdb and symbol maps for diagnostics (optional)
    - Packaging helper (PowerShell):
      - `.\scripts\package_tks.ps1 -OutDir .\packaging\windows`
-     - Run: `.\packaging\windows\tks.exe run path\to\file.tks`
+     - `.\scripts\package_tks_dist.ps1 -Configuration Release`
+     - `.\scripts\package_tks_dist.ps1 -Configuration Release -Gpu` (adds GPU bundle)
+     - Run: `.\dist\tks-<version>-windows\tks.exe run path\to\file.tks`
 
 ## Crate Layout (Proposed)
 - tks-rs/
