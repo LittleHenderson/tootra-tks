@@ -59,8 +59,50 @@ pub enum TopDecl {
         handler_type: Option<Type>,
         def: HandlerDef,
     },
+    ClassDecl(ClassDecl),
     ModuleDecl(ModuleDecl),
     ExternDecl(ExternDecl),
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ClassDecl {
+    pub span: Span,
+    pub name: Ident,
+    pub specifics: Vec<FieldDecl>,
+    pub details: Vec<PropertyDecl>,
+    pub actions: Vec<MethodDecl>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct FieldDecl {
+    pub span: Span,
+    pub name: Ident,
+    pub ty: Type,
+    pub mutable: bool,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct PropertyDecl {
+    pub span: Span,
+    pub name: Ident,
+    pub ty: Option<Type>,
+    pub value: Expr,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct MethodDecl {
+    pub span: Span,
+    pub name: Ident,
+    pub self_param: Ident,
+    pub params: Vec<MethodParam>,
+    pub return_type: Type,
+    pub body: Expr,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct MethodParam {
+    pub name: Ident,
+    pub ty: Type,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -120,6 +162,11 @@ pub enum Expr {
         func: Box<Expr>,
         arg: Box<Expr>,
     },
+    Member {
+        span: Span,
+        object: Box<Expr>,
+        field: Ident,
+    },
     Let {
         span: Span,
         name: Ident,
@@ -176,6 +223,11 @@ pub enum Expr {
         span: Span,
         goal: Box<Expr>,
         expr: Box<Expr>,
+    },
+    Constructor {
+        span: Span,
+        name: Ident,
+        fields: Vec<(Ident, Expr)>,
     },
     Handle {
         span: Span,

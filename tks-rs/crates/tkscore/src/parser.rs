@@ -66,6 +66,9 @@ impl Parser {
                 | TokenKind::TypeKw
                 | TokenKind::Effect
                 | TokenKind::Handler
+                | TokenKind::Blueprint
+                | TokenKind::Class
+                | TokenKind::Plan
                 | TokenKind::Module
                 | TokenKind::External
         )
@@ -77,6 +80,7 @@ impl Parser {
             TokenKind::TypeKw => self.parse_type_decl(),
             TokenKind::Effect => self.parse_effect_decl(),
             TokenKind::Handler => self.parse_handler_decl(),
+            TokenKind::Blueprint | TokenKind::Class | TokenKind::Plan => self.parse_class_decl(),
             TokenKind::Module => self.parse_module_decl(),
             TokenKind::External => self.parse_extern_decl(),
             _ => Err(self.error_here("expected top-level declaration")),
@@ -223,6 +227,168 @@ impl Parser {
             handler_type,
             def,
         })
+    }
+
+    fn parse_class_decl(&mut self) -> Result<TopDecl, ParseError> {
+        let start_span = if self.match_kind(&TokenKind::Blueprint)
+            || self.match_kind(&TokenKind::Class)
+            || self.match_kind(&TokenKind::Plan)
+        {
+            self.previous_span()
+        } else {
+            return Err(self.error_here("expected 'blueprint', 'class', or 'plan'"));
+        };
+        let name = self.expect_ident("expected class name")?;
+        self.expect(&TokenKind::LBrace, "expected '{' to start class")?;
+        let specifics = self.parse_class_specifics()?;
+        let details = self.parse_class_details()?;
+        let actions = self.parse_class_actions()?;
+        let end = self.expect(&TokenKind::RBrace, "expected '}' after class")?;
+        let span = span_join(start_span, end.span);
+        Ok(TopDecl::ClassDecl(ClassDecl {
+            span,
+            name,
+            specifics,
+            details,
+            actions,
+        }))
+    }
+
+    fn parse_class_specifics(&mut self) -> Result<Vec<FieldDecl>, ParseError> {
+        if !self.match_kind(&TokenKind::Specifics)
+            && !self.match_kind(&TokenKind::Description)
+            && !self.match_kind(&TokenKind::Field)
+        {
+            return Err(self.error_here("expected 'specifics' section"));
+        }
+        self.expect(&TokenKind::LBrace, "expected '{' after specifics")?;
+        let mut fields = Vec::new();
+        while !self.check(&TokenKind::RBrace) && !self.check(&TokenKind::Eof) {
+            if self.match_kind(&TokenKind::Semicolon) {
+                continue;
+            }
+            fields.push(self.parse_field_decl()?);
+            self.match_kind(&TokenKind::Semicolon);
+        }
+        self.expect(&TokenKind::RBrace, "expected '}' after specifics")?;
+        Ok(fields)
+    }
+
+    fn parse_class_details(&mut self) -> Result<Vec<PropertyDecl>, ParseError> {
+        if !self.match_kind(&TokenKind::Details) {
+            return Err(self.error_here("expected 'details' section"));
+        }
+        self.expect(&TokenKind::LBrace, "expected '{' after details")?;
+        let mut properties = Vec::new();
+        while !self.check(&TokenKind::RBrace) && !self.check(&TokenKind::Eof) {
+            if self.match_kind(&TokenKind::Semicolon) {
+                continue;
+            }
+            properties.push(self.parse_property_decl()?);
+            self.match_kind(&TokenKind::Semicolon);
+        }
+        self.expect(&TokenKind::RBrace, "expected '}' after details")?;
+        Ok(properties)
+    }
+
+    fn parse_class_actions(&mut self) -> Result<Vec<MethodDecl>, ParseError> {
+        if !self.match_kind(&TokenKind::Actions) && !self.match_kind(&TokenKind::Method) {
+            return Err(self.error_here("expected 'actions' section"));
+        }
+        self.expect(&TokenKind::LBrace, "expected '{' after actions")?;
+        let mut methods = Vec::new();
+        while !self.check(&TokenKind::RBrace) && !self.check(&TokenKind::Eof) {
+            if self.match_kind(&TokenKind::Semicolon) {
+                continue;
+            }
+            methods.push(self.parse_method_decl()?);
+            self.match_kind(&TokenKind::Semicolon);
+        }
+        self.expect(&TokenKind::RBrace, "expected '}' after actions")?;
+        Ok(methods)
+    }
+
+    fn parse_field_decl(&mut self) -> Result<FieldDecl, ParseError> {
+        let start = self.peek().span;
+        let mutable = self.match_kind(&TokenKind::Mut);
+        let name = self.expect_ident("expected field name")?;
+        self.expect(&TokenKind::Colon, "expected ':' after field name")?;
+        let ty = self.parse_type()?;
+        let span = span_join(start, self.previous_span());
+        Ok(FieldDecl {
+            span,
+            name,
+            ty,
+            mutable,
+        })
+    }
+
+    fn parse_property_decl(&mut self) -> Result<PropertyDecl, ParseError> {
+        let start = self.peek().span;
+        let name = self.expect_ident("expected property name")?;
+        let ty = if self.match_kind(&TokenKind::Colon) {
+            Some(self.parse_type()?)
+        } else {
+            None
+        };
+        self.expect(&TokenKind::Equals, "expected '=' in property declaration")?;
+        let value = self.parse_expr()?;
+        let span = span_join(start, expr_span(&value));
+        Ok(PropertyDecl {
+            span,
+            name,
+            ty,
+            value,
+        })
+    }
+
+    fn parse_method_decl(&mut self) -> Result<MethodDecl, ParseError> {
+        let start = self.peek().span;
+        let name = self.expect_ident("expected method name")?;
+        self.expect(&TokenKind::LParen, "expected '(' after method name")?;
+        let self_param = self.parse_method_self_param()?;
+        let mut params = Vec::new();
+        if self.match_kind(&TokenKind::Comma) {
+            if !self.check(&TokenKind::RParen) {
+                loop {
+                    params.push(self.parse_method_param()?);
+                    if !self.match_kind(&TokenKind::Comma) {
+                        break;
+                    }
+                }
+            }
+        }
+        self.expect(&TokenKind::RParen, "expected ')' after method params")?;
+        self.expect(&TokenKind::Colon, "expected ':' after method params")?;
+        let return_type = self.parse_type()?;
+        self.expect(&TokenKind::Equals, "expected '=' in method declaration")?;
+        let body = self.parse_expr()?;
+        let span = span_join(start, expr_span(&body));
+        Ok(MethodDecl {
+            span,
+            name,
+            self_param,
+            params,
+            return_type,
+            body,
+        })
+    }
+
+    fn parse_method_self_param(&mut self) -> Result<Ident, ParseError> {
+        if self.match_kind(&TokenKind::Identity) {
+            return Ok("identity".to_string());
+        }
+        if self.match_kind(&TokenKind::SelfKw) {
+            return Ok("self".to_string());
+        }
+        Err(self.error_here("expected 'identity' or 'self' in method params"))
+    }
+
+    fn parse_method_param(&mut self) -> Result<MethodParam, ParseError> {
+        let name = self.expect_ident("expected parameter name")?;
+        self.expect(&TokenKind::Colon, "expected ':' in parameter")?;
+        let ty = self.parse_type()?;
+        Ok(MethodParam { name, ty })
     }
 
     fn parse_handler_def_block(&mut self) -> Result<HandlerDef, ParseError> {
@@ -582,14 +748,28 @@ impl Parser {
 
     fn parse_postfix(&mut self) -> Result<Expr, ParseError> {
         let mut expr = self.parse_primary()?;
-        while self.match_kind(&TokenKind::Caret) {
-            let index = self.parse_noetic_index()?;
-            let span = span_join(expr_span(&expr), self.previous_span());
-            expr = Expr::Noetic {
-                span,
-                index,
-                expr: Box::new(expr),
-            };
+        loop {
+            if self.match_kind(&TokenKind::Dot) {
+                let field = self.expect_ident("expected member name after '.'")?;
+                let span = span_join(expr_span(&expr), self.previous_span());
+                expr = Expr::Member {
+                    span,
+                    object: Box::new(expr),
+                    field,
+                };
+                continue;
+            }
+            if self.match_kind(&TokenKind::Caret) {
+                let index = self.parse_noetic_index()?;
+                let span = span_join(expr_span(&expr), self.previous_span());
+                expr = Expr::Noetic {
+                    span,
+                    index,
+                    expr: Box::new(expr),
+                };
+                continue;
+            }
+            break;
         }
         Ok(expr)
     }
@@ -621,6 +801,9 @@ impl Parser {
                 span,
                 expr: Box::new(expr),
             });
+        }
+        if self.check(&TokenKind::Repeat) || self.check(&TokenKind::New) {
+            return self.parse_constructor_expr();
         }
         if self.check(&TokenKind::Acbe) {
             return self.parse_acbe_expr();
@@ -691,6 +874,8 @@ impl Parser {
                 | TokenKind::Basis
                 | TokenKind::Resume
                 | TokenKind::QState
+                | TokenKind::Identity
+                | TokenKind::SelfKw
         ) {
             return self.parse_var_expr();
         }
@@ -730,6 +915,36 @@ impl Parser {
             op,
             arg: Box::new(arg),
         })
+    }
+
+    fn parse_constructor_expr(&mut self) -> Result<Expr, ParseError> {
+        let start_span = if self.match_kind(&TokenKind::Repeat) || self.match_kind(&TokenKind::New)
+        {
+            self.previous_span()
+        } else {
+            return Err(self.error_here("expected 'repeat' or 'new'"));
+        };
+        let name = self.expect_ident("expected class name after constructor")?;
+        self.expect(&TokenKind::LBrace, "expected '{' after constructor name")?;
+        let mut fields = Vec::new();
+        if !self.check(&TokenKind::RBrace) {
+            loop {
+                let field_name = self.expect_ident("expected field name in constructor")?;
+                self.expect(&TokenKind::Colon, "expected ':' after field name")?;
+                let value = self.parse_expr()?;
+                fields.push((field_name, value));
+                if self.match_kind(&TokenKind::Comma) {
+                    if self.check(&TokenKind::RBrace) {
+                        break;
+                    }
+                    continue;
+                }
+                break;
+            }
+        }
+        let end = self.expect(&TokenKind::RBrace, "expected '}' after constructor")?;
+        let span = span_join(start_span, end.span);
+        Ok(Expr::Constructor { span, name, fields })
     }
 
     fn parse_transfinite_loop(&mut self) -> Result<Expr, ParseError> {
@@ -1022,6 +1237,8 @@ impl Parser {
             TokenKind::Basis => ("basis".to_string(), self.advance().span),
             TokenKind::Resume => ("resume".to_string(), self.advance().span),
             TokenKind::QState => ("qstate".to_string(), self.advance().span),
+            TokenKind::Identity => ("identity".to_string(), self.advance().span),
+            TokenKind::SelfKw => ("self".to_string(), self.advance().span),
             _ => return Err(self.error_here("expected identifier")),
         };
         Ok(Expr::Var { span, name })
@@ -1525,6 +1742,8 @@ impl Parser {
                 | TokenKind::Acquire
                 | TokenKind::Acbe
                 | TokenKind::Perform
+                | TokenKind::Repeat
+                | TokenKind::New
                 | TokenKind::Transfinite
                 | TokenKind::Superpose
                 | TokenKind::Measure
@@ -1539,6 +1758,8 @@ impl Parser {
                 | TokenKind::Basis
                 | TokenKind::Resume
                 | TokenKind::QState
+                | TokenKind::Identity
+                | TokenKind::SelfKw
         );
         if self.stop_at_pipe && matches!(self.peek_kind(), TokenKind::Pipe) {
             return false;
@@ -1586,6 +1807,7 @@ fn expr_span(expr: &Expr) -> Span {
         | Expr::Lit { span, .. }
         | Expr::Lam { span, .. }
         | Expr::App { span, .. }
+        | Expr::Member { span, .. }
         | Expr::Let { span, .. }
         | Expr::If { span, .. }
         | Expr::Element { span, .. }
@@ -1597,6 +1819,7 @@ fn expr_span(expr: &Expr) -> Span {
         | Expr::RPMCheck { span, .. }
         | Expr::RPMAcquire { span, .. }
         | Expr::ACBE { span, .. }
+        | Expr::Constructor { span, .. }
         | Expr::Handle { span, .. }
         | Expr::Perform { span, .. }
         | Expr::OrdLit { span, .. }

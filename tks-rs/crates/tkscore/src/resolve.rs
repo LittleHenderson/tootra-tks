@@ -322,6 +322,10 @@ fn collect_symbols(path: &[String], body: &ModuleBody) -> ModuleSymbols {
             TopDecl::LetDecl { name, .. } => {
                 values.insert(name.clone());
             }
+            TopDecl::ClassDecl(class_decl) => {
+                values.insert(class_decl.name.clone());
+                types.insert(class_decl.name.clone());
+            }
             TopDecl::ExternDecl(decl) => {
                 externs.insert(decl.name.clone(), extern_signature(decl));
             }
