@@ -1,7 +1,8 @@
 param(
     [string]$Configuration = "Release",
     [string]$OutDir = "",
-    [string]$Version = ""
+    [string]$Version = "",
+    [switch]$Gpu
 )
 
 $ErrorActionPreference = "Stop"
@@ -34,7 +35,7 @@ if ([string]::IsNullOrWhiteSpace($Version)) {
 $bundleDir = Join-Path $OutDir "tks-$Version-windows"
 New-Item -ItemType Directory -Force -Path $bundleDir | Out-Null
 
-& (Join-Path $scriptRoot "package_tks_bundle.ps1") -Configuration $Configuration -OutDir $bundleDir
+& (Join-Path $scriptRoot "package_tks_bundle.ps1") -Configuration $Configuration -OutDir $bundleDir -Gpu:$Gpu
 
 $zipPath = Join-Path $OutDir "tks-$Version-windows.zip"
 if (Test-Path $zipPath) {

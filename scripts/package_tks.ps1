@@ -1,6 +1,7 @@
 param(
     [string]$Configuration = "Release",
-    [string]$OutDir = ""
+    [string]$OutDir = "",
+    [switch]$Gpu
 )
 
 $ErrorActionPreference = "Stop"
@@ -23,9 +24,14 @@ if ($Configuration -ine "Debug") {
     $profileArgs = @("--release")
 }
 
+$featureArgs = @()
+if ($Gpu) {
+    $featureArgs = @("--features", "gpu")
+}
+
 Push-Location $tksRoot
 try {
-    cargo build -p tks @profileArgs
+    cargo build -p tks @profileArgs @featureArgs
 } finally {
     Pop-Location
 }
