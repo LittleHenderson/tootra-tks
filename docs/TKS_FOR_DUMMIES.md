@@ -15,6 +15,21 @@ implemented in this repo.
 
 This guide does not redefine metaphysics; it shows how to run code.
 
+## One-Page Concept Map (Metaphor + Use + Professions)
+- Elements: stickers for ideas; tagging and grouping; therapy, coaching, education, business ops, data labeling.
+- Foundations: the floor you stand on; stable context; therapy, coaching, education, business ops, systems design.
+- Noetics: a lens that reframes; perspective shifts; therapy, coaching, education, cognitive modeling, UX research.
+- RPM: a quest log; staged progress; coaching, education, business ops, workflow automation, process ops.
+- Ordinals: steps past all finite steps; long-horizon ranking; formal methods, theorem proving, theoretical CS, education research, business ops.
+- Limit: end-of-process summary; convergence; therapy, coaching, education, business ops, systems modeling.
+- Fractals: repeating stamp patterns; self-similar structure; therapy, coaching, education, business ops, generative design.
+- Transfinite loops: all steps + a limit step; infinite process rules; therapy, coaching, education, business ops, formal verification.
+- Quantum forms: many possibilities at once; scenario exploration; decision science, quantum computing, therapy, coaching, business ops.
+- Effects + handlers: ring a bell, decide response; structured interactions; backend engineering, platform tooling, business ops, education, therapy/coaching.
+- Externs (FFI): phone call outside; native integration; systems programming, DevOps, business ops, education, therapy/coaching.
+- Modules: folders for ideas; organization; software engineering, education, business ops, therapy/coaching.
+- ACBE: goal-checker; scoring alignment; evaluation, coaching, education, business ops, therapy.
+
 ## Tools You Use (What Each Component Does)
 - `tks.exe`: runner/VM. Runs `.tks` source or `.tkso` bytecode.
 - `tksc.exe`: compiler. `check` and `build` with `--emit ast|ir|bc|tksi`.
@@ -459,7 +474,7 @@ practical use case with professions that use similar ideas.
 Metaphor: stickers on boxes so you remember what each box is.
 Tech mapping: Element literals like `A1`..`D10`.
 Practical use: tagging ideas or categories so they can be transformed later.
-Professions: taxonomy design, data labeling, knowledge engineering.
+Professions: therapy, coaching, education, business ops, taxonomy design, data labeling.
 ```tks
 let idea = A1;
 idea
@@ -469,7 +484,7 @@ idea
 Metaphor: the floor you stand on before you build anything.
 Tech mapping: Foundation literals like `F3b` (`1a`..`7d`).
 Practical use: a stable context or baseline for reasoning.
-Professions: systems design, architecture, process engineering.
+Professions: therapy, coaching, education, business ops, systems design.
 ```tks
 let base = F3b;
 base
@@ -480,7 +495,7 @@ Note: currently check-only (not lowered to bytecode).
 Metaphor: a lens that changes how you see the same idea.
 Tech mapping: noetic apply `expr^2` (digits 0-9).
 Practical use: transforming a labeled idea into a new view.
-Professions: cognitive modeling, UX research, creative tooling.
+Professions: therapy, coaching, education, cognitive modeling, UX research.
 ```tks
 let idea = A1;
 idea^2
@@ -490,7 +505,7 @@ idea^2
 Metaphor: a quest log where each step unlocks the next step.
 Tech mapping: `return`, `>>=`, `check`, `acquire`.
 Practical use: staged workflows, gated progress, step-by-step reasoning.
-Professions: workflow automation, game design, process ops.
+Professions: coaching, education, business ops, workflow automation, process ops.
 ```tks
 return A1 >>= (\x -> return (x^1))
 ```
@@ -499,7 +514,7 @@ return A1 >>= (\x -> return (x^1))
 Metaphor: counting steps past all normal counting steps.
 Tech mapping: `omega`, `succ(...)`, `ord(...)`, `+`, `*`, `^` in ordinal space.
 Practical use: ranking infinite processes and proving termination.
-Professions: formal methods, theorem proving, theoretical CS.
+Professions: formal methods, theorem proving, theoretical CS, education research, business ops.
 ```tks
 omega + 2
 ```
@@ -508,7 +523,7 @@ omega + 2
 Metaphor: “what you get after you consider every step before infinity.”
 Tech mapping: `limit(k < omega . k)`.
 Practical use: convergence and end behavior of infinite steps.
-Professions: math, verification, systems modeling.
+Professions: therapy, coaching, education, business ops, systems modeling.
 ```tks
 limit(k < omega . k)
 ```
@@ -518,7 +533,7 @@ Note: currently check-only (not lowered to bytecode).
 Metaphor: a stamp pattern that repeats at many sizes.
 Tech mapping: `<<1:2:...>>_omega(expr)` or Unicode delimiters.
 Practical use: self-similar patterns, procedural generation.
-Professions: graphics, simulation, generative design.
+Professions: therapy, coaching, education, business ops, generative design.
 ```tks
 <<1:2:...>>_omega(A1)
 ```
@@ -528,7 +543,7 @@ Note: currently check-only (not lowered to bytecode).
 Metaphor: a loop that runs through every normal step, then a special limit step.
 Tech mapping: `transfinite loop i < omega from ... step (...) limit (...)`.
 Practical use: define processes that must include a limit rule.
-Professions: logic, proof engineering, formal verification.
+Professions: therapy, coaching, education, business ops, formal verification.
 ```tks
 transfinite loop i < omega from A1 step (x -> x^1) limit (l -> l)
 ```
@@ -538,7 +553,7 @@ Note: currently check-only (not lowered to bytecode).
 Metaphor: a box of possibilities; measuring picks one.
 Tech mapping: `|10>`, `superpose { ... }`, `measure(...)`, `entangle(...)`.
 Practical use: probabilistic modeling and quantum-style simulations.
-Professions: quantum computing, physics research, probabilistic AI.
+Professions: decision science, quantum computing, therapy, coaching, business ops.
 ```tks
 let q = superpose { 1: |10>, 2: |20> };
 measure(q)
@@ -548,7 +563,7 @@ measure(q)
 Metaphor: ring a bell, and a helper decides how to respond.
 Tech mapping: `effect`, `perform`, `handle`, `resume`.
 Practical use: logging, errors, structured external interactions.
-Professions: backend engineering, language design, platform tooling.
+Professions: backend engineering, platform tooling, business ops, education, therapy/coaching.
 ```tks
 effect Log { op log(msg: Int): Int; }
 
@@ -562,7 +577,7 @@ handle let x = perform log(2) in x with {
 Metaphor: a phone call to the outside world.
 Tech mapping: `extern c safe fn ...`.
 Practical use: access OS, hardware, or native libraries.
-Professions: systems programming, embedded, DevOps tooling.
+Professions: systems programming, DevOps, business ops, education, therapy/coaching.
 ```tks
 extern c safe fn print_int(x: Int): Unit !{IO};
 print_int(7)
@@ -572,7 +587,7 @@ print_int(7)
 Metaphor: folders that keep related ideas together.
 Tech mapping: `module`, `export`, `from ... import ...`.
 Practical use: organize larger projects and share values.
-Professions: all software engineering roles.
+Professions: software engineering, education, business ops, therapy/coaching.
 ```tks
 module Canon {
   export { seed }
@@ -596,7 +611,7 @@ Note: module bodies are currently check-only; use `tksc check`/`tksc build`.
 Metaphor: a goal-checker that compares a target to a result.
 Tech mapping: `acbe(goal, expr)`.
 Practical use: alignment checks and scoring pipelines.
-Professions: evaluation, decision systems, analytics.
+Professions: evaluation, coaching, education, business ops, therapy.
 ```tks
 acbe(A1, A1^1)
 ```
