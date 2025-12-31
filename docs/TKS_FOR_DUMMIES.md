@@ -381,6 +381,54 @@ module B {
 Explanation: define modules and import values across them.
 Note: module bodies are currently check-only; use `tksc check`/`tksc build`.
 
+### 11) Ordinals + RPM Combo
+```tks
+return omega >>= (\x -> return x)
+```
+Explanation: RPM can carry ordinal values; this wraps an ordinal and binds it.
+
+### 12) Multi-Module Import Pattern
+```tks
+module A {
+  export { a }
+  let a = 2;
+}
+
+module B {
+  export { b }
+  let b = 3;
+}
+
+module C {
+  from A import { a };
+  from B import { b };
+  let sum = a + b;
+}
+```
+Explanation: combine multiple modules by importing from more than one source.
+Note: module bodies are currently check-only; use `tksc check`/`tksc build`.
+
+### GUI-Ready Snippets (Paste Into GUI)
+These are safe to paste into the GUI Run button (no FFI or modules).
+
+```tks
+let x = 10;
+x + 5
+```
+Explanation: basic arithmetic and binding.
+
+```tks
+let idea = A2;
+idea^3
+```
+Explanation: noetic apply on an Element value.
+
+```tks
+let q = superpose { 1: |1>, 2: |2> };
+measure(q)
+```
+Explanation: quantum superposition and measurement.
+
 ## What You Can Build (Practical Uses)
 - TKS equation calculators and canonical validators.
 - Symbolic or numeric pipelines with TKS constructs as data.
