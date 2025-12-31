@@ -37,8 +37,8 @@ cd C:\Users\wakil\downloads\everthing-tootra-tks
 3) Create a file to play with:
 ```powershell
 @'
-let x = 2 + 3;
-x * 4
+let idea = A1;
+idea^2
 '@ | Set-Content -NoNewline .\play.tks
 ```
 
@@ -128,8 +128,8 @@ Line comments start with `--`:
 ### Core Expressions
 ```tks
 let x = 1;          -- top-level binding
-let x = 1 in x + 2  -- let expression
-\x -> x + 1         -- lambda
+let x = A1 in x^1   -- let expression
+\x -> x             -- lambda
 f x                 -- application (left-assoc)
 if cond then a else b
 ```
@@ -296,18 +296,17 @@ ideas.
 If a snippet is currently check-only (not lowered to bytecode), it is
 explicitly labeled.
 
-### 1) Arithmetic + Binding
+### 1) Ordinal Math + Binding
 ```tks
-let x = 2 + 3;
-x * 4
+let x = omega + 2;
+x
 ```
-Explanation: bind `x` to a computed value, then reuse it in a second
-expression.
+Explanation: bind an ordinal value, then reuse it.
 
 ### 2) Functions + Application
 ```tks
-let inc = \n -> n + 1;
-inc 41
+let id = \x -> x;
+id A1
 ```
 Explanation: define a lambda and apply it to a value.
 
@@ -343,7 +342,7 @@ Explanation: build a superposition, then measure to choose a value.
 
 ### 7) RPM Flow
 ```tks
-return 5 >>= (\x -> return (x + 1))
+return A1 >>= (\x -> return (x^1))
 ```
 Explanation: RPM chaining (`>>=`) sequences progressive steps.
 
@@ -370,12 +369,12 @@ Explanation: call a host function via FFI (run with `tks run --ffi`).
 ```tks
 module A {
   export { value }
-  let value = 10;
+  let value = omega + 2;
 }
 
 module B {
   from A import { value };
-  let doubled = value + value;
+  let echoed = value;
 }
 ```
 Explanation: define modules and import values across them.
@@ -391,18 +390,18 @@ Explanation: RPM can carry ordinal values; this wraps an ordinal and binds it.
 ```tks
 module A {
   export { a }
-  let a = 2;
+  let a = omega;
 }
 
 module B {
   export { b }
-  let b = 3;
+  let b = omega;
 }
 
 module C {
   from A import { a };
   from B import { b };
-  let sum = a + b;
+  let sum = ord(a + b);
 }
 ```
 Explanation: combine multiple modules by importing from more than one source.
@@ -412,12 +411,12 @@ Note: module bodies are currently check-only; use `tksc check`/`tksc build`.
 ```tks
 module Canon {
   export { seed }
-  let seed = 7;
+  let seed = omega;
 }
 
 module Engine {
   export { step }
-  let step = \x -> x + 1;
+  let step = \x -> succ(x);
 }
 
 module CLI {
@@ -435,10 +434,10 @@ Note: module bodies are currently check-only; use `tksc check`/`tksc build`.
 These are safe to paste into the GUI Run button (no FFI or modules).
 
 ```tks
-let x = 10;
-x + 5
+let x = omega + 2;
+x
 ```
-Explanation: basic arithmetic and binding.
+Explanation: ordinal math and binding.
 
 ```tks
 let idea = A2;
@@ -451,6 +450,157 @@ let q = superpose { 1: |1>, 2: |2> };
 measure(q)
 ```
 Explanation: quantum superposition and measurement.
+
+## Real-World Uses by Concept (Metaphor + Professions + Code)
+Each entry includes a kid-level metaphor, the exact technical term, and a
+practical use case with professions that use similar ideas.
+
+### Elements
+Metaphor: stickers on boxes so you remember what each box is.
+Tech mapping: Element literals like `A1`..`D10`.
+Practical use: tagging ideas or categories so they can be transformed later.
+Professions: taxonomy design, data labeling, knowledge engineering.
+```tks
+let idea = A1;
+idea
+```
+
+### Foundations
+Metaphor: the floor you stand on before you build anything.
+Tech mapping: Foundation literals like `F3b` (`1a`..`7d`).
+Practical use: a stable context or baseline for reasoning.
+Professions: systems design, architecture, process engineering.
+```tks
+let base = F3b;
+base
+```
+Note: currently check-only (not lowered to bytecode).
+
+### Noetics
+Metaphor: a lens that changes how you see the same idea.
+Tech mapping: noetic apply `expr^2` (digits 0-9).
+Practical use: transforming a labeled idea into a new view.
+Professions: cognitive modeling, UX research, creative tooling.
+```tks
+let idea = A1;
+idea^2
+```
+
+### RPM (Rule of Progressive Manifestation)
+Metaphor: a quest log where each step unlocks the next step.
+Tech mapping: `return`, `>>=`, `check`, `acquire`.
+Practical use: staged workflows, gated progress, step-by-step reasoning.
+Professions: workflow automation, game design, process ops.
+```tks
+return A1 >>= (\x -> return (x^1))
+```
+
+### Ordinals
+Metaphor: counting steps past all normal counting steps.
+Tech mapping: `omega`, `succ(...)`, `ord(...)`, `+`, `*`, `^` in ordinal space.
+Practical use: ranking infinite processes and proving termination.
+Professions: formal methods, theorem proving, theoretical CS.
+```tks
+omega + 2
+```
+
+### Limit (Ordinal)
+Metaphor: “what you get after you consider every step before infinity.”
+Tech mapping: `limit(k < omega . k)`.
+Practical use: convergence and end behavior of infinite steps.
+Professions: math, verification, systems modeling.
+```tks
+limit(k < omega . k)
+```
+Note: currently check-only (not lowered to bytecode).
+
+### Fractals
+Metaphor: a stamp pattern that repeats at many sizes.
+Tech mapping: `<<1:2:...>>_omega(expr)` or Unicode delimiters.
+Practical use: self-similar patterns, procedural generation.
+Professions: graphics, simulation, generative design.
+```tks
+<<1:2:...>>_omega(A1)
+```
+Note: currently check-only (not lowered to bytecode).
+
+### Transfinite Loops
+Metaphor: a loop that runs through every normal step, then a special limit step.
+Tech mapping: `transfinite loop i < omega from ... step (...) limit (...)`.
+Practical use: define processes that must include a limit rule.
+Professions: logic, proof engineering, formal verification.
+```tks
+transfinite loop i < omega from A1 step (x -> x^1) limit (l -> l)
+```
+Note: currently check-only (not lowered to bytecode).
+
+### Quantum Forms
+Metaphor: a box of possibilities; measuring picks one.
+Tech mapping: `|10>`, `superpose { ... }`, `measure(...)`, `entangle(...)`.
+Practical use: probabilistic modeling and quantum-style simulations.
+Professions: quantum computing, physics research, probabilistic AI.
+```tks
+let q = superpose { 1: |10>, 2: |20> };
+measure(q)
+```
+
+### Effects + Handlers
+Metaphor: ring a bell, and a helper decides how to respond.
+Tech mapping: `effect`, `perform`, `handle`, `resume`.
+Practical use: logging, errors, structured external interactions.
+Professions: backend engineering, language design, platform tooling.
+```tks
+effect Log { op log(msg: Int): Int; }
+
+handle let x = perform log(2) in x with {
+  return v -> v;
+  log(msg) k -> resume(msg);
+}
+```
+
+### Externs (FFI)
+Metaphor: a phone call to the outside world.
+Tech mapping: `extern c safe fn ...`.
+Practical use: access OS, hardware, or native libraries.
+Professions: systems programming, embedded, DevOps tooling.
+```tks
+extern c safe fn print_int(x: Int): Unit !{IO};
+print_int(7)
+```
+
+### Modules
+Metaphor: folders that keep related ideas together.
+Tech mapping: `module`, `export`, `from ... import ...`.
+Practical use: organize larger projects and share values.
+Professions: all software engineering roles.
+```tks
+module Canon {
+  export { seed }
+  let seed = omega;
+}
+
+module Engine {
+  export { step }
+  let step = \x -> succ(x);
+}
+
+module CLI {
+  from Canon import { seed };
+  from Engine import { step };
+  let result = step seed;
+}
+```
+Note: module bodies are currently check-only; use `tksc check`/`tksc build`.
+
+### ACBE
+Metaphor: a goal-checker that compares a target to a result.
+Tech mapping: `acbe(goal, expr)`.
+Practical use: alignment checks and scoring pipelines.
+Professions: evaluation, decision systems, analytics.
+```tks
+acbe(A1, A1^1)
+```
+Note: currently check-only (not lowered to bytecode).
 
 ## What You Can Build (Practical Uses)
 - TKS equation calculators and canonical validators.
@@ -485,11 +635,11 @@ from stdin:
 .\scripts\package_tks_dist.ps1 -Configuration Release
 ```
 
-2) Run a quick calculation:
+2) Run a quick expression:
 ```powershell
 @'
-let x = 10;
-x + 5
+let idea = A1;
+idea^2
 '@ | .\dist\tks-0.1.0-windows\tks.exe run -
 ```
 
@@ -513,7 +663,7 @@ omega + 2
 ### One-Liner Cheat Sheet
 ```powershell
 .\scripts\package_tks_dist.ps1 -Configuration Release
-@'let x = 2 + 3; x * 4'@ | .\dist\tks-0.1.0-windows\tks.exe run -
+@'let idea = A1; idea^2'@ | .\dist\tks-0.1.0-windows\tks.exe run -
 @'let idea = A1; idea^2'@ | .\dist\tks-0.1.0-windows\tksc.exe check -
 @'omega + 2'@ | .\dist\tks-0.1.0-windows\tksc.exe build --emit bc -o .\calc.tkso -
 .\dist\tks-0.1.0-windows\tks.exe run .\calc.tkso
