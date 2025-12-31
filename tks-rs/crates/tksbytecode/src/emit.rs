@@ -5,7 +5,7 @@ use std::rc::Rc;
 use tkscore::ast::{Expr, Ident, Literal, OrdinalLiteral, World};
 use tksir::ir::{IRComp, IRTerm, IRVal, OrdOp};
 
-use crate::bytecode::{extern_id, Instruction, Opcode};
+use crate::bytecode::{extern_id, field_id, Instruction, Opcode};
 
 #[derive(Debug, Clone)]
 pub enum EmitError {
@@ -86,6 +86,19 @@ impl EmitState {
                 self.emit_term(else_term)?;
                 let end_target = self.code.len();
                 self.patch_jump(jmp_to_end, end_target)?;
+                Ok(())
+            }
+            IRTerm::RecordGet(record, field) => {
+                self.emit_val(record)?;
+                let id = field_id(field);
+                self.code.push(inst1(Opcode::RecordGet, id));
+                Ok(())
+            }
+            IRTerm::RecordSet(record, field, value) => {
+                self.emit_val(record)?;
+                self.emit_val(value)?;
+                let id = field_id(field);
+                self.code.push(inst1(Opcode::RecordSet, id));
                 Ok(())
             }
             IRTerm::Superpose(states) => {
@@ -222,6 +235,15 @@ impl EmitState {
             IRVal::Ket(inner) => {
                 self.emit_val(inner)?;
                 self.code.push(inst(Opcode::MakeKet));
+                Ok(())
+            }
+            IRVal::Record(fields) => {
+                self.code.push(inst(Opcode::MakeRecord));
+                for (name, value) in fields {
+                    self.emit_val(value)?;
+                    let id = field_id(name);
+                    self.code.push(inst1(Opcode::RecordSet, id));
+                }
                 Ok(())
             }
             IRVal::Ordinal(expr) => self.emit_ordinal_expr(expr),

@@ -1,5 +1,7 @@
+use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
 use std::path::Path;
+use std::rc::Rc;
 use std::sync::Arc;
 
 use libloading::Library;
@@ -11,6 +13,7 @@ pub enum Value {
     Int(i64),
     Bool(bool),
     Unit,
+    Record { fields: Rc<RefCell<HashMap<u64, Value>>> },
     Closure { entry: usize },
     Extern { id: u64, arity: usize, args: Vec<Value> },
     Handler {
@@ -64,6 +67,7 @@ pub enum VmError {
     MissingOperand { opcode: Opcode, operand: &'static str },
     InvalidOperand { opcode: Opcode, operand: &'static str, value: u64 },
     InvalidLocal { index: usize },
+    MissingField(u64),
     DivisionByZero,
     UnknownExtern(u64),
     ExternDenied(u64),
@@ -324,6 +328,11 @@ impl VmState {
                 Opcode::PushUnit => {
                     self.stack.push(Value::Unit);
                 }
+                Opcode::MakeRecord => {
+                    self.stack.push(Value::Record {
+                        fields: Rc::new(RefCell::new(HashMap::new())),
+                    });
+                }
                 Opcode::PushClosure => {
                     let entry = Self::expect_operand1_usize(&instr)?;
                     self.stack.push(Value::Closure { entry });
@@ -463,6 +472,42 @@ impl VmState {
                     }
                     let lhs = self.pop_int()?;
                     self.stack.push(Value::Int(lhs / rhs));
+                }
+                Opcode::RecordGet => {
+                    let field = Self::expect_operand1(&instr)?;
+                    let record = self.pop()?;
+                    match record {
+                        Value::Record { fields } => {
+                            let fields = fields.borrow();
+                            let Some(value) = fields.get(&field) else {
+                                return Err(VmError::MissingField(field));
+                            };
+                            self.stack.push(value.clone());
+                        }
+                        other => {
+                            return Err(VmError::TypeMismatch {
+                                expected: "record",
+                                found: other,
+                            })
+                        }
+                    }
+                }
+                Opcode::RecordSet => {
+                    let field = Self::expect_operand1(&instr)?;
+                    let value = self.pop()?;
+                    let record = self.pop()?;
+                    match record {
+                        Value::Record { fields } => {
+                            fields.borrow_mut().insert(field, value);
+                            self.stack.push(Value::Record { fields });
+                        }
+                        other => {
+                            return Err(VmError::TypeMismatch {
+                                expected: "record",
+                                found: other,
+                            })
+                        }
+                    }
                 }
                 Opcode::OrdSucc => {
                     let inner = self.pop_ordinal()?;

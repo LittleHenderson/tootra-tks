@@ -255,4 +255,7 @@ const OPCODES: &[Opcode] = &[
     Opcode::Entangle,
     Opcode::Tensor,
     Opcode::QApply,
+    Opcode::MakeRecord,
+    Opcode::RecordGet,
+    Opcode::RecordSet,
 ];
