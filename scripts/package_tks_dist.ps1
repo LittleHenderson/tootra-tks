@@ -17,7 +17,7 @@ if ([string]::IsNullOrWhiteSpace($OutDir)) {
 
 if ([string]::IsNullOrWhiteSpace($Version)) {
     $cargoToml = Join-Path $repoRoot "tks-rs\\crates\\tks\\Cargo.toml"
-    $match = Select-String -Path $cargoToml -Pattern '^version\\s*=\\s*\"([^\"]+)\"' | Select-Object -First 1
+    $match = Select-String -Path $cargoToml -Pattern '^[\\s]*version\\s*=\\s*\"([^\"]+)\"' | Select-Object -First 1
     if (-not $match) {
         throw "Unable to read version from $cargoToml"
     }
