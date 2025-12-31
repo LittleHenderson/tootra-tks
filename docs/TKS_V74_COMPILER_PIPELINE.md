@@ -65,6 +65,7 @@ This document defines the implementation pipeline and crate layout for the v7.4 
      - `.\scripts\package_tks.ps1 -OutDir .\packaging\windows`
      - `.\scripts\package_tks_dist.ps1 -Configuration Release`
      - `.\scripts\package_tks_dist.ps1 -Configuration Release -Gpu` (adds GPU bundle)
+     - `.\scripts\package_tks_dist.ps1 -Configuration Release -GpuOnly` (GPU bundle only)
      - Run: `.\dist\tks-<version>-windows\tks.exe run path\to\file.tks`
 
 ## Crate Layout (Proposed)

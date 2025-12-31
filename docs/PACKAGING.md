@@ -53,6 +53,12 @@ To build `tks.exe` with GPU support (enables `tks gpu ...` subcommands), pass `-
 .\scripts\package_tks_dist.ps1 -Configuration Release -Gpu
 ```
 
+To build only the GPU bundle (skip the CPU bundle/zip), add `-GpuOnly`:
+
+```powershell
+.\scripts\package_tks_dist.ps1 -Configuration Release -GpuOnly
+```
+
 Notes:
 - `-Gpu` only affects `tks.exe` (tksc has no GPU feature).
 - GPU builds require the `gpu` feature and will pull in extra dependencies.

@@ -2,7 +2,8 @@ param(
     [string]$Configuration = "Release",
     [string]$OutDir = "",
     [string]$Version = "",
-    [switch]$Gpu
+    [switch]$Gpu,
+    [switch]$GpuOnly
 )
 
 $ErrorActionPreference = "Stop"
@@ -14,6 +15,10 @@ if ([string]::IsNullOrWhiteSpace($OutDir)) {
     $OutDir = Join-Path $repoRoot "dist"
 } elseif (-not [System.IO.Path]::IsPathRooted($OutDir)) {
     $OutDir = Join-Path $repoRoot $OutDir
+}
+
+if ($GpuOnly) {
+    $Gpu = $true
 }
 
 if ([string]::IsNullOrWhiteSpace($Version)) {
@@ -32,19 +37,21 @@ if ([string]::IsNullOrWhiteSpace($Version)) {
     }
 }
 
-$bundleDir = Join-Path $OutDir "tks-$Version-windows"
-New-Item -ItemType Directory -Force -Path $bundleDir | Out-Null
+if (-not $GpuOnly) {
+    $bundleDir = Join-Path $OutDir "tks-$Version-windows"
+    New-Item -ItemType Directory -Force -Path $bundleDir | Out-Null
 
-& (Join-Path $scriptRoot "package_tks_bundle.ps1") -Configuration $Configuration -OutDir $bundleDir
+    & (Join-Path $scriptRoot "package_tks_bundle.ps1") -Configuration $Configuration -OutDir $bundleDir
 
-$zipPath = Join-Path $OutDir "tks-$Version-windows.zip"
-if (Test-Path $zipPath) {
-    Remove-Item -Force $zipPath
+    $zipPath = Join-Path $OutDir "tks-$Version-windows.zip"
+    if (Test-Path $zipPath) {
+        Remove-Item -Force $zipPath
+    }
+    Compress-Archive -Path (Join-Path $bundleDir "*") -DestinationPath $zipPath
+
+    Write-Host "Bundle staged to $bundleDir"
+    Write-Host "Zip written to $zipPath"
 }
-Compress-Archive -Path (Join-Path $bundleDir "*") -DestinationPath $zipPath
-
-Write-Host "Bundle staged to $bundleDir"
-Write-Host "Zip written to $zipPath"
 
 if ($Gpu) {
     $tksRoot = Join-Path $repoRoot "tks-rs"
@@ -75,11 +82,15 @@ if ($Gpu) {
     }
     Copy-Item -Force $tksExe (Join-Path $gpuDir "tks.exe")
 
-    $tkscExe = Join-Path $bundleDir "tksc.exe"
-    if (-not (Test-Path $tkscExe)) {
-        throw "expected tksc.exe not found in bundle: $tkscExe"
+    if ($GpuOnly) {
+        & (Join-Path $scriptRoot "package_tksc.ps1") -Configuration $Configuration -OutDir $gpuDir
+    } else {
+        $tkscExe = Join-Path $bundleDir "tksc.exe"
+        if (-not (Test-Path $tkscExe)) {
+            throw "expected tksc.exe not found in bundle: $tkscExe"
+        }
+        Copy-Item -Force $tkscExe (Join-Path $gpuDir "tksc.exe")
     }
-    Copy-Item -Force $tkscExe (Join-Path $gpuDir "tksc.exe")
 
     $gpuZipPath = Join-Path $OutDir "tks-$Version-windows-gpu.zip"
     if (Test-Path $gpuZipPath) {
