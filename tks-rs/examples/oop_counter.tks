@@ -1,0 +1,11 @@
+class Counter {
+  specifics { value: Int; }
+  details { doubled: Int = identity.value; }
+  actions {
+    inc(self, delta: Int): Int = delta;
+    reset(self): Int = 0;
+  }
+}
+
+let c = repeat Counter { value: 1 };
+c.doubled
