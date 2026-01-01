@@ -13,6 +13,8 @@ pub enum Value {
     Int(i64),
     Bool(bool),
     Unit,
+    Str(String),
+    Array(Vec<Value>),
     Record { fields: Rc<RefCell<HashMap<u64, Value>>> },
     Closure { entry: usize },
     Extern { id: u64, arity: usize, args: Vec<Value> },
@@ -149,6 +151,7 @@ pub struct VmState {
     pub handlers: Vec<HandlerFrame>,
     pub externs: ExternRegistry,
     pub extern_policy: ExternPolicy,
+    pub strings: Vec<String>,
     pub extern_libs: Vec<Arc<Library>>,
 }
 
@@ -179,6 +182,7 @@ impl VmState {
             handlers: Vec::new(),
             externs: HashMap::new(),
             extern_policy: ExternPolicy::default(),
+            strings: Vec::new(),
             extern_libs: Vec::new(),
         }
     }
@@ -193,6 +197,7 @@ impl VmState {
             handlers: Vec::new(),
             externs,
             extern_policy: ExternPolicy::default(),
+            strings: Vec::new(),
             extern_libs: Vec::new(),
         }
     }
@@ -329,9 +334,95 @@ impl VmState {
                     self.stack.push(Value::Unit);
                 }
                 Opcode::MakeRecord => {
-                    self.stack.push(Value::Record {
-                        fields: Rc::new(RefCell::new(HashMap::new())),
-                    });
+                    let count = instr.operand1.unwrap_or(0) as usize;
+                    let mut fields = HashMap::new();
+                    for _ in 0..count {
+                        let value = self.pop()?;
+                        let key = self.pop_int()? as u64;
+                        fields.insert(key, value);
+                    }
+                    self.stack.push(Value::Record { fields: Rc::new(RefCell::new(fields)) });
+                }
+                Opcode::PushStr => {
+                    let idx = Self::expect_operand1_usize(&instr)?;
+                    let s = self.strings.get(idx).cloned()
+                        .ok_or(VmError::InvalidOperand { opcode: Opcode::PushStr, operand: "string index", value: idx as u64 })?;
+                    self.stack.push(Value::Str(s));
+                }
+                Opcode::MakeArray => {
+                    let count = Self::expect_operand1_usize(&instr)?;
+                    let mut elements = Vec::with_capacity(count);
+                    for _ in 0..count {
+                        elements.push(self.pop()?);
+                    }
+                    elements.reverse();
+                    self.stack.push(Value::Array(elements));
+                }
+                Opcode::ArrayGet => {
+                    let index = self.pop_int()? as usize;
+                    let array = self.pop()?;
+                    match array {
+                        Value::Array(elements) => {
+                            let elem = elements.get(index).cloned()
+                                .ok_or(VmError::InvalidOperand { opcode: Opcode::ArrayGet, operand: "index", value: index as u64 })?;
+                            self.stack.push(elem);
+                        }
+                        other => return Err(VmError::TypeMismatch { expected: "array", found: other }),
+                    }
+                }
+                Opcode::ArrayLen => {
+                    let array = self.pop()?;
+                    match array {
+                        Value::Array(elements) => {
+                            self.stack.push(Value::Int(elements.len() as i64));
+                        }
+                        other => return Err(VmError::TypeMismatch { expected: "array", found: other }),
+                    }
+                }
+                Opcode::ArraySet => {
+                    let value = self.pop()?;
+                    let index = self.pop_int()? as usize;
+                    let array = self.pop()?;
+                    match array {
+                        Value::Array(mut elements) => {
+                            if index >= elements.len() {
+                                return Err(VmError::InvalidOperand { opcode: Opcode::ArraySet, operand: "index", value: index as u64 });
+                            }
+                            elements[index] = value;
+                            self.stack.push(Value::Array(elements));
+                        }
+                        other => return Err(VmError::TypeMismatch { expected: "array", found: other }),
+                    }
+                }
+                Opcode::ArrayPush => {
+                    let value = self.pop()?;
+                    let array = self.pop()?;
+                    match array {
+                        Value::Array(mut elements) => {
+                            elements.push(value);
+                            self.stack.push(Value::Array(elements));
+                        }
+                        other => return Err(VmError::TypeMismatch { expected: "array", found: other }),
+                    }
+                }
+                Opcode::StrConcat => {
+                    let b = self.pop()?;
+                    let a = self.pop()?;
+                    match (a, b) {
+                        (Value::Str(s1), Value::Str(s2)) => {
+                            self.stack.push(Value::Str(format!("{}{}", s1, s2)));
+                        }
+                        (other, _) => return Err(VmError::TypeMismatch { expected: "string", found: other }),
+                    }
+                }
+                Opcode::StrLen => {
+                    let s = self.pop()?;
+                    match s {
+                        Value::Str(s) => {
+                            self.stack.push(Value::Int(s.len() as i64));
+                        }
+                        other => return Err(VmError::TypeMismatch { expected: "string", found: other }),
+                    }
                 }
                 Opcode::PushClosure => {
                     let entry = Self::expect_operand1_usize(&instr)?;

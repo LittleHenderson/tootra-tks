@@ -1,7 +1,7 @@
 use tkscore::ast::{ClassDecl, Expr, HandlerDef, Literal, Program, TopDecl};
 use tkscore::span::Span;
 
-use crate::ir::{IRComp, IRHandler, IRHandlerClause, IRTerm, IRVal};
+use crate::ir::{IntOp, IRComp, IRHandler, IRHandlerClause, IRTerm, IRVal};
 
 #[derive(Debug, Clone)]
 pub enum LowerError {
@@ -202,6 +202,7 @@ fn is_value_expr(expr: &Expr) -> bool {
             | Expr::OrdOmega { .. }
             | Expr::OrdEpsilon { .. }
             | Expr::OrdAleph { .. }
+            | Expr::ArrayLit { .. }
     )
 }
 
@@ -218,6 +219,13 @@ fn lower_val(state: &mut LowerState, expr: &Expr) -> Result<IRVal, LowerError> {
         | Expr::OrdOmega { .. }
         | Expr::OrdEpsilon { .. }
         | Expr::OrdAleph { .. } => Ok(IRVal::Ordinal(expr.clone())),
+        Expr::ArrayLit { elements, .. } => {
+            let mut ir_elements = Vec::new();
+            for elem in elements {
+                ir_elements.push(lower_val(state, elem)?);
+            }
+            Ok(IRVal::Array(ir_elements))
+        }
         _ => Err(LowerError::Unimplemented("value lowering")),
     }
 }
@@ -368,6 +376,47 @@ fn lower_term(state: &mut LowerState, expr: &Expr) -> Result<IRTerm, LowerError>
             let (bindings, bound_val) = lower_to_val(state, bound)?;
             let body_term = lower_term(state, body)?;
             let term = IRTerm::OrdLimit(binder.clone(), bound_val, Box::new(body_term));
+            Ok(wrap_lets(bindings, term))
+        }
+        Expr::BinOp { op, left, right, .. } => {
+            let (mut bindings, left_val) = lower_to_val(state, left)?;
+            let (right_bindings, right_val) = lower_to_val(state, right)?;
+            bindings.extend(right_bindings);
+            let ir_op = match op {
+                tkscore::ast::BinOp::Add => IntOp::Add,
+                tkscore::ast::BinOp::Sub => IntOp::Sub,
+                tkscore::ast::BinOp::Mul => IntOp::Mul,
+                tkscore::ast::BinOp::Div => IntOp::Div,
+            };
+            let term = IRTerm::IntOp(ir_op, left_val, right_val);
+            Ok(wrap_lets(bindings, term))
+        }
+        Expr::ArrayLit { elements, .. } => {
+            let mut bindings = Vec::new();
+            let mut ir_elements = Vec::new();
+            for elem in elements {
+                let (elem_bindings, elem_val) = lower_to_val(state, elem)?;
+                bindings.extend(elem_bindings);
+                ir_elements.push(elem_val);
+            }
+            let term = IRTerm::Return(IRVal::Array(ir_elements));
+            Ok(wrap_lets(bindings, term))
+        }
+        Expr::Index { array, index, .. } => {
+            let (mut bindings, array_val) = lower_to_val(state, array)?;
+            let (index_bindings, index_val) = lower_to_val(state, index)?;
+            bindings.extend(index_bindings);
+            let term = IRTerm::ArrayGet(array_val, index_val);
+            Ok(wrap_lets(bindings, term))
+        }
+        Expr::ForIn { binder, collection, body, .. } => {
+            let (bindings, coll_val) = lower_to_val(state, collection)?;
+            let body_term = lower_term(state, body)?;
+            let term = IRTerm::ForIn {
+                binder: binder.clone(),
+                collection: coll_val,
+                body: Box::new(body_term),
+            };
             Ok(wrap_lets(bindings, term))
         }
         _ => Err(LowerError::Unimplemented("expression lowering")),

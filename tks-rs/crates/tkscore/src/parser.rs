@@ -1849,7 +1849,11 @@ fn expr_span(expr: &Expr) -> Span {
         | Expr::Entangle { span, .. }
         | Expr::Ket { span, .. }
         | Expr::Bra { span, .. }
-        | Expr::BraKet { span, .. } => *span,
+        | Expr::BraKet { span, .. }
+        | Expr::BinOp { span, .. }
+        | Expr::ArrayLit { span, .. }
+        | Expr::ForIn { span, .. }
+        | Expr::Index { span, .. } => *span,
     }
 }
 

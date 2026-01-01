@@ -24,6 +24,7 @@ pub enum Literal {
     Bool(bool),
     Float(f64),
     Complex { re: f64, im: f64 },
+    Str(String),
     Unit,
 }
 
@@ -141,6 +142,14 @@ pub enum HandlerRef {
     },
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum BinOp {
+    Add,
+    Sub,
+    Mul,
+    Div,
+}
+
 #[derive(Debug, Clone, PartialEq)]
 pub enum Expr {
     Var {
@@ -150,6 +159,12 @@ pub enum Expr {
     Lit {
         span: Span,
         literal: Literal,
+    },
+    BinOp {
+        span: Span,
+        op: BinOp,
+        left: Box<Expr>,
+        right: Box<Expr>,
     },
     Lam {
         span: Span,
@@ -238,6 +253,21 @@ pub enum Expr {
         span: Span,
         op: Ident,
         arg: Box<Expr>,
+    },
+    ArrayLit {
+        span: Span,
+        elements: Vec<Expr>,
+    },
+    ForIn {
+        span: Span,
+        binder: Ident,
+        collection: Box<Expr>,
+        body: Box<Expr>,
+    },
+    Index {
+        span: Span,
+        array: Box<Expr>,
+        index: Box<Expr>,
     },
     OrdLit {
         span: Span,
@@ -341,6 +371,8 @@ pub enum Type {
     Bool,
     Unit,
     Void,
+    Str,
+    Array(Box<Type>),
     Element(Option<World>),
     Foundation,
     Domain,

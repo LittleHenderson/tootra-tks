@@ -166,6 +166,8 @@ fn format_type_prec(ty: &Type, prec: u8) -> String {
         ),
         Type::Class(name) => name.clone(),
         Type::Ordinal => "Ordinal".to_string(),
+        Type::Str => "Str".to_string(),
+        Type::Array(inner) => format!("Array[{}]", format_type(inner)),
     }
 }
 

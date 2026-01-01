@@ -3,9 +3,9 @@ use std::collections::HashMap;
 use std::rc::Rc;
 
 use tkscore::ast::{Expr, Ident, Literal, OrdinalLiteral, World};
-use tksir::ir::{IRComp, IRTerm, IRVal, OrdOp};
+use tksir::ir::{IntOp, IRComp, IRTerm, IRVal, OrdOp};
 
-use crate::bytecode::{extern_id, field_id, Instruction, Opcode};
+use crate::bytecode::{extern_id, field_id, string_id, Instruction, Opcode};
 
 #[derive(Debug, Clone)]
 pub enum EmitError {
@@ -189,6 +189,72 @@ impl EmitState {
                 self.code.push(inst(opcode));
                 Ok(())
             }
+            IRTerm::IntOp(op, left, right) => {
+                self.emit_val(left)?;
+                self.emit_val(right)?;
+                let opcode = match op {
+                    IntOp::Add => Opcode::Add,
+                    IntOp::Sub => Opcode::Sub,
+                    IntOp::Mul => Opcode::Mul,
+                    IntOp::Div => Opcode::Div,
+                };
+                self.code.push(inst(opcode));
+                Ok(())
+            }
+            IRTerm::ArrayGet(array, index) => {
+                self.emit_val(array)?;
+                self.emit_val(index)?;
+                self.code.push(inst(Opcode::ArrayGet));
+                Ok(())
+            }
+            IRTerm::ArraySet(array, index, value) => {
+                self.emit_val(array)?;
+                self.emit_val(index)?;
+                self.emit_val(value)?;
+                self.code.push(inst(Opcode::ArraySet));
+                Ok(())
+            }
+            IRTerm::ForIn { binder, collection, body } => {
+                // Get array length
+                self.emit_val(collection)?;
+                self.code.push(inst(Opcode::ArrayLen));
+                let len_slot = self.alloc_local("_len".to_string());
+                self.code.push(inst1(Opcode::Store, len_slot));
+                // Initialize index
+                self.code.push(inst1(Opcode::PushInt, 0));
+                let idx_slot = self.alloc_local("_idx".to_string());
+                self.code.push(inst1(Opcode::Store, idx_slot));
+                // Loop start
+                let loop_start = self.code.len();
+                // Check if index < len
+                self.code.push(inst1(Opcode::Load, idx_slot));
+                self.code.push(inst1(Opcode::Load, len_slot));
+                self.code.push(inst(Opcode::Lt));
+                let exit_jmp = self.emit_jump_placeholder(Opcode::JmpUnless);
+                // Load element into binder
+                self.emit_val(collection)?;
+                self.code.push(inst1(Opcode::Load, idx_slot));
+                self.code.push(inst(Opcode::ArrayGet));
+                let binder_slot = self.alloc_local(binder.clone());
+                self.code.push(inst1(Opcode::Store, binder_slot));
+                // Execute body
+                self.emit_term(body)?;
+                self.locals.pop(); // Remove binder
+                // Increment index
+                self.code.push(inst1(Opcode::Load, idx_slot));
+                self.code.push(inst1(Opcode::PushInt, 1));
+                self.code.push(inst(Opcode::Add));
+                self.code.push(inst1(Opcode::Store, idx_slot));
+                // Jump back to loop start
+                self.code.push(inst1(Opcode::Jmp, loop_start as u64));
+                // Exit point
+                let exit_target = self.code.len();
+                self.patch_jump(exit_jmp, exit_target)?;
+                self.locals.pop(); // Remove _idx
+                self.locals.pop(); // Remove _len
+                self.code.push(inst(Opcode::PushUnit)); // for-in returns unit
+                Ok(())
+            }
             _ => Err(EmitError::Unimplemented("term emission")),
         }
     }
@@ -246,6 +312,18 @@ impl EmitState {
                 }
                 Ok(())
             }
+            IRVal::Str(s) => {
+                let id = string_id(s);
+                self.code.push(inst1(Opcode::PushStr, id));
+                Ok(())
+            }
+            IRVal::Array(elements) => {
+                for elem in elements {
+                    self.emit_val(elem)?;
+                }
+                self.code.push(inst1(Opcode::MakeArray, elements.len() as u64));
+                Ok(())
+            }
             IRVal::Ordinal(expr) => self.emit_ordinal_expr(expr),
         }
     }
@@ -263,6 +341,11 @@ impl EmitState {
             }
             Literal::Unit => {
                 self.code.push(inst(Opcode::PushUnit));
+                Ok(())
+            }
+            Literal::Str(s) => {
+                let id = string_id(s);
+                self.code.push(inst1(Opcode::PushStr, id));
                 Ok(())
             }
             _ => Err(EmitError::Unimplemented("literal emission")),

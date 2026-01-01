@@ -242,6 +242,8 @@ impl Subst {
             Type::Bool => Type::Bool,
             Type::Unit => Type::Unit,
             Type::Void => Type::Void,
+            Type::Str => Type::Str,
+            Type::Array(inner) => Type::Array(Box::new(self.apply_type(inner))),
             Type::Element(world) => Type::Element(*world),
             Type::Foundation => Type::Foundation,
             Type::Domain => Type::Domain,
@@ -510,7 +512,8 @@ pub fn unify_types(subst: &mut Subst, left: &Type, right: &Type) -> Result<(), T
                 | (Type::Void, Type::Void)
                 | (Type::Foundation, Type::Foundation)
                 | (Type::Domain, Type::Domain)
-                | (Type::Ordinal, Type::Ordinal) => Ok(()),
+                | (Type::Ordinal, Type::Ordinal)
+                | (Type::Str, Type::Str) => Ok(()),
                 (Type::Class(left_name), Type::Class(right_name)) => {
                     if left_name == right_name {
                         Ok(())
@@ -533,7 +536,8 @@ pub fn unify_types(subst: &mut Subst, left: &Type, right: &Type) -> Result<(), T
                 (Type::Noetic(left), Type::Noetic(right))
                 | (Type::Fractal(left), Type::Fractal(right))
                 | (Type::RPM(left), Type::RPM(right))
-                | (Type::QState(left), Type::QState(right)) => unify_types(subst, &left, &right),
+                | (Type::QState(left), Type::QState(right))
+                | (Type::Array(left), Type::Array(right)) => unify_types(subst, &left, &right),
                 (Type::Fun(l1, r1), Type::Fun(l2, r2))
                 | (Type::Product(l1, r1), Type::Product(l2, r2))
                 | (Type::Sum(l1, r1), Type::Sum(l2, r2)) => {
@@ -1354,6 +1358,63 @@ fn infer_expr_inner(
         Expr::Entangle { left, right, .. } => infer_entangle(state, env, left, right),
         Expr::Ket { expr, .. } => infer_ket(state, env, expr),
         Expr::Bra { expr, .. } => infer_bra(state, env, expr),
+        Expr::BinOp { left, right, .. } => {
+            let left_out = infer_expr_inner(state, env, left)?;
+            let right_out = infer_expr_inner(state, env, right)?;
+            unify_types(&mut state.subst, &left_out.ty, &Type::Int)?;
+            unify_types(&mut state.subst, &right_out.ty, &Type::Int)?;
+            let effect = combine_effects(state, &left_out.effect, &right_out.effect)?;
+            Ok(InferOutput {
+                ty: Type::Int,
+                effect,
+            })
+        }
+        Expr::ArrayLit { elements, .. } => {
+            if elements.is_empty() {
+                let elem_ty = state.fresh_type_var();
+                Ok(InferOutput {
+                    ty: Type::Array(Box::new(elem_ty)),
+                    effect: EffectRow::Empty,
+                })
+            } else {
+                let first = infer_expr_inner(state, env, &elements[0])?;
+                let mut combined_effect = first.effect.clone();
+                for elem in &elements[1..] {
+                    let elem_out = infer_expr_inner(state, env, elem)?;
+                    unify_types(&mut state.subst, &first.ty, &elem_out.ty)?;
+                    combined_effect = combine_effects(state, &combined_effect, &elem_out.effect)?;
+                }
+                Ok(InferOutput {
+                    ty: Type::Array(Box::new(state.subst.apply_type(&first.ty))),
+                    effect: combined_effect,
+                })
+            }
+        }
+        Expr::ForIn { binder, collection, body, .. } => {
+            let coll_out = infer_expr_inner(state, env, collection)?;
+            let elem_ty = state.fresh_type_var();
+            unify_types(&mut state.subst, &coll_out.ty, &Type::Array(Box::new(elem_ty.clone())))?;
+            let mut body_env = env.clone();
+            body_env.insert(binder.clone(), Scheme::mono(state.subst.apply_type(&elem_ty)));
+            let body_out = infer_expr_inner(state, &mut body_env, body)?;
+            let effect = combine_effects(state, &coll_out.effect, &body_out.effect)?;
+            Ok(InferOutput {
+                ty: Type::Unit,
+                effect,
+            })
+        }
+        Expr::Index { array, index, .. } => {
+            let array_out = infer_expr_inner(state, env, array)?;
+            let elem_ty = state.fresh_type_var();
+            unify_types(&mut state.subst, &array_out.ty, &Type::Array(Box::new(elem_ty.clone())))?;
+            let index_out = infer_expr_inner(state, env, index)?;
+            unify_types(&mut state.subst, &index_out.ty, &Type::Int)?;
+            let effect = combine_effects(state, &array_out.effect, &index_out.effect)?;
+            Ok(InferOutput {
+                ty: state.subst.apply_type(&elem_ty),
+                effect,
+            })
+        }
         Expr::BraKet { left, right, .. } => infer_braket(state, env, left, right),
     }
 }
@@ -1899,6 +1960,7 @@ fn infer_literal_type(literal: &Literal) -> Result<Type, TypeError> {
         Literal::Float(_) => Ok(Type::Domain),
         Literal::Complex { .. } => Ok(Type::Domain),
         Literal::Unit => Ok(Type::Unit),
+        Literal::Str(_) => Ok(Type::Str),
     }
 }
 

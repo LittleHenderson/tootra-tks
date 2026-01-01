@@ -87,6 +87,15 @@ pub enum Opcode {
     MakeRecord,
     RecordGet,
     RecordSet,
+    // String and Array opcodes
+    PushStr,
+    MakeArray,
+    ArrayGet,
+    ArraySet,
+    ArrayLen,
+    ArrayPush,
+    StrConcat,
+    StrLen,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -110,6 +119,10 @@ fn name_id(name: &str) -> u64 {
 
 pub fn extern_id(name: &str) -> u64 {
     name_id(name)
+}
+
+pub fn string_id(s: &str) -> u64 {
+    name_id(s)
 }
 
 pub fn field_id(name: &str) -> u64 {

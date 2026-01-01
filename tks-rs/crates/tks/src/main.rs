@@ -221,6 +221,17 @@ fn print_version() {
 fn register_default_externs(vm: &mut VmState) {
     vm.register_extern_with("print_int", 1, ExternSafety::Safe, ["IO"], ffi_print_int);
     vm.register_extern_with("print_bool", 1, ExternSafety::Safe, ["IO"], ffi_print_bool);
+    
+    // String I/O externs
+    vm.register_extern_with("print", 1, ExternSafety::Safe, ["IO"], ffi_print);
+    vm.register_extern_with("println", 1, ExternSafety::Safe, ["IO"], ffi_println);
+    vm.register_extern_with("read_line", 0, ExternSafety::Safe, ["IO"], ffi_read_line);
+    
+    // File I/O externs
+    vm.register_extern_with("read_file", 1, ExternSafety::Safe, ["IO"], ffi_read_file);
+    vm.register_extern_with("write_file", 2, ExternSafety::Safe, ["IO"], ffi_write_file);
+    vm.register_extern_with("append_file", 2, ExternSafety::Safe, ["IO"], ffi_append_file);
+    vm.register_extern_with("file_exists", 1, ExternSafety::Safe, ["IO"], ffi_file_exists);
 }
 
 fn ffi_print_int(args: Vec<Value>) -> Result<Value, VmError> {
@@ -256,6 +267,158 @@ fn ffi_print_bool(args: Vec<Value>) -> Result<Value, VmError> {
         }
         other => Err(VmError::TypeMismatch {
             expected: "bool",
+            found: other,
+        }),
+    }
+}
+fn ffi_print(args: Vec<Value>) -> Result<Value, VmError> {
+    if args.len() != 1 {
+        return Err(VmError::TypeMismatch {
+            expected: "string (1 arg)",
+            found: Value::Unit,
+        });
+    }
+    match args.into_iter().next().unwrap() {
+        Value::Str(s) => {
+            print!("{s}");
+            Ok(Value::Unit)
+        }
+        other => Err(VmError::TypeMismatch {
+            expected: "string",
+            found: other,
+        }),
+    }
+}
+
+fn ffi_println(args: Vec<Value>) -> Result<Value, VmError> {
+    if args.len() != 1 {
+        return Err(VmError::TypeMismatch {
+            expected: "string (1 arg)",
+            found: Value::Unit,
+        });
+    }
+    match args.into_iter().next().unwrap() {
+        Value::Str(s) => {
+            println!("{s}");
+            Ok(Value::Unit)
+        }
+        other => Err(VmError::TypeMismatch {
+            expected: "string",
+            found: other,
+        }),
+    }
+}
+
+fn ffi_read_line(_args: Vec<Value>) -> Result<Value, VmError> {
+    let mut input = String::new();
+    io::stdin()
+        .read_line(&mut input)
+        .map_err(|_| VmError::TypeMismatch {
+            expected: "stdin readable",
+            found: Value::Unit,
+        })?;
+    // Remove trailing newline/carriage return
+    let input = input.trim_end().to_string();
+    Ok(Value::Str(input))
+}
+
+fn ffi_read_file(args: Vec<Value>) -> Result<Value, VmError> {
+    if args.len() != 1 {
+        return Err(VmError::TypeMismatch {
+            expected: "string (1 arg)",
+            found: Value::Unit,
+        });
+    }
+    match args.into_iter().next().unwrap() {
+        Value::Str(path) => {
+            let content = fs::read_to_string(&path).map_err(|_| VmError::TypeMismatch {
+                expected: "readable file",
+                found: Value::Str(path.clone()),
+            })?;
+            Ok(Value::Str(content))
+        }
+        other => Err(VmError::TypeMismatch {
+            expected: "string",
+            found: other,
+        }),
+    }
+}
+
+fn ffi_write_file(args: Vec<Value>) -> Result<Value, VmError> {
+    if args.len() != 2 {
+        return Err(VmError::TypeMismatch {
+            expected: "(path, content) (2 args)",
+            found: Value::Unit,
+        });
+    }
+    let mut iter = args.into_iter();
+    let path = iter.next().unwrap();
+    let content = iter.next().unwrap();
+    match (path, content) {
+        (Value::Str(path), Value::Str(content)) => {
+            fs::write(&path, &content).map_err(|_| VmError::TypeMismatch {
+                expected: "writable file",
+                found: Value::Str(path.clone()),
+            })?;
+            Ok(Value::Unit)
+        }
+        (other, _) => Err(VmError::TypeMismatch {
+            expected: "string",
+            found: other,
+        }),
+    }
+}
+
+fn ffi_append_file(args: Vec<Value>) -> Result<Value, VmError> {
+    use std::fs::OpenOptions;
+    use std::io::Write;
+    
+    if args.len() != 2 {
+        return Err(VmError::TypeMismatch {
+            expected: "(path, content) (2 args)",
+            found: Value::Unit,
+        });
+    }
+    let mut iter = args.into_iter();
+    let path = iter.next().unwrap();
+    let content = iter.next().unwrap();
+    match (path, content) {
+        (Value::Str(path), Value::Str(content)) => {
+            let mut file = OpenOptions::new()
+                .append(true)
+                .create(true)
+                .open(&path)
+                .map_err(|_| VmError::TypeMismatch {
+                    expected: "appendable file",
+                    found: Value::Str(path.clone()),
+                })?;
+            file.write_all(content.as_bytes()).map_err(|_| VmError::TypeMismatch {
+                expected: "writable file",
+                found: Value::Str(path.clone()),
+            })?;
+            Ok(Value::Unit)
+        }
+        (other, _) => Err(VmError::TypeMismatch {
+            expected: "string",
+            found: other,
+        }),
+    }
+}
+
+fn ffi_file_exists(args: Vec<Value>) -> Result<Value, VmError> {
+    if args.len() != 1 {
+        return Err(VmError::TypeMismatch {
+            expected: "string (1 arg)",
+            found: Value::Unit,
+        });
+    }
+    match args.into_iter().next().unwrap() {
+        Value::Str(path) => {
+            let exists = Path::new(&path).exists();
+            Ok(Value::Bool(exists))
+        }
+        other => Err(VmError::TypeMismatch {
+            expected: "string",
             found: other,
         }),
     }

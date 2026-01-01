@@ -11,6 +11,8 @@ pub enum IRVal {
     Ordinal(Expr),
     Ket(Box<IRVal>),
     Record(Vec<(Ident, IRVal)>),
+    Str(String),
+    Array(Vec<IRVal>),
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -34,6 +36,14 @@ pub enum IRTerm {
     Superpose(Vec<(IRVal, IRVal)>),
     Measure(IRVal),
     Entangle(IRVal, IRVal),
+    IntOp(IntOp, IRVal, IRVal),
+    ForIn {
+        binder: Ident,
+        collection: IRVal,
+        body: Box<IRTerm>,
+    },
+    ArrayGet(IRVal, IRVal),
+    ArraySet(IRVal, IRVal, IRVal),
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -47,6 +57,14 @@ pub enum OrdOp {
     Add,
     Mul,
     Exp,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum IntOp {
+    Add,
+    Sub,
+    Mul,
+    Div,
 }
 
 #[derive(Debug, Clone, PartialEq)]

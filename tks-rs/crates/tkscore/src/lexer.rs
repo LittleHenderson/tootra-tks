@@ -10,6 +10,7 @@ pub enum TokenKind {
     Bool(bool),
     Float(f64),
     Complex { re: f64, im: f64 },
+    StringLit(String),
     Ident(Ident),
     Nu,
     Lambda,
@@ -173,6 +174,11 @@ impl<'a> Lexer<'a> {
         }
         if self.match_unicode_fractal_close() {
             return Ok(self.make_token(TokenKind::FracClose, start_pos, start_line, start_col));
+        }
+
+        // String literal
+        if c == '"' {
+            return self.lex_string_literal(start_pos, start_line, start_col);
         }
 
         if c.is_ascii_digit() {
@@ -351,6 +357,50 @@ impl<'a> Lexer<'a> {
                 level,
                 aspect: aspect_from_char(aspect),
             },
+            span: Span::new(start_pos, self.pos, start_line, start_col),
+        })
+    }
+
+
+    fn lex_string_literal(
+        &mut self,
+        start_pos: usize,
+        start_line: u32,
+        start_col: u32,
+    ) -> Result<Token, LexerError> {
+        self.advance(); // consume opening quote
+        let mut content = String::new();
+        loop {
+            match self.peek() {
+                None => {
+                    return Err(LexerError::new("unterminated string literal"));
+                }
+                Some('"') => {
+                    self.advance();
+                    break;
+                }
+                Some('\\') => {
+                    self.advance();
+                    match self.peek() {
+                        Some('"') => { content.push('"'); self.advance(); }
+                        Some('\\') => { content.push('\\'); self.advance(); }
+                        Some('n') => { content.push('\n'); self.advance(); }
+                        Some('t') => { content.push('\t'); self.advance(); }
+                        Some('r') => { content.push('\r'); self.advance(); }
+                        Some(c) => { content.push(c); self.advance(); }
+                        None => {
+                            return Err(LexerError::new("unterminated escape sequence"));
+                        }
+                    }
+                }
+                Some(c) => {
+                    content.push(c);
+                    self.advance();
+                }
+            }
+        }
+        Ok(Token {
+            kind: TokenKind::StringLit(content),
             span: Span::new(start_pos, self.pos, start_line, start_col),
         })
     }
