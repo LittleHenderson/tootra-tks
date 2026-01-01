@@ -223,6 +223,11 @@ repeat Counter { value: 1 }
     let program = parse_program(source).expect("parse program");
     let term = lower_program(&program).expect("lower program");
 
+    // The new lowering creates records:
+    // 1. Class bindings (Counter, Counter::current, Counter::inc)
+    // 2. Constructor creates record with fields
+    // 3. Properties computed via Counter::property(self) and RecordSet
+    // 4. Methods wrapped as closures and RecordSet
     match term {
         IRTerm::Let(name, comp, body) => {
             assert_eq!(name, "Counter");
@@ -235,12 +240,21 @@ repeat Counter { value: 1 }
                         IRTerm::Let(method_name, comp, body) => {
                             assert_eq!(method_name, "Counter::inc");
                             assert!(matches!(*comp, IRComp::Pure(_)));
+                            // Constructor now creates a record, not an App
                             match *body {
-                                IRTerm::App(IRVal::Var(func), IRVal::Lit(Literal::Int(value))) => {
-                                    assert_eq!(func, "Counter");
-                                    assert_eq!(value, 1);
+                                IRTerm::Let(record_tmp, comp, _) => {
+                                    assert_eq!(record_tmp, "_t0");
+                                    // The initial record should have the field value
+                                    match *comp {
+                                        IRComp::Pure(IRVal::Record(fields)) => {
+                                            assert_eq!(fields.len(), 1);
+                                            assert_eq!(fields[0].0, "value");
+                                            assert_eq!(fields[0].1, IRVal::Lit(Literal::Int(1)));
+                                        }
+                                        other => panic!("expected record, got {other:?}"),
+                                    }
                                 }
-                                other => panic!("expected constructor app, got {other:?}"),
+                                other => panic!("expected record let, got {other:?}"),
                             }
                         }
                         other => panic!("expected method binding, got {other:?}"),
@@ -316,3 +330,43 @@ handle perform log(1) with {
         other => panic!("expected handle, got {other:?}"),
     }
 }
+
+#[test]
+fn lower_member_access_to_record_get() {
+    let source = r#"
+class Point {
+  specifics { x: Int; y: Int; }
+  details { }
+  actions { }
+}
+let p = repeat Point { x: 1, y: 2 };
+p.x
+"#;
+    // This test verifies that member access on class instances
+    // is lowered to RecordGet operations
+    let program = parse_program(source).expect("parse program");
+    let term = lower_program(&program).expect("lower program");
+
+    // Navigate through class bindings to find the entry point
+    match term {
+        IRTerm::Let(class_name, _, body) => {
+            assert_eq!(class_name, "Point");
+            match *body {
+                IRTerm::Let(p_name, _, body) => {
+                    assert_eq!(p_name, "p");
+                    // The body should be RecordGet on p
+                    match *body {
+                        IRTerm::RecordGet(IRVal::Var(obj_var), field_name) => {
+                            assert_eq!(obj_var, "p");
+                            assert_eq!(field_name, "x");
+                        }
+                        other => panic!("expected RecordGet, got {other:?}"),
+                    }
+                }
+                other => panic!("expected let p, got {other:?}"),
+            }
+        }
+        other => panic!("expected class let, got {other:?}"),
+    }
+}
+

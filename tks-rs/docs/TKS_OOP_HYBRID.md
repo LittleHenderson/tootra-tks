@@ -207,7 +207,7 @@ Expected output: `1` (the value field)
 
 ## Integration with Effects
 
-Classes can work with effect handlers:
+Classes can work with effect handlers (conceptual example - string concat `++` and comparison operators are parser extensions):
 
 ```tks
 effect Log {
@@ -218,24 +218,22 @@ class Logger {
   specifics { prefix: String; }
   details { }
   actions {
-    info(self, msg: String): Unit = perform Log.log(self.prefix ++ msg);
+    log_prefix(self): String = self.prefix;
   }
 }
 ```
 
 ## Integration with RPM
 
-Methods can return RPM values:
+Methods can return RPM values (conceptual example - division operator is a planned extension):
 
 ```tks
-class SafeDiv {
-  specifics { dividend: Int; }
+class Wrapper {
+  specifics { value: Int; }
   details { }
   actions {
-    divide(self, divisor: Int): RPM[Int] =
-      if divisor == 0
-      then rpm_fail("division by zero")
-      else rpm_win(self.dividend / divisor);
+    wrap(self): RPM[Int] = rpm_win(self.value);
+    fail_msg(self): RPM[Int] = rpm_fail("error");
   }
 }
 ```
@@ -244,6 +242,9 @@ class SafeDiv {
 
 Planned enhancements to the OOP model:
 
+- **Integer arithmetic**: `+`, `-`, `*`, `/` operators for Int expressions
+- **Comparison operators**: `==`, `!=`, `<`, `>`, `<=`, `>=`
+- **String concatenation**: `++` operator
 - **Inheritance**: `class Child extends Parent { ... }`
 - **Traits**: `trait Comparable { ... }`
 - **Visibility**: `private`, `public` modifiers

@@ -288,7 +288,7 @@ fn emit_counter_class_full_pattern() {
 
     let term = IRTerm::Let(
         "c".to_string(),
-        Box::new(IRComp::Pure(IRVal::Record(vec\![
+        Box::new(IRComp::Pure(IRVal::Record(vec![
             ("value".to_string(), IRVal::Lit(Literal::Int(10))),
             ("doubled".to_string(), IRVal::Lit(Literal::Int(20))),
             ("inc".to_string(), method_inc),
@@ -302,15 +302,15 @@ fn emit_counter_class_full_pattern() {
     let code = emit(&term).expect("emit counter class");
     let opcodes: Vec<Opcode> = code.iter().map(|i| i.opcode).collect();
 
-    assert\!(opcodes.contains(&Opcode::MakeRecord));
-    assert\!(opcodes.contains(&Opcode::RecordSet));
-    assert\!(opcodes.contains(&Opcode::RecordGet));
-    assert\!(opcodes.contains(&Opcode::PushClosure));
+    assert!(opcodes.contains(&Opcode::MakeRecord));
+    assert!(opcodes.contains(&Opcode::RecordSet));
+    assert!(opcodes.contains(&Opcode::RecordGet));
+    assert!(opcodes.contains(&Opcode::PushClosure));
 
     let record_sets: Vec<_> = code.iter()
         .filter(|i| i.opcode == Opcode::RecordSet)
         .collect();
-    assert_eq\!(record_sets.len(), 3);
+    assert_eq!(record_sets.len(), 3);
 }
 
 /// Test emitting method invocation pattern
@@ -326,7 +326,7 @@ fn emit_method_invocation_pattern() {
 
     let term = IRTerm::Let(
         "obj".to_string(),
-        Box::new(IRComp::Pure(IRVal::Record(vec\![
+        Box::new(IRComp::Pure(IRVal::Record(vec![
             ("value".to_string(), IRVal::Lit(Literal::Int(5))),
             ("get".to_string(), getter),
         ]))),
@@ -346,9 +346,9 @@ fn emit_method_invocation_pattern() {
     let code = emit(&term).expect("emit method invocation");
     let opcodes: Vec<Opcode> = code.iter().map(|i| i.opcode).collect();
 
-    assert\!(opcodes.contains(&Opcode::MakeRecord));
-    assert\!(opcodes.contains(&Opcode::RecordGet));
-    assert\!(opcodes.contains(&Opcode::Call));
+    assert!(opcodes.contains(&Opcode::MakeRecord));
+    assert!(opcodes.contains(&Opcode::RecordGet));
+    assert!(opcodes.contains(&Opcode::Call));
 }
 
 /// Test emitting method with argument: obj.inc(5)
@@ -375,7 +375,7 @@ fn emit_method_with_argument() {
 
     let term = IRTerm::Let(
         "obj".to_string(),
-        Box::new(IRComp::Pure(IRVal::Record(vec\![
+        Box::new(IRComp::Pure(IRVal::Record(vec![
             ("value".to_string(), IRVal::Lit(Literal::Int(10))),
             ("inc".to_string(), inc_method),
         ]))),
@@ -403,8 +403,8 @@ fn emit_method_with_argument() {
     let opcodes: Vec<Opcode> = code.iter().map(|i| i.opcode).collect();
 
     let call_count = opcodes.iter().filter(|&&op| op == Opcode::Call).count();
-    assert_eq\!(call_count, 2);
-    assert\!(opcodes.contains(&Opcode::Add));
+    assert_eq!(call_count, 2);
+    assert!(opcodes.contains(&Opcode::Add));
 }
 
 /// Test emitting computed property pattern (details)
@@ -420,7 +420,7 @@ fn emit_computed_property_pattern() {
                 IRVal::Var("value".to_string()),
                 IRVal::Lit(Literal::Int(2)),
             )))),
-            Box::new(IRTerm::Return(IRVal::Record(vec\![
+            Box::new(IRTerm::Return(IRVal::Record(vec![
                 ("value".to_string(), IRVal::Var("value".to_string())),
                 ("doubled".to_string(), IRVal::Var("doubled".to_string())),
             ]))),
@@ -430,8 +430,8 @@ fn emit_computed_property_pattern() {
     let code = emit(&term).expect("emit computed property");
     let opcodes: Vec<Opcode> = code.iter().map(|i| i.opcode).collect();
 
-    assert\!(opcodes.contains(&Opcode::Mul));
-    assert\!(opcodes.contains(&Opcode::MakeRecord));
+    assert!(opcodes.contains(&Opcode::Mul));
+    assert!(opcodes.contains(&Opcode::MakeRecord));
 }
 
 /// Test emitting record with method stored and later retrieved
@@ -448,7 +448,7 @@ fn emit_record_method_storage_retrieval() {
 
     let term = IRTerm::Let(
         "obj".to_string(),
-        Box::new(IRComp::Pure(IRVal::Record(vec\![
+        Box::new(IRComp::Pure(IRVal::Record(vec![
             ("method".to_string(), method),
         ]))),
         Box::new(IRTerm::Let(
@@ -467,8 +467,8 @@ fn emit_record_method_storage_retrieval() {
     let code = emit(&term).expect("emit method storage retrieval");
     let opcodes: Vec<Opcode> = code.iter().map(|i| i.opcode).collect();
 
-    assert\!(opcodes.contains(&Opcode::PushClosure));
-    assert\!(opcodes.contains(&Opcode::RecordSet));
-    assert\!(opcodes.contains(&Opcode::RecordGet));
-    assert\!(opcodes.contains(&Opcode::Call));
+    assert!(opcodes.contains(&Opcode::PushClosure));
+    assert!(opcodes.contains(&Opcode::RecordSet));
+    assert!(opcodes.contains(&Opcode::RecordGet));
+    assert!(opcodes.contains(&Opcode::Call));
 }

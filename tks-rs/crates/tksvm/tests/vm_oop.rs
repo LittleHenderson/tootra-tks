@@ -388,3 +388,185 @@ fn run_record_field_overwrite() {
     let result = vm.run().expect("run program");
     assert_eq!(result, Value::Int(3));
 }
+
+
+// ============================================================================
+// TKS OOP VM Integration Tests (Agent B additions)
+// ============================================================================
+
+/// Test record with many fields simulating a class instance
+#[test]
+fn run_record_many_fields() {
+    // Create { a: 1, b: 2, c: 3, d: 4, e: 5 } and sum them
+    let code = vec![
+        instr(Opcode::MakeRecord, None),
+        instr(Opcode::PushInt, Some(1)),
+        instr(Opcode::RecordSet, Some(field_id("a"))),
+        instr(Opcode::PushInt, Some(2)),
+        instr(Opcode::RecordSet, Some(field_id("b"))),
+        instr(Opcode::PushInt, Some(3)),
+        instr(Opcode::RecordSet, Some(field_id("c"))),
+        instr(Opcode::PushInt, Some(4)),
+        instr(Opcode::RecordSet, Some(field_id("d"))),
+        instr(Opcode::PushInt, Some(5)),
+        instr(Opcode::RecordSet, Some(field_id("e"))),
+        instr(Opcode::Store, Some(0)),
+        // Sum: a + b + c + d + e
+        instr(Opcode::Load, Some(0)),
+        instr(Opcode::RecordGet, Some(field_id("a"))),
+        instr(Opcode::Load, Some(0)),
+        instr(Opcode::RecordGet, Some(field_id("b"))),
+        instr(Opcode::Add, None),
+        instr(Opcode::Load, Some(0)),
+        instr(Opcode::RecordGet, Some(field_id("c"))),
+        instr(Opcode::Add, None),
+        instr(Opcode::Load, Some(0)),
+        instr(Opcode::RecordGet, Some(field_id("d"))),
+        instr(Opcode::Add, None),
+        instr(Opcode::Load, Some(0)),
+        instr(Opcode::RecordGet, Some(field_id("e"))),
+        instr(Opcode::Add, None),
+        instr(Opcode::Ret, None),
+    ];
+
+    let mut vm = VmState::new(code);
+    let result = vm.run().expect("run program");
+    assert_eq!(result, Value::Int(15));
+}
+
+/// Test calling closure stored in record (method pattern)
+#[test]
+fn run_closure_stored_in_record() {
+    let code = vec![
+        // Create closure at instruction 2
+        instr(Opcode::PushClosure, Some(2)),
+        instr(Opcode::Jmp, Some(6)),
+        // Closure body: x + 1
+        instr(Opcode::Load, Some(0)),
+        instr(Opcode::PushInt, Some(1)),
+        instr(Opcode::Add, None),
+        instr(Opcode::Ret, None),
+        // Save closure to local first (it's on stack after Jmp lands here)
+        instr(Opcode::Store, Some(1)), // save closure in slot 1
+        // Create record
+        instr(Opcode::MakeRecord, None),
+        instr(Opcode::Load, Some(1)),  // load closure
+        instr(Opcode::RecordSet, Some(field_id("func"))),
+        instr(Opcode::Store, Some(0)), // obj in slot 0
+        // Call obj.func(41)
+        instr(Opcode::Load, Some(0)),
+        instr(Opcode::RecordGet, Some(field_id("func"))),
+        instr(Opcode::PushInt, Some(41)),
+        instr(Opcode::Call, None),
+        instr(Opcode::Ret, None),
+    ];
+
+    let mut vm = VmState::new(code);
+    let result = vm.run().expect("run program");
+    assert_eq!(result, Value::Int(42));
+}
+
+/// Test chained record access (obj.a.b pattern)
+#[test]
+fn run_chained_record_access() {
+    let code = vec![
+        // Create inner record
+        instr(Opcode::MakeRecord, None),
+        instr(Opcode::PushInt, Some(99)),
+        instr(Opcode::RecordSet, Some(field_id("value"))),
+        instr(Opcode::Store, Some(0)), // inner
+        // Create outer record
+        instr(Opcode::MakeRecord, None),
+        instr(Opcode::Load, Some(0)),
+        instr(Opcode::RecordSet, Some(field_id("inner"))),
+        instr(Opcode::Store, Some(1)), // outer
+        // Get outer.inner.value
+        instr(Opcode::Load, Some(1)),
+        instr(Opcode::RecordGet, Some(field_id("inner"))),
+        instr(Opcode::RecordGet, Some(field_id("value"))),
+        instr(Opcode::Ret, None),
+    ];
+
+    let mut vm = VmState::new(code);
+    let result = vm.run().expect("run program");
+    assert_eq!(result, Value::Int(99));
+}
+
+/// Test record mutation in sequence (simulating state changes)
+#[test]
+fn run_record_state_mutation_sequence() {
+    let code = vec![
+        instr(Opcode::MakeRecord, None),
+        instr(Opcode::PushInt, Some(0)),
+        instr(Opcode::RecordSet, Some(field_id("count"))),
+        instr(Opcode::Store, Some(0)),
+        // c.count = 1
+        instr(Opcode::Load, Some(0)),
+        instr(Opcode::PushInt, Some(1)),
+        instr(Opcode::RecordSet, Some(field_id("count"))),
+        instr(Opcode::Store, Some(0)),
+        // c.count = 2
+        instr(Opcode::Load, Some(0)),
+        instr(Opcode::PushInt, Some(2)),
+        instr(Opcode::RecordSet, Some(field_id("count"))),
+        instr(Opcode::Store, Some(0)),
+        // c.count = 3
+        instr(Opcode::Load, Some(0)),
+        instr(Opcode::PushInt, Some(3)),
+        instr(Opcode::RecordSet, Some(field_id("count"))),
+        instr(Opcode::Store, Some(0)),
+        // return c.count
+        instr(Opcode::Load, Some(0)),
+        instr(Opcode::RecordGet, Some(field_id("count"))),
+        instr(Opcode::Ret, None),
+    ];
+
+    let mut vm = VmState::new(code);
+    let result = vm.run().expect("run program");
+    assert_eq!(result, Value::Int(3));
+}
+
+/// Test computed property pattern (doubled = value * 2)
+#[test]
+fn run_computed_property_value() {
+    let code = vec![
+        instr(Opcode::MakeRecord, None),
+        instr(Opcode::PushInt, Some(7)),
+        instr(Opcode::RecordSet, Some(field_id("value"))),
+        instr(Opcode::PushInt, Some(14)), // pre-computed doubled
+        instr(Opcode::RecordSet, Some(field_id("doubled"))),
+        instr(Opcode::Store, Some(0)),
+        instr(Opcode::Load, Some(0)),
+        instr(Opcode::RecordGet, Some(field_id("doubled"))),
+        instr(Opcode::Ret, None),
+    ];
+
+    let mut vm = VmState::new(code);
+    let result = vm.run().expect("run program");
+    assert_eq!(result, Value::Int(14));
+}
+
+/// Test arithmetic operations within record methods
+#[test]
+fn run_record_with_arithmetic_method() {
+    // Record { x: 10, y: 20 }, compute x * y via method pattern
+    let code = vec![
+        instr(Opcode::MakeRecord, None),
+        instr(Opcode::PushInt, Some(10)),
+        instr(Opcode::RecordSet, Some(field_id("x"))),
+        instr(Opcode::PushInt, Some(20)),
+        instr(Opcode::RecordSet, Some(field_id("y"))),
+        instr(Opcode::Store, Some(0)),
+        // Get x and y, multiply
+        instr(Opcode::Load, Some(0)),
+        instr(Opcode::RecordGet, Some(field_id("x"))),
+        instr(Opcode::Load, Some(0)),
+        instr(Opcode::RecordGet, Some(field_id("y"))),
+        instr(Opcode::Mul, None),
+        instr(Opcode::Ret, None),
+    ];
+
+    let mut vm = VmState::new(code);
+    let result = vm.run().expect("run program");
+    assert_eq!(result, Value::Int(200));
+}
