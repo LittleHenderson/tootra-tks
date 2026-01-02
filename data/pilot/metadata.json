@@ -1,0 +1,57 @@
+{
+  "total_examples": 1000,
+  "stage_counts": {
+    "stage1_elements": 200,
+    "stage2_composition": 200,
+    "stage3_rpm": 200,
+    "stage4_full_pipeline": 400
+  },
+  "seed": 42,
+  "canonical_noetics": {
+    "1": "Mind",
+    "2": "Positive",
+    "3": "Negative",
+    "4": "Vibration",
+    "5": "Female",
+    "6": "Male",
+    "7": "Rhythm",
+    "8": "Cause",
+    "9": "Effect",
+    "10": "Idea"
+  },
+  "canonical_worlds": {
+    "A": "Spiritual",
+    "B": "Mental",
+    "C": "Emotional",
+    "D": "Physical"
+  },
+  "involution_pairs": [
+    [
+      2,
+      3
+    ],
+    [
+      5,
+      6
+    ],
+    [
+      8,
+      9
+    ]
+  ],
+  "rpm_groupings": {
+    "desire": [
+      1,
+      4,
+      7
+    ],
+    "wisdom": [
+      5,
+      6
+    ],
+    "power": [
+      8,
+      9
+    ]
+  }
+}

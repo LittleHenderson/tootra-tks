@@ -22,7 +22,7 @@ ClassDecl ::= ("class" | "blueprint" | "plan") Ident "{"
               ActionsSection
             "}"
 
-SpecificsSection ::= "specifics" "{" FieldDecl* "}"
+SpecificsSection ::= ("specifics" | "description") "{" FieldDecl* "}"
 DetailsSection   ::= "details" "{" PropertyDecl* "}"
 ActionsSection   ::= "actions" "{" MethodDecl* "}"
 
@@ -38,7 +38,7 @@ Param     ::= Ident ":" Type
 
 | Section | Keyword | Contains | Description |
 |---------|---------|----------|-------------|
-| Fields | `specifics` | `name: Type;` | Instance data, provided at construction |
+| Fields | `specifics` or `description` | `name: Type;` | Instance data, provided at construction |
 | Properties | `details` | `name: Type = expr;` | Computed from fields, uses `identity` |
 | Methods | `actions` | `name(self, ...): Type = expr;` | Behaviors, first param is `self` |
 
@@ -64,6 +64,32 @@ class Counter {
 ```
 
 > **Note:** Integer arithmetic operators (`+`, `-`, `*`, `/`) are not yet implemented for expressions. The examples above show field access patterns. Full arithmetic support is planned.
+
+## Alternative Syntax: `description` instead of `specifics`
+
+The `description` keyword can be used as an alternative to `specifics` for defining fields. Both are fully equivalent:
+
+```tks
+-- Using 'specifics' (default style)
+class Counter {
+  specifics {
+    value: Int;
+  }
+  details { }
+  actions { }
+}
+
+-- Using 'description' (alternative style)
+class Counter {
+  description {
+    value: Int;
+  }
+  details { }
+  actions { }
+}
+```
+
+Both syntaxes produce identical AST and runtime behavior. Use whichever reads more naturally for your domain.
 
 ## Constructor Syntax
 
@@ -168,7 +194,7 @@ Member access on an unknown type can constrain it to a class if the member name 
 | Traditional | TKS | Notes |
 |-------------|-----|-------|
 | `class Foo` | `class Foo`, `blueprint Foo`, `plan Foo` | Three synonyms |
-| `private int x;` | `specifics { x: Int; }` | Fields section |
+| `private int x;` | `specifics { x: Int; }` or `description { x: Int; }` | Fields section (two synonyms) |
 | `get doubled() { return x*2; }` | `details { doubled: Int = identity.x; }` | Computed property (arithmetic planned) |
 | `void inc(int d) { ... }` | `actions { inc(self, d: Int): Int = ...; }` | Method section |
 | `new Foo(1)` | `repeat Foo { x: 1 }` | Brace syntax |
@@ -255,7 +281,7 @@ Planned enhancements to the OOP model:
 TKS OOP provides:
 
 1. Class declarations with `class`/`blueprint`/`plan`
-2. Three sections: `specifics` (fields), `details` (properties), `actions` (methods)
+2. Three sections: `specifics`/`description` (fields), `details` (properties), `actions` (methods)
 3. Constructor syntax: `repeat ClassName { field: value, ... }`
 4. Member access: `obj.field`, `obj.property`, `obj.method(args)`
 5. Self reference: `identity` in properties, `self` in methods

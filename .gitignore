@@ -34,3 +34,6 @@ tks-rs/target/
 
 # Distribution bundles
 dist/
+
+# Auto Claude data directory
+.auto-claude/

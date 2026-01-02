@@ -1,0 +1,22 @@
+{
+  "num_equations": 6400,
+  "num_samples": 40863,
+  "splits": {
+    "train": 32702,
+    "val": 4081,
+    "test": 4080
+  },
+  "operator_map": {
+    "+": 0,
+    "-": 1,
+    "x": 2,
+    "*": 2,
+    "/": 3
+  },
+  "world_map": {
+    "A": 0,
+    "B": 1,
+    "C": 2,
+    "D": 3
+  }
+}

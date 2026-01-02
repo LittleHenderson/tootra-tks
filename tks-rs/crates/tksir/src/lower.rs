@@ -452,21 +452,32 @@ fn lower_member_term(
             Expr::Var { name, .. } if name == "self" || name == "identity"
         );
         if is_self {
-            // Check if this is a known class member that needs lookup via Class::field
-            let member_name = format!("{}::{}", class_name, field);
-            let expr = Expr::App {
-                span: dummy_span(),
-                func: Box::new(Expr::Var {
+            // Check if this field is a "specific" (constructor field) - if so, use RecordGet
+            // Only dispatch to Class::field for properties (details) and methods (actions)
+            let is_specific = state
+                .class_map
+                .get(class_name)
+                .map(|decl| decl.specifics.iter().any(|f| f.name == field))
+                .unwrap_or(false);
+
+            if !is_specific {
+                // This is a property or method - dispatch to Class::field
+                let member_name = format!("{}::{}", class_name, field);
+                let expr = Expr::App {
                     span: dummy_span(),
-                    name: member_name,
-                }),
-                arg: Box::new(object.clone()),
-            };
-            return lower_term(state, &expr);
+                    func: Box::new(Expr::Var {
+                        span: dummy_span(),
+                        name: member_name,
+                    }),
+                    arg: Box::new(object.clone()),
+                };
+                return lower_term(state, &expr);
+            }
+            // Fall through to RecordGet for specifics
         }
     }
 
-    // For general member access, lower to RecordGet
+    // For general member access (including specifics), lower to RecordGet
     let (bindings, obj_val) = lower_to_val(state, object)?;
     let term = IRTerm::RecordGet(obj_val, field.to_string());
     Ok(wrap_lets(bindings, term))

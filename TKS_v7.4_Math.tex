@@ -1,0 +1,3035 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  TKS_v7.4_Math.tex
+%%  Extended Transfinite Fractals: Large Ordinals, Multi-Indexing, Spectra,
+%%  and Functorial Constructions
+%%
+%%  Part of TKS v7.4 - December 2025
+%%  ADDITIVE to v7.3 canon
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% ============================================================================
+%% CHAPTER 1: LARGE ORDINAL CLASSES FOR NOETIC FRACTALS
+%% ============================================================================
+
+\chapter{Large Ordinal Classes for Noetic Fractals}
+\label{ch:large-ordinals}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\vnewfour]
+This chapter extends transfinite fractal theory to incorporate large cardinals,
+particularly inaccessible cardinals, which provide natural ``ceiling'' points
+in the ordinal hierarchy where fractal behavior exhibits qualitative transitions.
+\end{tcolorbox}
+
+\section{Inaccessible Cardinals in Fractal Indexing}
+
+\begin{definition}[Inaccessible Cardinal]
+\label{def:inaccessible}
+A cardinal $\kappa$ is \emph{inaccessible} if:
+\begin{enumerate}[label=(\alph*)]
+    \item $\kappa > \omega$ (uncountable),
+    \item $\kappa$ is a strong limit cardinal: for all $\lambda < \kappa$,
+          we have $2^\lambda < \kappa$,
+    \item $\kappa$ is regular: $\mathrm{cf}(\kappa) = \kappa$.
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[Large Ordinal Class]
+\label{def:large-ord}
+The \emph{large ordinal class} $\LargeOrd$ is defined as:
+\[
+    \LargeOrd \;:=\; \{\, \alpha \in \Ord \mid
+    \exists\, \kappa \text{ inaccessible}: \alpha < \kappa \,\}
+\]
+Under the assumption of at least one inaccessible cardinal, $\LargeOrd$ is a
+proper class. We write $\LargeOrd_\kappa := \{\alpha < \kappa\}$ for the set
+of ordinals below a specific inaccessible $\kappa$.
+\end{definition}
+
+\begin{definition}[Inaccessible-Bounded Fractal]
+\label{def:inacc-fractal}
+An \emph{inaccessible-bounded fractal} is a family
+$\{\TransFrac{\alpha}\}_{\alpha < \kappa}$ where:
+\begin{enumerate}[label=(\roman*)]
+    \item Each $\TransFrac{\alpha}$ is a noetic fractal in the sense of v7.3,
+    \item The family satisfies the \emph{bounded refinement property}:
+    \[
+        \forall\, \alpha < \beta < \kappa: \quad
+        \TransFrac{\alpha} \sqsubseteq_{\mathrm{ref}} \TransFrac{\beta}
+    \]
+    where $\sqsubseteq_{\mathrm{ref}}$ denotes fractal refinement.
+\end{enumerate}
+\end{definition}
+
+\begin{theorem}[Inaccessible Closure]
+\label{thm:inacc-closure}
+Let $\kappa$ be inaccessible and let $\{\TransFrac{\alpha}\}_{\alpha < \kappa}$
+be an inaccessible-bounded fractal family. Then the colimit
+\[
+    \TransFrac{\kappa} \;:=\; \varinjlim_{\alpha < \kappa} \TransFrac{\alpha}
+\]
+exists in the category of noetic spaces and inherits a canonical fractal
+structure.
+\end{theorem}
+
+\begin{proof}
+By the regularity of $\kappa$, every cofinal subset of $\kappa$ has
+cardinality $\kappa$. This ensures that the directed system
+$\{\TransFrac{\alpha}\}_{\alpha < \kappa}$ satisfies the conditions for
+directed colimits in the category of dcpos with Scott-continuous maps.
+
+Since $\kappa$ is a strong limit, for any $\alpha < \kappa$ the cardinality
+$|\TransFrac{\alpha}|$ satisfies $|\TransFrac{\alpha}| < \kappa$. The colimit
+therefore has cardinality at most $\kappa$.
+
+The fractal structure on $\TransFrac{\kappa}$ is induced by the universal
+property: the self-similarity maps $\sigma_\alpha: \TransFrac{\alpha} \to
+\TransFrac{\alpha}$ extend uniquely to $\sigma_\kappa$ by commutativity:
+\[
+\begin{tikzcd}
+    \TransFrac{\alpha} \arrow[r, "\sigma_\alpha"] \arrow[d, hook] &
+    \TransFrac{\alpha} \arrow[d, hook] \\
+    \TransFrac{\kappa} \arrow[r, dashed, "\sigma_\kappa"] &
+    \TransFrac{\kappa}
+\end{tikzcd}
+\]
+\end{proof}
+
+\begin{corollary}[Inaccessible Dimension Bound]
+\label{cor:inacc-dim}
+For an inaccessible-bounded fractal family:
+\[
+    \HausdorffDim(\TransFrac{\kappa}) \;=\; \sup_{\alpha < \kappa}
+    \HausdorffDim(\TransFrac{\alpha})
+\]
+\end{corollary}
+
+\section{The Ordinal Hierarchy $\OrdHierarchy$}
+
+\begin{definition}[Ordinal Hierarchy]
+\label{def:ord-hierarchy}
+The \emph{ordinal hierarchy} $\OrdHierarchy$ is the structure
+\[
+    \OrdHierarchy \;:=\; \bigl(\Ord,\, \leq,\, \{\kappa_\xi\}_{\xi \in I},\,
+    \mathrm{Lim},\, \mathrm{Succ}\bigr)
+\]
+where:
+\begin{itemize}
+    \item $\leq$ is the standard ordinal ordering,
+    \item $\{\kappa_\xi\}_{\xi \in I}$ is the class of inaccessible cardinals,
+    \item $\mathrm{Lim} \subset \Ord$ is the class of limit ordinals,
+    \item $\mathrm{Succ}: \Ord \to \Ord$ is the successor function.
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Hierarchy Strata]
+\label{def:strata}
+For each inaccessible $\kappa_\xi$, the \emph{$\xi$-stratum} is:
+\[
+    \mathcal{S}_\xi \;:=\;
+    \begin{cases}
+        \LargeOrd_{\kappa_0} & \text{if } \xi = 0 \\
+        \{\alpha \mid \kappa_{\xi-1} \leq \alpha < \kappa_\xi\} &
+        \text{if } \xi \text{ is a successor} \\
+        \{\alpha \mid \sup_{\zeta < \xi} \kappa_\zeta \leq \alpha < \kappa_\xi\}
+        & \text{if } \xi \text{ is a limit}
+    \end{cases}
+\]
+\end{definition}
+
+\begin{theorem}[Stratified Fractal Decomposition]
+\label{thm:stratified-decomp}
+Let $\Phi^{\mathrm{trans}}$ be a transfinite fractal indexed over all of $\Ord$. Then
+$\Phi^{\mathrm{trans}}$ admits a canonical decomposition:
+\[
+    \Phi^{\mathrm{trans}} \;\cong\; \bigoplus_{\xi \in I} \Phi^{\mathrm{trans}}|_{\mathcal{S}_\xi}
+\]
+where $\Phi^{\mathrm{trans}}|_{\mathcal{S}_\xi}$ denotes the restriction to stratum $\xi$.
+\end{theorem}
+
+\section{Limit Ordinal Fractal Convergence}
+
+\begin{definition}[Limit Ordinal Fractal]
+\label{def:limit-fractal}
+For a limit ordinal $\lambda \in \mathrm{Lim}$, the \emph{limit ordinal fractal}
+$\TransFrac{\lambda}$ is defined as:
+\[
+    \TransFrac{\lambda} \;:=\; \varinjlim_{\alpha < \lambda} \TransFrac{\alpha}
+\]
+equipped with the colimit topology and the induced self-similarity structure.
+\end{definition}
+
+\begin{lemma}[Cofinal Convergence]
+\label{lem:cofinal-conv}
+Let $\lambda$ be a limit ordinal with $\mathrm{cf}(\lambda) = \kappa$. Then
+for any cofinal sequence $(\alpha_\nu)_{\nu < \kappa}$ in $\lambda$:
+\[
+    \TransFrac{\lambda} \;\cong\; \varinjlim_{\nu < \kappa} \TransFrac{\alpha_\nu}
+\]
+\end{lemma}
+
+\begin{theorem}[Continuity of Hausdorff Dimension at Limits]
+\label{thm:hausdorff-continuity}
+The Hausdorff dimension function $\alpha \mapsto \HausdorffDim(\TransFrac{\alpha})$
+is continuous at limit ordinals:
+\[
+    \HausdorffDim(\TransFrac{\lambda}) \;=\;
+    \sup_{\alpha < \lambda} \HausdorffDim(\TransFrac{\alpha})
+    \;=\; \lim_{\alpha \to \lambda^-} \HausdorffDim(\TransFrac{\alpha})
+\]
+\end{theorem}
+
+\begin{proof}
+The monotonicity of Hausdorff dimension under fractal refinement gives:
+\[
+    \alpha < \beta \implies \HausdorffDim(\TransFrac{\alpha}) \leq
+    \HausdorffDim(\TransFrac{\beta})
+\]
+The supremum therefore exists. For the colimit $\TransFrac{\lambda}$, any
+covering restricts to some $\TransFrac{\alpha}$ for $\alpha$ sufficiently large.
+\end{proof}
+
+\begin{example}[The $\omega$-Fractal]
+\label{ex:omega-fractal}
+The fractal $\TransFrac{\omega}$ is constructed as:
+\[
+    \TransFrac{\omega} = \varinjlim_{n < \omega} \TransFrac{n}
+\]
+This corresponds to the classical infinite iteration of an IFS.
+If the base IFS has contraction ratio $r < 1$ with $N$ maps:
+\[
+    \HausdorffDim(\TransFrac{\omega}) = \frac{\log N}{\log(1/r)}
+\]
+\end{example}
+
+%% ============================================================================
+%% CHAPTER 2: MULTI-INDEXED FRACTAL SYSTEMS
+%% ============================================================================
+
+\chapter{Multi-Indexed Fractal Systems}
+\label{ch:multi-indexed}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\vnewfour]
+This chapter generalizes from single ordinal indexing to multi-indexed fractals
+$\MultiFrac{\alpha}{\beta}$, enabling richer structural relationships.
+\end{tcolorbox}
+
+\section{Definition of $\MultiFrac{\alpha}{\beta}$}
+
+\begin{definition}[Multi-Indexed Fractal]
+\label{def:multi-frac}
+A \emph{bi-indexed fractal} is a family $\{\MultiFrac{\alpha}{\beta}\}_{(\alpha,\beta) \in \Ord \times \Ord}$
+satisfying:
+\begin{enumerate}[label=(MF\arabic*)]
+    \item \textbf{Vertical Refinement}: For fixed $\beta$, the family
+    $\{\MultiFrac{\alpha}{\beta}\}_{\alpha \in \Ord}$ is a transfinite fractal.
+
+    \item \textbf{Horizontal Refinement}: For fixed $\alpha$, the family
+    $\{\MultiFrac{\alpha}{\beta}\}_{\beta \in \Ord}$ is a transfinite fractal.
+
+    \item \textbf{Commutation}: The refinement diagram commutes for all
+    $\alpha \leq \alpha'$ and $\beta \leq \beta'$.
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[General Multi-Index]
+\label{def:general-multi}
+For an index set $I$, an \emph{$I$-indexed fractal} is a functor:
+\[
+    \Phi^{(\bullet)}: \Ord^I \longrightarrow \FractalFunctor
+\]
+where $\Ord^I$ is the product category with componentwise ordering.
+\end{definition}
+
+\begin{theorem}[Multi-Index Existence]
+\label{thm:multi-existence}
+Given any collection of transfinite fractals $\{\TransFrac{\alpha}_i\}_{i \in I}$,
+there exists a universal $I$-indexed fractal $\Phi^{(\bullet)}$ such that
+the $i$-th slice recovers $\TransFrac{\alpha}_i$.
+\end{theorem}
+
+\section{Product and Tensor Fractals}
+
+\begin{definition}[Product Fractal]
+\label{def:product-frac}
+The \emph{product} of fractals $\TransFrac{\alpha}$ and $\TransFrac{\beta}$ is:
+\[
+    \TransFrac{\alpha} \times_\Phi \TransFrac{\beta} \;:=\;
+    \bigl(\TransFrac{\alpha} \times \TransFrac{\beta},\,
+    \sigma_\alpha \times \sigma_\beta,\, d_\times\bigr)
+\]
+where $d_\times((x,y),(x',y')) := \max\{d_\alpha(x,x'), d_\beta(y,y')\}$.
+\end{definition}
+
+\begin{proposition}[Product Dimension]
+\label{prop:product-dim}
+\[
+    \HausdorffDim(\TransFrac{\alpha} \times_\Phi \TransFrac{\beta}) \;=\;
+    \HausdorffDim(\TransFrac{\alpha}) + \HausdorffDim(\TransFrac{\beta})
+\]
+\end{proposition}
+
+\begin{definition}[Tensor Fractal]
+\label{def:tensor-frac}
+The \emph{tensor product} of fractals, denoted $\TransFrac{\alpha} \otimes_\Phi \TransFrac{\beta}$,
+is the universal fractal equipped with a bimorphism satisfying the standard
+tensor universal property.
+\end{definition}
+
+\begin{theorem}[Tensor-Product Adjunction]
+\label{thm:tensor-adjunction}
+The tensor product $\otimes_\Phi$ is left adjoint to the internal hom
+$[\![-,-]\!]_\Phi$ in $\FractalFunctor$:
+\[
+    \mathrm{Hom}_{\FractalFunctor}(\TransFrac{\alpha} \otimes_\Phi \TransFrac{\beta},\, \Psi)
+    \;\cong\;
+    \mathrm{Hom}_{\FractalFunctor}(\TransFrac{\alpha},\, [\![\TransFrac{\beta}, \Psi]\!]_\Phi)
+\]
+\end{theorem}
+
+\section{Fractal Lattice Structures}
+
+\begin{definition}[Fractal Lattice]
+\label{def:frac-lattice}
+The \emph{fractal lattice} $\mathcal{L}_\Phi$ is the partially ordered set
+of all fractals under the refinement ordering:
+\[
+    \TransFrac{\alpha} \leq_{\mathcal{L}_\Phi} \TransFrac{\beta}
+    \quad:\Longleftrightarrow\quad
+    \TransFrac{\alpha} \sqsubseteq_{\mathrm{ref}} \TransFrac{\beta}
+\]
+\end{definition}
+
+\begin{theorem}[Lattice Structure]
+\label{thm:lattice-structure}
+$(\mathcal{L}_\Phi, \leq_{\mathcal{L}_\Phi})$ is a complete lattice with:
+\begin{enumerate}[label=(\alph*)]
+    \item \textbf{Meet}: $\bigwedge_i \Phi_i = \bigcap_i \Phi_i$,
+    \item \textbf{Join}: $\bigvee_i \Phi_i = \overline{\bigcup_i \Phi_i}$,
+    \item \textbf{Bottom}: $\bot = \varnothing$,
+    \item \textbf{Top}: $\top = \Ideas$.
+\end{enumerate}
+\end{theorem}
+
+%% ============================================================================
+%% CHAPTER 3: FRACTAL SPECTRUM THEORY
+%% ============================================================================
+
+\chapter{Fractal Spectrum Theory}
+\label{ch:spectrum}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\vnewfour]
+This chapter develops spectral methods for fractal operators, including
+eigenvalue problems that characterize self-similarity at each level.
+\end{tcolorbox}
+
+\section{The Fractal Spectrum $\FractalSpectrum$}
+
+\begin{definition}[Scaling Operator]
+\label{def:scaling-op}
+For a fractal $\Phi$ with self-similarity map $\sigma: \Phi \to \Phi$,
+the \emph{scaling operator} is the induced map on $L^2(\Phi, \mu)$:
+\[
+    \mathcal{S}_\sigma: L^2(\Phi, \mu) \longrightarrow L^2(\Phi, \mu), \qquad
+    (\mathcal{S}_\sigma f)(x) := f(\sigma(x))
+\]
+where $\mu$ is the natural Hausdorff measure on $\Phi$.
+\end{definition}
+
+\begin{definition}[Fractal Spectrum]
+\label{def:frac-spectrum}
+The \emph{fractal spectrum} of $\Phi$, denoted $\FractalSpectrum$, is the
+spectrum of the scaling operator:
+\[
+    \FractalSpectrum \;:=\; \sigma(\mathcal{S}_\sigma) \;=\;
+    \{\lambda \in \mathbb{C} \mid \mathcal{S}_\sigma - \lambda I
+    \text{ is not invertible}\}
+\]
+\end{definition}
+
+\begin{theorem}[Spectral Structure]
+\label{thm:spectral-structure}
+For a compact fractal $\Phi$ with contraction ratio $r < 1$:
+\begin{enumerate}[label=(\alph*)]
+    \item $\FractalSpectrum \subseteq \overline{\mathbb{D}}$ (closed unit disk),
+    \item $\FractalSpectrum$ is compact,
+    \item $1 \in \FractalSpectrum$ with eigenfunction the constant function,
+    \item If $\sigma$ has $N$ branches with equal contraction $r$, then
+          $r^{-s} \in \FractalSpectrum$ where $s = \HausdorffDim(\Phi)$.
+\end{enumerate}
+\end{theorem}
+
+\section{Spectral Decomposition of Fractal Operators}
+
+\begin{theorem}[Spectral Decomposition]
+\label{thm:spectral-decomp}
+Let $\mathcal{S}_\sigma$ be the scaling operator on a fractal $\Phi$. There
+exists a spectral measure $E$ on $\FractalSpectrum$ such that:
+\[
+    \mathcal{S}_\sigma = \int_{\FractalSpectrum} \lambda \, dE(\lambda)
+\]
+\end{theorem}
+
+\begin{definition}[Multi-Scale Spectral Operator]
+\label{def:multi-scale-spectral}
+For a transfinite fractal $\{\TransFrac{\alpha}\}_{\alpha \in \Ord}$,
+the \emph{multi-scale spectral operator} is:
+\[
+    \mathcal{S}^{\mathrm{multi}} := \bigoplus_{\alpha \in \Ord} \mathcal{S}_{\sigma_\alpha}
+\]
+acting on the direct sum Hilbert space.
+\end{definition}
+
+\begin{theorem}[Multi-Scale Spectrum]
+\label{thm:multi-scale-spectrum}
+\[
+    \sigma(\mathcal{S}^{\mathrm{multi}}) = \overline{\bigcup_{\alpha \in \Ord}
+    \sigma(\mathcal{S}_{\sigma_\alpha})}
+\]
+\end{theorem}
+
+\section{Eigenvalue Problems for Self-Similarity}
+
+\begin{definition}[Fractal Eigenvalue Problem]
+\label{def:frac-eigenvalue}
+The \emph{fractal eigenvalue problem} is to find $\lambda_\Phi \in \mathbb{C}$
+and nonzero $f \in L^2(\Phi, \mu)$ such that:
+\[
+    \mathcal{S}_\sigma f = \lambda_\Phi f
+\]
+\end{definition}
+
+\begin{theorem}[Eigenvalue Characterization]
+\label{thm:eigenvalue-char}
+For a self-similar fractal with IFS $\{w_1, \ldots, w_N\}$ each with
+contraction ratio $r$:
+\begin{enumerate}[label=(\alph*)]
+    \item The eigenvalues are of the form $\lambda_\Phi = r^k$ for $k \in \mathbb{Z}_{\geq 0}$.
+    \item The multiplicity of $\lambda_\Phi = r^k$ is bounded by $N^k$.
+    \item The eigenfunctions for $\lambda_\Phi = r^k$ are polynomials of
+          degree at most $k$ in suitable fractal coordinates.
+\end{enumerate}
+\end{theorem}
+
+\begin{definition}[Spectral Zeta Function]
+\label{def:spectral-zeta}
+The \emph{spectral zeta function} of a fractal $\Phi$ is:
+\[
+    \zeta_\Phi(s) := \sum_{\lambda_\Phi \in \sigma_p(\mathcal{S}_\sigma)}
+    \lambda_\Phi^{-s} = \sum_{k=0}^\infty m_k \cdot r^{-ks}
+\]
+where $m_k$ is the multiplicity of eigenvalue $r^k$.
+\end{definition}
+
+\begin{theorem}[Zeta-Dimension Relation]
+\label{thm:zeta-dim}
+The spectral zeta function has a pole at $s = \HausdorffDim(\Phi)$:
+\[
+    \HausdorffDim(\Phi) = \inf\{s > 0 \mid \zeta_\Phi(s) < \infty\}
+\]
+\end{theorem}
+
+\begin{example}[Sierpinski Triangle Spectrum]
+\label{ex:sierpinski-spectrum}
+The Sierpinski triangle has $N = 3$ maps with $r = 1/2$. The spectral zeta function:
+\[
+    \zeta_{\mathrm{ST}}(s) = \frac{1}{1 - 3 \cdot 2^s}
+\]
+has a pole at $s = \log_2 3 \approx 1.585$.
+\end{example}
+
+%% ============================================================================
+%% CHAPTER 4: FUNCTORIAL FRACTAL CONSTRUCTIONS
+%% ============================================================================
+
+\chapter{Functorial Fractal Constructions}
+\label{ch:functorial}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\vnewfour]
+This chapter establishes the category $\FractalFunctor$ of fractals and studies
+functors, natural transformations, and categorical limits/colimits.
+\end{tcolorbox}
+
+\section{The Category $\FractalFunctor$ of Fractals}
+
+\begin{definition}[Category of Fractals]
+\label{def:frac-cat}
+The category $\FractalFunctor$ consists of:
+\begin{itemize}
+    \item \textbf{Objects}: Fractals $\Phi = (X, \sigma, d)$ where $X$ is a
+    compact metric space, $\sigma: X \to X$ is a contractive self-similarity,
+    and $d$ is the metric.
+
+    \item \textbf{Morphisms}: A morphism $f: \Phi \to \Psi$ is a continuous
+    map that \emph{intertwines} the self-similarities:
+    \[
+    \begin{tikzcd}
+        X \arrow[r, "f"] \arrow[d, "\sigma_\Phi"'] & Y \arrow[d, "\sigma_\Psi"] \\
+        X \arrow[r, "f"'] & Y
+    \end{tikzcd}
+    \]
+\end{itemize}
+\end{definition}
+
+\begin{theorem}[Categorical Properties of $\FractalFunctor$]
+\label{thm:cat-props}
+The category $\FractalFunctor$ is:
+\begin{enumerate}[label=(\alph*)]
+    \item \textbf{Complete}: All small limits exist.
+    \item \textbf{Cocomplete}: All small colimits exist.
+    \item \textbf{Cartesian closed}: Internal homs exist.
+    \item \textbf{Locally small}: Hom-sets are sets.
+\end{enumerate}
+\end{theorem}
+
+\section{Fractal Functors Between World Categories}
+
+\begin{definition}[Fractal Functor]
+\label{def:frac-functor}
+A \emph{fractal functor} $\mathbf{F}: \mathbf{World} \to \FractalFunctor$ assigns:
+\begin{itemize}
+    \item To each world $w$, a fractal $\mathbf{F}(w)$.
+    \item To each accessibility $R: w \to w'$, a fractal morphism
+          $\mathbf{F}(R): \mathbf{F}(w) \to \mathbf{F}(w')$.
+\end{itemize}
+\end{definition}
+
+\begin{example}[Refinement Functor]
+\label{ex:refinement-functor}
+The \emph{refinement functor}:
+\[
+    \mathbf{Ref}: \Ord \to \FractalFunctor, \qquad \alpha \mapsto \TransFrac{\alpha}
+\]
+sends each ordinal to its corresponding ordinal fractal.
+\end{example}
+
+\section{Natural Transformations of Fractal Systems}
+
+\begin{definition}[Natural Transformation of Fractals]
+\label{def:nat-trans}
+Let $\mathbf{F}, G: \mathcal{C} \to \FractalFunctor$ be fractal functors.
+A \emph{natural transformation} $\eta: \mathbf{F} \Rightarrow G$ is a
+family of fractal morphisms $\eta_X: \mathbf{F}(X) \to G(X)$ satisfying naturality.
+\end{definition}
+
+\begin{theorem}[Vertical Composition]
+\label{thm:vertical-comp}
+Natural transformations compose vertically: if $\eta: \mathbf{F} \Rightarrow G$
+and $\epsilon: G \Rightarrow H$, then $\epsilon \circ \eta: \mathbf{F} \Rightarrow H$.
+\end{theorem}
+
+\begin{theorem}[Horizontal Composition]
+\label{thm:horizontal-comp}
+Natural transformations compose horizontally via the interchange law.
+\end{theorem}
+
+\section{Colimits and Limits of Fractal Diagrams}
+
+\begin{definition}[Colimit of Fractals]
+\label{def:colimit-frac}
+The \emph{colimit} of a diagram $D: J \to \FractalFunctor$, denoted $\ColimitFrac_J D$,
+is a fractal $\Phi$ together with morphisms $\iota_j: D(j) \to \Phi$ universal
+for cocones.
+\end{definition}
+
+\begin{theorem}[Colimit Construction]
+\label{thm:colimit-construction}
+For a directed diagram $D: J \to \FractalFunctor$, the colimit is:
+\[
+    \ColimitFrac_J D = \left(\varinjlim_{j \in J} X_j,\,
+    \varinjlim \sigma_j,\, d_{\varinjlim}\right)
+\]
+\end{theorem}
+
+\begin{example}[Colimit as Infinite Iteration]
+\label{ex:colimit-iteration}
+The transfinite fractal $\TransFrac{\omega}$ is the colimit:
+\[
+    \TransFrac{\omega} = \varinjlim_{n < \omega} \TransFrac{n}
+\]
+\end{example}
+
+\begin{theorem}[Limit-Colimit Duality]
+\label{thm:lim-colim-duality}
+For a diagram $D: J \to \FractalFunctor$:
+\[
+    \mathrm{Hom}_{\FractalFunctor}\left(\ColimitFrac_J D,\, \Psi\right) \cong
+    \varprojlim_J \mathrm{Hom}_{\FractalFunctor}(D(-), \Psi)
+\]
+\end{theorem}
+
+%% ============================================================================
+%% CHAPTER 5: INTEGRATION WITH v7.3 FRACTAL THEORY
+%% ============================================================================
+
+\chapter{Integration with v7.3 Fractal Theory}
+\label{ch:integration}
+
+\begin{tcolorbox}[colback=green!5!white,colframe=green!75!black,title=\textbf{Compatibility}]
+This chapter establishes compatibility of v7.4 constructions with v7.3,
+ensuring the theory is genuinely additive.
+\end{tcolorbox}
+
+\section{Extension Theorems from v7.3 Fractals}
+
+\begin{theorem}[v7.3 Embedding]
+\label{thm:v73-embedding}
+There is a full and faithful embedding:
+\[
+    \iota: \FractalFunctor_{\mathrm{v7.3}} \hookrightarrow \FractalFunctor_{\mathrm{v7.4}}
+\]
+preserving all v7.3 structures.
+\end{theorem}
+
+\begin{corollary}[Backward Compatibility]
+\label{cor:backward-compat}
+Every theorem of v7.3 fractal theory remains valid in v7.4 when restricted
+to single-indexed fractals.
+\end{corollary}
+
+\section{Compatibility with Hausdorff Dimension}
+
+\begin{theorem}[Dimension Consistency]
+\label{thm:dim-consistency}
+For any v7.3 fractal $\Phi$ and its v7.4 embedding $\iota(\Phi)$:
+\[
+    \HausdorffDim(\Phi) = \HausdorffDim(\iota(\Phi))
+\]
+\end{theorem}
+
+\begin{theorem}[Multi-Index Dimension Formula]
+\label{thm:multi-dim-formula}
+For a bi-indexed tensor fractal:
+\[
+    \HausdorffDim(\MultiFrac{\alpha}{\beta}) = \HausdorffDim(\TransFrac{\alpha})
+    + \HausdorffDim(\TransFrac{\beta})
+\]
+\end{theorem}
+
+\section{Connection to Fractal Attractors}
+
+\begin{theorem}[Attractor Functoriality]
+\label{thm:attractor-functor}
+The attractor assignment defines a functor:
+\[
+    \FractalAttractor^{(-)}: \Ord^I \to \FractalFunctor
+\]
+natural with respect to index morphisms.
+\end{theorem}
+
+\begin{theorem}[Colimit Attractor]
+\label{thm:colimit-attractor}
+For a directed system of fractals:
+\[
+    \FractalAttractor(\ColimitFrac_J D) = \varinjlim_{j \in J} \FractalAttractor(D(j))
+\]
+\end{theorem}
+
+\begin{corollary}[Transfinite Attractor]
+\label{cor:transfinite-attractor}
+For a transfinite fractal:
+\[
+    \FractalAttractor(\Phi^{\mathrm{trans}}) = \varinjlim_{\alpha \in \Ord}
+    \FractalAttractor(\TransFrac{\alpha})
+\]
+\end{corollary}
+
+%% ============================================================================
+%% CHAPTER 6: RPM DEPENDENCY STRUCTURES AND WORLD TRANSFORMATIONS
+%% ============================================================================
+
+\chapter{RPM Dependency Structures and World Transformations}
+\label{ch:rpm-dependencies}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\vnewfour,breakable]
+This chapter formalizes the RPM (Reason, Power, Manifestation) dependency tensor
+across worlds, foundations, and noetic aspects. We develop the functorial descent
+structure that governs how noetic content transforms through the ACBE chain
+$A \to C \to B \to E$ (or equivalently $A \to B \to C \to D$).
+\end{tcolorbox}
+
+\section{The RPM Dependency Tensor}
+
+The RPM monad operates across all four worlds ($A, B, C, D$) and all seven
+foundations ($F_1, \ldots, F_7$). The following table characterizes how each
+acquisition stage interacts with foundation-world pairs.
+
+\renewcommand{\arraystretch}{1.35}
+\begin{longtable}{p{2cm}|p{2cm}|c|p{5.5cm}}
+\caption{RPM Dependency Tensor: Acquisition $\times$ Foundation $\times$ World}
+\label{tab:rpm-dependency-tensor} \\
+\toprule
+\textbf{Acquisition}
+& \textbf{Foundation $F_m$}
+& \textbf{World}
+& \textbf{RPM Dependency Effect $\mathcal{R}(A_n, F_m, W)$}
+\\
+\midrule
+\endfirsthead
+\multicolumn{4}{c}{\textit{Table \ref{tab:rpm-dependency-tensor} continued from previous page}} \\
+\toprule
+\textbf{Acquisition}
+& \textbf{Foundation}
+& \textbf{W}
+& \textbf{RPM Dependency Effect}
+\\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+%==================== A0 — Pure Desire ====================
+A0 (Pure Desire) & $F_1$ (Unity) & A
+& \textbf{Strengthened.} Archetypal purification ensures $A0$ is uncontradicted; reduces RPM failure risk at first step. \\
+
+A0 & $F_5$ (Power) & C
+& \textbf{Amplified.} Emotional sovereignty clarifies true intent; prevents false-desire RPM loops. \\
+
+A0 & $F_6$ (Wealth) & D
+& \textbf{Grounded.} Reformulates desire into materially interpretable goals. \\
+
+\midrule
+
+%==================== D_n — Desire Level ====================
+$D_n$ & $F_2$ (Wisdom) & B
+& \textbf{Required.} Cognitive structuring resolves ambiguous desire; ensures RPM can proceed to $W_n$. \\
+
+$D_n$ & $F_3$ (Life) & C
+& \textbf{Strengthened.} Adds emotional vitality to keep $D_n$ from collapsing under conflict. \\
+
+$D_n$ & $F_7$ (Continuation) & D
+& \textbf{Extended.} Converts $D_n$ into long-term desire, enabling sustained RPM evaluation. \\
+
+\midrule
+
+%==================== W_n — Wisdom Level ====================
+$W_n$ & $F_1$ (Unity) & A
+& \textbf{Stabilized.} Archetypal integration of knowledge removes contradictory interpretations. \\
+
+$W_n$ & $F_4$ (Companionship) & C
+& \textbf{Contextualized.} Adds relational information to correct misaligned interpretations. \\
+
+$W_n$ & $F_5$ (Power) & B
+& \textbf{Sharpened.} Strategic coherence increases the likelihood that $W_n \gg= P_n$ succeeds. \\
+
+\midrule
+
+%==================== P_n — Power Level ====================
+$P_n$ & $F_3$ (Life) & D
+& \textbf{Energized.} Converts the power expression into kinetic (actionable) form. \\
+
+$P_n$ & $F_6$ (Wealth) & B
+& \textbf{Optimized.} Resource-efficiency constraints rewrite $P_n$ for maximum feasibility. \\
+
+$P_n$ & $F_7$ (Continuation) & C
+& \textbf{Sustained.} Emotional drive prevents abandonment of the $P_n$ pathway. \\
+
+\midrule
+
+%==================== FAILURE CONDITIONS ====================
+\textbf{Any Stage} & $F_{m,w}$ & C
+& \textbf{May Block.} If emotional interpretation contradicts cognitive or causal vectors, RPM halts with \emph{Failure}(A). \\
+
+\textbf{Any Stage} & $F_{m,w}$ & D
+& \textbf{May Collapse.} If material feasibility is violated, RPM cannot enter $P_n$. \\
+
+\textbf{Any Stage} & $F_{m,w}$ & A
+& \textbf{Overrides.} Causal archetype forces re-evaluation of prior stages; RPM backtracks safely. \\
+
+\end{longtable}
+
+\section{Sub-Foundation Effects on Transfinite Fractals}
+
+The sub-foundations $F_{mw}$ (foundation $m$ in world $w$) induce specific
+effects on transfinite fractal evaluation. The following table characterizes
+behavior at ordinal levels $\omega$, $\omega^2$, and $\omega^\omega$.
+
+\renewcommand{\arraystretch}{1.35}
+\begin{longtable}{p{2.2cm}|c|p{1.5cm}|p{5.5cm}}
+\caption{Sub-Foundation Effects on Transfinite Fractals $(\omega, \omega^2, \omega^\omega)$}
+\label{tab:subfoundation-transfinite-fractals} \\
+\toprule
+\textbf{Sub-Found.\ $F_{mw}$}
+& \textbf{W}
+& \textbf{Fractal}
+& \textbf{Effect on Transfinite Evaluation}
+\\
+\midrule
+\endfirsthead
+\multicolumn{4}{c}{\textit{Table \ref{tab:subfoundation-transfinite-fractals} continued from previous page}} \\
+\toprule
+\textbf{Sub-Found.\ $F_{mw}$}
+& \textbf{W}
+& \textbf{Fractal}
+& \textbf{Effect on Transfinite Evaluation}
+\\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+%==================== UNITY ====================
+$F_{1a}$ (Unity--A) & A & $\omega$
+& Forces stabilization of the $\omega$-chain at the archetypal fixed point:
+  $\sem{\TransFrac{\omega}} = \operatorname{lfp}(\nu_k)$ under world-A constraints. \\
+
+$F_{1a}$ & A & $\omega^2$
+& Collapses each $\omega$-block to its archetypal representative, producing:
+  $\sem{\TransFrac{\omega^2}} = \bigcup_{i < \omega} \operatorname{lfp}(\Phi_i)$. \\
+
+$F_{1a}$ & A & $\omega^\omega$
+& Forces the entire fractal tower toward a single global archetypal attractor;
+  all limit ordinals map to the same causal fixed point. \\
+
+\midrule
+
+$F_{1d}$ (Unity--D) & D & $\omega$
+& Enforces physical-feasibility truncation:
+  the $\omega$-sequence stabilizes early due to material-world grounding. \\
+
+$F_{1d}$ & D & $\omega^2$
+& Each $\omega$-block is truncated at the earliest physically admissible point. \\
+
+\midrule
+
+%==================== WISDOM ====================
+$F_{2b}$ (Wisdom--B) & B & $\omega$
+& Introduces cognitive normalization between each iterate:
+  $\nu_k^n \mapsto \mathrm{nf}(\nu_k^n)$, accelerating convergence. \\
+
+$F_{2b}$ & B & $\omega^2$
+& Forces each $\omega$-block to converge before the next block begins;
+  resembles ordinal-indexed Newton iteration. \\
+
+$F_{2b}$ & B & $\omega^\omega$
+& Produces a stratified hierarchy of cognitive consistencies;
+  each tower level is normalized before transfinite ascent. \\
+
+\midrule
+
+%==================== LIFE ====================
+$F_{3c}$ (Life--C) & C & $\omega$
+& Emotional amplification introduces oscillatory behavior;
+  $\omega$-limit may be periodic rather than fixed. \\
+
+$F_{3c}$ & C & $\omega^2$
+& Creates nested oscillation layers;
+  results in a periodic-within-periodic convergence pattern. \\
+
+$F_{3c}$ & C & $\omega^\omega$
+& Constructs an infinitely nested emotional resonance stack;
+  may block convergence unless stabilized by $F_{1a}$ or $F_{2b}$. \\
+
+\midrule
+
+%==================== COMPANIONSHIP ====================
+$F_{4b}$ (Comp.--B) & B & $\omega$
+& Introduces theory-of-mind correction to each iterate;
+  convergence shifts toward relational equilibrium. \\
+
+$F_{4b}$ & B & $\omega^2$
+& Forces each block to account for relational constraints before the next begins. \\
+
+\midrule
+
+%==================== POWER ====================
+$F_{5d}$ (Power--D) & D & $\omega$
+& Converts the sequence into physical action profiles;
+  may truncate non-implementable iterates. \\
+
+$F_{5d}$ & D & $\omega^2$
+& Each $\omega$-block maps to a full material action sequence;
+  higher blocks represent higher-level plans. \\
+
+$F_{5d}$ & D & $\omega^\omega$
+& Generates an infinitely deep hierarchy of physical action schemas---
+  a complete ``power-tower'' of embodiment. \\
+
+\midrule
+
+%==================== WEALTH ====================
+$F_{6b}$ (Wealth--B) & B & $\omega$
+& Convergence weighted by value/utility function;
+  limit ordinal selects maximal-utility fixed point. \\
+
+$F_{6b}$ & B & $\omega^2$
+& Produces a multi-layer optimization hierarchy;
+  each block performs a new level of resource rationalization. \\
+
+$F_{6b}$ & B & $\omega^\omega$
+& Forms an infinite optimization tower analogous to
+  a transfinite Bellman equation. \\
+
+\midrule
+
+%==================== CONTINUATION ====================
+$F_{7a}$ (Cont.--A) & A & $\omega$
+& Ensures $\omega$ iteration never collapses prematurely;
+  extends sequence to full limit ordinal. \\
+
+$F_{7a}$ & A & $\omega^2$
+& Guarantees progression through each $\omega$-block;
+  prevents early stabilization. \\
+
+$F_{7a}$ & A & $\omega^\omega$
+& Forces the entire fractal tower to express continuation;
+  produces genuinely transfinite evolution without early convergence. \\
+
+\end{longtable}
+
+\section{Sub-Foundations as Natural Transformations}
+
+The sub-foundations can be understood category-theoretically as natural
+transformations on the category $\Noetica$. Each $F_{mw}$ induces a functor
+with specific naturality conditions encoding noetic semantics.
+
+\renewcommand{\arraystretch}{1.35}
+\begin{longtable}{p{2cm}|p{2cm}|p{2.5cm}|p{4.5cm}}
+\caption{Sub-Foundations as Natural Transformations on the Category Noetica}
+\label{tab:subfoundation-natural-transformations} \\
+\toprule
+\textbf{Sub-Found.\ $F_{mw}$}
+& \textbf{Functor}
+& \textbf{Naturality}
+& \textbf{Noetic Interpretation}
+\\
+\midrule
+\endfirsthead
+\multicolumn{4}{c}{\textit{Table \ref{tab:subfoundation-natural-transformations} continued from previous page}} \\
+\toprule
+\textbf{Sub-Found.\ $F_{mw}$}
+& \textbf{Functor}
+& \textbf{Naturality}
+& \textbf{Noetic Interpretation}
+\\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+%==================== UNITY ====================
+$F_{1a}$ (Unity--A)
+& $\mathcal{U}_A : \Noetica \to \Noetica$
+& $\mathcal{U}_A(\nu_k) \circ \eta_x = \eta_y \circ \nu_k$
+& Unity lifts every morphism into the archetypal fiber.
+  Ensures \emph{global coherence} of all world-A transformations.
+  The naturality square asserts:
+  ``Noetic operations commute with unity-projection.'' \\
+
+$F_{1d}$ (Unity--D)
+& $\mathcal{U}_D$
+& Same as above, restricted to $\mathcal{I}_D$.
+& Forces grounding: all naturality squares collapse onto the physical-world image.
+\\
+
+\midrule
+
+%==================== WISDOM ====================
+$F_{2b}$ (Wisdom--B)
+& $\mathcal{W}_B$
+& $\mathcal{W}_B(\nu_k)(\eta_x) = \eta_{\nu_k(x)}$
+& Wisdom enforces \emph{cognitive normalization}.
+  Naturality = all noetic operations preserve structural consistency across rational models.
+\\
+
+\midrule
+
+%==================== LIFE ====================
+$F_{3c}$ (Life--C)
+& $\mathcal{L}_C$
+& $\eta_{\nu_k(x)} \sqsubseteq \mathcal{L}_C(\nu_k)(\eta_x)$
+& Naturality is \emph{inequality} not equality:
+  Life introduces \textbf{emotional amplification}, producing monotone growth in the dcpo.
+\\
+
+\midrule
+
+%==================== COMPANIONSHIP ====================
+$F_{4b}$ (Comp.--B)
+& $\mathcal{C}_B$
+& $\mathcal{C}_B(\nu_k)(\eta_x)$ reflects relational context
+& Companionship modifies morphisms via \emph{relational liftings}.
+  Naturality asserts: relational corrections distribute over all noetic transformations.
+\\
+
+\midrule
+
+%==================== POWER ====================
+$F_{5d}$ (Power--D)
+& $\mathcal{P}_D$
+& $\eta_y = \mathcal{P}_D(\nu_k)(\eta_x)$ iff action is implementable
+& Power enforces \emph{feasibility constraints}.
+  The naturality square commutes only when the resulting noetic action is physically executable.
+\\
+
+\midrule
+
+%==================== WEALTH ====================
+$F_{6b}$ (Wealth--B)
+& $\mathcal{M}_B$ (``Material Optimization Functor'')
+& $\eta_{\nu_k(x)} = \operatorname*{argmax}(\mathcal{M}_B(\nu_k)(\eta_x))$
+& Wealth transforms each morphism into its \textbf{utility-optimized version}.
+  Naturality = noetic operations preserve utility maximization under $F_{6b}$.
+\\
+
+\midrule
+
+%==================== CONTINUATION ====================
+$F_{7a}$ (Continuation--A)
+& $\mathcal{K}_A$ (``Transfinite Continuation Functor'')
+& $\eta_x \mapsto \bigsqcup_{\alpha < \lambda} \eta_{\TransFrac{\alpha}(x)}$
+& Natural transformation that enforces \textbf{non-premature termination}.
+  The naturality square expresses:
+  ``Every noetic transformation lifts to the transfinite continuation tower.''
+\\
+
+\end{longtable}
+
+\section{The RPM Dependency Tensor $\mathbb{T}_{RPM}$}
+
+We now formalize the full tensor structure that captures RPM dependencies
+across acquisition nodes, worlds, foundations, and noetic aspect profiles.
+
+\renewcommand{\arraystretch}{1.28}
+\begin{longtable}{p{2.2cm}|p{2cm}|p{1.8cm}|p{5cm}}
+\caption{The RPM Dependency Tensor $\mathbb{T}_{RPM}$ Across Worlds, Foundations, and Aspects}
+\label{tab:RPM-tensor} \\
+\toprule
+\textbf{Acquisition}
+& \textbf{World $W$}
+& \textbf{Found.\ $F_m$}
+& \textbf{Aspect Profile (Preconditions)}
+\\
+\midrule
+\endfirsthead
+\multicolumn{4}{c}{\textit{Table \ref{tab:RPM-tensor} continued from previous page}} \\
+\toprule
+\textbf{Acquisition}
+& \textbf{World $W$}
+& \textbf{Found.\ $F_m$}
+& \textbf{Aspect Profile (Preconditions)}
+\\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+%==================== A0 ====================
+$\mathbf{A0}$ (Primordial Desire)
+& All $W \in \{A,B,C,D\}$
+& None (pre-foundational)
+& Requires the \textbf{Desire Aspect} vector:
+\[
+\vec{a}_{A0} =
+\langle \nu_1 \;\text{(Mind)},\;
+        \nu_2 \;\text{(Positive)},\;
+        \nu_4 \;\text{(Vibration)} \rangle
+\]
+Tensor slot:
+\[
+\mathbb{T}_{RPM}[A0, W, F_m] =
+\begin{cases}
+1 & \text{if $m=1$ or unscoped} \\
+0 & \text{otherwise}
+\end{cases}
+\]
+\\
+
+\midrule
+
+%==================== D_n ====================
+$\mathbf{D_n}$ (Desire---Foundation $F_n$)
+& $W_d \in \{A,B,C,D\}$
+& $F_n$
+& Aspect profile:
+\[
+\vec{a}_{D_n} =
+\langle
+\nu_1,\;
+\nu_2,\;
+\nu_5
+\rangle
+\]
+Dependency condition:
+\[
+\mathbb{T}_{RPM}[D_n, W_d, F_n] = 1
+\quad\text{iff}\quad
+A0 \Downarrow \text{true under } \nu_1,\nu_2,\nu_5.
+\]
+All off-diagonal tensor entries are $0$.
+\\
+
+\midrule
+
+%==================== W_n ====================
+$\mathbf{W_n}$ (Wisdom---Foundation $F_n$)
+& $W_w \in \{A,B,C,D\}$
+& $F_n$
+& Aspect constraints:
+\[
+\vec{a}_{W_n}
+=
+\langle
+\nu_1,\;
+\nu_6,\;
+\nu_7
+\rangle
+\]
+Dependency rule:
+\[
+D_n \Rightarrow W_n
+\quad\text{iff}\quad
+\mathfrak{R}(D_n) \text{ is non-failure.}
+\]
+Tensor slice:
+\[
+\mathbb{T}_{RPM}[W_n, W_w, F_n] =
+\mathbf{ACBE}(W_n)
+\]
+indicating dependence on world-transformation functor action.
+\\
+
+\midrule
+
+%==================== P_n ====================
+$\mathbf{P_n}$ (Power---Foundation $F_n$)
+& $W_p \in \{A,B,C,D\}$
+& $F_n$
+& Aspect profile:
+\[
+\vec{a}_{P_n} =
+\langle
+\nu_1,\;
+\nu_3,\;
+\nu_6
+\rangle
+\]
+Dependency condition:
+\[
+W_n \Rightarrow P_n
+\quad\text{iff}\quad
+\exists \lambda.\;
+\sem{\TransFrac{\lambda}}(W_n)
+\text{ stabilizes.}
+\]
+Tensor expansion:
+\[
+\mathbb{T}_{RPM}[P_n, W_p, F_n] =
+\mathcal{K}_A(W_n) \otimes \mathcal{P}_D(W_p)
+\]
+indicating interaction of continuation and feasibility constraints.
+\\
+
+\end{longtable}
+
+\section{ACBE Functorial Descent}
+
+The ACBE chain ($A \to C \to B \to E$, or in world notation $A \to B \to C \to D$)
+represents the descent of noetic content from archetypal to physical worlds.
+Each step is a functor with naturality conditions ensuring noetic operations
+are preserved.
+
+\renewcommand{\arraystretch}{1.32}
+\small
+\begin{longtable}{p{1.2cm}|p{2.2cm}|p{2.8cm}|p{6cm}}
+\caption{ACBE Functorial Descent Cube: Natural Transformation Structure Across Worlds}
+\label{tab:ACBE-descent-cube} \\
+\toprule
+\textbf{Worlds}
+& \textbf{Functor $\mathcal{F}_W$}
+& \textbf{Descent $\delta$}
+& \textbf{Naturality Condition}
+\\
+\midrule
+\endfirsthead
+\multicolumn{4}{c}{\textit{Table \ref{tab:ACBE-descent-cube} continued from previous page}} \\
+\toprule
+\textbf{Worlds}
+& \textbf{Functor $\mathcal{F}_W$}
+& \textbf{Descent $\delta$}
+& \textbf{Naturality Condition}
+\\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+%------------------ A -> B ------------------
+$\mathbf{A \to B}$
+& $\mathcal{F}_A(X) = \sem{X}_A$
+& $\delta_{A\to B} : \sem{X}_A \to \sem{X}_B$
+& For all $x \in \sem{X}_A$:
+$\delta_{A\to B}(\nu_k(x)) = \nu_k( \delta_{A\to B}(x) )$.
+This encodes the \textbf{Causal $\to$ Mental projection} of Ideas.
+\\
+\midrule
+
+%------------------ B -> C ------------------
+$\mathbf{B \to C}$
+& $\mathcal{F}_B(X) = \sem{X}_B$
+& $\delta_{B\to C} : \sem{X}_B \to \sem{X}_C$
+& Naturality square:
+$\begin{tikzcd}[cramped,sep=small]
+\sem{X}_B \arrow[r,"\nu_k"] \arrow[d,"\delta_{B\to C}"']
+& \sem{X}_B \arrow[d,"\delta_{B\to C}"] \\
+\sem{X}_C \arrow[r,"\nu_k"']
+& \sem{X}_C
+\end{tikzcd}$
+Emotion-level compression preserves Noetic action.
+\\
+\midrule
+
+%------------------ C -> D ------------------
+$\mathbf{C \to D}$
+& $\mathcal{F}_C(X) = \sem{X}_C$
+& $\delta_{C\to D} : \sem{X}_C \to \sem{X}_D$
+& Concrete semantics:
+$\delta_{C\to D}(x) = \text{``Physical projection of emotional signature''}$
+and naturality:
+$\delta_{C\to D}(\nu_k(x)) = \nu_k(\delta_{C\to D}(x))$
+when $\nu_k$ is physically realizable (i.e., $k \neq 8,9$).
+\\
+\midrule
+
+%------------------ A -> C ------------------
+$\mathbf{A \to C}$
+& Composite functor $\mathcal{F}_C \circ \mathcal{F}_B$
+& $\delta_{A\to C} = \delta_{B\to C} \circ \delta_{A\to B}$
+& Composite naturality:
+$\delta_{A\to C}(\nu_k(x)) = \nu_k(\delta_{A\to C}(x))$.
+This is the \textbf{2-step descent} of spiritual ideas into emotional form.
+\\
+\midrule
+
+%------------------ B -> D ------------------
+$\mathbf{B \to D}$
+& Composite functor $\mathcal{F}_D \circ \mathcal{F}_C$
+& $\delta_{B\to D} = \delta_{C\to D} \circ \delta_{B\to C}$
+& Naturality preserves computational closure under RPM-evaluable expressions.
+\\
+\midrule
+
+%------------------ A -> D ------------------
+$\mathbf{A \to D}$
+& $\mathcal{F}_D(X) = \sem{X}_D$
+& $\delta_{A\to D} = \delta_{C\to D} \circ \delta_{B\to C} \circ \delta_{A\to B}$
+& Global naturality:
+$\delta_{A\to D}(\nu_k(x)) = \nu_k(\delta_{A\to D}(x))$
+encodes the \textbf{full ACBE chain}:
+$A \xrightarrow{F_B} B \xrightarrow{F_C} C \xrightarrow{F_D} D$.
+\\
+
+\end{longtable}
+
+\begin{theorem}[ACBE Descent Coherence]
+\label{thm:acbe-coherence}
+The ACBE descent morphisms satisfy the coherence condition:
+\[
+\delta_{A\to D} = \delta_{C\to D} \circ \delta_{B\to C} \circ \delta_{A\to B}
+= \delta_{B\to D} \circ \delta_{A\to B}
+= \delta_{C\to D} \circ \delta_{A\to C}
+\]
+All paths through the descent cube yield the same composite morphism.
+\end{theorem}
+
+\begin{proof}
+By functoriality of composition and the commutativity of the naturality squares
+established in each row of Table~\ref{tab:ACBE-descent-cube}.
+\end{proof}
+
+\begin{corollary}[RPM-ACBE Integration]
+\label{cor:rpm-acbe}
+The RPM monad $\mathfrak{R}$ is compatible with ACBE descent:
+\[
+\delta_{W\to W'}(\mathfrak{R}(x)) = \mathfrak{R}(\delta_{W\to W'}(x))
+\]
+for all valid acquisition nodes and world pairs.
+\end{corollary}
+
+%% ============================================================================
+%% CHAPTER 7: NOETIC OPERATOR ALGEBRA AND FRACTAL CLASSIFICATION
+%% ============================================================================
+
+\chapter{Noetic Operator Algebra and Fractal Classification}
+\label{ch:noetic-algebra}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\vnewfour,breakable]
+This chapter provides comprehensive classification tables for noetic operators,
+their world interactions, duality structures, fractal normal forms, and
+transfinite convergence behavior.
+\end{tcolorbox}
+
+\section{Noetic--World Interaction Matrix}
+
+The following table characterizes how each noetic operator $\nu_k$ behaves
+across the four worlds, including stability properties and descent compatibility.
+
+\renewcommand{\arraystretch}{1.32}
+\small
+\begin{longtable}{p{1.5cm}|c|c|c|c|p{4.5cm}}
+\caption{Noetic--World Interaction Matrix: Cross-World Behavior of Each Operator $\nu_k$}
+\label{tab:noetic-world-matrix} \\
+\toprule
+\textbf{Noetic $\nu_k$}
+& \textbf{A}
+& \textbf{B}
+& \textbf{C}
+& \textbf{D}
+& \textbf{Notes (Stability, Descent, RPM)}
+\\
+\midrule
+\endfirsthead
+\multicolumn{6}{c}{\textit{Table \ref{tab:noetic-world-matrix} continued from previous page}} \\
+\toprule
+\textbf{Noetic $\nu_k$}
+& \textbf{A}
+& \textbf{B}
+& \textbf{C}
+& \textbf{D}
+& \textbf{Notes}
+\\
+\midrule
+\endhead
+\midrule
+\multicolumn{6}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+$\nu_0$ (Identity)
+& $A \to A$
+& $B \to B$
+& $C \to C$
+& $D \to D$
+& World-stable; commutes with all descent morphisms.
+Trivial fixed point: $x = \nu_0(x)$.
+\\
+\midrule
+
+$\nu_1$ (Mind)
+& $A \to A$
+& $B \to B$
+& $C \to B$
+& $D \to B$
+& Pulls all worlds toward Mental layer.
+Stabilizes on $B$; forces RPM cognitive-check stage.
+\\
+\midrule
+
+$\nu_2$ (Positive)
+& $A \to A$
+& $B \to B$
+& $C \to C$
+& $D \to C$
+& Upward emotionalization.
+At physical level induces attraction toward emotional meaning.
+Cancels with $\nu_3$ under duality.
+\\
+\midrule
+
+$\nu_3$ (Negative)
+& $A \to A$
+& $B \to B$
+& $C \to C$
+& $D \to C$
+& Counterpart of $\nu_2$.
+Drives separation and analytic differentiation.
+RPM interprets $\nu_3$ as ``prerequisite obstruction.''
+\\
+\midrule
+
+$\nu_4$ (Vibration)
+& $A \to A$
+& $B \to B$
+& $C \to C$
+& $D \to D$
+& Fully world-stable operator.
+Generates eigenfractals; key for MVR stabilizing sequences.
+Under descent: $\delta(\nu_4(x)) = \nu_4(\delta(x))$.
+\\
+\midrule
+
+$\nu_5$ (Female)
+& $A \to A$
+& $B \to C$
+& $C \to C$
+& $D \to C$
+& Lowers world-level via internalization.
+Stabilizes on Emotional world.
+Dual to $\nu_6$; cancels in composition.
+\\
+\midrule
+
+$\nu_6$ (Male)
+& $A \to B$
+& $B \to D$
+& $C \to D$
+& $D \to D$
+& Pushes Ideas downward into embodiment.
+Becomes a physicalizing operator under descent.
+RPM treats $\nu_6$ as ``intent activation.''
+\\
+\midrule
+
+$\nu_7$ (Rhythm)
+& $A \to A$
+& $B \to B$
+& $C \to C$
+& $D \to D$
+& Fully world-stable.
+Key for periodic evaluation in fractals and RPM stepping.
+Generates limit cycles in emotional and physical domains.
+\\
+\midrule
+
+$\nu_8$ (Above)
+& $A \to A$
+& $B \to A$
+& $C \to A$
+& $D \to A$
+& Strong lifting operator.
+Inserts spiritual interpretation into all lower-world Ideas.
+Non-physical Noetic; does not preserve descent unless trivial.
+\\
+\midrule
+
+$\nu_9$ (Below)
+& $A \to D$
+& $B \to D$
+& $C \to D$
+& $D \to D$
+& Strong grounding operator.
+Projects all Ideas into physical realizability.
+Cancels $\nu_8$ under duality.
+Required for RPM ``Power'' checks.
+\\
+
+\end{longtable}
+\normalsize
+
+\section{Noetic Duality and Mirror Algebra}
+
+\renewcommand{\arraystretch}{1.28}
+\small
+\begin{longtable}{p{1.3cm}|c|p{1.5cm}|p{1.8cm}|p{2cm}|p{4.5cm}}
+\caption{Noetic Duality \& Mirror Algebra: Symmetry Classes, Dual Pairs, Collapse Rules}
+\label{tab:noetic-duality-algebra} \\
+\toprule
+\textbf{$\nu_k$}
+& \textbf{Dual}
+& \textbf{Mirror}
+& \textbf{Fixed Pt}
+& \textbf{Collapse}
+& \textbf{Algebraic / Semantic Notes}
+\\
+\midrule
+\endfirsthead
+\multicolumn{6}{c}{\textit{Table \ref{tab:noetic-duality-algebra} continued from previous page}} \\
+\toprule
+\textbf{$\nu_k$}
+& \textbf{Dual}
+& \textbf{Mirror}
+& \textbf{Fixed Pt}
+& \textbf{Collapse}
+& \textbf{Notes}
+\\
+\midrule
+\endhead
+\midrule
+\multicolumn{6}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+$\nu_0$
+& $\nu_0$
+& All
+& $x = \nu_0(x)$
+& None
+& Identity morphism in $\Noetica$. Neutral element for all compositions.
+\\
+\midrule
+
+$\nu_1$ (Mind)
+& none
+& $\mathcal{M}_1$
+& $A1$
+& $\nu_1^2 = \nu_1$
+& Projects all worlds to Mental layer. Unique stabilizer of analytic states.
+\\
+\midrule
+
+$\nu_2$ (Pos)
+& $\nu_3$
+& $\mathcal{M}_2$
+& positive polarity
+& $\nu_2 \circ \nu_3 = \nu_0$
+& Attraction operator; counterpart to $\nu_3$. Dual cancellation central.
+\\
+\midrule
+
+$\nu_3$ (Neg)
+& $\nu_2$
+& $\mathcal{M}_2$
+& negative polarity
+& $\nu_3 \circ \nu_2 = \nu_0$
+& Differentiation operator; introduces contrast. Causes RPM-cascade failures.
+\\
+\midrule
+
+$\nu_4$ (Vib)
+& none
+& $\mathcal{M}_4$
+& $\nu_4(x) = \lambda x$
+& Idempotent
+& Generates eigenfractals. Symmetric under world ascent/descent.
+\\
+\midrule
+
+$\nu_5$ (Fem)
+& $\nu_6$
+& $\mathcal{M}_5$
+& Emotional cores
+& $\nu_6 \circ \nu_5 = \nu_0$
+& Receptive operator; internalizes structure; dualizes with $\nu_6$ in RPM.
+\\
+\midrule
+
+$\nu_6$ (Male)
+& $\nu_5$
+& $\mathcal{M}_5$
+& Physical pts
+& $\nu_5 \circ \nu_6 = \nu_0$
+& Projective operator; embodiment driver; activates Power-stage in RPM.
+\\
+\midrule
+
+$\nu_7$ (Rhythm)
+& none
+& $\mathcal{M}_7$
+& Limit cycles
+& $\nu_7^n \to$ cycle
+& Governs periodicity and stabilization in fractal calculus.
+\\
+\midrule
+
+$\nu_8$ (Above)
+& $\nu_9$
+& $\mathcal{M}_8$
+& $A$-core pts
+& $\nu_9 \circ \nu_8 = \nu_0$
+& Lifting operator; pushes Ideas up into Spiritual world; non-grounding.
+\\
+\midrule
+
+$\nu_9$ (Below)
+& $\nu_8$
+& $\mathcal{M}_8$
+& $D$-core pts
+& $\nu_8 \circ \nu_9 = \nu_0$
+& Grounding operator; collapses abstraction into physical realizability.
+\\
+
+\end{longtable}
+\normalsize
+
+\section{Fractal Normal Forms}
+
+\renewcommand{\arraystretch}{1.32}
+\small
+\begin{longtable}{p{2.8cm}|p{1.8cm}|p{2.2cm}|p{1.5cm}|p{4cm}}
+\caption{Fractal Normal Forms: Canonical Representatives, Collapse Rules, and Complexity Classes}
+\label{tab:fractal-normal-forms} \\
+\toprule
+\textbf{Fractal Pattern}
+& \textbf{Normal Form}
+& \textbf{Collapse Rule}
+& \textbf{Complexity}
+& \textbf{Semantic Interpretation}
+\\
+\midrule
+\endfirsthead
+\multicolumn{5}{c}{\textit{Table \ref{tab:fractal-normal-forms} continued from previous page}} \\
+\toprule
+\textbf{Pattern}
+& \textbf{NF}
+& \textbf{Collapse}
+& \textbf{Complexity}
+& \textbf{Interpretation}
+\\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+$\langle k \rangle$
+& $\langle k \rangle$
+& None
+& \textsf{Linear}
+& Single-step operator; eigenfractals arise when $\nu_k(x)=\lambda x$.
+\\
+\midrule
+
+$\langle k:k:k\rangle$
+& $\langle k \rangle$
+& Idempotence: $\nu_k^n = \nu_k$
+& \textsf{Stabilizing}
+& Iterating a single Noetic converges to its fixed point.
+\\
+\midrule
+
+$\langle a:b \rangle$ dual pair
+& $\langle 0 \rangle$
+& $\nu_a\circ\nu_b = \nu_0$
+& \textsf{Collapsing}
+& Fractal annihilates its polarity; reduces to identity.
+\\
+\midrule
+
+$\langle i:j \rangle$ non-dual
+& $\langle i:j \rangle$
+& None
+& \textsf{Quadratic}
+& Composition of distinct operators yields shape-dependent behavior.
+\\
+\midrule
+
+$\langle 1:4:7\rangle$ MVR
+& $\langle 147 \rangle_{\mathrm{NF}}$
+& World-preserving triplet
+& \textsf{Stabilizing}
+& MVR installs stable Mind--Vibration--Rhythm loop; healing fractal.
+\\
+\midrule
+
+$\langle 8:1:4:7:9\rangle$ ACBE
+& $\langle 81479 \rangle_{\mathrm{NF}}$
+& Partial dual collapse
+& \textsf{Stab/Proj}
+& Models descent from causal to physical worlds.
+\\
+\midrule
+
+$\langle 2:3:2:3:\dots \rangle$
+& $\langle 0 \rangle$
+& Periodic collapse
+& \textsf{Cyc$\to$Coll}
+& Oscillatory sequence with stable annihilation limit.
+\\
+\midrule
+
+$\langle 5:6:5:6:\dots \rangle$
+& $\langle 0 \rangle$
+& Gender duality
+& \textsf{Cyc$\to$Coll}
+& Emotional $\leftrightarrow$ physical oscillation collapses.
+\\
+\midrule
+
+$\langle 8:9:8:9:\dots \rangle$
+& $\langle 0 \rangle$
+& $\nu_8\circ\nu_9=\nu_0$
+& \textsf{Cyc$\to$Coll}
+& Metaphysical expansion/contraction loops.
+\\
+\midrule
+
+$\langle k_1:\dots:k_n\rangle$
+& $\langle\mathrm{NF}\rangle$
+& Recursive collapse
+& \textsf{Poly/Exp}
+& Shape determines convergence; reduces to irreducible subsequence.
+\\
+
+\end{longtable}
+\normalsize
+
+\section{Transfinite Fractal Limit Behavior}
+
+\renewcommand{\arraystretch}{1.30}
+\small
+\begin{longtable}{p{2.2cm}|p{1.3cm}|p{1.5cm}|p{1.5cm}|p{1.3cm}|p{4cm}}
+\caption{Transfinite Fractal Limit Behavior: Convergence, Stabilization, Fixed-Points}
+\label{tab:transfinite-fractal-limits} \\
+\toprule
+\textbf{Fractal Class}
+& \textbf{Stab.\ Ord.}
+& \textbf{Conv.\ Class}
+& \textbf{Fixed-Pt}
+& \textbf{Basin}
+& \textbf{Semantic Interpretation}
+\\
+\midrule
+\endfirsthead
+\multicolumn{6}{c}{\textit{Table \ref{tab:transfinite-fractal-limits} continued from previous page}} \\
+\toprule
+\textbf{Class}
+& \textbf{Stab.}
+& \textbf{Conv.}
+& \textbf{FP}
+& \textbf{Basin}
+& \textbf{Interpretation}
+\\
+\midrule
+\endhead
+\midrule
+\multicolumn{6}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+$\TransFrac{n}$ (finite)
+& $< n$
+& Strong
+& Simple
+& Local
+& Classical fractal; collapses to NF after finitely many steps.
+\\
+\midrule
+
+$\TransFrac{\omega}_k$ constant
+& $\le 40$
+& $\omega$-Conv
+& Idempotent
+& Global-$k$
+& Constant transfinite iteration stabilizes via idempotence.
+\\
+\midrule
+
+$\langle a:b:\dots \rangle_\omega$ dual
+& $2$
+& Osc$\to$Coll
+& Identity
+& Entire
+& Dual alternation collapses; limit is $\nu_0$.
+\\
+\midrule
+
+$\langle i:j:\dots \rangle_\omega$ non-dual
+& $< \omega$
+& Osc/Asymp
+& Cycle/Fixed
+& Partitioned
+& Non-dual alternations yield limit cycles; emotional/physical resonance.
+\\
+\midrule
+
+ACBE $\langle 8:1:4:7:9\rangle_\omega$
+& $\omega$
+& Weak Conv
+& Mixed on $D$
+& Wide
+& Infinite world descent; stabilizes at physical grounding.
+\\
+\midrule
+
+$\TransFrac{\lambda}$, $\lambda$ limit
+& $\lambda$
+& Limit-Stable
+& DCPO lfp
+& Monotone
+& Approximants form directed set; limit is lub in $\sem{\Ideas}_\bot$.
+\\
+\midrule
+
+$\TransFrac{\alpha}$, $\alpha < \varepsilon_0$
+& $\alpha^*$
+& Hyper-Conv
+& Structured
+& Layered
+& Ordinal decomposition controls convergence speed.
+\\
+\midrule
+
+$\TransFrac{\alpha}$, $\alpha \ge \varepsilon_0$
+& Unbounded
+& Pot.\ Divergent
+& None
+& Reducible
+& Exceeds primitive recursive induction; requires compression.
+\\
+\midrule
+
+Mixed transfinite
+& Varies
+& Piecewise
+& Hybrid
+& Partitioned
+& Convergence by dominant subsequence; dual segments collapse.
+\\
+
+\end{longtable}
+\normalsize
+
+\section{Foundation--World--Aspect Compatibility Matrix}
+
+The 28 sub-foundations arise from the $7 \times 4$ combination of foundations
+and worlds. The following table characterizes their primary noetic modes and
+semantic domain biases.
+
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{longtable}{p{1.8cm}|c|c|p{1.5cm}|p{1.5cm}|p{4.5cm}}
+\caption{Foundation--World--Aspect Compatibility Matrix (28 Sub-Foundations)}
+\label{tab:28-subfoundation-matrix} \\
+\toprule
+\textbf{Foundation}
+& \textbf{W}
+& \textbf{ID}
+& \textbf{Noetics}
+& \textbf{Domain}
+& \textbf{Compatibility Notes}
+\\
+\midrule
+\endfirsthead
+\multicolumn{6}{c}{\textit{Table \ref{tab:28-subfoundation-matrix} continued from previous page}} \\
+\toprule
+\textbf{Foundation}
+& \textbf{W}
+& \textbf{ID}
+& \textbf{Noetics}
+& \textbf{Domain}
+& \textbf{Notes}
+\\
+\midrule
+\endhead
+\midrule
+\multicolumn{6}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+%========== 1: Awareness ==========
+\textbf{1 --- Awareness}
+& A & 1A &
+$\nu_1, \nu_8$ &
+$\mathcal{W}$ &
+Ideal for initialization; supports high-coherence RPM prerequisites.
+\\
+& B & 1B &
+$\nu_1, \nu_5$ &
+$\mathcal{M}$ &
+Stabilizes conceptual clarity; increases fractal readability.
+\\
+& C & 1C &
+$\nu_1, \nu_2$ &
+$\mathcal{E}$ &
+Heightens emotional resolution; lowers semantic noise.
+\\
+& D & 1D &
+$\nu_1, \nu_4$ &
+$\mathcal{P}$ &
+Grounds Awareness in embodiment; required for full ACBE descent.
+\\
+\midrule
+
+%========== 2: Positivity ==========
+\textbf{2 --- Positivity}
+& A & 2A &
+$\nu_2, \nu_8$ &
+$\mathcal{W}$ &
+Spiritual elevation; harmonizes with A-world fractals.
+\\
+& B & 2B &
+$\nu_2, \nu_5$ &
+$\mathcal{M}$ &
+Enhances RPM optimism gradient; increases fixed-point attraction.
+\\
+& C & 2C &
+$\nu_2, \nu_6$ &
+$\mathcal{E}$ &
+Emotional uplift; resonance-friendly state for $\omega$-fractals.
+\\
+& D & 2D &
+$\nu_2, \nu_4$ &
+$\mathcal{P}$ &
+Physical well-being; supports stabilizing fractal limits.
+\\
+\midrule
+
+%========== 3: Negativity ==========
+\textbf{3 --- Negativity}
+& A & 3A &
+$\nu_3, \nu_8$ &
+$\mathcal{W}$ &
+Shadow-aspect identification; compatible with RPM error handling.
+\\
+& B & 3B &
+$\nu_3, \nu_6$ &
+$\mathcal{M}$ &
+Detects cognitive dissonance; essential for debugging.
+\\
+& C & 3C &
+$\nu_3, \nu_7$ &
+$\mathcal{E}$ &
+Emotional turbulence mapping; precursor to stabilization.
+\\
+& D & 3D &
+$\nu_3, \nu_4$ &
+$\mathcal{P}$ &
+Maps somatic stress; useful for embodiment diagnostics.
+\\
+\midrule
+
+%========== 4: Vibration ==========
+\textbf{4 --- Vibration}
+& A & 4A &
+$\nu_4, \nu_8$ &
+$\mathcal{W}$ &
+Spiritual frequency tuning; prepares world-descent pathways.
+\\
+& B & 4B &
+$\nu_4, \nu_5$ &
+$\mathcal{M}$ &
+Cognitive modulation; improves fractal signal-to-noise ratio.
+\\
+& C & 4C &
+$\nu_4, \nu_7$ &
+$\mathcal{E}$ &
+Emotional resonance amplification; interacts with oscillatory fractals.
+\\
+& D & 4D &
+$\nu_4$ &
+$\mathcal{P}$ &
+Physical frequency and energy-body entrainment.
+\\
+\midrule
+
+%========== 5: Receptivity / Feminine ==========
+\textbf{5 --- Receptive}
+& A & 5A &
+$\nu_5, \nu_8$ &
+$\mathcal{W}$ &
+Archetypal Amma; increases higher-world receptivity.
+\\
+& B & 5B &
+$\nu_5, \nu_1$ &
+$\mathcal{M}$ &
+Subconscious accessibility; ideal for intuitive reasoning.
+\\
+& C & 5C &
+$\nu_5, \nu_2$ &
+$\mathcal{E}$ &
+Compassion modulation; nurtures emotional convergence.
+\\
+& D & 5D &
+$\nu_5, \nu_4$ &
+$\mathcal{P}$ &
+Biological receptivity; embodiment of the receptive pole.
+\\
+\midrule
+
+%========== 6: Projective / Masculine ==========
+\textbf{6 --- Projective}
+& A & 6A &
+$\nu_6, \nu_8$ &
+$\mathcal{W}$ &
+Archetypal Abba; initiatory force in spiritual domain.
+\\
+& B & 6B &
+$\nu_6, \nu_1$ &
+$\mathcal{M}$ &
+Analytic projection; ideal for theorem-proving contexts.
+\\
+& C & 6C &
+$\nu_6, \nu_7$ &
+$\mathcal{E}$ &
+Asserts emotional gradients; high-energy transformations.
+\\
+& D & 6D &
+$\nu_6, \nu_4$ &
+$\mathcal{P}$ &
+Physical assertion; supports material manifestation.
+\\
+\midrule
+
+%========== 7: Rhythm ==========
+\textbf{7 --- Rhythm}
+& A & 7A &
+$\nu_7, \nu_8$ &
+$\mathcal{W}$ &
+Destiny patterning; aligns spiritual rhythms.
+\\
+& B & 7B &
+$\nu_7, \nu_1$ &
+$\mathcal{M}$ &
+Thought-cycle identification; interacts well with monadic iteration.
+\\
+& C & 7C &
+$\nu_7, \nu_2$ &
+$\mathcal{E}$ &
+Mood-cycle stabilization; reduces oscillatory divergence.
+\\
+& D & 7D &
+$\nu_7, \nu_4$ &
+$\mathcal{P}$ &
+Physical cycles (biorhythm, breath, gait); essential for embodiment.
+\\
+
+\end{longtable}
+\normalsize
+
+\section{Interoperability of Sub-Foundations Under ACBE Functor}
+
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{longtable}{c|c|c|c|p{1.5cm}|p{4.5cm}}
+\caption{Interoperability of Sub-Foundations Under ACBE Functor}
+\label{tab:subfoundation-acbe} \\
+\toprule
+\textbf{Input}
+& \textbf{Functor}
+& \textbf{Output}
+& \textbf{Pres.}
+& \textbf{Noetics}
+& \textbf{Semantic Transformation Summary}
+\\
+\midrule
+\endfirsthead
+\multicolumn{6}{c}{\textit{Table \ref{tab:subfoundation-acbe} continued from previous page}} \\
+\toprule
+\textbf{Input}
+& \textbf{Functor}
+& \textbf{Output}
+& \textbf{Pres.}
+& \textbf{Noetics}
+& \textbf{Summary}
+\\
+\midrule
+\endhead
+\midrule
+\multicolumn{6}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+%----- Awareness (1A–1D)
+1A & $F_A$ & 1B & P &
+$\nu_1,\nu_8$ &
+Spiritual awareness condenses into mental clarity; structure-preserving.
+\\
+1B & $F_B$ & 1C & P &
+$\nu_1,\nu_5$ &
+Mental attention descends into emotional recognition; stable transition.
+\\
+1C & $F_C$ & 1D & W &
+$\nu_1,\nu_2$ &
+Emotional awareness grounds into physical sensation; meaning weakens.
+\\
+1D & $F_D$ & 1D & P &
+$\nu_1,\nu_4$ &
+Identity fixed; terminal stage of descent.
+\\
+\midrule
+
+%----- Positivity (2A–2D)
+2A & $F_A$ & 2B & A &
+$\nu_2,\nu_8$ &
+Spiritual positivity amplifies as mental optimism; upward bias preserved.
+\\
+2B & $F_B$ & 2C & P &
+$\nu_2,\nu_5$ &
+Optimism becomes emotional uplift; structurally preserved.
+\\
+2C & $F_C$ & 2D & W &
+$\nu_2,\nu_6$ &
+Emotional positivity becomes physical wellness; slight attenuation.
+\\
+2D & $F_D$ & 2D & P &
+$\nu_2,\nu_4$ &
+Fixed point; no further descent.
+\\
+\midrule
+
+%----- Negativity (3A–3D)
+3A & $F_A$ & 3B & A &
+$\nu_3,\nu_8$ &
+Shadow clarity increases cognitive dissonance detection; amplification.
+\\
+3B & $F_B$ & 3C & P &
+$\nu_3,\nu_6$ &
+Mental resistance transforms to emotional turbulence; preserved.
+\\
+3C & $F_C$ & 3D & A &
+$\nu_3,\nu_7$ &
+Emotional negativity intensifies into physical stress markers; amplified.
+\\
+3D & $F_D$ & 3D & P &
+$\nu_3,\nu_4$ &
+Terminal embodiment; fixed.
+\\
+\midrule
+
+%----- Vibration (4A–4D)
+4A & $F_A$ & 4B & A &
+$\nu_4,\nu_8$ &
+Spiritual frequency compresses into mental modulation; amplification.
+\\
+4B & $F_B$ & 4C & P &
+$\nu_4,\nu_5$ &
+Mental vibration becomes emotional resonance; structurally preserved.
+\\
+4C & $F_C$ & 4D & P &
+$\nu_4,\nu_7$ &
+Emotional oscillation grounds to physical frequency; preserved.
+\\
+4D & $F_D$ & 4D & P &
+$\nu_4$ &
+Final grounding; remains stable.
+\\
+\midrule
+
+%----- Receptive (Feminine) (5A–5D)
+5A & $F_A$ & 5B & P &
+$\nu_5,\nu_8$ &
+Archetypal receptivity descends into intuitive cognition; preserved.
+\\
+5B & $F_B$ & 5C & P &
+$\nu_5,\nu_1$ &
+Mental openness $\to$ emotional compassion; preserved.
+\\
+5C & $F_C$ & 5D & W &
+$\nu_5,\nu_2$ &
+Compassion becomes physical softness; slight semantic attenuation.
+\\
+5D & $F_D$ & 5D & P &
+$\nu_5,\nu_4$ &
+Terminal embodiment.
+\\
+\midrule
+
+%----- Projective (Masculine) (6A–6D)
+6A & $F_A$ & 6B & A &
+$\nu_6,\nu_8$ &
+Spiritual assertion sharpens into focused cognition; strongly amplified.
+\\
+6B & $F_B$ & 6C & A &
+$\nu_6,\nu_1$ &
+Mental projection intensifies emotional drive; amplification.
+\\
+6C & $F_C$ & 6D & P &
+$\nu_6,\nu_7$ &
+Emotional assertiveness $\to$ physical action; preserved.
+\\
+6D & $F_D$ & 6D & P &
+$\nu_6,\nu_4$ &
+Terminal manifestation.
+\\
+\midrule
+
+%----- Rhythm (7A–7D)
+7A & $F_A$ & 7B & P &
+$\nu_7,\nu_8$ &
+Spiritual rhythm $\to$ mental-cycle recognition; preserved.
+\\
+7B & $F_B$ & 7C & P &
+$\nu_7,\nu_1$ &
+Thought cycles $\to$ emotional rhythmicity; preserved.
+\\
+7C & $F_C$ & 7D & W &
+$\nu_7,\nu_2$ &
+Emotional rhythms $\to$ physical biorhythms; weakened slightly.
+\\
+7D & $F_D$ & 7D & P &
+$\nu_7,\nu_4$ &
+Terminal physical rhythm system.
+\\
+
+\end{longtable}
+\normalsize
+
+\section{RPM Monad Interaction with Sub-Foundations}
+
+\renewcommand{\arraystretch}{1.28}
+\small
+\begin{longtable}{c|c|c|p{2cm}|p{1.5cm}|p{4.5cm}}
+\caption{RPM Monad Interaction with Sub-Foundations}
+\label{tab:rpm-subfoundation} \\
+\toprule
+\textbf{Sub-F}
+& \textbf{RPM Stage}
+& \textbf{Outcome}
+& \textbf{Composition}
+& \textbf{Diag.\ Class}
+& \textbf{Semantic Interpretation}
+\\
+\midrule
+\endfirsthead
+\multicolumn{6}{c}{\textit{Table \ref{tab:rpm-subfoundation} continued from previous page}} \\
+\toprule
+\textbf{Sub-F}
+& \textbf{Stage}
+& \textbf{Out}
+& \textbf{Composition}
+& \textbf{Diag.}
+& \textbf{Interpretation}
+\\
+\midrule
+\endhead
+\midrule
+\multicolumn{6}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+%---- 1 Awareness (A–D)
+1A & $A0$ & Success &
+$\text{unit} \gg= F_{1A}$ &
+Clarity Init &
+Spiritual awareness activates pure desire; RPM chain initializes cleanly.
+\\
+1B & $W_1$ & Delay &
+$\text{RPM} \gg= F_{1B}$ &
+Cog.\ Gate &
+Mental clarity reveals hidden contradictions; pauses until resolved.
+\\
+1C & $P_1$ & Block &
+$F_{1C} \gg= \text{Fail}$ &
+Emot.\ Sat. &
+Emotional awareness surfaces unresolved content; RPM halts.
+\\
+1D & $D_1$ & Success &
+$F_{1D} \circ \text{unit}$ &
+Embod.\ Anchor &
+Physical awareness aligns intent with physical feasibility.
+\\
+\midrule
+
+%---- 2 Positive (A–D)
+2A & $A0$ & Success &
+$\nu_2 \circ \text{unit}$ &
+Desire Amp &
+Positive spiritual stance increases motivational coherence.
+\\
+2B & $W_2$ & Success &
+$\text{RPM} \gg= \nu_2$ &
+Cog.\ Reinf &
+Mental positivity supports stable belief structures in RPM.
+\\
+2C & $P_2$ & Delay &
+$\nu_2 \gg= \text{hold}$ &
+Emot.\ Reinf &
+Emotional uplift softens blockages but may delay grounding.
+\\
+2D & $D_2$ & Success &
+$\nu_2 \circ \text{ground}$ &
+Somatic Int &
+Physical health aligns with material acquisition.
+\\
+\midrule
+
+%---- 3 Negative (A–D)
+3A & $A0$ & Escalation &
+$\nu_3 \circ \text{unit}$ &
+Shadow Trig &
+Spiritual negativity surfaces unresolved karmic material; RPM escalates.
+\\
+3B & $W_3$ & Block &
+$F_{3B} \gg= \text{Fail}$ &
+Cog.\ Distort &
+Negative beliefs block RPM until reframed.
+\\
+3C & $P_3$ & Escalation &
+$\nu_3 \gg= \nu_7$ &
+Somatic Alarm &
+Emotional turbulence intensifies physical resistance signals.
+\\
+3D & $D_3$ & Block &
+$\text{halt}(\nu_3)$ &
+Physio.\ Stress &
+RPM halts due to somatic overload.
+\\
+\midrule
+
+%---- 4 Vibration (A–D)
+4A & $A0$ & Success &
+$\nu_4 \circ \text{unit}$ &
+Freq.\ Align &
+Spiritual vibration enhances coherence of desire signal.
+\\
+4B & $W_4$ & Success &
+$\text{RPM} \gg= \nu_4$ &
+Cog.\ Reson &
+Mental frequency stabilizes thought cycles.
+\\
+4C & $P_4$ & Success &
+$\nu_4 \gg= \text{sync}$ &
+Emot.\ Reson &
+Emotional movement aligns with RPM pathway.
+\\
+4D & $D_4$ & Success &
+$\text{ground} \circ \nu_4$ &
+Energ.\ Embod &
+Physical oscillation aligns with actionable motion.
+\\
+\midrule
+
+%---- 5 Feminine (A–D)
+5A & $A0$ & Delay &
+$\nu_5 \gg= \text{unit}$ &
+Recept.\ Gate &
+Spiritual receptivity gathers missing prerequisites.
+\\
+5B & $W_5$ & Success &
+$\text{RPM} \gg= \nu_5$ &
+Intuit.\ Boost &
+Mental openness enhances RPM's inference chain.
+\\
+5C & $P_5$ & Delay &
+$\nu_5 \gg= \text{soften}$ &
+Emot.\ Soften &
+Emotional compassion reduces block intensity.
+\\
+5D & $D_5$ & Success &
+$\nu_5 \circ \text{ground}$ &
+Mat.\ Embrace &
+Physical receptivity allows environmental alignment.
+\\
+\midrule
+
+%---- 6 Masculine (A–D)
+6A & $A0$ & Escalation &
+$\nu_6 \circ \text{unit}$ &
+Willforce Trig &
+Spiritual will intensifies intent into force.
+\\
+6B & $W_6$ & Success &
+$\text{RPM} \gg= \nu_6$ &
+Cog.\ Drive &
+Mental determination strengthens prerequisite chain.
+\\
+6C & $P_6$ & Success &
+$\nu_6 \gg= \text{act}$ &
+Emot.\ Impetus &
+Will converts emotional pressure into direction.
+\\
+6D & $D_6$ & Success &
+$\nu_6 \circ \text{ground}$ &
+Phys.\ Action &
+Physical execution ignites manifestation.
+\\
+\midrule
+
+%---- 7 Rhythm (A–D)
+7A & $A0$ & Delay &
+$\nu_7 \circ \text{unit}$ &
+Cycle Init &
+Spiritual rhythmicity establishes iteration patterns in RPM.
+\\
+7B & $W_7$ & Success &
+$\text{RPM} \gg= \nu_7$ &
+Cycle Recog &
+Cognitive cycles become explicit.
+\\
+7C & $P_7$ & Delay &
+$\nu_7 \gg= \text{phase}$ &
+Emot.\ Rhythm &
+Emotional cycles phase-align with RPM progression.
+\\
+7D & $D_7$ & Success &
+$\nu_7 \circ \text{ground}$ &
+Phys.\ Sync &
+Biorhythms align with material timing.
+\\
+
+\end{longtable}
+\normalsize
+
+%% ============================================================================
+%% CHAPTER 8: ADVANCED CLASSIFICATION AND FORMAL SYSTEM TABLES
+%% ============================================================================
+
+\chapter{Advanced Classification and Formal System Tables}
+\label{ch:advanced-tables}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\vnewfour,breakable]
+This chapter provides advanced classification tables for fractal stability,
+transfinite convergence, multi-goal RPM interactions, compiler mappings,
+and category-theoretic structure summaries.
+\end{tcolorbox}
+
+\section{Fractal Stability Classes vs Sub-Foundations}
+
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{longtable}{c|c|c|p{2cm}|p{5cm}}
+\caption{Fractal Stability Classes vs Sub-Foundations}
+\label{tab:fractal-stability-subfoundation} \\
+\toprule
+\textbf{Sub-F}
+& \textbf{Stability}
+& \textbf{Behavior}
+& \textbf{Convergence}
+& \textbf{Interpretation}
+\\
+\midrule
+\endfirsthead
+\multicolumn{5}{c}{\textit{Table \ref{tab:fractal-stability-subfoundation} continued from previous page}} \\
+\toprule
+\textbf{Sub-F}
+& \textbf{Stability}
+& \textbf{Behavior}
+& \textbf{Convergence}
+& \textbf{Interpretation}
+\\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+1A & Stable & Fixed & Strong &
+Spiritual awareness forces fractal to a stable fixed point. \\
+
+1B & Semi-Stable & Oscillatory & Weak &
+Cognitive reflection induces bounded oscillation then stabilization. \\
+
+1C & Unstable & Divergent & None &
+Emotional saturation destabilizes fractal until emotional block is resolved. \\
+
+1D & Stable & Fixed & Strong &
+Physical grounding reduces fractal drift. \\
+\midrule
+
+2A & Stable & Contractive & Strong &
+Positive spiritual influence tightens fractal mapping. \\
+
+2B & Stable & Fixed & Strong &
+Mental positivity produces calm attractor states. \\
+
+2C & Semi-Stable & Exp$\to$Contr & Conditional &
+Emotionally positive states amplify then settle. \\
+
+2D & Stable & Fixed & Immediate &
+Physical health signals produce stable patterns. \\
+\midrule
+
+3A & Unstable & Divergent & None &
+Shadow activation destabilizes fractal mapping. \\
+
+3B & Unstable & Chaotic & None &
+Negative cognition introduces chaotic jitter. \\
+
+3C & Unstable & Chaotic$\to$Exp & None &
+Emotional turmoil keeps fractal from stabilizing. \\
+
+3D & Unstable & Expansive & None &
+Physiological stress prevents any attractor formation. \\
+\midrule
+
+4A & Stable & Periodic & Conv.\ Cycle &
+Spiritual vibration introduces rhythmic stabilization. \\
+
+4B & Stable & Periodic & Conv.\ Cycle &
+Mental rhythm reveals convergence through periodicity. \\
+
+4C & Semi-Stable & Period$\to$Fixed & Conditional &
+Emotional vibrational field can stabilize oscillations. \\
+
+4D & Stable & Fixed & Strong &
+Physical vibration locks into frequency alignment. \\
+
+\end{longtable}
+\normalsize
+
+\section{Transfinite Fractal Convergence Classes}
+
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{longtable}{c|p{2cm}|p{2cm}|p{2.5cm}|p{4.5cm}}
+\caption{Transfinite Fractal Convergence Classes}
+\label{tab:transfinite-convergence} \\
+\toprule
+\textbf{Class}
+& \textbf{Ordinal Domain}
+& \textbf{Limit Behavior}
+& \textbf{Evaluation Form}
+& \textbf{Interpretation}
+\\
+\midrule
+\endfirsthead
+\multicolumn{5}{c}{\textit{Table \ref{tab:transfinite-convergence} continued from previous page}} \\
+\toprule
+\textbf{Class}
+& \textbf{Ordinal}
+& \textbf{Limit}
+& \textbf{Evaluation}
+& \textbf{Interpretation}
+\\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+$\mathsf{C}_0$ & Finite ($n<\omega$) & Fixed & $\sem{\Phi_n}(x)$ &
+Finite fractals always terminate in fixed points. \\
+
+$\mathsf{C}_1$ & $\omega$ & Contractive Limit & $\bigsqcup_{n<\omega}\sem{\Phi_n}(x)$ &
+Infinite iteration yields least fixed point. \\
+
+$\mathsf{C}_2$ & $\omega \cdot k$ & Periodic$\to$Fixed & Limit over $k$ cycles &
+Ordinal blocks collapse to stable attractor. \\
+
+$\mathsf{C}_3$ & $\omega^2$ & Layered Limit & Double-structured limit &
+Fractal converges in hierarchical layers. \\
+
+$\mathsf{C}_4$ & $\omega^\omega$ & Self-similar Limit & Transfinite recursion &
+Deep self-similarity yields canonical attractor form. \\
+
+\end{longtable}
+\normalsize
+
+\section{RPM Multi-Goal Interaction Matrix}
+
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{longtable}{c|c|c|c|p{5cm}}
+\caption{RPM Multi-Goal Interaction Matrix}
+\label{tab:rpm-multigoal} \\
+\toprule
+\textbf{Goal Pair}
+& \textbf{Dependency}
+& \textbf{RPM Outcome}
+& \textbf{Conflict}
+& \textbf{Interpretation}
+\\
+\midrule
+\endfirsthead
+\multicolumn{5}{c}{\textit{Table \ref{tab:rpm-multigoal} continued from previous page}} \\
+\toprule
+\textbf{Pair}
+& \textbf{Dep.}
+& \textbf{Outcome}
+& \textbf{Conflict}
+& \textbf{Interpretation}
+\\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+(F1, F2) & Cooperative & Merge & None &
+Unity and Wisdom reinforce each other. \\
+
+(F2, F6) & Semi-Coop & Merge$\to$Split & Low &
+Wisdom supports Material, but may force reprioritization. \\
+
+(F3, F7) & Oppositional & Split & High &
+Life and Lust compete for energy allocation. \\
+
+(F4, F5) & Hybrid & Merge$\to$Pause$\to$Merge & Medium &
+Companionship alternates between support and emotional delay. \\
+
+(F6, F1) & Cooperative & Merge & None &
+Material flows support Unity expression. \\
+
+\end{longtable}
+\normalsize
+
+\section{ACBE Functor Interaction Table}
+
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{longtable}{c|c|p{2.2cm}|p{2.5cm}|p{4.5cm}}
+\caption{ACBE Functor Interaction Table}
+\label{tab:acbe-interaction} \\
+\toprule
+\textbf{World Level}
+& \textbf{Functor}
+& \textbf{Preservation}
+& \textbf{Mapping Form}
+& \textbf{Interpretation}
+\\
+\midrule
+\endfirsthead
+\multicolumn{5}{c}{\textit{Table \ref{tab:acbe-interaction} continued from previous page}} \\
+\toprule
+\textbf{Level}
+& \textbf{Functor}
+& \textbf{Preservation}
+& \textbf{Mapping}
+& \textbf{Interpretation}
+\\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+A$\to$B & $F_B$ & Structure-preserving & $A_n^{k} \mapsto B_n^{k}$ &
+Spiritual $\to$ Mental translation preserves operator semantics. \\
+
+B$\to$C & $F_C$ & Rhythm-preserving & $B_n^{k} \mapsto C_n^{k}$ &
+Cognition $\to$ Emotion introduces dynamic oscillation. \\
+
+C$\to$D & $F_D$ & Ground-preserving & $C_n^{k} \mapsto D_n^{k}$ &
+Emotion $\to$ Physical anchors noetic transformation. \\
+
+A$\to$D & $F_D \circ F_C \circ F_B$ & Fully functorial & $A_n^{k} \mapsto D_n^{k}$ &
+Full ACBE descent preserves global semantics. \\
+
+\end{longtable}
+\normalsize
+
+\section{Noetic Operator Spectrum Table}
+
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{longtable}{c|c|c|p{2cm}|p{5cm}}
+\caption{Noetic Operator Spectrum Table}
+\label{tab:noetic-spectrum} \\
+\toprule
+\textbf{Noetic}
+& \textbf{Spectral Radius}
+& \textbf{Eigenclass}
+& \textbf{Fixed-Point}
+& \textbf{Interpretation}
+\\
+\midrule
+\endfirsthead
+\multicolumn{5}{c}{\textit{Table \ref{tab:noetic-spectrum} continued from previous page}} \\
+\toprule
+\textbf{Noetic}
+& \textbf{Radius}
+& \textbf{Eigenclass}
+& \textbf{Fixed-Pt}
+& \textbf{Interpretation}
+\\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+$\nu_0$ & 0 & Identity & All fixed & Neutral operator. \\
+
+$\nu_1$ & 1 & Awareness & Stable fixed & Mind stabilizes itself. \\
+
+$\nu_2$ & $<1$ & Contractive & Strong fixed & Positive shrinks deviation. \\
+
+$\nu_3$ & $>1$ & Expansive & None & Negative amplifies error. \\
+
+$\nu_4$ & 1 & Oscillatory & Periodic & Vibration induces cycles. \\
+
+$\nu_5$ & $<1$ & Contractive & Stable & Feminine integrates. \\
+
+$\nu_6$ & $>1$ & Expansive & Unstable & Masculine forces expansion. \\
+
+$\nu_7$ & 1 & Rhythmic & Periodic & Repetition introduces harmonic motion. \\
+
+$\nu_8$ & $<1$ & Convergent & High-fixed & Above elevates. \\
+
+$\nu_9$ & 1 & Anchoring & Ground-fixed & Below grounds. \\
+
+\end{longtable}
+\normalsize
+
+\section{Eigenfractal Signature Table}
+
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{longtable}{p{2.5cm}|c|p{2cm}|c|p{5cm}}
+\caption{Eigenfractal Signature Table}
+\label{tab:eigenfractal-signature} \\
+\toprule
+\textbf{Fractal}
+& \textbf{Eigenvalue}
+& \textbf{Fixed-Point Class}
+& \textbf{Stability}
+& \textbf{Interpretation}
+\\
+\midrule
+\endfirsthead
+\multicolumn{5}{c}{\textit{Table \ref{tab:eigenfractal-signature} continued from previous page}} \\
+\toprule
+\textbf{Fractal}
+& \textbf{Eigen}
+& \textbf{FP Class}
+& \textbf{Stab.}
+& \textbf{Interpretation}
+\\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+$\langle 1:4:7\rangle$ & 1 & Periodic & Stable &
+MVR produces rhythmic awareness cycles. \\
+
+$\langle 2:3\rangle$ & 0 & Neutralized & Stable &
+Dual polarity collapses to identity. \\
+
+$\langle 5:6:1\rangle$ & 1 & Fixed & Semi-Stable &
+Gender integration loops into awareness. \\
+
+$\langle 8:1:4:7:9\rangle$ & 1 & Fixed & Strong &
+ACBE descent is a stable global attractor. \\
+
+\end{longtable}
+\normalsize
+
+\section{Monad Law Verification Table}
+
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{longtable}{c|p{4cm}|p{6.5cm}}
+\caption{RPM Monad Law Verification}
+\label{tab:rpm-monad-laws} \\
+\toprule
+\textbf{Law}
+& \textbf{Form}
+& \textbf{Interpretation}
+\\
+\midrule
+\endfirsthead
+\multicolumn{3}{c}{\textit{Table \ref{tab:rpm-monad-laws} continued from previous page}} \\
+\toprule
+\textbf{Law}
+& \textbf{Form}
+& \textbf{Interpretation}
+\\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+Left Identity & $\text{unit}(x) \gg= f = f(x)$ &
+Pure desire correctly seeds the monadic chain. \\
+
+Right Identity & $m \gg= \text{unit} = m$ &
+RPM preserves the evolved result after completion. \\
+
+Associativity & $(m \gg= f) \gg= g = m \gg= (\lambda x.\, f(x) \gg= g)$ &
+Sequential prerequisite checking is structurally coherent. \\
+
+\end{longtable}
+\normalsize
+
+\section{TKS Runtime Error and Exception Classes}
+
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{longtable}{c|p{2.5cm}|p{7cm}}
+\caption{TKS Runtime Error \& Exception Classes}
+\label{tab:tks-errors} \\
+\toprule
+\textbf{Code}
+& \textbf{Name}
+& \textbf{Interpretation}
+\\
+\midrule
+\endfirsthead
+\multicolumn{3}{c}{\textit{Table \ref{tab:tks-errors} continued from previous page}} \\
+\toprule
+\textbf{Code}
+& \textbf{Name}
+& \textbf{Interpretation}
+\\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+E01 & Missing Desire & A0 not satisfied; RPM cannot begin. \\
+
+E02 & Foundation Block & A D/W/P prerequisite fails. \\
+
+E03 & Fractal Divergence & Fractal evaluation does not converge. \\
+
+E04 & Type Mismatch & Ill-typed TKS expression. \\
+
+E05 & Category Violation & Functor mapping inconsistent across worlds. \\
+
+\end{longtable}
+\normalsize
+
+\section{Type System Subtyping Lattice}
+
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{longtable}{p{2cm}|p{2.5cm}|p{6.5cm}}
+\caption{Type System Subtyping Lattice}
+\label{tab:type-lattice} \\
+\toprule
+\textbf{Subtype}
+& \textbf{Supertype}
+& \textbf{Meaning}
+\\
+\midrule
+\endfirsthead
+\multicolumn{3}{c}{\textit{Table \ref{tab:type-lattice} continued from previous page}} \\
+\toprule
+\textbf{Subtype}
+& \textbf{Supertype}
+& \textbf{Meaning}
+\\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+Aspect & Foundation & Every aspect belongs to one foundation. \\
+
+Foundation & Domain & All foundations inhabit Idea-space. \\
+
+Noetic & Domain$\to$Domain & Operators act on Idea-space. \\
+
+Fractal & Domain$\to$Domain & Higher-order operator. \\
+
+RPM[$\tau$] & $\tau$ & Monadic wrapper preserves type. \\
+
+\end{longtable}
+\normalsize
+
+\section{Operational Semantics Reduction Table}
+
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{longtable}{p{3.5cm}|p{8cm}}
+\caption{Operational Semantics Reduction Rules}
+\label{tab:operational-semantics} \\
+\toprule
+\textbf{Reduction}
+& \textbf{Meaning}
+\\
+\midrule
+\endfirsthead
+\multicolumn{2}{c}{\textit{Table \ref{tab:operational-semantics} continued from previous page}} \\
+\toprule
+\textbf{Reduction}
+& \textbf{Meaning}
+\\
+\midrule
+\endhead
+\midrule
+\multicolumn{2}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+$E^{k} \to \nu_k(E)$ &
+Noetic application reduces exponent to operator application. \\
+
+$E_1 \oplus_T E_2 \to E_1 \cup E_2$ &
+Tootra-addition reduces to union. \\
+
+$E_1 \ominus_T E_2 \to E_1 \setminus E_2$ &
+Tootra-subtraction reduces to set difference. \\
+
+$\langle k_1:k_2 \rangle(E) \to \nu_{k_1}(\nu_{k_2}(E))$ &
+Fractal reduction unfolds chaining. \\
+
+$\text{RPM}(x) \to \text{Failure}(A_m)$ &
+RPM aborts when prerequisite fails. \\
+
+\end{longtable}
+\normalsize
+
+\section{Denotational Semantics Domain Table}
+
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{longtable}{c|p{2.5cm}|p{7cm}}
+\caption{Denotational Semantics Domains}
+\label{tab:denotational-domains} \\
+\toprule
+\textbf{Symbol}
+& \textbf{Domain}
+& \textbf{Meaning}
+\\
+\midrule
+\endfirsthead
+\multicolumn{3}{c}{\textit{Table \ref{tab:denotational-domains} continued from previous page}} \\
+\toprule
+\textbf{Symbol}
+& \textbf{Domain}
+& \textbf{Meaning}
+\\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+$\sem{E}$ & $\mathcal{D}$ & Denotation of expression. \\
+
+$\mathcal{D}_\bot$ & Domain + bottom & Partial execution domain. \\
+
+$\text{Noe}$ & $\mathcal{D}\to\mathcal{D}$ & Noetic operators. \\
+
+$\text{Frac}$ & $(\mathcal{D}\to\mathcal{D})$ & Fractals as higher operators. \\
+
+$\text{RPM}(\tau)$ & $\tau + \mathsf{Error}$ & Effect monad. \\
+
+\end{longtable}
+\normalsize
+
+\section{Canonical Equivalence Table}
+
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{longtable}{p{2.5cm}|p{3.5cm}|p{5.5cm}}
+\caption{Canonical Equivalence Relations in TKS}
+\label{tab:canonical-equivalence} \\
+\toprule
+\textbf{Form}
+& \textbf{Equivalent Form}
+& \textbf{Meaning}
+\\
+\midrule
+\endfirsthead
+\multicolumn{3}{c}{\textit{Table \ref{tab:canonical-equivalence} continued from previous page}} \\
+\toprule
+\textbf{Form}
+& \textbf{Equivalent}
+& \textbf{Meaning}
+\\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+$E^{23}$ & $E^{0}$ &
+Dual collapse: $\nu_2\circ\nu_3 = \nu_0$. \\
+
+$\langle 2:3 \rangle(E)$ & $E$ &
+Polarity fractal neutralizes. \\
+
+$A_n^{k} \mapsto D_n^{k}$ & $F_D(F_C(F_B(A_n^{k})))$ &
+ACBE descent equivalence. \\
+
+$\text{RPM}(x) = x$ & $\forall m.\, \text{Satisfied}(m)$ &
+RPM identity if all prerequisites met. \\
+
+\end{longtable}
+\normalsize
+
+\section{Compiler Mapping Table}
+
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{longtable}{p{1.8cm}|p{2.2cm}|p{2.5cm}|p{5cm}}
+\caption{Compiler Mapping Table: AST $\to$ IR $\to$ Runtime}
+\label{tab:compiler-mapping} \\
+\toprule
+\textbf{AST Node}
+& \textbf{IR Form}
+& \textbf{Runtime Action}
+& \textbf{Meaning}
+\\
+\midrule
+\endfirsthead
+\multicolumn{4}{c}{\textit{Table \ref{tab:compiler-mapping} continued from previous page}} \\
+\toprule
+\textbf{AST}
+& \textbf{IR}
+& \textbf{Runtime}
+& \textbf{Meaning}
+\\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+Element & CONST(w,n) & Load value & Basic TKS element. \\
+
+Power & APPLY(k) & Apply noetic & Exponent semantics. \\
+
+Fractal & CHAIN(\ldots) & Unfold chain & Higher-order operator. \\
+
+RPM & MONAD(seq) & Evaluate chain & Prerequisite engine. \\
+
+Binary Op & OP(op) & Apply set-op & Tootra algebra. \\
+
+\end{longtable}
+\normalsize
+
+\section{Category-Theoretic Structure Summary}
+
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{longtable}{p{2cm}|p{2.5cm}|p{7cm}}
+\caption{Category-Theoretic Structure Summary}
+\label{tab:category-summary} \\
+\toprule
+\textbf{Structure}
+& \textbf{Type}
+& \textbf{Meaning}
+\\
+\midrule
+\endfirsthead
+\multicolumn{3}{c}{\textit{Table \ref{tab:category-summary} continued from previous page}} \\
+\toprule
+\textbf{Structure}
+& \textbf{Type}
+& \textbf{Meaning}
+\\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+Noetica & Category & Objects: Ideas; Morphisms: Noetics. \\
+
+ACBE & Functor & World-lowering mapping. \\
+
+RPM & Monad & Sequential prerequisite evaluation. \\
+
+Fractals & Endofunctors & Higher-order noetic transformations. \\
+
+Worlds & 2-Category & World transitions as 2-morphisms. \\
+
+\end{longtable}
+\normalsize

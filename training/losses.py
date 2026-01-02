@@ -916,3 +916,260 @@ def run_loss_tests():
 
 if __name__ == "__main__":
     run_loss_tests()
+
+
+# =============================================================================
+# ALIASES FOR train_cuda.py COMPATIBILITY
+# =============================================================================
+# These aliases map the expected class names to existing implementations
+# This enables World/RPM supervision in the training pipeline
+
+class WorldClassificationLoss(TaskLoss):
+    """Alias for TaskLoss - classifies world from embeddings."""
+    pass
+
+
+class RPMDifferentiationLoss(RPMLoss):
+    """Alias for RPMLoss - differentiates D/W/P scores."""
+    pass
+
+
+class WorldRPMSupervisedLoss(TKSLoss):
+    """Alias for TKSLoss - combines world and RPM supervision."""
+    pass
+
+
+class NoeticContrastiveLoss(nn.Module):
+    """Contrastive loss for noetic embeddings - encourages world separation."""
+
+    def __init__(self, margin: float = 0.5, temperature: float = 0.1):
+        super().__init__()
+        self.margin = margin
+        self.temperature = temperature
+
+    def forward(self, embeddings: torch.Tensor, world_labels: torch.Tensor) -> torch.Tensor:
+        """
+        Args:
+            embeddings: [batch, dim] noetic embeddings
+            world_labels: [batch] world indices (0-3 for A-D)
+        """
+        # Normalize embeddings
+        embeddings = F.normalize(embeddings, dim=-1)
+
+        # Compute pairwise similarities
+        sim = torch.mm(embeddings, embeddings.t()) / self.temperature
+
+        # Create mask for same-world pairs
+        labels_eq = world_labels.unsqueeze(0) == world_labels.unsqueeze(1)
+
+        # Contrastive loss: pull same-world, push different-world
+        pos_mask = labels_eq.float()
+        neg_mask = (~labels_eq).float()
+
+        # InfoNCE-style loss
+        exp_sim = torch.exp(sim)
+        pos_sum = (exp_sim * pos_mask).sum(dim=1)
+        neg_sum = (exp_sim * neg_mask).sum(dim=1)
+
+        loss = -torch.log(pos_sum / (pos_sum + neg_sum + 1e-8)).mean()
+        return loss
+
+
+class WorldOrthogonalityLoss(nn.Module):
+    """Encourages orthogonality between world representations."""
+
+    def __init__(self, weight: float = 0.1):
+        super().__init__()
+        self.weight = weight
+
+    def forward(self, world_embeddings: torch.Tensor) -> torch.Tensor:
+        """
+        Args:
+            world_embeddings: [4, dim] one embedding per world (A, B, C, D)
+        """
+        # Normalize
+        normed = F.normalize(world_embeddings, dim=-1)
+
+        # Gram matrix
+        gram = torch.mm(normed, normed.t())
+
+        # We want identity matrix (perfect orthogonality)
+        identity = torch.eye(4, device=gram.device)
+
+        # Frobenius norm of difference
+        loss = ((gram - identity) ** 2).sum() * self.weight
+        return loss
+
+
+class WorldUsageKLLoss(nn.Module):
+    """KL divergence loss for world usage distribution."""
+
+    def __init__(self, target_dist: Optional[torch.Tensor] = None):
+        super().__init__()
+        # Default: uniform distribution across 4 worlds
+        if target_dist is None:
+            target_dist = torch.ones(4) / 4
+        self.register_buffer('target_dist', target_dist)
+
+    def forward(self, world_logits: torch.Tensor) -> torch.Tensor:
+        """
+        Args:
+            world_logits: [batch, 4] logits for world classification
+        """
+        pred_dist = F.softmax(world_logits, dim=-1).mean(dim=0)
+        kl = F.kl_div(
+            pred_dist.log(),
+            self.target_dist.to(pred_dist.device),
+            reduction='batchmean'
+        )
+        return kl
+
+
+class FocalWorldLoss(nn.Module):
+    """Focal loss variant for world classification - handles class imbalance."""
+
+    def __init__(self, gamma: float = 2.0, alpha: Optional[torch.Tensor] = None):
+        super().__init__()
+        self.gamma = gamma
+        self.alpha = alpha
+
+    def forward(self, logits: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
+        """
+        Args:
+            logits: [batch, 4] world classification logits
+            targets: [batch] world indices
+        """
+        ce_loss = F.cross_entropy(logits, targets, reduction='none')
+        pt = torch.exp(-ce_loss)
+        focal_loss = ((1 - pt) ** self.gamma) * ce_loss
+
+        if self.alpha is not None:
+            alpha_t = self.alpha.to(logits.device)[targets]
+            focal_loss = alpha_t * focal_loss
+
+        return focal_loss.mean()
+
+
+class LearnedWorldHead(nn.Module):
+    """Learnable classification head for world prediction."""
+
+    def __init__(self, input_dim: int = 40, hidden_dim: int = 64, num_worlds: int = 4):
+        super().__init__()
+        self.head = nn.Sequential(
+            nn.Linear(input_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Dropout(0.1),
+            nn.Linear(hidden_dim, num_worlds)
+        )
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """
+        Args:
+            x: [batch, input_dim] noetic embeddings
+        Returns:
+            [batch, num_worlds] logits
+        """
+        return self.head(x)
+
+
+class WorldClassificationLossV2(WorldClassificationLoss):
+    """V2 of world classification with additional smoothing."""
+
+    def __init__(self, label_smoothing: float = 0.1):
+        super().__init__()
+        self.label_smoothing = label_smoothing
+        self.ce_loss = nn.CrossEntropyLoss(label_smoothing=label_smoothing)
+
+
+class HybridWorldHead(nn.Module):
+    """Hybrid head combining noetic features with learned projection."""
+
+    def __init__(self, noetic_dim: int = 40, hidden_dim: int = 32, num_worlds: int = 4):
+        super().__init__()
+        self.noetic_proj = nn.Linear(noetic_dim, hidden_dim)
+        self.world_classifier = nn.Linear(hidden_dim + noetic_dim, num_worlds)
+
+    def forward(self, noetic_emb: torch.Tensor) -> torch.Tensor:
+        """
+        Args:
+            noetic_emb: [batch, noetic_dim] raw noetic embedding
+        Returns:
+            [batch, num_worlds] world logits
+        """
+        proj = torch.relu(self.noetic_proj(noetic_emb))
+        combined = torch.cat([noetic_emb, proj], dim=-1)
+        return self.world_classifier(combined)
+
+
+class WorldCenterLoss(nn.Module):
+    """Center loss for world embeddings - pulls embeddings toward class centers."""
+
+    def __init__(self, num_worlds: int = 4, feat_dim: int = 40, alpha: float = 0.5):
+        super().__init__()
+        self.num_worlds = num_worlds
+        self.alpha = alpha
+        self.centers = nn.Parameter(torch.randn(num_worlds, feat_dim))
+
+    def forward(self, embeddings: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
+        """
+        Args:
+            embeddings: [batch, feat_dim]
+            labels: [batch] world indices
+        """
+        batch_size = embeddings.size(0)
+        centers_batch = self.centers[labels]
+        loss = ((embeddings - centers_batch) ** 2).sum() / (2.0 * batch_size)
+        return loss
+
+
+class WorldClassificationLossV3(nn.Module):
+    """V3 with combined focal + center loss."""
+
+    def __init__(self, gamma: float = 2.0, center_weight: float = 0.1, feat_dim: int = 40):
+        super().__init__()
+        self.focal = FocalWorldLoss(gamma=gamma)
+        self.center = WorldCenterLoss(feat_dim=feat_dim)
+        self.center_weight = center_weight
+
+    def forward(
+        self,
+        logits: torch.Tensor,
+        embeddings: torch.Tensor,
+        targets: torch.Tensor
+    ) -> torch.Tensor:
+        focal_loss = self.focal(logits, targets)
+        center_loss = self.center(embeddings, targets)
+        return focal_loss + self.center_weight * center_loss
+
+
+class RPMDifferentiationLossV2(RPMLoss):
+    """V2 of RPM loss with margin ranking for D/W/P ordering."""
+
+    def __init__(self, margin: float = 0.1, ordering_weight: float = 0.2):
+        super().__init__(margin=margin)
+        self.ordering_weight = ordering_weight
+        self.margin_loss = nn.MarginRankingLoss(margin=margin)
+
+    def forward(
+        self,
+        dwp_scores: torch.Tensor,
+        dwp_labels: torch.Tensor,
+        target_foundation: Optional[torch.Tensor] = None,
+        gate_labels: Optional[torch.Tensor] = None,
+    ) -> Dict[str, torch.Tensor]:
+        # Get base losses
+        base_losses = super().forward(dwp_scores, dwp_labels, target_foundation, gate_labels)
+
+        # Add ordering constraint: for valid thoughts, D*W should correlate with P
+        if dwp_scores.dim() >= 3:
+            d = dwp_scores[..., 0]
+            w = dwp_scores[..., 1]
+            p = dwp_scores[..., 2]
+
+            # D*W should predict P (gate consistency)
+            dw = d * w
+            ordering_loss = F.mse_loss(dw, p)
+            base_losses['ordering'] = ordering_loss
+            base_losses['total'] = base_losses['total'] + self.ordering_weight * ordering_loss
+
+        return base_losses

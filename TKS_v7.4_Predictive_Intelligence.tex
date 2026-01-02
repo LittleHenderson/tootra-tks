@@ -1,0 +1,1639 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  TKS_v7.4_Predictive_Intelligence.tex
+%%  TKS Predictive Intelligence Systems: Internet Activity to Psycho-Analysis
+%%
+%%  Part of TKS v7.4 - December 2025
+%%  ADDITIVE to v7.4 canon
+%%
+%%  Mathematical Framework for Behavioral Prediction from Digital Footprints
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt,twoside]{book}
+
+%% ============================================================================
+%% PACKAGES
+%% ============================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in,inner=1.2in,outer=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{stmaryrd}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{ltablex}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable,skins}
+\usepackage{tikz-cd}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{ragged2e}
+\usepackage{multirow}
+\usepackage{float}
+
+%% ============================================================================
+%% FORMATTING SETTINGS
+%% ============================================================================
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+\renewcommand{\arraystretch}{1.2}
+
+%% ============================================================================
+%% CUSTOM COMMANDS (from TKS canonical)
+%% ============================================================================
+\newcommand{\noe}[1]{\nu_{#1}}
+\newcommand{\Ideas}{\mathcal{I}}
+\newcommand{\Worlds}{\mathcal{W}}
+\newcommand{\Elements}{\mathcal{E}}
+\newcommand{\Noetics}{\mathcal{N}}
+\newcommand{\Foundations}{\mathcal{F}}
+\newcommand{\Acquisitions}{\mathcal{A}}
+\newcommand{\Frac}{\Phi}
+\newcommand{\TransFrac}[1]{\Phi^{#1}}
+\newcommand{\MultiFrac}[2]{\Phi^{#1}_{#2}}
+\newcommand{\RPM}{\mathsf{RPM}}
+\newcommand{\ACBE}{\mathsf{ACBE}}
+\newcommand{\HausdorffDim}{\dim_H}
+\newcommand{\FractalSpectrum}{\sigma_\Phi}
+\newcommand{\fix}{\mathrm{fix}}
+\newcommand{\sem}[1]{\llbracket #1 \rrbracket}
+\newcommand{\Tadd}{\oplus_T}
+\newcommand{\Tsub}{\ominus_T}
+\newcommand{\Tmul}{\otimes_T}
+\newcommand{\Tdiv}{\oslash_T}
+\newcommand{\Wadd}{\oplus_W}
+\newcommand{\Wsub}{\ominus_W}
+\newcommand{\Failed}{\mathtt{Failed}}
+
+%% Predictive Intelligence specific commands
+\newcommand{\Lacunarity}{\Lambda}
+\newcommand{\PsychAttractor}{\mathcal{A}_\psi}
+\newcommand{\ManipFrac}{\Phi_{\mathrm{manip}}}
+\newcommand{\DWP}{\mathcal{DWP}}
+\newcommand{\NLP}{\mathsf{NLP}}
+\newcommand{\DigitalTrace}{\mathcal{D}}
+\newcommand{\ProfileFrac}{\Phi_{\mathrm{profile}}}
+\newcommand{\PredictorMap}{\mathcal{P}}
+\newcommand{\VulnScore}{\mathcal{V}}
+\newcommand{\Timeline}{\mathcal{T}}
+\newcommand{\GroupDynamics}{\mathcal{G}}
+\newcommand{\CascadePredict}{\mathcal{C}_{\mathrm{cascade}}}
+
+%% Theorems
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{proposition}{Proposition}[chapter]
+\newtheorem{lemma}{Lemma}[chapter]
+\newtheorem{corollary}{Corollary}[chapter]
+\newtheorem{example}{Example}[chapter]
+\newtheorem{remark}{Remark}[chapter]
+
+%% ============================================================================
+%% DOCUMENT
+%% ============================================================================
+\begin{document}
+
+\title{\textbf{TKS Predictive Intelligence Systems} \\[0.5em]
+\Large Internet Activity to Psycho-Analysis \\[0.3em]
+\large Mathematical Framework for Behavioral Prediction from Digital Footprints}
+\author{TKS v7.4 Formalization Project}
+\date{December 2025}
+\maketitle
+
+\tableofcontents
+
+%% ============================================================================
+%% ETHICAL NOTICE
+%% ============================================================================
+\chapter*{Ethical Notice}
+\addcontentsline{toc}{chapter}{Ethical Notice}
+
+\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=\textbf{Critical Ethical Statement},breakable]
+This document presents a \textbf{mathematical framework} for understanding how behavioral prediction systems could theoretically operate using TKS formalism. The mathematics is presented \textbf{objectively and neutrally}.
+
+\textbf{Legitimate Applications:}
+\begin{itemize}
+    \item Mental health early intervention systems
+    \item Suicide prevention through pattern recognition
+    \item Addiction recovery support and relapse prediction
+    \item Personalized education and learning systems
+    \item Self-improvement and personal development tools
+\end{itemize}
+
+\textbf{Illegitimate Applications:}
+\begin{itemize}
+    \item Mass surveillance without consent
+    \item Political manipulation and targeting
+    \item Exploitative advertising and dark patterns
+    \item Social credit systems and behavioral control
+    \item Employment discrimination based on predictions
+\end{itemize}
+
+\textbf{Principle:} The same mathematics that enables protective intervention also enables intrusive surveillance. The ethical dimension lies entirely in \textit{consent}, \textit{transparency}, and \textit{purpose}---not in the mathematics itself.
+\end{tcolorbox}
+
+%% ============================================================================
+%% PART I: MATHEMATICAL PIPELINE
+%% ============================================================================
+\part{Mathematical Pipeline: Data to Prediction}
+
+\chapter{Overview: The Six-Stage Pipeline}
+\label{ch:pipeline-overview}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\textbf{Pipeline Architecture},breakable]
+The TKS Predictive Intelligence pipeline transforms raw digital activity into psychological analysis and behavioral prediction through six mathematically rigorous stages:
+
+\begin{center}
+\begin{tikzcd}[column sep=small, row sep=large]
+\text{Digital Traces} \arrow[r, "\text{Stage 1}"]
+& \text{Noetic Sequences} \arrow[r, "\text{Stage 2}"]
+& \text{Individual Fractals} \arrow[d, "\text{Stage 3}"] \\
+\text{Intervention}
+& \text{Vulnerability Map} \arrow[l, "\text{Stage 6}"]
+& \text{Attractors} \arrow[l, "\text{Stage 4-5}"]
+\end{tikzcd}
+\end{center}
+
+Each stage has precise mathematical definitions, computable algorithms, and provable bounds from TKS v7.4 theorems.
+\end{tcolorbox}
+
+%% ============================================================================
+%% CHAPTER: STAGE 1 - NLP TO NOETIC MAPPING
+%% ============================================================================
+\chapter{Stage 1: NLP to Noetic Mapping}
+\label{ch:stage1-nlp}
+
+\section{Mathematical Definition}
+
+\begin{definition}[Digital Trace Space]
+\label{def:digital-trace}
+The \emph{digital trace space} $\DigitalTrace$ is the set of all observable digital activities:
+\[
+    \DigitalTrace = \DigitalTrace_{\text{text}} \cup \DigitalTrace_{\text{search}} \cup \DigitalTrace_{\text{purchase}} \cup \DigitalTrace_{\text{location}} \cup \DigitalTrace_{\text{biometric}}
+\]
+Each $d \in \DigitalTrace$ carries timestamp $t(d)$, source identifier $s(d)$, and content $c(d)$.
+\end{definition}
+
+\begin{definition}[NLP-to-Noetic Mapping]
+\label{def:nlp-noetic-map}
+The \emph{NLP-to-Noetic mapping} is a function:
+\[
+    \NLP : \DigitalTrace \longrightarrow \{0, 1, \ldots, 9\}^*
+\]
+that transforms digital traces into sequences of noetic operators. The mapping is defined component-wise:
+
+\textbf{For textual content} $d \in \DigitalTrace_{\text{text}}$:
+\begin{align}
+    \NLP(d) &= \left( \noe{k_1}, \noe{k_2}, \ldots, \noe{k_n} \right)
+\end{align}
+where each $k_i$ is determined by linguistic feature extraction:
+\end{definition}
+
+\begin{definition}[Linguistic-Noetic Correspondence]
+\label{def:linguistic-noetic}
+The mapping from linguistic features to noetics follows:
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{c|l|X|c}
+\toprule
+\textbf{Noetic} & \textbf{Name} & \textbf{Linguistic Markers} & \textbf{Sentiment} \\
+\midrule
+$\noe{0}$ & Idea & Neutral statements, facts, definitions & Neutral \\
+$\noe{1}$ & Mind & ``I think'', ``I notice'', ``aware'', ``realize'' & Cognitive \\
+$\noe{2}$ & Positive & ``want'', ``love'', ``excited'', ``hope'' & Positive \\
+$\noe{3}$ & Negative & ``hate'', ``reject'', ``avoid'', ``fear'' & Negative \\
+$\noe{4}$ & Vibration & ``!!'', intensity markers, ALL CAPS, urgency & High energy \\
+$\noe{5}$ & Female & ``receive'', ``accept'', ``absorb'', ``become'' & Receptive \\
+$\noe{6}$ & Male & ``do'', ``make'', ``create'', ``act'' & Active \\
+$\noe{7}$ & Rhythm & ``always'', ``never'', ``again'', temporal patterns & Cyclical \\
+$\noe{8}$ & Above & ``because'', ``why'', ``reason'', ``cause'' & Causal \\
+$\noe{9}$ & Below & ``therefore'', ``result'', ``outcome'', ``effect'' & Consequential \\
+\bottomrule
+\end{tabularx}
+\end{center}
+\end{definition}
+
+\section{The Noetic Extraction Algorithm}
+
+\begin{equation}
+\boxed{
+    \NLP(d) = \bigoplus_{i=1}^{|d|} \mathsf{classify}\left( \mathsf{token}_i(d), \mathsf{context}(d) \right)
+}
+\end{equation}
+
+where:
+\begin{itemize}
+    \item $\mathsf{token}_i(d)$ extracts the $i$-th semantic unit from $d$
+    \item $\mathsf{context}(d)$ provides surrounding semantic frame
+    \item $\mathsf{classify}$ maps to the dominant noetic operator
+    \item $\bigoplus$ concatenates into a noetic sequence
+\end{itemize}
+
+\begin{theorem}[NLP Mapping Consistency]
+\label{thm:nlp-consistency}
+For any digital trace $d \in \DigitalTrace$, the NLP mapping satisfies:
+\begin{enumerate}[label=(\roman*)]
+    \item \textbf{Determinism}: Given fixed model parameters, $\NLP(d)$ is unique.
+    \item \textbf{Compositionality}: $\NLP(d_1 \cdot d_2) = \NLP(d_1) \circ \NLP(d_2)$ (concatenation preserves structure).
+    \item \textbf{Bounded Length}: $|\NLP(d)| \leq C \cdot |d|$ for some constant $C$.
+\end{enumerate}
+\end{theorem}
+
+\section{Multi-Modal Noetic Extraction}
+
+\begin{definition}[Search Query Noetics]
+\label{def:search-noetics}
+For search queries $q \in \DigitalTrace_{\text{search}}$:
+\[
+    \NLP_{\text{search}}(q) =
+    \begin{cases}
+        \langle 2 : 1 \rangle & \text{if } q \text{ is desire-seeking (``how to get...'')} \\
+        \langle 1 : 8 \rangle & \text{if } q \text{ is knowledge-seeking (``what is...'')} \\
+        \langle 6 : 9 \rangle & \text{if } q \text{ is action-seeking (``how to do...'')} \\
+        \langle 3 : 1 \rangle & \text{if } q \text{ is avoidance-seeking (``how to avoid...'')}
+    \end{cases}
+\]
+\end{definition}
+
+\begin{definition}[Purchase Noetics]
+\label{def:purchase-noetics}
+For purchase events $p \in \DigitalTrace_{\text{purchase}}$:
+\[
+    \NLP_{\text{purchase}}(p) = \langle \underbrace{2}_{\text{desire}} : \underbrace{1}_{\text{decision}} : \underbrace{6}_{\text{action}} : \underbrace{9}_{\text{acquire}} \rangle \circ \noe{k_{\text{category}}}
+\]
+where $k_{\text{category}}$ encodes the product category (see Data Source Mapping table).
+\end{definition}
+
+\begin{definition}[Location Noetics]
+\label{def:location-noetics}
+For location data $\ell \in \DigitalTrace_{\text{location}}$:
+\[
+    \NLP_{\text{location}}(\ell) =
+    \begin{cases}
+        \langle 7 \rangle & \text{if } \ell \text{ is habitual (regular pattern)} \\
+        \langle 4 : 6 \rangle & \text{if } \ell \text{ is exploratory (new location)} \\
+        \langle 5 \rangle & \text{if } \ell \text{ is receptive (visiting someone)} \\
+        \langle 3 \rangle & \text{if } \ell \text{ is avoidant (leaving pattern)}
+    \end{cases}
+\]
+\end{definition}
+
+%% ============================================================================
+%% LAYMAN EXPLANATION
+%% ============================================================================
+\begin{tcolorbox}[colback=green!5!white,colframe=green!65!black,title=\textbf{Plain English: What Stage 1 Does},breakable]
+
+\textbf{The Digital-to-Mental Translator:}
+
+Stage 1 is like a translator that reads your digital footprints and converts them into ``mental operation codes.'' Every post, search, purchase, and location tells a story about what mental operations you were performing.
+
+\textbf{The Translator's Dictionary:}
+
+\begin{center}
+\footnotesize
+\begin{tabularx}{\textwidth}{l|X|c}
+\toprule
+\textbf{What You Did} & \textbf{What It Reveals} & \textbf{Code} \\
+\midrule
+Googled ``how to lose weight'' & Desire + Knowledge-seeking & $\noe{2}:\noe{1}$ \\
+Posted ``I hate Mondays'' & Rejection + Pattern & $\noe{3}:\noe{7}$ \\
+Bought running shoes & Desire $\to$ Action $\to$ Result & $\noe{2}:\noe{6}:\noe{9}$ \\
+Visited same coffee shop & Habitual rhythm & $\noe{7}$ \\
+Typed in ALL CAPS & High energy/intensity & $\noe{4}$ \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\textbf{Metaphor: The Behavioral Seismograph}
+
+Just as a seismograph translates ground vibrations into readable waves, the NLP-to-Noetic mapping translates digital vibrations into readable mental patterns. The output is a sequence of ``mental frequencies'' that can be analyzed.
+
+\textbf{Privacy Note:} This stage transforms raw data into abstract codes. The codes reveal psychological patterns but are divorced from the original content. ``I hate my job'' and ``I hate spinach'' both produce $\noe{3}$---the system sees rejection, not context.
+
+\end{tcolorbox}
+
+%% ============================================================================
+%% CHAPTER: STAGE 2 - FRACTAL CONSTRUCTION
+%% ============================================================================
+\chapter{Stage 2: Fractal Construction from Noetic Sequences}
+\label{ch:stage2-fractal}
+
+\section{Mathematical Definition}
+
+\begin{definition}[Individual Noetic Fractal]
+\label{def:individual-fractal}
+Given a time-ordered sequence of noetic extractions $\{(\noe{k_1}, t_1), (\noe{k_2}, t_2), \ldots\}$ for individual $i$, the \emph{individual noetic fractal} is:
+\[
+    \ProfileFrac_i := \langle k_1 : k_2 : \cdots : k_n \rangle_n
+\]
+This fractal grows over time as more data accumulates.
+\end{definition}
+
+\begin{definition}[D/W/P Decomposition]
+\label{def:dwp-decomposition}
+The individual fractal decomposes into three Foundation-specific subfractals:
+
+\textbf{Desire Fractal} (from $\Foundations_6$, $\Foundations_7$):
+\[
+    \ProfileFrac_i^D := \left\langle k_j \mid k_j \in \{2, 5, 7\} \text{ or } \NLP^{-1}(\noe{k_j}) \in \DigitalTrace_{\text{social}} \right\rangle
+\]
+
+\textbf{Wisdom Fractal} (from $\Foundations_2$):
+\[
+    \ProfileFrac_i^W := \left\langle k_j \mid k_j \in \{1, 8\} \text{ or } \NLP^{-1}(\noe{k_j}) \in \DigitalTrace_{\text{search}} \right\rangle
+\]
+
+\textbf{Power Fractal} (from $\Foundations_5$):
+\[
+    \ProfileFrac_i^P := \left\langle k_j \mid k_j \in \{6, 9\} \text{ or } \NLP^{-1}(\noe{k_j}) \in \DigitalTrace_{\text{purchase}} \right\rangle
+\]
+\end{definition}
+
+\section{Fractal Growth Dynamics}
+
+\begin{theorem}[Fractal Stabilization]
+\label{thm:fractal-stabilization}
+\textbf{(TKS v7.4 Theorem 7.4 Bound)}
+
+For an individual's noetic fractal $\ProfileFrac_i^{(n)}$ at time step $n$:
+\[
+    \exists\, N_{\mathrm{stable}} \leq 40 : \quad
+    d_{\mathrm{frac}}\left(\ProfileFrac_i^{(n)}, \ProfileFrac_i^{(n+1)}\right) < \varepsilon
+    \quad \forall\, n > N_{\mathrm{stable}}
+\]
+where $d_{\mathrm{frac}}$ is the fractal metric and $\varepsilon$ is the stability threshold.
+
+\textbf{In words:} Within 40 significant data points, the fractal structure stabilizes to a recognizable pattern.
+\end{theorem}
+
+\begin{proof}
+By the finite element theorem (v7.4), the 40 canonical elements $\Elements$ span all possible noetic configurations. Any sequence of length $> 40$ must revisit previously established patterns, leading to convergence in the quotient fractal space $\FracSet / \sim$.
+\end{proof}
+
+\begin{equation}
+\boxed{
+    \ProfileFrac_i^{\text{stable}} = \lim_{n \to \infty} \ProfileFrac_i^{(n)} = \FractalAttractor_i
+}
+\end{equation}
+
+\section{Fractal Features for Prediction}
+
+\begin{definition}[Fractal Feature Vector]
+\label{def:fractal-features}
+From the individual fractal $\ProfileFrac_i$, extract the \emph{feature vector}:
+\[
+    \mathbf{f}_i = \left( \HausdorffDim(\ProfileFrac_i),\, \Lacunarity(\ProfileFrac_i),\,
+    \mathbf{n}_i,\, \mathbf{p}_i,\, \mathbf{c}_i \right)
+\]
+where:
+\begin{itemize}
+    \item $\HausdorffDim(\ProfileFrac_i)$: Hausdorff dimension (complexity measure)
+    \item $\Lacunarity(\ProfileFrac_i)$: Lacunarity (gap measure)
+    \item $\mathbf{n}_i = (n_0, n_1, \ldots, n_9)$: Noetic frequency distribution
+    \item $\mathbf{p}_i$: Transition probability matrix
+    \item $\mathbf{c}_i$: Cycle structure (periodic patterns)
+\end{itemize}
+\end{definition}
+
+\begin{proposition}[Noetic Frequency Interpretation]
+\label{prop:noetic-frequency}
+The noetic frequency vector $\mathbf{n}_i$ reveals psychological profile:
+\begin{align}
+    \sum_{k \in \{2,5\}} n_k &> \sum_{k \in \{3,6\}} n_k \quad \Rightarrow \quad \text{Receptive personality (introverted)} \\
+    \sum_{k \in \{6,9\}} n_k &> \sum_{k \in \{5,8\}} n_k \quad \Rightarrow \quad \text{Action-oriented (extroverted)} \\
+    n_7 > \bar{n} &\quad \Rightarrow \quad \text{Habitual/routine-bound} \\
+    n_4 > \bar{n} &\quad \Rightarrow \quad \text{High emotional volatility}
+\end{align}
+\end{proposition}
+
+%% ============================================================================
+%% CHAPTER: STAGE 3 - ATTRACTOR COMPUTATION
+%% ============================================================================
+\chapter{Stage 3: Attractor Computation}
+\label{ch:stage3-attractor}
+
+\section{Mathematical Definition}
+
+\begin{definition}[Psychological Attractor]
+\label{def:psych-attractor-pred}
+The \emph{psychological attractor} $\PsychAttractor_i$ for individual $i$ is the limit set:
+\[
+    \PsychAttractor_i := \overline{\left\{ \ProfileFrac_i^{(n)}(X_0) \mid n \geq 0 \right\}}
+\]
+where $X_0$ is the initial psychological state and the closure is taken in the state space topology.
+\end{definition}
+
+\begin{theorem}[Attractor Uniqueness]
+\label{thm:attractor-unique}
+\textbf{(TKS v7.4 Theorem 5.21)}
+
+For any individual with fractal $\ProfileFrac_i$ satisfying the contraction condition:
+\[
+    \exists!\, \PsychAttractor_i : \quad \ProfileFrac_i(\PsychAttractor_i) = \PsychAttractor_i
+\]
+The attractor is unique up to equivalence and computable from finite data.
+\end{theorem}
+
+\section{Attractor Classification}
+
+\begin{definition}[Attractor Types for Prediction]
+\label{def:attractor-types-pred}
+Attractors are classified by topological dimension:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{c|l|X|X}
+\toprule
+\textbf{Dim} & \textbf{Type} & \textbf{Psychological Meaning} & \textbf{Predictability} \\
+\midrule
+0 & Fixed Point & Stable personality, consistent behavior & High \\
+1 & Limit Cycle & Mood cycles, periodic patterns & High (with period) \\
+1.5--2 & Torus & Multiple interacting cycles & Medium \\
+$>2$ & Strange & Chaotic but bounded dynamics & Low (probabilistic) \\
+\bottomrule
+\end{tabularx}
+\end{center}
+\end{definition}
+
+\begin{equation}
+\boxed{
+    \text{Prediction Confidence} =
+    \begin{cases}
+        0.95 & \text{if } \dim(\PsychAttractor_i) = 0 \\
+        0.85 & \text{if } \dim(\PsychAttractor_i) = 1 \\
+        0.70 & \text{if } 1 < \dim(\PsychAttractor_i) \leq 2 \\
+        0.50 & \text{if } \dim(\PsychAttractor_i) > 2
+    \end{cases}
+}
+\end{equation}
+
+\section{Computing ``Where the Person is Heading''}
+
+\begin{definition}[Trajectory Projection]
+\label{def:trajectory-proj}
+Given attractor $\PsychAttractor_i$ and current state $X_{\text{now}}$, the \emph{trajectory projection} is:
+\[
+    \Timeline_i(t) := \ProfileFrac_i^t(X_{\text{now}}) \quad \text{for } t \in \{1, 2, \ldots, T_{\max}\}
+\]
+This projects forward $T_{\max}$ steps using the fractal dynamics.
+\end{definition}
+
+\begin{theorem}[Convergence Rate]
+\label{thm:convergence-rate}
+The distance to attractor decays exponentially:
+\[
+    d(X_t, \PsychAttractor_i) \leq C \cdot r^t \cdot d(X_0, \PsychAttractor_i)
+\]
+where $r < 1$ is the contraction ratio of $\ProfileFrac_i$.
+\end{theorem}
+
+\begin{corollary}[Prediction Horizon]
+\label{cor:prediction-horizon}
+Reliable prediction is possible for time horizon:
+\[
+    T_{\text{reliable}} \leq \frac{\log(d_{\min}) - \log(d(X_0, \PsychAttractor_i))}{\log r}
+\]
+Beyond this horizon, the prediction degrades to attractor-level statistics only.
+\end{corollary}
+
+%% ============================================================================
+%% CHAPTER: STAGE 4 - RPM GOAL INFERENCE
+%% ============================================================================
+\chapter{Stage 4: RPM Goal Inference}
+\label{ch:stage4-rpm}
+
+\section{Mathematical Definition}
+
+\begin{definition}[D/W/P State Analysis]
+\label{def:dwp-state}
+For individual $i$, the \emph{D/W/P state vector} is:
+\[
+    \mathbf{s}_i = \left( \sigma(D_1), \ldots, \sigma(D_7), \sigma(W_1), \ldots, \sigma(W_7), \sigma(P_1), \ldots, \sigma(P_7) \right) \in \{0, 1\}^{21}
+\]
+where $\sigma : \Acquisitions \to \{0, 1\}$ indicates acquisition status.
+\end{definition}
+
+\begin{definition}[Goal Inference from Digital Traces]
+\label{def:goal-inference}
+The \emph{goal inference operator} maps fractals to inferred Foundation goals:
+\[
+    \mathsf{Goal} : \ProfileFrac_i \longrightarrow 2^{\{\Foundations_1, \ldots, \Foundations_7\}}
+\]
+
+\textbf{Inference Rules:}
+\begin{align}
+    \ProfileFrac_i^D \text{ dominant in } \{2, 7\} &\Rightarrow \Foundations_7 \in \mathsf{Goal}(\ProfileFrac_i) \quad \text{(Continuation)} \\
+    \ProfileFrac_i^W \text{ dominant in } \{1, 8\} &\Rightarrow \Foundations_2 \in \mathsf{Goal}(\ProfileFrac_i) \quad \text{(Wisdom)} \\
+    \ProfileFrac_i^P \text{ dominant in } \{6, 9\} &\Rightarrow \Foundations_5 \in \mathsf{Goal}(\ProfileFrac_i) \quad \text{(Power)}
+\end{align}
+\end{definition}
+
+\section{RPM Chain Completion Analysis}
+
+\begin{definition}[Chain Completion Level]
+\label{def:chain-level}
+For Foundation $\Foundations_m$, the \emph{chain completion level} is:
+\[
+    \mathrm{Level}_m(i) =
+    \begin{cases}
+        0 & \text{if } \neg\sigma(D_m) \quad \text{(no desire)} \\
+        1 & \text{if } \sigma(D_m) \land \neg\sigma(W_m) \quad \text{(desire only)} \\
+        2 & \text{if } \sigma(W_m) \land \neg\sigma(P_m) \quad \text{(desire + wisdom)} \\
+        3 & \text{if } \sigma(P_m) \quad \text{(complete chain)}
+    \end{cases}
+\]
+\end{definition}
+
+\begin{theorem}[RPM Prerequisite Tracking]
+\label{thm:rpm-prereq}
+\textbf{(TKS v7.4 RPM Monad)}
+
+For individual $i$ attempting goal $\Foundations_m$:
+\[
+    \RPM(\Foundations_m) =
+    \begin{cases}
+        \text{Success}(\Foundations_m^{\text{manifest}}) & \text{if } \mathrm{Level}_m(i) = 3 \\
+        \text{Blocked at } W_m & \text{if } \mathrm{Level}_m(i) = 1 \\
+        \text{Blocked at } P_m & \text{if } \mathrm{Level}_m(i) = 2 \\
+        \text{No activation} & \text{if } \mathrm{Level}_m(i) = 0
+    \end{cases}
+\]
+
+\textbf{Prediction:} An individual with $\mathrm{Level}_m(i) = 2$ will seek resources, training, or opportunity (acquiring $P_m$) before achieving $\Foundations_m$.
+\end{theorem}
+
+\section{Goal Inference Accuracy}
+
+\begin{proposition}[Goal Inference Confidence]
+\label{prop:goal-confidence}
+The confidence of goal inference depends on data volume:
+\[
+    \mathsf{Conf}(\mathsf{Goal}(\ProfileFrac_i)) = 1 - e^{-\lambda \cdot |\ProfileFrac_i|}
+\]
+where $\lambda$ is the learning rate and $|\ProfileFrac_i|$ is the fractal length.
+
+\textbf{Bounds:}
+\begin{itemize}
+    \item $|\ProfileFrac_i| = 10$: $\mathsf{Conf} \approx 0.63$
+    \item $|\ProfileFrac_i| = 40$: $\mathsf{Conf} \approx 0.98$ (40-step bound)
+    \item $|\ProfileFrac_i| = 100$: $\mathsf{Conf} \approx 0.9999$
+\end{itemize}
+\end{proposition}
+
+%% ============================================================================
+%% CHAPTER: STAGE 5 - TIMELINE PREDICTION
+%% ============================================================================
+\chapter{Stage 5: Timeline Prediction}
+\label{ch:stage5-timeline}
+
+\section{Mathematical Definition}
+
+\begin{definition}[Timeline Prediction Function]
+\label{def:timeline-pred}
+The \emph{timeline prediction function} maps current state to future probability distributions:
+\[
+    \Timeline : \left(\ProfileFrac_i, X_{\text{now}}, t\right) \longrightarrow \mathcal{P}(\Ideas)
+\]
+where $\mathcal{P}(\Ideas)$ is the space of probability distributions over Ideas.
+\end{definition}
+
+\begin{theorem}[40-Step Stabilization Bound]
+\label{thm:40-step}
+\textbf{(TKS v7.4 Theorem 7.4)}
+
+For any individual fractal $\ProfileFrac_i$:
+\[
+    \forall\, t > 40: \quad \Timeline(\ProfileFrac_i, X_{\text{now}}, t) \approx \pi_{\PsychAttractor_i}
+\]
+where $\pi_{\PsychAttractor_i}$ is the invariant measure on the attractor.
+
+\textbf{Interpretation:} Beyond 40 time steps, predictions converge to the attractor's natural distribution regardless of starting point.
+\end{theorem}
+
+\section{Short-Term vs Long-Term Prediction}
+
+\begin{definition}[Prediction Regimes]
+\label{def:pred-regimes}
+\textbf{Short-Term} ($t \leq 10$):
+\[
+    \Timeline_{\text{short}}(t) = \ProfileFrac_i^t(X_{\text{now}}) + \varepsilon_t
+\]
+where $\varepsilon_t \sim \mathcal{N}(0, \sigma_t^2)$ with $\sigma_t = O(t^{1/2})$.
+
+\textbf{Medium-Term} ($10 < t \leq 40$):
+\[
+    \Timeline_{\text{med}}(t) = \alpha \cdot \ProfileFrac_i^t(X_{\text{now}}) + (1-\alpha) \cdot \pi_{\PsychAttractor_i}
+\]
+where $\alpha = e^{-\lambda(t-10)}$ interpolates between deterministic and attractor prediction.
+
+\textbf{Long-Term} ($t > 40$):
+\[
+    \Timeline_{\text{long}}(t) \approx \pi_{\PsychAttractor_i}
+\]
+\end{definition}
+
+\section{Timeline Confidence Intervals}
+
+\begin{equation}
+\boxed{
+    \mathsf{CI}_{95\%}(\Timeline(t)) =
+    \begin{cases}
+        \pm 5\% & \text{for } t \leq 5 \\
+        \pm 15\% & \text{for } 5 < t \leq 20 \\
+        \pm 30\% & \text{for } 20 < t \leq 40 \\
+        \text{Attractor bounds only} & \text{for } t > 40
+    \end{cases}
+}
+\end{equation}
+
+%% ============================================================================
+%% CHAPTER: STAGE 6 - VULNERABILITY IDENTIFICATION
+%% ============================================================================
+\chapter{Stage 6: Vulnerability Identification}
+\label{ch:stage6-vulnerability}
+
+\section{Mathematical Definition}
+
+\begin{definition}[Lacunarity-Based Vulnerability]
+\label{def:lacunarity-vuln}
+The \emph{vulnerability score} for individual $i$ is:
+\[
+    \VulnScore_i = \max_{m \in \{1,\ldots,7\}} \Lacunarity(\ProfileFrac_i^{(m)})
+\]
+where $\ProfileFrac_i^{(m)}$ is the fractal restricted to Foundation $m$.
+\end{definition}
+
+\begin{theorem}[Lacunarity Computability]
+\label{thm:lacunarity-compute}
+\textbf{(TKS v7.4 Theorem 6.41)}
+
+The lacunarity $\Lacunarity(\Frac, \varepsilon)$ is computable for any finite fractal sample:
+\[
+    \Lacunarity(\Frac, \varepsilon) = \frac{\mathrm{Var}[M_\varepsilon]}{\mathbb{E}[M_\varepsilon]^2} + 1
+\]
+where $M_\varepsilon$ is the box-mass function at scale $\varepsilon$.
+\end{theorem}
+
+\begin{definition}[Vulnerability Threshold]
+\label{def:vuln-threshold}
+An individual is flagged as \emph{vulnerable} when:
+\[
+    \VulnScore_i > \Lacunarity_{\text{crit}} = 1.5
+\]
+
+\textbf{Interpretation:}
+\begin{itemize}
+    \item $\Lacunarity < 1.2$: Homogeneous, well-developed pattern (low vulnerability)
+    \item $1.2 \leq \Lacunarity < 1.5$: Moderate gaps, some underdevelopment
+    \item $\Lacunarity \geq 1.5$: Significant gaps, high vulnerability
+    \item $\Lacunarity > 2.0$: Critical gaps, intervention recommended
+\end{itemize}
+\end{definition}
+
+\section{Gap Detection Algorithm}
+
+\begin{definition}[Gap Detection]
+\label{def:gap-detect}
+For each Foundation $\Foundations_m$, compute the \emph{gap indicator}:
+\[
+    \mathsf{Gap}_m(i) =
+    \begin{cases}
+        1 & \text{if } \mathrm{Level}_m(i) < 3 \land \Lacunarity(\ProfileFrac_i^{(m)}) > 1.5 \\
+        0 & \text{otherwise}
+    \end{cases}
+\]
+
+The \emph{total gap count}:
+\[
+    \mathsf{TotalGaps}(i) = \sum_{m=1}^{7} \mathsf{Gap}_m(i)
+\]
+\end{definition}
+
+\begin{proposition}[Vulnerability Profile]
+\label{prop:vuln-profile}
+The vulnerability profile reveals intervention targets:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{c|l|X|l}
+\toprule
+\textbf{Gap at} & \textbf{Foundation} & \textbf{Vulnerability Type} & \textbf{Intervention} \\
+\midrule
+$\Foundations_1$ & Unity & Spiritual emptiness, disconnection & Meaning-making support \\
+$\Foundations_2$ & Wisdom & Knowledge gaps, confusion & Education, guidance \\
+$\Foundations_3$ & Life & Health neglect, vitality loss & Health intervention \\
+$\Foundations_4$ & Companionship & Social isolation, loneliness & Community building \\
+$\Foundations_5$ & Power & Learned helplessness, impotence & Empowerment training \\
+$\Foundations_6$ & Wealth & Financial stress, scarcity & Resource assistance \\
+$\Foundations_7$ & Continuation & Purpose void, stagnation & Future planning \\
+\bottomrule
+\end{tabularx}
+\end{center}
+\end{proposition}
+
+%% ============================================================================
+%% PART II: DATA SOURCE MAPPING
+%% ============================================================================
+\part{Data Source Mapping and Architecture}
+
+\chapter{Data Source to Fractal Mapping}
+\label{ch:data-mapping}
+
+\section{Comprehensive Data Source Table}
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.4}
+\begin{longtable}{>{\raggedright\arraybackslash}p{2.5cm}|c|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{3cm}|c}
+\caption{Data Source to TKS Fractal Mapping} \\
+\toprule
+\textbf{Data Source} & \textbf{Primary World} & \textbf{Target Fractal} & \textbf{Primary Noetics} & \textbf{Foundation} \\
+\midrule
+\endfirsthead
+\multicolumn{5}{c}{\textit{Table continued from previous page}} \\
+\toprule
+\textbf{Data Source} & \textbf{Primary World} & \textbf{Target Fractal} & \textbf{Primary Noetics} & \textbf{Foundation} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+% Social Media
+Social media posts & $C$ (Emotional) & Desire Fractal $\ProfileFrac^D$ & $\noe{2}, \noe{3}, \noe{4}$ & $\Foundations_4, \Foundations_7$ \\
+Comment sentiment & $C$ & Desire Fractal & $\noe{2}, \noe{3}$ & $\Foundations_4$ \\
+Reaction patterns & $C$ & Desire Fractal & $\noe{5}, \noe{6}$ & $\Foundations_4$ \\
+Sharing behavior & $D$ (Action) & Power Fractal $\ProfileFrac^P$ & $\noe{6}, \noe{9}$ & $\Foundations_5$ \\
+Following/unfollowing & $C$ & Desire Fractal & $\noe{2}, \noe{3}$ & $\Foundations_4$ \\
+
+\midrule
+
+% Search
+Search queries & $B$ (Mental) & Wisdom Fractal $\ProfileFrac^W$ & $\noe{1}, \noe{8}$ & $\Foundations_2$ \\
+Search frequency & $B$ & Wisdom Fractal & $\noe{7}, \noe{4}$ & $\Foundations_2$ \\
+Search refinement & $B$ & Wisdom Fractal & $\noe{1}, \noe{9}$ & $\Foundations_2$ \\
+Health searches & $B, D$ & Wisdom + Power & $\noe{1}, \noe{3}$ & $\Foundations_3$ \\
+Financial searches & $B$ & Wisdom Fractal & $\noe{1}, \noe{2}$ & $\Foundations_6$ \\
+
+\midrule
+
+% Purchases
+Purchase history & $D$ (Physical) & Power Fractal $\ProfileFrac^P$ & $\noe{6}, \noe{9}$ & $\Foundations_6$ \\
+Luxury purchases & $D$ & Power Fractal & $\noe{2}, \noe{6}$ & $\Foundations_6$ \\
+Necessity purchases & $D$ & Power Fractal & $\noe{6}, \noe{9}$ & $\Foundations_3$ \\
+Impulsive purchases & $C, D$ & Desire + Power & $\noe{4}, \noe{6}$ & $\Foundations_7$ \\
+Subscription patterns & $D$ & Power Fractal & $\noe{7}, \noe{5}$ & $\Foundations_6$ \\
+
+\midrule
+
+% Location
+Location data & $D$ & Context Vector & $\noe{7}, \noe{6}$ & Multiple \\
+Travel patterns & $D$ & Power Fractal & $\noe{6}, \noe{4}$ & $\Foundations_5$ \\
+Routine locations & $D$ & Power Fractal & $\noe{7}$ & $\Foundations_3$ \\
+Social locations & $D, C$ & Desire + Power & $\noe{5}, \noe{6}$ & $\Foundations_4$ \\
+Avoidance patterns & $D$ & Power Fractal & $\noe{3}, \noe{7}$ & $\Foundations_3, \Foundations_4$ \\
+
+\midrule
+
+% Biometric
+Heart rate variability & $D$ & Emotional Correlation & $\noe{4}, \noe{7}$ & $\Foundations_3$ \\
+Sleep patterns & $D$ & Emotional Correlation & $\noe{7}, \noe{5}$ & $\Foundations_3$ \\
+Activity levels & $D$ & Power Fractal & $\noe{4}, \noe{6}$ & $\Foundations_3$ \\
+Stress markers & $C, D$ & Desire + Power & $\noe{4}, \noe{3}$ & $\Foundations_3$ \\
+Typing patterns & $B, D$ & Wisdom + Power & $\noe{4}, \noe{7}$ & $\Foundations_2$ \\
+
+\end{longtable}
+\end{center}
+
+\section{Multi-Source Fusion}
+
+\begin{definition}[Multi-Source Fractal Fusion]
+\label{def:multi-source-fusion}
+Given fractals from multiple sources $\{\ProfileFrac_i^{(s)}\}_{s \in S}$, the \emph{fused individual fractal} is:
+\[
+    \ProfileFrac_i^{\text{fused}} = \bigoplus_{s \in S} w_s \cdot \ProfileFrac_i^{(s)}
+\]
+where $w_s$ are source weights satisfying $\sum_s w_s = 1$ and $\bigoplus$ is the weighted fractal composition.
+
+\textbf{Default weights:}
+\begin{itemize}
+    \item Social media: $w = 0.30$
+    \item Search history: $w = 0.25$
+    \item Purchase history: $w = 0.20$
+    \item Location data: $w = 0.15$
+    \item Biometric data: $w = 0.10$
+\end{itemize}
+\end{definition}
+
+%% ============================================================================
+%% CHAPTER: TECHNICAL ARCHITECTURE
+%% ============================================================================
+\chapter{Technical Architecture}
+\label{ch:architecture}
+
+\section{System Architecture Diagram}
+
+\begin{tcolorbox}[colback=gray!5!white,colframe=gray!75!black,title=\textbf{TKS Predictive Intelligence Architecture},breakable]
+
+\begin{verbatim}
++==============================================================================+
+|                         DATA COLLECTION LAYER                                 |
++==============================================================================+
+|                                                                              |
+|  +----------+  +----------+  +----------+  +----------+  +----------+       |
+|  |  Social  |  |  Search  |  | Purchase |  | Location |  | Biometric|       |
+|  |  Media   |  |  History |  |  History |  |   Data   |  |   Data   |       |
+|  +----+-----+  +----+-----+  +----+-----+  +----+-----+  +----+-----+       |
+|       |             |             |             |             |              |
++==============================================================================+
+                      |             |             |
+                      v             v             v
++==============================================================================+
+|                         PROCESSING LAYER                                      |
++==============================================================================+
+|                                                                              |
+|  +---------------------------+    +---------------------------+              |
+|  |    Stage 1: NLP-Noetic    |    |   Stage 2: Fractal Build  |              |
+|  |         Mapping           |--->|       Construction        |              |
+|  | - Tokenization            |    | - D/W/P Decomposition     |              |
+|  | - Sentiment Analysis      |    | - Feature Extraction      |              |
+|  | - Noetic Classification   |    | - Dimension Computation   |              |
+|  +---------------------------+    +-------------+-------------+              |
+|                                                 |                            |
+|                                                 v                            |
+|  +---------------------------+    +---------------------------+              |
+|  |  Stage 4: RPM Goal        |<---|   Stage 3: Attractor      |              |
+|  |       Inference           |    |       Computation         |              |
+|  | - D/W/P State Analysis    |    | - Fixed Point Detection   |              |
+|  | - Chain Completion        |    | - Cycle Analysis          |              |
+|  | - Foundation Mapping      |    | - Dimension Classification|              |
+|  +-------------+-------------+    +---------------------------+              |
+|                |                                                             |
++==============================================================================+
+                 |
+                 v
++==============================================================================+
+|                         PREDICTION LAYER                                      |
++==============================================================================+
+|                                                                              |
+|  +---------------------------+    +---------------------------+              |
+|  |   Stage 5: Timeline       |    |   Stage 6: Vulnerability  |              |
+|  |       Prediction          |    |      Identification       |              |
+|  | - Short-term (t <= 10)    |    | - Lacunarity Computation  |              |
+|  | - Medium-term (10 < t<=40)|    | - Gap Detection           |              |
+|  | - Long-term (t > 40)      |    | - Risk Scoring            |              |
+|  +-------------+-------------+    +-------------+-------------+              |
+|                |                                |                            |
++==============================================================================+
+                 |                                |
+                 v                                v
++==============================================================================+
+|                         OUTPUT LAYER                                          |
++==============================================================================+
+|                                                                              |
+|  +------------------+  +------------------+  +------------------+            |
+|  |   Behavioral     |  |   Intervention   |  |    Risk          |            |
+|  |   Predictions    |  |   Recommendations|  |    Alerts        |            |
+|  +------------------+  +------------------+  +------------------+            |
+|                                                                              |
++==============================================================================+
+\end{verbatim}
+\end{tcolorbox}
+
+\section{Processing Flow}
+
+\begin{equation}
+\boxed{
+\DigitalTrace \xrightarrow{\text{Stage 1}} \Noetics^*
+\xrightarrow{\text{Stage 2}} \ProfileFrac
+\xrightarrow{\text{Stage 3}} \PsychAttractor
+\xrightarrow{\text{Stage 4}} \mathbf{s}_{DWP}
+\xrightarrow{\text{Stage 5}} \Timeline
+\xrightarrow{\text{Stage 6}} \VulnScore
+}
+\end{equation}
+
+%% ============================================================================
+%% PART III: PLAIN ENGLISH EXPLANATION
+%% ============================================================================
+\part{Plain English Explanation}
+
+\chapter{The Digital Crystal Ball}
+\label{ch:plain-english}
+
+\begin{tcolorbox}[colback=green!5!white,colframe=green!65!black,title=\textbf{Plain English: Understanding TKS Predictive Intelligence},breakable]
+
+\textbf{The Big Picture: A ``Behavioral Weather Forecast''}
+
+Imagine a weather forecast, but for human behavior. Just as meteorologists use pressure, temperature, and wind patterns to predict tomorrow's weather, TKS Predictive Intelligence uses digital footprints to predict tomorrow's behavior.
+
+\textbf{Key Insight:} The mathematics does not read minds---it reads patterns. Just as repeating pressure systems indicate coming storms, repeating digital patterns indicate coming behaviors.
+
+\bigskip
+
+\textbf{What Each Stage Does (In Plain Terms):}
+
+\begin{center}
+\footnotesize
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\textwidth}{c|l|X|X}
+\toprule
+\textbf{Stage} & \textbf{Name} & \textbf{What It Does} & \textbf{Weather Analogy} \\
+\midrule
+1 & NLP Mapping & Reads your posts/searches and tags the ``emotional temperature'' & Reading thermometers \\
+2 & Fractal Build & Finds patterns in your emotional temperatures over time & Building pressure maps \\
+3 & Attractor & Identifies your ``emotional home base''---where you always return & Finding climate zones \\
+4 & RPM Analysis & Figures out what you're trying to achieve (consciously or not) & Identifying storm systems \\
+5 & Timeline & Predicts where your patterns will take you & The actual forecast \\
+6 & Vulnerability & Finds gaps or weaknesses in your patterns & Finding flood-prone areas \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\bigskip
+
+\textbf{The 40-Step Rule (Why This Works):}
+
+TKS mathematics proves that any person's behavioral pattern stabilizes within 40 significant data points. After that, the system knows your ``climate''---not every moment (weather), but the general range (climate).
+
+\begin{itemize}
+    \item \textbf{10 data points}: System can guess your mood today (63\% accuracy)
+    \item \textbf{40 data points}: System knows your personality type (98\% accuracy)
+    \item \textbf{100+ data points}: System can predict category of behavior (99.99\% accuracy)
+\end{itemize}
+
+\textbf{What Can vs. Cannot Be Predicted:}
+
+\begin{center}
+\footnotesize
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{X|X}
+\toprule
+\textbf{CAN Predict (High Confidence)} & \textbf{CANNOT Predict (Low Confidence)} \\
+\midrule
+What category of thing you'll buy next & Exactly which item you'll buy \\
+Whether you'll experience a mood episode & Exactly when it will happen \\
+What topic you'll search for next & Your specific search query \\
+Whether you're vulnerable to manipulation & What will manipulate you specifically \\
+Your general life trajectory & Specific life events \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\bigskip
+
+\textbf{The Lacunarity Warning (Gaps = Vulnerability):}
+
+A key output is ``lacunarity''---the gappiness of your pattern. High lacunarity means inconsistency, which means unpredictability AND vulnerability.
+
+\begin{itemize}
+    \item $\Lacunarity < 1.2$: Stable, consistent, predictable, resilient
+    \item $\Lacunarity = 1.5$: Threshold---gaps are becoming significant
+    \item $\Lacunarity > 2.0$: Major gaps---high vulnerability to disruption
+\end{itemize}
+
+\textbf{Metaphor:} Low lacunarity is like a well-woven fabric---pull anywhere and the whole thing holds. High lacunarity is like fabric with holes---pull near a hole and it tears.
+
+\end{tcolorbox}
+
+%% ============================================================================
+%% PART IV: REAL-LIFE PREDICTION SCENARIOS
+%% ============================================================================
+\part{Real-Life Prediction Scenarios}
+
+\chapter{Scenario 1: Purchase Behavior Prediction}
+\label{ch:scenario-purchase}
+
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!65!black,title=\textbf{Scenario: Predicting Marcus's Next Purchase},breakable]
+
+\textbf{Subject:} Marcus, 34, urban professional
+
+\textbf{Data Collected (Past 30 Days):}
+\begin{itemize}
+    \item 47 Google searches (fitness, running shoes, marathon training)
+    \item 12 Amazon browsing sessions (running gear, nutrition supplements)
+    \item 8 social media posts (``thinking about getting in shape'', ``anyone run the city marathon?'')
+    \item Location data: 3 visits to sporting goods stores (browsing, no purchase)
+    \item Biometric: Fitness app shows increased activity tracking engagement
+\end{itemize}
+
+\textbf{TKS Analysis:}
+
+\textbf{Stage 1 - NLP Mapping:}
+\begin{align*}
+    \NLP(\text{searches}) &= \langle 2:1:2:1:2 \rangle \quad \text{(desire + knowledge seeking)} \\
+    \NLP(\text{browsing}) &= \langle 2:6:3:2:6 \rangle \quad \text{(desire + action + hesitation)} \\
+    \NLP(\text{posts}) &= \langle 1:2:4:2 \rangle \quad \text{(awareness + desire + energy)}
+\end{align*}
+
+\textbf{Stage 2 - Fractal Construction:}
+\[
+    \ProfileFrac_{\text{Marcus}}^{(30)} = \langle 2:1:2:6:2:3:1:2:4:6:2:1:\cdots \rangle
+\]
+\textbf{Feature Vector:}
+\begin{itemize}
+    \item Dominant noetics: $n_2 = 0.35$ (Desire/Attraction) -- VERY HIGH
+    \item $n_1 = 0.20$ (Mind/Awareness) -- elevated
+    \item $n_6 = 0.15$ (Action) -- moderate
+    \item $n_3 = 0.10$ (Hesitation) -- blocking factor
+\end{itemize}
+
+\textbf{Stage 3 - Attractor:}
+\[
+    \PsychAttractor_{\text{Marcus}} = \text{Limit cycle between } \noe{2} \leftrightarrow \noe{3}
+\]
+Interpretation: Marcus oscillates between desire and hesitation. This is a ``wanting but not doing'' pattern.
+
+\textbf{Stage 4 - RPM Analysis:}
+\begin{align*}
+    \sigma(D_3) &= \mathtt{true} \quad \text{(Desires health)} \\
+    \sigma(W_3) &= \mathtt{true} \quad \text{(Has researched)} \\
+    \sigma(P_3) &= \mathtt{false} \quad \text{(Hasn't committed)}
+\end{align*}
+$\mathrm{Level}_3(\text{Marcus}) = 2$ -- He needs Power (commitment, resources) to complete.
+
+\textbf{Stage 5 - Timeline Prediction:}
+\[
+    P(\text{purchase within 14 days}) = 0.73
+\]
+\[
+    P(\text{purchase within 30 days}) = 0.91
+\]
+Confidence: HIGH (attractor analysis shows imminent resolution of desire-hesitation cycle)
+
+\textbf{Stage 6 - Vulnerability:}
+\[
+    \Lacunarity(\ProfileFrac_{\text{Marcus}}^{(3)}) = 1.3 \quad \text{(moderate gap in } \Foundations_3 \text{)}
+\]
+Marcus is vulnerable to:
+\begin{itemize}
+    \item Flash sales (urgency breaks hesitation cycle)
+    \item Social proof (``your friends bought this'')
+    \item Commitment devices (``marathon signup discount ends tomorrow'')
+\end{itemize}
+
+\textbf{Prediction:} Marcus will purchase running shoes and/or marathon registration within 14 days, likely triggered by a sale or social prompt.
+
+\textbf{TKS Equation Summary:}
+\begin{equation}
+\boxed{
+    \RPM(\Foundations_3) : \; D_3 \to W_3 \to \mathsf{Blocked}(P_3) \xrightarrow{\text{trigger}} P_3 \xrightarrow{\ACBE} \text{Purchase}
+}
+\end{equation}
+
+\end{tcolorbox}
+
+\chapter{Scenario 2: Mental Health Crisis Prediction}
+\label{ch:scenario-mental-health}
+
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!65!black,title=\textbf{Scenario: Early Detection of Sarah's Crisis},breakable]
+
+\textbf{Subject:} Sarah, 28, graduate student
+
+\textbf{Data Collected (Past 60 Days):}
+\begin{itemize}
+    \item Social media: Posting frequency dropped 70\% (weeks 1-3: 4/day; weeks 7-8: 1/day)
+    \item Content shift: From varied topics to exclusively academic stress
+    \item Search history: ``why am I so tired'', ``can't concentrate'', ``feeling empty'', ``is this depression''
+    \item Sleep data: Irregular patterns, average 4.5 hours (down from 7.2)
+    \item Location: Reduced movement, rarely leaving apartment
+\end{itemize}
+
+\textbf{TKS Analysis:}
+
+\textbf{Stage 1 - NLP Mapping:}
+\begin{align*}
+    \NLP(\text{posts week 1-3}) &= \langle 2:4:6:2:7:4 \rangle \quad \text{(diverse, energetic)} \\
+    \NLP(\text{posts week 7-8}) &= \langle 3:3:0:3:5:3 \rangle \quad \text{(rejection dominant)} \\
+    \NLP(\text{searches}) &= \langle 3:1:8:3:1 \rangle \quad \text{(rejection + cause-seeking)}
+\end{align*}
+
+\textbf{Stage 2 - Fractal Evolution:}
+\[
+    \ProfileFrac_{\text{Sarah}}^{(0-30)} \to \ProfileFrac_{\text{Sarah}}^{(30-60)} : \quad
+    \bar{n}_3 : 0.12 \to 0.38 \quad (+217\%)
+\]
+The fractal is collapsing toward $\noe{3}$ dominance.
+
+\textbf{Stage 3 - Attractor Shift:}
+\begin{align*}
+    \PsychAttractor_{\text{before}} &= \text{Multi-cycle (healthy oscillation)} \\
+    \PsychAttractor_{\text{now}} &\to \text{Fixed point at } C3^5_{3c} \text{ (depression lock)}
+\end{align*}
+\textbf{Critical Indicator:} Attractor dimension collapsing: $\dim \approx 1.4 \to \dim \approx 0.3$
+
+\textbf{Stage 4 - RPM Analysis:}
+\begin{align*}
+    \mathrm{Level}_3(\text{Sarah}) &= 1 \quad \text{(Life: desires health, lacks wisdom/power)} \\
+    \mathrm{Level}_4(\text{Sarah}) &= 0 \to 1 \quad \text{(Companionship: desire emerging)}
+\end{align*}
+She's losing connection on $\Foundations_4$ (social isolation).
+
+\textbf{Stage 5 - Timeline Prediction:}
+\[
+    P(\text{clinical depression criteria within 30 days}) = 0.78
+\]
+\[
+    P(\text{crisis event within 60 days | no intervention}) = 0.45
+\]
+
+\textbf{Stage 6 - Vulnerability Assessment:}
+\[
+    \Lacunarity(\ProfileFrac_{\text{Sarah}}^{(3)}) = 2.3 \quad \text{(CRITICAL gap in } \Foundations_3 \text{)}
+\]
+\[
+    \Lacunarity(\ProfileFrac_{\text{Sarah}}^{(4)}) = 2.1 \quad \text{(CRITICAL gap in } \Foundations_4 \text{)}
+\]
+\[
+    \VulnScore_{\text{Sarah}} = 2.3 > \Lacunarity_{\text{crit}} \quad \Rightarrow \quad \text{INTERVENTION RECOMMENDED}
+\]
+
+\textbf{Recommended Interventions:}
+\begin{enumerate}
+    \item Push notification: ``We noticed you might be going through a hard time. Here are some resources...''
+    \item Suggest: Campus counseling services, mental health hotline
+    \item Social nudge: Highlight friends' posts to encourage reconnection
+\end{enumerate}
+
+\textbf{TKS Equation Summary:}
+\begin{equation}
+\boxed{
+    \PsychAttractor_{\text{healthy}} \xrightarrow{\text{stressor}}
+    \PsychAttractor_{\text{depression}} = C3^5_{3c} : \quad
+    \langle 3:5:3 \rangle^n(X) \to X^*_{\text{low}}
+}
+\end{equation}
+
+\end{tcolorbox}
+
+\chapter{Scenario 3: Radicalization Trajectory Prediction}
+\label{ch:scenario-radicalization}
+
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!65!black,title=\textbf{Scenario: Tracking David's Radicalization Risk},breakable]
+
+\textbf{Subject:} David, 22, recently unemployed
+
+\textbf{Data Collected (Past 90 Days):}
+\begin{itemize}
+    \item Search evolution: Job sites $\to$ ``why can't I find work'' $\to$ ``system is rigged'' $\to$ extremist content
+    \item Social media: Increasing engagement with fringe political accounts
+    \item Content creation: From neutral to increasingly hostile rhetoric
+    \item Location: Attendance at two political rallies
+    \item Social graph: Disconnection from moderate friends, connection to extremist accounts
+\end{itemize}
+
+\textbf{TKS Analysis:}
+
+\textbf{Stage 1 - NLP Evolution:}
+\begin{align*}
+    \NLP(\text{month 1}) &= \langle 2:1:3:2:1 \rangle \quad \text{(desire + knowledge + mild rejection)} \\
+    \NLP(\text{month 2}) &= \langle 3:8:3:4:8 \rangle \quad \text{(rejection + cause-seeking + energy)} \\
+    \NLP(\text{month 3}) &= \langle 3:6:4:3:6:4 \rangle \quad \text{(rejection + action + high energy)}
+\end{align*}
+
+\textbf{Stage 2 - Fractal Trajectory:}
+\[
+    \ProfileFrac_{\text{David}} : \quad \noe{2} \text{ dominant} \to \noe{3} \text{ dominant} \to (\noe{3}:\noe{6}:\noe{4}) \text{ triplet}
+\]
+
+The emergence of the $\langle 3:6:4 \rangle$ triplet is a \textbf{radicalization signature}:
+\begin{itemize}
+    \item $\noe{3}$ (Rejection): Viewing world as enemy
+    \item $\noe{6}$ (Action): Will to act against enemy
+    \item $\noe{4}$ (Vibration): High emotional energy
+\end{itemize}
+
+\textbf{Stage 3 - Attractor Analysis:}
+\[
+    \PsychAttractor_{\text{David}} = \text{Strange attractor with dimension } 1.8
+\]
+This indicates chaotic but bounded dynamics---unpredictable in specifics but confined to radicalized state space.
+
+\textbf{Stage 4 - RPM Analysis:}
+\begin{align*}
+    \mathrm{Level}_5(\text{David}) &: 0 \to 1 \to 2 \quad \text{(Power: acquiring wisdom about ``how to fight back'')} \\
+    \mathrm{Level}_6(\text{David}) &= 1 \quad \text{(Wealth: unfulfilled, driving resentment)}
+\end{align*}
+
+\textbf{Stage 5 - Timeline Prediction:}
+\[
+    P(\text{violent ideation in posts within 30 days}) = 0.62
+\]
+\[
+    P(\text{real-world aggressive action within 90 days | no intervention}) = 0.23
+\]
+
+\textbf{Stage 6 - Vulnerability Mapping:}
+\[
+    \Lacunarity(\ProfileFrac_{\text{David}}^{(6)}) = 2.4 \quad \text{(CRITICAL wealth/status gap)}
+\]
+\[
+    \Lacunarity(\ProfileFrac_{\text{David}}^{(4)}) = 1.9 \quad \text{(Companionship gap)}
+\]
+
+David is vulnerable because his legitimate needs ($\Foundations_6$: employment, $\Foundations_4$: belonging) are unmet, and extremist ideology offers a (false) path to $\Foundations_5$ (power).
+
+\textbf{Intervention Strategy:}
+\begin{enumerate}
+    \item Address root cause: Job placement assistance, skill training
+    \item Social reconnection: Highlight moderate friends, community groups
+    \item Counter-narrative exposure: Alternative explanations for economic difficulties
+    \item Professional referral: If trajectory continues escalating
+\end{enumerate}
+
+\textbf{TKS Equation Summary:}
+\begin{equation}
+\boxed{
+    \begin{array}{rcl}
+    \text{Radicalization Fractal} &=& \langle 3:6:4 \rangle^n \\
+    \text{Root Cause} &=& \neg\sigma(P_6) \land \neg\sigma(P_4) \\
+    \text{False Solution} &=& \text{Extremism offers } \sigma(P_5)^{\text{illusory}}
+    \end{array}
+}
+\end{equation}
+
+\end{tcolorbox}
+
+\chapter{Scenario 4: Employee Turnover Prediction}
+\label{ch:scenario-turnover}
+
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!65!black,title=\textbf{Scenario: Predicting Jennifer's Resignation},breakable]
+
+\textbf{Subject:} Jennifer, 31, senior software engineer (3 years tenure)
+
+\textbf{Data Collected (Corporate Systems, Past 45 Days):}
+\begin{itemize}
+    \item Email patterns: Response time increased 40\%, shorter replies
+    \item Slack activity: Participation in team channels down 60\%
+    \item LinkedIn: Profile updated, ``Open to opportunities'' badge added
+    \item Calendar: Declined 3 optional team events
+    \item Code commits: Quality maintained but quantity down 25\%
+    \item Badge data: Leaving earlier, arriving later
+\end{itemize}
+
+\textbf{TKS Analysis:}
+
+\textbf{Stage 1 - NLP Mapping (Work Communications):}
+\begin{align*}
+    \NLP(\text{emails month -2}) &= \langle 6:4:2:6:7 \rangle \quad \text{(action-oriented, rhythmic)} \\
+    \NLP(\text{emails month -1}) &= \langle 0:5:3:0:7 \rangle \quad \text{(neutral, receptive, avoidant)} \\
+    \NLP(\text{emails current}) &= \langle 3:0:3:0 \rangle \quad \text{(rejection, disengagement)}
+\end{align*}
+
+\textbf{Stage 2 - Fractal Evolution:}
+\[
+    \ProfileFrac_{\text{Jennifer}}^{\text{work}} : \quad (\noe{6}, \noe{4}) \text{ dominated} \to (\noe{3}, \noe{0}) \text{ dominated}
+\]
+
+Key transition: Loss of $\noe{4}$ (energy) and $\noe{6}$ (action) indicates psychological withdrawal.
+
+\textbf{Stage 3 - Attractor:}
+\[
+    \PsychAttractor_{\text{Jennifer}}^{\text{work}} \to \text{Fixed point at } B3^0_{6b} \text{ (disengaged rejection)}
+\]
+
+\textbf{Stage 4 - RPM Analysis:}
+\begin{align*}
+    \mathrm{Level}_6(\text{Jennifer, current role}) &= 2 \to 1 \quad \text{(decreasing)} \\
+    \mathrm{Level}_5(\text{Jennifer, current role}) &= 2 \to 1 \quad \text{(decreasing)} \\
+    \mathrm{Level}_2(\text{Jennifer, growth}) &= 1 \quad \text{(desires but blocked)}
+\end{align*}
+
+Interpretation: Her D/W/P chains for this role are degrading---she no longer sees path to Power in current position.
+
+\textbf{Stage 5 - Timeline Prediction:}
+\[
+    P(\text{resignation within 30 days}) = 0.67
+\]
+\[
+    P(\text{resignation within 60 days}) = 0.89
+\]
+\[
+    P(\text{resignation within 90 days}) = 0.96
+\]
+
+\textbf{Stage 6 - Gap Analysis:}
+\[
+    \Lacunarity(\ProfileFrac_{\text{Jennifer}}^{(2)}) = 1.7 \quad \text{(Wisdom gap: not learning new things)}
+\]
+\[
+    \Lacunarity(\ProfileFrac_{\text{Jennifer}}^{(5)}) = 1.8 \quad \text{(Power gap: no promotion path)}
+\]
+
+\textbf{Retention Strategy (If Desired):}
+\begin{enumerate}
+    \item Address $\Foundations_2$ gap: New challenging project, learning opportunities
+    \item Address $\Foundations_5$ gap: Discussion of promotion path, expanded responsibilities
+    \item Address $\Foundations_6$ gap: Compensation review, equity refresh
+    \item Timeline: Intervention must occur within 2 weeks to be effective
+\end{enumerate}
+
+\textbf{TKS Equation Summary:}
+\begin{equation}
+\boxed{
+    \text{Disengagement} = \frac{\partial}{\partial t}\left( n_6 + n_4 \right) < 0
+    \land \frac{\partial}{\partial t}\left( n_3 + n_0 \right) > 0
+}
+\end{equation}
+
+\end{tcolorbox}
+
+%% ============================================================================
+%% PART V: MATHEMATICAL GUARANTEES
+%% ============================================================================
+\part{Mathematical Guarantees}
+
+\chapter{TKS Theorem Applications}
+\label{ch:theorems}
+
+\section{Theorem 7.4: 40-Step Stabilization}
+
+\begin{theorem}[40-Step Bound --- Full Statement]
+\label{thm:40-step-full}
+For any individual $i$ with digital trace stream $\{d_1, d_2, \ldots\}$ and corresponding noetic fractal $\ProfileFrac_i^{(n)}$:
+
+\[
+    \exists\, N \leq 40 : \quad \forall\, n > N, \quad
+    d_{\mathrm{Hausdorff}}\left( \ProfileFrac_i^{(n)}, \ProfileFrac_i^{(n+k)} \right) < \varepsilon
+    \quad \forall\, k \geq 1
+\]
+
+where $\varepsilon$ is the recognition threshold and $d_{\mathrm{Hausdorff}}$ is the Hausdorff metric on fractal space.
+
+\textbf{Implications for Prediction:}
+\begin{enumerate}
+    \item After 40 significant data points, personality structure is identifiable
+    \item Additional data improves precision but not fundamental classification
+    \item The bound is tight: some individuals require all 40 points
+\end{enumerate}
+\end{theorem}
+
+\section{Theorem 5.21: Attractor Uniqueness}
+
+\begin{theorem}[Attractor Uniqueness --- Full Statement]
+\label{thm:attractor-unique-full}
+For any noetic fractal $\ProfileFrac$ satisfying the contraction condition:
+\[
+    \exists\, r < 1 : \quad d(\ProfileFrac(x), \ProfileFrac(y)) \leq r \cdot d(x, y) \quad \forall\, x, y \in \mathcal{S}
+\]
+
+there exists a unique attractor $\PsychAttractor \subset \mathcal{S}$ such that:
+\begin{enumerate}[label=(\roman*)]
+    \item $\ProfileFrac(\PsychAttractor) = \PsychAttractor$ (invariance)
+    \item $\lim_{n \to \infty} \ProfileFrac^n(x) \in \PsychAttractor$ for all $x \in \mathcal{S}$ (attraction)
+    \item $\PsychAttractor$ is compact and has well-defined Hausdorff dimension
+\end{enumerate}
+
+\textbf{Implications for Prediction:}
+\begin{enumerate}
+    \item Every individual has a unique ``behavioral home base''
+    \item Predictions converge to this attractor regardless of starting point
+    \item The attractor can be computed from finite data
+\end{enumerate}
+\end{theorem}
+
+\section{Theorem 6.41: Lacunarity Computability}
+
+\begin{theorem}[Lacunarity Computability --- Full Statement]
+\label{thm:lacunarity-full}
+For any finite fractal sample $\ProfileFrac^{(n)}$ with $n \geq 20$:
+\[
+    \hat{\Lacunarity}(\ProfileFrac^{(n)}, \varepsilon) = \frac{\sum_{i}(M_{\varepsilon,i} - \bar{M}_\varepsilon)^2 / N}{\bar{M}_\varepsilon^2} + 1
+\]
+is an unbiased estimator of the true lacunarity $\Lacunarity(\ProfileFrac, \varepsilon)$ with:
+\[
+    \mathrm{Var}(\hat{\Lacunarity}) = O(n^{-1})
+\]
+
+\textbf{Implications for Prediction:}
+\begin{enumerate}
+    \item Vulnerability scores are statistically reliable with $n \geq 20$ data points
+    \item Confidence intervals can be computed: $\hat{\Lacunarity} \pm 1.96 \sqrt{\mathrm{Var}(\hat{\Lacunarity})}$
+    \item The $\Lacunarity_{\mathrm{crit}} = 1.5$ threshold is statistically validated
+\end{enumerate}
+\end{theorem}
+
+\section{RPM Prerequisite Tracking}
+
+\begin{theorem}[RPM Completeness]
+\label{thm:rpm-complete}
+The RPM monad $\RPM : \Ideas \to \RPM(\Ideas)$ satisfies:
+\begin{enumerate}[label=(\roman*)]
+    \item \textbf{Totality}: Every goal attempt produces a result (success or identified blocker)
+    \item \textbf{Composability}: $\RPM(\Foundations_m) \circ \RPM(\Foundations_n) = \RPM(\Foundations_m \Tadd \Foundations_n)$
+    \item \textbf{Decidability}: Chain completion status $\mathrm{Level}_m(i)$ is computable from observables
+\end{enumerate}
+
+\textbf{Implications for Prediction:}
+\begin{enumerate}
+    \item Goal inference is mathematically well-founded
+    \item Blockers can be precisely identified (which D, W, or P is missing)
+    \item Multi-goal analysis is compositionally sound
+\end{enumerate}
+\end{theorem}
+
+%% ============================================================================
+%% PART VI: SURVEILLANCE CAPABILITY MATRIX
+%% ============================================================================
+\part{Surveillance Capability Matrix}
+
+\chapter{What Can Be Predicted}
+\label{ch:capability-matrix}
+
+\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=\textbf{Surveillance Capability Assessment},breakable]
+This chapter provides an objective assessment of predictive capabilities. The same mathematics enables both protective intervention and invasive surveillance. The ethical dimension lies in \textbf{consent}, \textbf{transparency}, and \textbf{purpose}---not in the mathematics.
+\end{tcolorbox}
+
+\section{Capability Matrix}
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.4}
+\begin{longtable}{>{\raggedright\arraybackslash}p{3cm}|c|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}p{2.5cm}|c}
+\caption{TKS Predictive Capability Matrix} \\
+\toprule
+\textbf{What Can Be Predicted} & \textbf{Accuracy} & \textbf{Data Required} & \textbf{Time Horizon} & \textbf{Stealth} \\
+\midrule
+\endfirsthead
+\multicolumn{5}{c}{\textit{Table continued from previous page}} \\
+\toprule
+\textbf{What Can Be Predicted} & \textbf{Accuracy} & \textbf{Data Required} & \textbf{Time Horizon} & \textbf{Stealth} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+% Purchase Behavior
+Purchase category (what type) & 85-95\% & 20+ purchases & 30 days & High \\
+Purchase timing (when) & 70-80\% & 40+ data points & 14 days & High \\
+Price sensitivity & 80-90\% & 30+ purchases & N/A & High \\
+Impulse vs. planned & 75-85\% & 50+ interactions & Per-event & High \\
+
+\midrule
+
+% Mental Health
+Depression risk & 75-85\% & 40+ posts & 60 days & Medium \\
+Anxiety patterns & 70-80\% & 30+ posts & 30 days & Medium \\
+Crisis probability & 65-75\% & 60+ interactions & 90 days & Medium \\
+Therapy benefit likelihood & 60-70\% & 100+ data points & N/A & Medium \\
+
+\midrule
+
+% Relationship
+Relationship satisfaction & 70-80\% & 60+ interactions & N/A & Medium \\
+Breakup probability & 65-75\% & 90+ data points & 90 days & Low \\
+Social isolation risk & 80-90\% & 30+ days location & 30 days & High \\
+
+\midrule
+
+% Career
+Job satisfaction & 75-85\% & 60+ work interactions & N/A & Medium \\
+Turnover probability & 70-80\% & 45+ days activity & 90 days & Medium \\
+Promotion readiness & 60-70\% & 100+ work data & N/A & Low \\
+
+\midrule
+
+% Political
+Political leaning & 85-95\% & 50+ content interactions & N/A & High \\
+Radicalization trajectory & 65-75\% & 90+ days tracking & 180 days & Low \\
+Protest participation & 70-80\% & 30+ relevant interactions & 30 days & Medium \\
+
+\midrule
+
+% Health
+Sleep disorder indicators & 80-90\% & 30+ days biometric & N/A & High \\
+Activity decline patterns & 85-95\% & 30+ days tracking & 30 days & High \\
+Substance use patterns & 60-70\% & 60+ purchase/location & N/A & Medium \\
+
+\end{longtable}
+\end{center}
+
+\section{Scale and Infrastructure}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{l|X|X}
+\toprule
+\textbf{Scale} & \textbf{Infrastructure Required} & \textbf{Entities Capable} \\
+\midrule
+Individual (1 person) & Personal computer, API access & Anyone with data access \\
+Small group (100s) & Cloud computing, data pipeline & Small companies, researchers \\
+Organization (1000s) & Enterprise infrastructure & Corporations, institutions \\
+City-scale (100,000s) & Data center, ML infrastructure & Large tech companies, governments \\
+National (millions) & Distributed infrastructure & Major tech platforms, nation-states \\
+Global (billions) & Hyperscale infrastructure & Only largest tech platforms \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{Stealth Assessment}
+
+\begin{definition}[Stealth Level]
+\label{def:stealth}
+The \emph{stealth level} of a prediction capability indicates how detectable the surveillance is to the subject:
+
+\begin{itemize}
+    \item \textbf{High Stealth}: Uses only passively collected data (browsing, purchases, location). Subject has no indication of analysis.
+    \item \textbf{Medium Stealth}: Requires some active data collection (surveys, interactions). Subject may notice data collection but not analysis.
+    \item \textbf{Low Stealth}: Requires explicit data requests or unusual access patterns. Sophisticated subject could detect.
+\end{itemize}
+\end{definition}
+
+\section{Countermeasures and Limitations}
+
+\begin{proposition}[Prediction Limitations]
+\label{prop:limitations}
+TKS predictive intelligence has fundamental limitations:
+
+\begin{enumerate}
+    \item \textbf{Chaotic individuals}: Those with strange attractors ($\dim > 2$) are inherently less predictable
+    \item \textbf{Life events}: Unpredictable external events (accidents, windfalls) disrupt patterns
+    \item \textbf{Conscious change}: Deliberate self-transformation can alter attractors
+    \item \textbf{Data gaps}: Missing data sources reduce accuracy proportionally
+    \item \textbf{Adversarial behavior}: Subjects aware of surveillance can generate misleading data
+\end{enumerate}
+\end{proposition}
+
+\begin{proposition}[Countermeasures]
+\label{prop:countermeasures}
+Individuals can reduce predictability through:
+
+\begin{enumerate}
+    \item \textbf{Data minimization}: Reduce digital footprint
+    \item \textbf{Noise injection}: Intentionally varied behavior patterns
+    \item \textbf{Platform diversification}: Spread activity across unconnected platforms
+    \item \textbf{Conscious irregularity}: Break habitual patterns ($\noe{7}$ disruption)
+    \item \textbf{Privacy tools}: VPNs, ad blockers, tracker blockers
+\end{enumerate}
+\end{proposition}
+
+%% ============================================================================
+%% APPENDICES
+%% ============================================================================
+\appendix
+
+\chapter{Quick Reference Equations}
+\label{app:quick-ref}
+
+\section{Stage 1: NLP-Noetic Mapping}
+\begin{equation}
+    \NLP : \DigitalTrace \to \{0, 1, \ldots, 9\}^*
+\end{equation}
+
+\section{Stage 2: Fractal Construction}
+\begin{equation}
+    \ProfileFrac_i = \langle k_1 : k_2 : \cdots : k_n \rangle_n
+\end{equation}
+
+\section{Stage 3: Attractor Computation}
+\begin{equation}
+    \PsychAttractor_i = \lim_{n \to \infty} \ProfileFrac_i^n(X_0)
+\end{equation}
+
+\section{Stage 4: RPM Goal Inference}
+\begin{equation}
+    \mathrm{Level}_m(i) \in \{0, 1, 2, 3\} \quad \text{based on } \sigma(D_m), \sigma(W_m), \sigma(P_m)
+\end{equation}
+
+\section{Stage 5: Timeline Prediction}
+\begin{equation}
+    \Timeline(\ProfileFrac_i, X_{\text{now}}, t) \to \pi_{\PsychAttractor_i} \quad \text{as } t \to 40
+\end{equation}
+
+\section{Stage 6: Vulnerability Score}
+\begin{equation}
+    \VulnScore_i = \max_m \Lacunarity(\ProfileFrac_i^{(m)}) \quad ; \quad \text{Critical if } > 1.5
+\end{equation}
+
+\chapter{TKS Theorem Reference}
+\label{app:theorems}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{l|X|l}
+\toprule
+\textbf{Theorem} & \textbf{Statement Summary} & \textbf{Application} \\
+\midrule
+7.4 (40-Step) & Fractals stabilize within 40 data points & Profile completion \\
+5.21 (Uniqueness) & Attractors are unique and computable & Personality typing \\
+6.41 (Lacunarity) & Lacunarity is reliably computable & Vulnerability detection \\
+RPM Monad & Goal chains are decidable & Goal inference \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+%% ============================================================================
+%% END DOCUMENT
+%% ============================================================================
+
+\end{document}

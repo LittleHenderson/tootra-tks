@@ -1,0 +1,186 @@
+======================================================================
+TRACK 2 AGENT G: STORY-EQUATION BIDIRECTIONAL TRAINING (LITE)
+======================================================================
+
+Device: cpu
+Loaded 680 training samples
+
+Task distribution:
+  equation_to_story: 340
+  story_to_equation: 340
+
+Train size: 612
+Eval size: 68
+
+Model parameters: 561,023
+
+Training configuration:
+  Epochs: 10
+  Batch size: 8
+  Learning rate: 0.001
+  Output dir: output/teacher_model_story
+
+======================================================================
+TRAINING
+======================================================================
+
+Epoch 1/10
+----------------------------------------------------------------------
+  Step 0/76: loss=4.8532
+  Step 10/76: loss=4.0512
+  Step 20/76: loss=3.3386
+  Step 30/76: loss=3.1264
+  Step 40/76: loss=3.2103
+  Step 50/76: loss=3.1896
+  Step 60/76: loss=3.0830
+  Step 70/76: loss=3.0255
+  Step 75/76: loss=2.9163
+
+  Epoch 1 average loss: 3.4222
+  Eval loss: 2.9536
+
+Epoch 2/10
+----------------------------------------------------------------------
+  Step 0/76: loss=2.8763
+  Step 10/76: loss=2.8384
+  Step 20/76: loss=2.7307
+  Step 30/76: loss=2.5857
+  Step 40/76: loss=2.6497
+  Step 50/76: loss=2.5702
+  Step 60/76: loss=2.4426
+  Step 70/76: loss=2.3356
+  Step 75/76: loss=2.3158
+
+  Epoch 2 average loss: 2.6147
+  Eval loss: 2.3246
+
+Epoch 3/10
+----------------------------------------------------------------------
+  Step 0/76: loss=2.2815
+  Step 10/76: loss=2.2516
+  Step 20/76: loss=2.1057
+  Step 30/76: loss=2.1492
+  Step 40/76: loss=2.0742
+  Step 50/76: loss=2.0099
+  Step 60/76: loss=1.9598
+  Step 70/76: loss=1.9493
+  Step 75/76: loss=1.8512
+
+  Epoch 3 average loss: 2.0851
+  Eval loss: 1.8895
+
+Epoch 4/10
+----------------------------------------------------------------------
+  Step 0/76: loss=1.9047
+  Step 10/76: loss=1.8596
+  Step 20/76: loss=1.7435
+  Step 30/76: loss=1.7010
+  Step 40/76: loss=1.6917
+  Step 50/76: loss=1.6731
+  Step 60/76: loss=1.5111
+  Step 70/76: loss=1.4992
+  Step 75/76: loss=1.6480
+
+  Epoch 4 average loss: 1.7047
+  Eval loss: 1.5327
+
+Epoch 5/10
+----------------------------------------------------------------------
+  Step 0/76: loss=1.5259
+  Step 10/76: loss=1.5551
+  Step 20/76: loss=1.4455
+  Step 30/76: loss=1.4422
+  Step 40/76: loss=1.4384
+  Step 50/76: loss=1.2877
+  Step 60/76: loss=1.3117
+  Step 70/76: loss=1.2063
+  Step 75/76: loss=1.2820
+
+  Epoch 5 average loss: 1.3828
+  Eval loss: 1.2382
+
+Epoch 6/10
+----------------------------------------------------------------------
+  Step 0/76: loss=1.1845
+  Step 10/76: loss=1.1467
+  Step 20/76: loss=1.1297
+  Step 30/76: loss=1.1518
+  Step 40/76: loss=1.1083
+  Step 50/76: loss=1.0513
+  Step 60/76: loss=1.1023
+  Step 70/76: loss=1.0630
+  Step 75/76: loss=1.0143
+
+  Epoch 6 average loss: 1.1116
+  Eval loss: 0.9907
+
+Epoch 7/10
+----------------------------------------------------------------------
+  Step 0/76: loss=1.0068
+  Step 10/76: loss=1.0197
+  Step 20/76: loss=0.9821
+  Step 30/76: loss=0.9555
+  Step 40/76: loss=0.8783
+  Step 50/76: loss=0.8734
+  Step 60/76: loss=0.7808
+  Step 70/76: loss=0.7761
+  Step 75/76: loss=0.8252
+
+  Epoch 7 average loss: 0.9010
+  Eval loss: 0.8036
+
+Epoch 8/10
+----------------------------------------------------------------------
+  Step 0/76: loss=0.7650
+  Step 10/76: loss=0.7461
+  Step 20/76: loss=0.7272
+  Step 30/76: loss=0.7179
+  Step 40/76: loss=0.9997
+  Step 50/76: loss=0.6784
+  Step 60/76: loss=0.9009
+  Step 70/76: loss=0.6796
+  Step 75/76: loss=0.6438
+
+  Epoch 8 average loss: 0.7520
+  Eval loss: 0.6788
+
+Epoch 9/10
+----------------------------------------------------------------------
+  Step 0/76: loss=0.7765
+  Step 10/76: loss=0.6119
+  Step 20/76: loss=0.6104
+  Step 30/76: loss=0.5523
+  Step 40/76: loss=0.6000
+  Step 50/76: loss=0.6088
+  Step 60/76: loss=0.6799
+  Step 70/76: loss=0.6725
+  Step 75/76: loss=0.7007
+
+  Epoch 9 average loss: 0.6380
+  Eval loss: 0.5857
+
+Epoch 10/10
+----------------------------------------------------------------------
+  Step 0/76: loss=0.4533
+  Step 10/76: loss=0.5523
+  Step 20/76: loss=0.5367
+  Step 30/76: loss=0.5262
+  Step 40/76: loss=0.4407
+  Step 50/76: loss=0.5562
+  Step 60/76: loss=0.4182
+  Step 70/76: loss=0.5270
+  Step 75/76: loss=0.5043
+
+  Epoch 10 average loss: 0.5721
+  Eval loss: 0.5225
+
+Saved model to: output\teacher_model_story\final_model.pt
+Saved tokenizer to: output\teacher_model_story\tokenizer.json
+Saved metrics to: output\teacher_model_story\training_metrics.json
+
+======================================================================
+TRAINING COMPLETE
+======================================================================
+
+Final train loss: 0.5721
+Final eval loss: 0.5225

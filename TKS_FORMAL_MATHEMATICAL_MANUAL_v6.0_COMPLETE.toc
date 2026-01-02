@@ -1,0 +1,44 @@
+\contentsline {chapter}{Abstract}{iii}{chapter*.1}%
+\contentsline {chapter}{Preface}{vii}{chapter*.3}%
+\contentsline {part}{I\hspace {1em}Foundations}{1}{part.1}%
+\contentsline {chapter}{\numberline {1}Introduction}{3}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Aims and Scope of TKS}{3}{section.1.1}%
+\contentsline {section}{\numberline {1.2}The Central Thesis}{3}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Notation and Conventions}{4}{section.1.3}%
+\contentsline {chapter}{\numberline {2}Canonical Ontology}{5}{chapter.2}%
+\contentsline {section}{\numberline {2.1}The Primordial Duality: Mind and Idea}{5}{section.2.1}%
+\contentsline {section}{\numberline {2.2}The Four Worlds}{5}{section.2.2}%
+\contentsline {section}{\numberline {2.3}The 40 Elements}{6}{section.2.3}%
+\contentsline {section}{\numberline {2.4}The Ten Noetic Operators}{6}{section.2.4}%
+\contentsline {section}{\numberline {2.5}The Seven Foundations}{7}{section.2.5}%
+\contentsline {part}{II\hspace {1em}Algebraic Structures}{9}{part.2}%
+\contentsline {chapter}{\numberline {3}Noetic Operator Algebra}{11}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Composition as Binary Operation}{11}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Fundamental Composition Axioms}{11}{section.3.2}%
+\contentsline {section}{\numberline {3.3}The Complete 10x10 Noetic Composition Table}{11}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Dualities and Inversions}{11}{section.3.4}%
+\contentsline {chapter}{\numberline {4}Algebraic Structures of Tootra Arithmetic}{13}{chapter.4}%
+\contentsline {section}{\numberline {4.1}The Idea Space as a Mathematical Structure}{13}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Tootra-Addition}{13}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Tootra Semiring}{13}{section.4.3}%
+\contentsline {part}{III\hspace {1em}Categorical and Semantic Framework}{15}{part.3}%
+\contentsline {chapter}{\numberline {5}The Category Noetica}{17}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Definition of Category Noetica}{17}{section.5.1}%
+\contentsline {chapter}{\numberline {6}The ACBE Functor}{19}{chapter.6}%
+\contentsline {chapter}{\numberline {7}RPM as a Recursive Prerequisite Monad}{21}{chapter.7}%
+\contentsline {chapter}{\numberline {8}Formal Semantics of TKS}{23}{chapter.8}%
+\contentsline {chapter}{\numberline {9}Type Theory of TKS Expressions}{25}{chapter.9}%
+\contentsline {section}{\numberline {9.1}Type Inference Rules}{25}{section.9.1}%
+\contentsline {part}{IV\hspace {1em}Applications}{27}{part.4}%
+\contentsline {chapter}{\numberline {10}The TKS Language Specification}{29}{chapter.10}%
+\contentsline {section}{\numberline {10.1}Complete BNF Grammar}{29}{section.10.1}%
+\contentsline {section}{\numberline {10.2}Big-Step Operational Semantics}{29}{section.10.2}%
+\contentsline {chapter}{\numberline {11}Noetic Fractal Calculus}{31}{chapter.11}%
+\contentsline {chapter}{\numberline {12}Worked Examples}{33}{chapter.12}%
+\contentsline {part}{V\hspace {1em}Appendices}{35}{part.5}%
+\contentsline {chapter}{\numberline {A}Symbol Reference}{37}{appendix.A}%
+\contentsline {chapter}{\numberline {B}Quick Reference Cards}{39}{appendix.B}%
+\contentsline {section}{\numberline {B.1}Element Grid}{39}{section.B.1}%
+\contentsline {section}{\numberline {B.2}Mirror Principle}{39}{section.B.2}%
+\contentsline {chapter}{\numberline {C}Glossary}{41}{appendix.C}%
+\contentsline {chapter}{Colophon}{43}{appendix*.4}%

@@ -1,0 +1,88 @@
+\contentsline {chapter}{v7.1 → v7.2 Continuity Bridge}{iii}{chapter*.1}%
+\contentsline {part}{I\hspace {1em}Canonical Reference}{1}{part.1}%
+\contentsline {chapter}{\numberline {1}The 28 Sub-Foundations}{3}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Sub-Foundation Space and Lattice}{3}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Sub-Foundations in v7.2 Extensions}{4}{section.1.2}%
+\contentsline {part}{II\hspace {1em}Mathematical Deepening}{5}{part.2}%
+\contentsline {chapter}{\numberline {2}Transfinite Noetic Fractals}{7}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Ordinal-Indexed Fractals}{7}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Transfinite Fractal Composition}{8}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Transfinite Eigenfractals}{9}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Limit Constructions}{9}{section.2.4}%
+\contentsline {section}{\numberline {2.5}Transfinite Semantic Evaluation}{10}{section.2.5}%
+\contentsline {chapter}{\numberline {3}Measure Theory on Idea Space}{11}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Sigma-Algebras on Ideas}{11}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Measures on Idea Space}{12}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Noetic Measure Transform}{12}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Integration on Idea Space}{13}{section.3.4}%
+\contentsline {section}{\numberline {3.5}Fractal Integration}{14}{section.3.5}%
+\contentsline {chapter}{\numberline {4}Polish Spaces and Stone Duality}{15}{chapter.4}%
+\contentsline {section}{\numberline {4.1}TKS as Polish Space}{15}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Extended Polish Structures}{15}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Stone Duality}{16}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Noetic Boolean Homomorphisms}{17}{section.4.4}%
+\contentsline {chapter}{\numberline {5}Generalized Fixed-Point Theorems}{19}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Banach Fixed-Point Theorem}{19}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Tarski Fixed-Point Theorem}{20}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Fixed Points for Fractal Operators}{21}{section.5.3}%
+\contentsline {section}{\numberline {5.4}Iterative Fixed-Point Computation}{21}{section.5.4}%
+\contentsline {part}{III\hspace {1em}Programming Language Expansion}{23}{part.3}%
+\contentsline {chapter}{\numberline {6}Hindley-Milner Type Inference}{25}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Type Schemes and Polymorphism}{25}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Unification}{26}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Algorithm W}{27}{section.6.3}%
+\contentsline {section}{\numberline {6.4}TKS-Specific Inference Rules}{27}{section.6.4}%
+\contentsline {chapter}{\numberline {7}Compiler Architecture}{29}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Lexical Analysis}{29}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Abstract Syntax Tree}{30}{section.7.2}%
+\contentsline {section}{\numberline {7.3}Intermediate Representation}{30}{section.7.3}%
+\contentsline {section}{\numberline {7.4}Bytecode Specification}{31}{section.7.4}%
+\contentsline {section}{\numberline {7.5}Virtual Machine}{32}{section.7.5}%
+\contentsline {chapter}{\numberline {8}Effect Handlers for RPM}{35}{chapter.8}%
+\contentsline {section}{\numberline {8.1}Algebraic Effects}{35}{section.8.1}%
+\contentsline {section}{\numberline {8.2}Handler Composition}{36}{section.8.2}%
+\contentsline {section}{\numberline {8.3}Shallow vs Deep Handlers}{36}{section.8.3}%
+\contentsline {chapter}{\numberline {9}Module System and Pattern Matching}{37}{chapter.9}%
+\contentsline {section}{\numberline {9.1}Module Structure}{37}{section.9.1}%
+\contentsline {section}{\numberline {9.2}Pattern Matching}{38}{section.9.2}%
+\contentsline {part}{IV\hspace {1em}Quantum Noetic Expansion}{39}{part.4}%
+\contentsline {chapter}{\numberline {10}Noetic Hilbert Spaces}{41}{chapter.10}%
+\contentsline {section}{\numberline {10.1}The Noetic Hilbert Space}{41}{section.10.1}%
+\contentsline {section}{\numberline {10.2}Noetics as Linear Operators}{42}{section.10.2}%
+\contentsline {section}{\numberline {10.3}Bounded Operators and Spectrum}{43}{section.10.3}%
+\contentsline {chapter}{\numberline {11}Spectral Theory and Measurement}{45}{chapter.11}%
+\contentsline {section}{\numberline {11.1}Spectral Decomposition}{45}{section.11.1}%
+\contentsline {section}{\numberline {11.2}Quantum Measurement}{45}{section.11.2}%
+\contentsline {section}{\numberline {11.3}POVM Generalization}{46}{section.11.3}%
+\contentsline {chapter}{\numberline {12}Quantum Fractals and Entanglement}{47}{chapter.12}%
+\contentsline {section}{\numberline {12.1}Quantum Fractal Operators}{47}{section.12.1}%
+\contentsline {section}{\numberline {12.2}Multi-Idea Hilbert Space}{47}{section.12.2}%
+\contentsline {section}{\numberline {12.3}Entangled RPM}{48}{section.12.3}%
+\contentsline {section}{\numberline {12.4}ACBE as Quantum Channel}{49}{section.12.4}%
+\contentsline {part}{V\hspace {1em}Unified Meta-System}{51}{part.5}%
+\contentsline {chapter}{\numberline {13}Monoidal 2-Category Structure}{53}{chapter.13}%
+\contentsline {section}{\numberline {13.1}TKS as 2-Category}{53}{section.13.1}%
+\contentsline {section}{\numberline {13.2}Monoidal Structure}{53}{section.13.2}%
+\contentsline {section}{\numberline {13.3}Duality and Traces}{54}{section.13.3}%
+\contentsline {chapter}{\numberline {14}Topos-Theoretic Foundations}{55}{chapter.14}%
+\contentsline {section}{\numberline {14.1}Presheaf Topos}{55}{section.14.1}%
+\contentsline {section}{\numberline {14.2}Subobject Classifier}{55}{section.14.2}%
+\contentsline {section}{\numberline {14.3}Internal Logic}{56}{section.14.3}%
+\contentsline {section}{\numberline {14.4}Geometric Morphisms}{56}{section.14.4}%
+\contentsline {chapter}{\numberline {15}Coalgebraic Dynamics}{57}{chapter.15}%
+\contentsline {section}{\numberline {15.1}TKS as Coalgebra}{57}{section.15.1}%
+\contentsline {section}{\numberline {15.2}Final Coalgebra}{57}{section.15.2}%
+\contentsline {section}{\numberline {15.3}Acquisition Dynamics}{58}{section.15.3}%
+\contentsline {section}{\numberline {15.4}Corecursion and Coiteration}{58}{section.15.4}%
+\contentsline {chapter}{\numberline {16}Indexed Containers for Multi-World Semantics}{59}{chapter.16}%
+\contentsline {section}{\numberline {16.1}Indexed Containers}{59}{section.16.1}%
+\contentsline {section}{\numberline {16.2}Multi-World Containers}{59}{section.16.2}%
+\contentsline {part}{VI\hspace {1em}Integrated Worked Examples}{61}{part.6}%
+\contentsline {chapter}{\numberline {17}Comprehensive Examples}{63}{chapter.17}%
+\contentsline {section}{\numberline {17.1}Example: Transfinite ACBE Cascade}{63}{section.17.1}%
+\contentsline {section}{\numberline {17.2}Example: Quantum RPM with Type Inference}{63}{section.17.2}%
+\contentsline {section}{\numberline {17.3}Example: Topos-Theoretic Noetic Logic}{64}{section.17.3}%
+\contentsline {section}{\numberline {17.4}Example: Coalgebraic Fractal Behavior}{64}{section.17.4}%
+\contentsline {part}{VII\hspace {1em}Appendices}{65}{part.7}%
+\contentsline {chapter}{\numberline {18}Symbol Reference}{67}{chapter.18}%
+\contentsline {chapter}{\numberline {19}Version History}{69}{chapter.19}%

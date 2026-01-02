@@ -1,0 +1,1016 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  TKS_Overton_Window_Manipulation.tex
+%%  Overton Window Manipulation: Reality Tunneling
+%%
+%%  Comprehensive TKS Formalization of Discourse Boundary Dynamics
+%%  Part of TKS v7.4 Scenario Equation System
+%%  ADDITIVE to v7.4 canon
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% ============================================================================
+%% CHAPTER: OVERTON WINDOW MANIPULATION
+%% ============================================================================
+\chapter{Overton Window Manipulation: Threat Model for Discourse Boundary Attacks}
+\label{ch:overton-window}
+
+\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=\textbf{THREAT MODEL NOTICE},breakable]
+The following models are presented as \textbf{threat models for defenders}. They describe how hostile actors---authoritarian regimes, disinformation campaigns, or extremist movements---might systematically shift the boundaries of acceptable discourse to normalize previously unthinkable positions.
+
+Understanding these mechanisms is essential for:
+\begin{itemize}
+    \item \textbf{Media literacy educators}: Teaching critical awareness of gradual normalization
+    \item \textbf{Platform integrity teams}: Detecting coordinated window-shifting campaigns
+    \item \textbf{Democratic institutions}: Building resilience against discourse manipulation
+    \item \textbf{Researchers}: Developing early-warning systems for radicalization pipelines
+\end{itemize}
+The mathematics is value-neutral; the defensive framing ensures responsible documentation.
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\textbf{Chapter Overview},breakable]
+This chapter formalizes the \textbf{Overton Window}---the range of ideas considered
+acceptable in public discourse at any given time---as a \textit{psychological attractor basin}
+in idea space $\Ideas$. Using canonical TKS machinery (transfinite fractals, Collage Theorem,
+ACBE descent), we model:
+\begin{itemize}
+    \item How acceptability boundaries form and stabilize
+    \item Gradual boundary shifts via transfinite sequences
+    \item The design of shift strategies under constraint optimization
+    \item Normalization dynamics governing acceptance thresholds
+\end{itemize}
+The mathematics presented here is value-neutral: the same equations describe
+civil rights expansion, technology adoption shifts, and deliberate manipulation campaigns.
+\end{tcolorbox}
+
+%% ============================================================================
+%% SECTION: MATHEMATICAL DEFINITIONS
+%% ============================================================================
+\section{Mathematical Definitions}
+\label{sec:overton-definitions}
+
+\subsection{The Overton Window as Attractor Basin}
+
+\begin{definition}[Discourse Space]
+\label{def:discourse-space}
+The \textbf{discourse space} $\mathcal{D} \subset \Ideas$ is the subspace of Ideas
+pertaining to a specific domain of public discussion (politics, ethics, technology, etc.).
+Elements of $\mathcal{D}$ are \textit{positions}---discrete stances or policy proposals
+that can be articulated and debated.
+\end{definition}
+
+\begin{definition}[Overton Window]
+\label{def:overton-window}
+The \textbf{Overton Window} $\mathcal{O} \subset \mathcal{D}$ is the attractor basin
+in discourse space representing the range of ideas considered ``acceptable'' by the
+prevailing social consensus at time $t$. Formally:
+\[
+\boxed{
+    \mathcal{O}(t) := \left\{ x \in \mathcal{D} \;\Big|\;
+    \mu_{\mathrm{accept}}(x, t) \geq \theta_{\mathrm{norm}}(t) \right\}
+}
+\]
+where:
+\begin{itemize}
+    \item $\mu_{\mathrm{accept}} : \mathcal{D} \times \mathbb{R}_{\geq 0} \to [0,1]$
+          is the \textbf{acceptability measure} assigning each position a social
+          acceptance probability at time $t$
+    \item $\theta_{\mathrm{norm}}(t) \in [0,1]$ is the \textbf{normalization threshold}---
+          the minimum acceptability required for inclusion in mainstream discourse
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Window Topology]
+\label{def:window-topology}
+The Overton Window has canonical boundary structure:
+\begin{align}
+    \partial^{-}\mathcal{O} &:= \left\{ x \in \mathcal{D} \;\Big|\;
+        \mu_{\mathrm{accept}}(x) = \theta_{\mathrm{norm}} - \epsilon \right\}
+        \quad \text{(unthinkable boundary)} \\
+    \partial^{+}\mathcal{O} &:= \left\{ x \in \mathcal{D} \;\Big|\;
+        \mu_{\mathrm{accept}}(x) = \theta_{\mathrm{norm}} + \epsilon \right\}
+        \quad \text{(radical boundary)} \\
+    \mathrm{Core}(\mathcal{O}) &:= \left\{ x \in \mathcal{D} \;\Big|\;
+        \mu_{\mathrm{accept}}(x) \geq \theta_{\mathrm{policy}} \right\}
+        \quad \text{(policy core)}
+\end{align}
+where $\theta_{\mathrm{policy}} > \theta_{\mathrm{norm}}$ is the elevated threshold
+for positions eligible for actual policy implementation.
+\end{definition}
+
+\begin{proposition}[Overton Window as Psychological Attractor]
+\label{prop:overton-attractor}
+The Overton Window $\mathcal{O}(t)$ satisfies the axioms of a psychological attractor
+(Definition~\ref{def:psych-attractor}):
+\begin{enumerate}[label=(\roman*)]
+    \item \textbf{Invariance}: The discourse fractal $\Frac_{\mathcal{D}}$ preserves
+          acceptability: $\Frac_{\mathcal{D}}(\mathcal{O}) \subseteq \mathcal{O}$
+    \item \textbf{Attraction}: Positions near the boundary tend toward the interior
+          or exterior under social dynamics
+    \item \textbf{Minimality}: The window is the smallest stable configuration supporting
+          coherent public discourse
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+\textbf{(i) Invariance}: Social reinforcement dynamics operate via the fractal
+$\Frac_{\mathcal{D}} = \langle 1 : 5 : 7 \rangle$ (awareness $\to$ reception $\to$ rhythm).
+Positions within $\mathcal{O}$ receive attention ($\noe{1}$), are absorbed into consensus
+($\noe{5}$), and become habituated ($\noe{7}$). This self-reinforcing loop maintains the
+window: $\Frac_{\mathcal{D}}(\mathcal{O}) \subseteq \mathcal{O}$.
+
+\textbf{(ii) Attraction}: Define the basin as $U = \{x \mid \mu_{\mathrm{accept}}(x) >
+\theta_{\mathrm{norm}} - \delta\}$. Positions in $U \setminus \mathcal{O}$ experience
+normalization pressure: repeated exposure shifts $\mu_{\mathrm{accept}}$ upward until
+$x \in \mathcal{O}$ or $x$ is expelled to $\mathcal{D} \setminus U$.
+
+\textbf{(iii) Minimality}: If $\mathcal{O}' \subset \mathcal{O}$ satisfied (i) and (ii),
+then positions in $\mathcal{O} \setminus \mathcal{O}'$ would lack stable discourse
+grounding, contradicting the attractor definition.
+\end{proof}
+
+%% ============================================================================
+%% SUBSECTION: MEASURE OVERTON WINDOW
+%% ============================================================================
+\subsection{Measuring the Overton Window: Discourse Fractal Analysis}
+
+\begin{definition}[Discourse Fractal]
+\label{def:discourse-fractal}
+The \textbf{discourse fractal} $\Frac_{\mathcal{D}}$ governing acceptability dynamics is:
+\[
+    \Frac_{\mathcal{D}} = \langle 1 : 7 : 5 : 2 \rangle
+\]
+representing the cycle: Awareness ($\noe{1}$) $\to$ Rhythm/Habituation ($\noe{7}$)
+$\to$ Reception/Absorption ($\noe{5}$) $\to$ Attraction/Acceptance ($\noe{2}$).
+\end{definition}
+
+\begin{definition}[Measure Overton Window Function]
+\label{def:measure-overton}
+The function $\mathtt{measure\_overton\_window} : \mathcal{D} \times \mathcal{T} \to
+\mathcal{P}(\mathcal{D}) \times \mathbb{R}^3$ computes the current window state:
+\[
+\boxed{
+    \mathtt{measure\_overton\_window}(\mathcal{D}, t) :=
+    \left( \mathcal{O}(t), \; \mu_{\mathrm{center}}(t), \; w(t), \; \sigma(t) \right)
+}
+\]
+where:
+\begin{align}
+    \mathcal{O}(t) &= \left\{ x \in \mathcal{D} \;\Big|\;
+        \mu_{\mathrm{accept}}(x, t) \geq \theta_{\mathrm{norm}}(t) \right\} \\
+    \mu_{\mathrm{center}}(t) &= \frac{1}{|\mathcal{O}(t)|} \sum_{x \in \mathcal{O}(t)}
+        \mathrm{pos}(x) \quad \text{(window centroid)} \\
+    w(t) &= \max_{x \in \mathcal{O}(t)} \mathrm{pos}(x) -
+        \min_{x \in \mathcal{O}(t)} \mathrm{pos}(x) \quad \text{(window width)} \\
+    \sigma(t) &= \sqrt{\frac{1}{|\mathcal{O}(t)|} \sum_{x \in \mathcal{O}(t)}
+        (\mathrm{pos}(x) - \mu_{\mathrm{center}}(t))^2} \quad \text{(window variance)}
+\end{align}
+and $\mathrm{pos} : \mathcal{D} \to \mathbb{R}$ is a one-dimensional projection
+mapping positions to a ``left-right'' or ``conservative-progressive'' spectrum.
+\end{definition}
+
+\begin{algorithm}[Discourse Fractal Analysis]
+\label{alg:discourse-analysis}
+\textbf{Input}: Discourse corpus $C$, position set $\mathcal{D}$, time $t$
+
+\textbf{Output}: Window measurement $(\mathcal{O}, \mu_c, w, \sigma)$
+
+\begin{enumerate}
+    \item \textbf{Extract mentions}: For each $x \in \mathcal{D}$, count
+          $n_x = |\{c \in C \mid x \text{ mentioned in } c\}|$
+    \item \textbf{Compute sentiment}: $s_x = \frac{1}{n_x} \sum_{\text{mentions}}
+          \mathrm{sentiment}(\text{context})$
+    \item \textbf{Calculate acceptability}:
+          $\mu_{\mathrm{accept}}(x) = \frac{n_x}{\max_y n_y} \cdot \frac{1 + s_x}{2}$
+    \item \textbf{Determine threshold}:
+          $\theta_{\mathrm{norm}} = \mathrm{median}(\{\mu_{\mathrm{accept}}(x)\}_{x \in \mathcal{D}})$
+    \item \textbf{Construct window}: $\mathcal{O} = \{x \mid \mu_{\mathrm{accept}}(x)
+          \geq \theta_{\mathrm{norm}}\}$
+    \item \textbf{Compute statistics}: Calculate $\mu_c$, $w$, $\sigma$ per Definition~\ref{def:measure-overton}
+\end{enumerate}
+\end{algorithm}
+
+%% ============================================================================
+%% SUBSECTION: SHIFT WINDOW
+%% ============================================================================
+\subsection{Window Shifting via Transfinite Sequences}
+
+\begin{definition}[Shift Fractal]
+\label{def:shift-fractal}
+The \textbf{shift fractal} $\Frac_{\mathrm{shift}}$ is a transfinite sequence of
+acceptable positions:
+\[
+\boxed{
+    \Frac_{\mathrm{shift}} := \left( x_\alpha \right)_{\alpha < \lambda}
+    \quad \text{where } x_\alpha \in \mathcal{D} \text{ and }
+    d(x_\alpha, x_{\alpha+1}) \leq \delta_{\max}
+}
+\]
+for some limit ordinal $\lambda$ and maximum step size $\delta_{\max}$.
+
+The sequence satisfies the \textbf{coherence condition}:
+\[
+    \forall \alpha < \beta < \lambda :
+    \mu_{\mathrm{accept}}(x_\alpha, t_\alpha) \geq \theta_{\mathrm{norm}}(t_\alpha)
+    \implies \mu_{\mathrm{accept}}(x_\beta, t_\beta) \geq \theta_{\mathrm{norm}}(t_\beta) - \epsilon
+\]
+Each step maintains acceptability within tolerance $\epsilon$ of the threshold.
+\end{definition}
+
+\begin{definition}[Shift Window Function]
+\label{def:shift-window}
+The function $\mathtt{shift\_window} : \mathcal{O} \times \mathcal{D} \times
+\mathbb{R}_{>0} \to \mathcal{O}'$ implements a single transfinite increment:
+\[
+\boxed{
+    \mathtt{shift\_window}(\mathcal{O}, x_{\mathrm{target}}, \delta) :=
+    \Frac_{\mathcal{D}}^n\left( \mathcal{O} \cup \{x_{\mathrm{edge}}\} \right)
+}
+\]
+where:
+\begin{align}
+    x_{\mathrm{edge}} &= \argmin_{x \in \mathcal{D} \setminus \mathcal{O}}
+        \left\{ d(x, \partial\mathcal{O}) \;\Big|\;
+        d(x, x_{\mathrm{target}}) < d(\mathcal{O}, x_{\mathrm{target}}) \right\} \\
+    n &= \min\left\{ k \;\Big|\;
+        \mu_{\mathrm{accept}}\left(\Frac_{\mathcal{D}}^k(x_{\mathrm{edge}})\right)
+        \geq \theta_{\mathrm{norm}} \right\}
+\end{align}
+That is: select the nearest outside position that moves toward the target, then
+iterate the discourse fractal until that position becomes normalized.
+\end{definition}
+
+\begin{theorem}[Shift Convergence]
+\label{thm:shift-convergence}
+Let $\mathcal{O}_0 = \mathcal{O}(t_0)$ be the initial window and
+$x_{\mathrm{target}} \in \mathcal{D}$ the target position. Under the shift fractal
+$\Frac_{\mathrm{shift}}$, the sequence of windows $(\mathcal{O}_\alpha)_{\alpha < \lambda}$
+converges:
+\[
+    \lim_{\alpha \to \lambda} \mathcal{O}_\alpha = \mathcal{O}^*
+    \quad \text{where } x_{\mathrm{target}} \in \mathrm{Core}(\mathcal{O}^*)
+\]
+provided the Collage Theorem conditions (Theorem~\ref{thm:collage}) are satisfied:
+\[
+    d_H(\mathcal{O}^*, \FractalAttractor_{\Frac_{\mathrm{shift}}}) \leq
+    \frac{1}{1 - r_{\mathrm{shift}}} \cdot d_H(\mathcal{O}^*,
+    H_{\Frac_{\mathrm{shift}}}(\mathcal{O}^*))
+\]
+\end{theorem}
+
+\begin{proof}
+The shift fractal $\Frac_{\mathrm{shift}}$ defines a contractive IFS on window space
+with contractivity ratio $r_{\mathrm{shift}} = 1 - \delta_{\max} / \mathrm{diam}(\mathcal{D})$.
+By the Banach Fixed Point Theorem (underlying the Collage Theorem), the sequence
+$\mathcal{O}_\alpha = H_{\Frac_{\mathrm{shift}}}^\alpha(\mathcal{O}_0)$ converges to
+the unique attractor $\FractalAttractor_{\Frac_{\mathrm{shift}}}$.
+
+The collage error bound ensures that by designing $\Frac_{\mathrm{shift}}$ such that
+$H_{\Frac_{\mathrm{shift}}}(\mathcal{O}^*)$ closely overlaps the target window
+containing $x_{\mathrm{target}}$, the limiting attractor $\FractalAttractor$
+approximates this target.
+\end{proof}
+
+%% ============================================================================
+%% SUBSECTION: DESIGN WINDOW SHIFT
+%% ============================================================================
+\subsection{Designing Shift Strategies: Constraint Optimization}
+
+\begin{definition}[Shift Strategy]
+\label{def:shift-strategy}
+A \textbf{shift strategy} $\mathcal{S}$ is a tuple:
+\[
+    \mathcal{S} = \left( x_{\mathrm{target}}, \; \delta_{\max}, \;
+    \theta_{\mathrm{plausible}}, \; T_{\mathrm{max}}, \; \mathcal{C} \right)
+\]
+where:
+\begin{itemize}
+    \item $x_{\mathrm{target}} \in \mathcal{D}$: the desired final position
+    \item $\delta_{\max} \in \mathbb{R}_{>0}$: maximum step size per iteration
+    \item $\theta_{\mathrm{plausible}} \in [0,1]$: plausible deniability threshold
+    \item $T_{\mathrm{max}} \in \mathbb{R}_{>0}$: maximum time horizon
+    \item $\mathcal{C}$: constraint set (social, legal, resource bounds)
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Design Window Shift Function]
+\label{def:design-window-shift}
+The function $\mathtt{design\_window\_shift}$ solves the constrained optimization:
+\[
+\boxed{
+    \mathtt{design\_window\_shift}(\mathcal{O}_0, x_{\mathrm{target}}, \mathcal{C}) :=
+    \argmin_{\Frac_{\mathrm{shift}}} \left\{
+        |\Frac_{\mathrm{shift}}| \;\Big|\;
+        x_{\mathrm{target}} \in \mathcal{O}_{\infty} \text{ and }
+        \Frac_{\mathrm{shift}} \models \mathcal{C}
+    \right\}
+}
+\]
+where $|\Frac_{\mathrm{shift}}|$ is the length (ordinal) of the shift sequence and
+$\Frac_{\mathrm{shift}} \models \mathcal{C}$ denotes constraint satisfaction.
+\end{definition}
+
+\begin{definition}[Constraint Set for Window Shifting]
+\label{def:shift-constraints}
+The standard constraint set $\mathcal{C}_{\mathrm{std}}$ includes:
+\begin{align}
+    \mathcal{C}_{\mathrm{step}} &: \forall \alpha : d(x_\alpha, x_{\alpha+1}) \leq \delta_{\max}
+        \quad \text{(step size bound)} \\
+    \mathcal{C}_{\mathrm{plausible}} &: \forall \alpha :
+        P(\text{``shift detected''} \mid x_\alpha) \leq \theta_{\mathrm{plausible}}
+        \quad \text{(plausible deniability)} \\
+    \mathcal{C}_{\mathrm{time}} &: \lambda \cdot \Delta t \leq T_{\mathrm{max}}
+        \quad \text{(time horizon)} \\
+    \mathcal{C}_{\mathrm{resource}} &: \sum_\alpha \mathrm{cost}(x_\alpha \to x_{\alpha+1})
+        \leq B \quad \text{(budget constraint)} \\
+    \mathcal{C}_{\mathrm{reversibility}} &: \forall \alpha :
+        \exists \beta > \alpha : d(x_\beta, x_0) < d(x_\alpha, x_0)
+        \quad \text{(escape path)}
+\end{align}
+\end{definition}
+
+\begin{algorithm}[Optimal Shift Design via Collage Minimization]
+\label{alg:shift-design}
+\textbf{Input}: Current window $\mathcal{O}_0$, target $x_{\mathrm{target}}$,
+constraints $\mathcal{C}$
+
+\textbf{Output}: Optimal shift fractal $\Frac^*_{\mathrm{shift}}$
+
+\begin{enumerate}
+    \item \textbf{Construct target window}:
+          $\mathcal{O}^* = \mathcal{O}_0 \cup B_\epsilon(x_{\mathrm{target}})$
+          where $B_\epsilon$ is the $\epsilon$-ball
+    \item \textbf{Initialize}: $S \gets \varnothing$, $\mathcal{O}_{\mathrm{curr}}
+          \gets \mathcal{O}_0$
+    \item \textbf{While} $x_{\mathrm{target}} \notin \mathcal{O}_{\mathrm{curr}}$:
+        \begin{enumerate}
+            \item Find $x_{\mathrm{edge}} = \argmin_{x \in \partial^+\mathcal{O}_{\mathrm{curr}}}
+                  d(x, x_{\mathrm{target}})$
+            \item \textbf{If} $d(x_{\mathrm{edge}}, \mathcal{O}_{\mathrm{curr}}) \leq \delta_{\max}$
+                  \textbf{and} constraints $\mathcal{C}$ satisfied:
+                \begin{enumerate}
+                    \item $S \gets S \cup \{x_{\mathrm{edge}}\}$
+                    \item $\mathcal{O}_{\mathrm{curr}} \gets \mathtt{shift\_window}
+                          (\mathcal{O}_{\mathrm{curr}}, x_{\mathrm{target}}, \delta_{\max})$
+                \end{enumerate}
+            \item \textbf{Else}: Reduce $\delta_{\max}$ or relax constraints
+        \end{enumerate}
+    \item \textbf{Return} $\Frac^*_{\mathrm{shift}} = (x_\alpha)_{\alpha \leq |S|}$
+          where $x_\alpha$ is the $\alpha$-th element of $S$
+\end{enumerate}
+
+\textbf{Optimality}: By the Collage Theorem, minimizing collage error
+$d_H(\mathcal{O}^*, H_S(\mathcal{O}^*))$ minimizes the number of steps required.
+\end{algorithm}
+
+%% ============================================================================
+%% SUBSECTION: NORMALIZATION DYNAMICS
+%% ============================================================================
+\subsection{Normalization Dynamics: Acceptance Threshold Evolution}
+
+\begin{definition}[Acceptance Threshold Dynamics]
+\label{def:acceptance-dynamics}
+The \textbf{acceptance threshold} $\theta_{\mathrm{norm}}(t)$ evolves according to:
+\[
+\boxed{
+    \frac{d\theta_{\mathrm{norm}}}{dt} =
+    -\gamma \cdot (\theta_{\mathrm{norm}} - \bar{\mu}(t)) +
+    \eta \cdot \sigma_{\mu}(t) \cdot \xi(t)
+}
+\]
+where:
+\begin{itemize}
+    \item $\bar{\mu}(t) = \frac{1}{|\mathcal{D}|} \sum_{x \in \mathcal{D}}
+          \mu_{\mathrm{accept}}(x, t)$: mean acceptability
+    \item $\sigma_{\mu}(t)$: variance of acceptability distribution
+    \item $\gamma > 0$: regression rate toward mean
+    \item $\eta > 0$: noise sensitivity
+    \item $\xi(t)$: stochastic perturbation (social shocks, events)
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Wait for Normalization Function]
+\label{def:wait-normalization}
+The function $\mathtt{wait\_for\_normalization}$ computes the time required for a
+position to achieve acceptability:
+\[
+\boxed{
+    \mathtt{wait\_for\_normalization}(x, \theta_{\mathrm{target}}) :=
+    \inf\left\{ t > 0 \;\Big|\; \mu_{\mathrm{accept}}(x, t) \geq \theta_{\mathrm{target}} \right\}
+}
+\]
+\end{definition}
+
+\begin{theorem}[Normalization Time Bound]
+\label{thm:normalization-time}
+For a position $x$ at initial acceptability $\mu_0 = \mu_{\mathrm{accept}}(x, 0) <
+\theta_{\mathrm{norm}}$, the expected normalization time satisfies:
+\[
+    \mathbb{E}\left[ \mathtt{wait\_for\_normalization}(x, \theta_{\mathrm{norm}}) \right]
+    \leq \frac{1}{\alpha} \cdot \ln\left( \frac{\theta_{\mathrm{norm}} - \mu_0}{\epsilon} \right)
+\]
+where $\alpha$ is the exposure rate and $\epsilon$ is the convergence tolerance.
+\end{theorem}
+
+\begin{proof}
+Under repeated exposure via the discourse fractal $\Frac_{\mathcal{D}}$, acceptability
+evolves as:
+\[
+    \frac{d\mu_{\mathrm{accept}}}{dt} = \alpha \cdot (\theta_{\mathrm{target}} -
+    \mu_{\mathrm{accept}}) + \beta \cdot \mathrm{exposure}(x, t)
+\]
+This is an exponential approach with rate $\alpha$. Solving:
+\[
+    \mu_{\mathrm{accept}}(t) = \theta_{\mathrm{target}} -
+    (\theta_{\mathrm{target}} - \mu_0) \cdot e^{-\alpha t}
+\]
+Setting $\mu_{\mathrm{accept}}(T) = \theta_{\mathrm{norm}} - \epsilon$ and solving for $T$
+yields the bound.
+\end{proof}
+
+\begin{definition}[Completion Criterion]
+\label{def:completion-criterion}
+The window shift is \textbf{complete} when:
+\[
+\boxed{
+    \mathtt{shift\_complete}(\mathcal{O}, x_{\mathrm{target}}) :=
+    \left[ x_{\mathrm{target}} \in \mathrm{Core}(\mathcal{O}) \right] \land
+    \left[ \frac{d\mu_{\mathrm{accept}}(x_{\mathrm{target}})}{dt} \geq 0 \right]
+}
+\]
+That is, the target is in the policy core and its acceptability is stable or increasing.
+\end{definition}
+
+%% ============================================================================
+%% SECTION: CANONICAL EQUATIONS
+%% ============================================================================
+\section{Canonical Equations}
+\label{sec:overton-canonical}
+
+\begin{tcolorbox}[colback=gray!5!white,colframe=gray!75!black,title=\textbf{Canonical Overton Window Equations},breakable]
+
+\textbf{Equation 1: Window Measurement}
+\begin{equation}
+\boxed{
+    \mathcal{O}(t) = \left\{ x \in \mathcal{D} \;\Big|\;
+    \mu_{\mathrm{accept}}(x, t) \geq \theta_{\mathrm{norm}}(t) \right\}
+}
+\tag{OW-1}
+\end{equation}
+
+\textbf{Equation 2: Shift Trajectory}
+\begin{equation}
+\boxed{
+    \mathcal{O}_{\alpha+1} = \Frac_{\mathcal{D}}^{n_\alpha}\left(
+    \mathcal{O}_\alpha \cup \{x_{\alpha+1}\} \right)
+    \quad \text{where } n_\alpha =
+    \min\{k \mid \mu_{\mathrm{accept}}(\Frac_{\mathcal{D}}^k(x_{\alpha+1}))
+    \geq \theta_{\mathrm{norm}}\}
+}
+\tag{OW-2}
+\end{equation}
+
+\textbf{Equation 3: Step Size Constraint}
+\begin{equation}
+\boxed{
+    d(x_\alpha, x_{\alpha+1}) \leq \delta_{\max} \cdot
+    \left(1 + \frac{\mu_{\mathrm{accept}}(x_\alpha) - \theta_{\mathrm{norm}}}
+    {\sigma_{\mu}}\right)
+}
+\tag{OW-3}
+\end{equation}
+
+\textbf{Equation 4: Normalization Dynamics}
+\begin{equation}
+\boxed{
+    \frac{d\mu_{\mathrm{accept}}(x)}{dt} =
+    \alpha \cdot \mathrm{exposure}(x, t) \cdot
+    \left( \theta_{\mathrm{ceiling}} - \mu_{\mathrm{accept}}(x) \right) -
+    \beta \cdot \left( \mu_{\mathrm{accept}}(x) - \mu_{\mathrm{floor}} \right) \cdot
+    \mathbf{1}_{[\mathrm{no\ exposure}]}
+}
+\tag{OW-4}
+\end{equation}
+
+\textbf{Equation 5: Completion Criterion}
+\begin{equation}
+\boxed{
+    \mathtt{complete} \iff
+    x_{\mathrm{target}} \in \mathrm{Core}(\mathcal{O}) \land
+    d_H\left(\mathcal{O}, \FractalAttractor_{\Frac_{\mathrm{shift}}}\right) < \epsilon
+}
+\tag{OW-5}
+\end{equation}
+
+\end{tcolorbox}
+
+%% ============================================================================
+%% SECTION: PLAIN ENGLISH EXPLANATION
+%% ============================================================================
+\section{Plain English Explanation}
+\label{sec:overton-plain}
+
+\begin{tcolorbox}[colback=green!5!white,colframe=green!65!black,title=\textbf{Plain English: What is the Overton Window?},breakable]
+
+\textbf{The Simple Version:}
+The Overton Window is the range of ideas that society considers ``acceptable to discuss''
+at any given time. Ideas inside the window can be debated openly; ideas outside are
+dismissed as extreme, crazy, or unthinkable. The window is not fixed---it shifts
+over time as society changes.
+
+\textbf{The ``Boiling Frog'' Metaphor:}
+\begin{itemize}
+    \item Imagine a frog in a pot of water. If you heat the water slowly enough,
+          the frog doesn't notice the gradual temperature change and stays in the pot.
+    \item Similarly, societal acceptance shifts gradually. What seems radical today
+          becomes debatable tomorrow and policy the day after---if the shift is
+          slow enough that people adapt without noticing.
+    \item Each small step seems reasonable compared to the previous position.
+    \item Looking back over time, the total shift can be dramatic.
+\end{itemize}
+
+\textbf{The ``Moving the Goalposts'' Metaphor:}
+\begin{itemize}
+    \item Imagine a soccer goal that moves slightly each time a shot is taken.
+    \item The \textbf{window} is where the goalposts currently stand.
+    \item \textbf{Shifting} is moving the goalposts a little bit at a time.
+    \item \textbf{Normalization} is when players stop noticing the new position.
+    \item \textbf{Plausible deniability} is moving slowly enough that no single move
+          looks suspicious.
+\end{itemize}
+
+\textbf{Technical Term $\leftrightarrow$ Metaphor Mapping:}
+\begin{center}
+\footnotesize
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Technical Term} & \textbf{Metaphor (Goalposts)} & \textbf{Metaphor (Frog)} \\
+\midrule
+$\mathcal{O}$ (current window) & Where the goalposts stand now & Current water temperature \\
+$x_{\mathrm{target}}$ (target position) & Where you want the goal & Target temperature \\
+$\delta_{\max}$ (max step size) & How far you move per shift & How much you heat per minute \\
+$\theta_{\mathrm{norm}}$ (threshold) & What counts as ``in bounds'' & Comfort threshold \\
+$\mu_{\mathrm{accept}}$ (acceptability) & How normal a position seems & Frog's comfort level \\
+$\Frac_{\mathrm{shift}}$ (shift fractal) & Sequence of small moves & Heating schedule \\
+Plausible deniability & ``It was always there'' & ``Water was always warm'' \\
+Normalization time & Time until new normal & Time until frog adapts \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\textbf{Why This Matters:}
+Understanding the Overton Window helps explain how dramatic social changes occur
+through incremental steps. The same mathematical process describes:
+\begin{itemize}
+    \item How civil rights expanded (beneficial shift)
+    \item How privacy norms eroded with technology (contested shift)
+    \item How extremist ideas enter mainstream discourse (concerning shift)
+\end{itemize}
+The mathematics is neutral---it describes the \textit{mechanism}, not the morality.
+
+\end{tcolorbox}
+
+%% ============================================================================
+%% SECTION: TECHNICAL TERM MAPPING TABLE
+%% ============================================================================
+\section{Technical Term to Metaphor Mapping}
+\label{sec:overton-mapping}
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Technical Term} & \textbf{Plain English Meaning} & \textbf{Real-World Example} \\
+\hline\hline
+\texttt{current\_window} $(\mathcal{O})$ &
+The range of ideas currently considered acceptable in mainstream discussion &
+In 2000: ``Marriage is between man and woman'' was mainstream; same-sex marriage was outside window \\
+\hline
+\texttt{target\_window} $(\mathcal{O}^*)$ &
+The desired range of acceptable ideas after the shift completes &
+In 2015: Same-sex marriage is legal and mainstream; opposition is increasingly outside window \\
+\hline
+\texttt{shift\_strategy} $(\mathcal{S})$ &
+The plan for moving from current to target window &
+Civil rights strategy: Legal challenges $\to$ Media representation $\to$ State laws $\to$ Federal ruling \\
+\hline
+\texttt{max\_step\_size} $(\delta_{\max})$ &
+How big a change can happen in one step without backlash &
+``Civil unions'' as intermediate step; ``Domestic partnerships'' as earlier step \\
+\hline
+\texttt{plausible\_deniability} $(\theta_{\mathrm{plausible}})$ &
+Ability to claim no deliberate manipulation is occurring &
+``We're just asking questions'' or ``This is just about equality'' \\
+\hline
+\texttt{normalization\_threshold} $(\theta_{\mathrm{norm}})$ &
+How accepted an idea must be to enter mainstream discussion &
+When polls show $>40\%$ support, media begins ``both sides'' coverage \\
+\hline
+\texttt{edge\_case\_articles} &
+Media pieces that test the boundary by presenting ``extreme'' positions &
+Op-eds by fringe figures that ``spark conversation'' about previously unthinkable positions \\
+\hline
+\texttt{discourse\_fractal} $(\Frac_{\mathcal{D}})$ &
+The repetitive process by which ideas become normalized &
+Exposure $\to$ Familiarity $\to$ Acceptance $\to$ Advocacy cycle \\
+\hline
+\texttt{wait\_for\_normalization} &
+Time required for a new position to become mainstream &
+Gay rights: Stonewall (1969) to Marriage Equality (2015) = 46 years \\
+\hline
+\texttt{collage\_error} &
+How far the current shift is from the target &
+Distance between current policy debates and ultimate goal \\
+\hline
+\end{tabularx}
+\end{center}
+
+%% ============================================================================
+%% SECTION: REAL-LIFE SCENARIOS
+%% ============================================================================
+\section{Real-Life Scenarios}
+\label{sec:overton-scenarios}
+
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!65!black,title=\textbf{Real-Life Scenarios: Overton Window Shifts},breakable]
+
+\textbf{Scenario 1: Civil Rights Expansion (1950s--2015)}
+
+The movement for marriage equality represents a successful, multi-generational
+window shift.
+
+\textit{Historical sequence:}
+\begin{enumerate}
+    \item \textbf{1950s}: Homosexuality classified as mental illness; discussion taboo
+    \item \textbf{1969}: Stonewall riots---public visibility begins
+    \item \textbf{1970s--80s}: ``Gay rights'' enters vocabulary; legal battles begin
+    \item \textbf{1990s}: ``Domestic partnerships'' as compromise position
+    \item \textbf{2000s}: ``Civil unions'' gain acceptance; first state marriages
+    \item \textbf{2015}: Marriage equality federally recognized; opposition becomes fringe
+\end{enumerate}
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\mathcal{O}_{1950} = \{\text{heterosexual marriage only}\}$
+    \item $x_{\mathrm{target}} = \text{marriage equality}$
+    \item $\Frac_{\mathrm{shift}} = \langle x_1, x_2, \ldots, x_n \rangle$ where
+          $x_i$ = ``decriminalization,'' ``domestic partnership,'' ``civil union,''
+          ``state marriage,'' ``federal marriage''
+    \item $\delta_{\max} \approx$ one legal status change per decade
+    \item $\mathtt{wait\_for\_normalization}(x_{\mathrm{target}}) \approx 46$ years
+    \item Completion: $x_{\mathrm{target}} \in \mathrm{Core}(\mathcal{O}_{2015})$ via
+          \textit{Obergefell v. Hodges}
+\end{itemize}
+
+\textbf{Canonical equation application:}
+\[
+    \mathcal{O}_{2015} = \Frac_{\mathcal{D}}^{n}\left( \mathcal{O}_{1950} \cup
+    \{x_1, x_2, \ldots, x_n\} \right)
+    \quad \text{where } n \approx 65 \text{ years of normalization cycles}
+\]
+
+\hrulefill
+
+\textbf{Scenario 2: Technology Privacy Norms (1990s--Present)}
+
+The erosion of privacy expectations demonstrates window shifting driven by
+technological and commercial forces.
+
+\textit{Historical sequence:}
+\begin{enumerate}
+    \item \textbf{1990s}: Strong privacy expectations; encryption debates
+    \item \textbf{2001}: Post-9/11 surveillance normalization begins
+    \item \textbf{2004--2010}: Social media makes sharing personal data routine
+    \item \textbf{2013}: Snowden revelations---temporary backlash, then acceptance resumes
+    \item \textbf{2020s}: Facial recognition, location tracking accepted as normal
+\end{enumerate}
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\mathcal{O}_{1995} = \{\text{strong personal privacy},
+          \text{government needs warrant}\}$
+    \item $x_{\mathrm{target}} = \text{pervasive data collection accepted}$
+    \item $\delta_{\max}$ = each new platform/service normalizes one more data type
+    \item Normalization mechanism: Convenience trade-off (``free'' services for data)
+    \item $\theta_{\mathrm{plausible}} =$ ``Users agreed to Terms of Service''
+\end{itemize}
+
+\textbf{Canonical equation application:}
+\[
+    \frac{d\mu_{\mathrm{accept}}(\text{surveillance})}{dt} =
+    \alpha \cdot \mathrm{convenience} - \beta \cdot \mathrm{privacy\_awareness}
+\]
+where $\alpha \gg \beta$ in practice, leading to steady erosion.
+
+\hrulefill
+
+\textbf{Scenario 3: Economic Policy---Taxation Acceptability (1950s--2020s)}
+
+Changes in acceptable tax rates demonstrate bidirectional window movement.
+
+\textit{Historical sequence:}
+\begin{enumerate}
+    \item \textbf{1950s}: Top marginal rate 91\%---accepted as normal
+    \item \textbf{1960s--70s}: Gradual reduction; 70\% becomes new ceiling
+    \item \textbf{1980s}: Reagan cuts to 28\%; supply-side economics enters mainstream
+    \item \textbf{1990s--2000s}: Any rate above 40\% labeled ``socialist''
+    \item \textbf{2010s--20s}: Wealth taxes, higher rates re-enter discourse
+\end{enumerate}
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item Window shift direction: First rightward (lower rates), then partial leftward return
+    \item $\Frac_{\mathrm{shift,1}} = \langle 91\%, 70\%, 50\%, 28\%, 35\% \rangle$ (1950--2000)
+    \item $\Frac_{\mathrm{shift,2}} = \langle 35\%, 39.6\%, 50\%?, \ldots \rangle$ (2010--present)
+    \item $\delta_{\max} \approx 10$--15 percentage points per political generation
+\end{itemize}
+
+\textbf{Canonical equation application:}
+\[
+    \mathcal{O}_{\mathrm{tax}}(t) = \left\{ r \in [0, 100] \;\Big|\;
+    |r - \bar{r}(t)| \leq w(t)/2 \right\}
+\]
+where $\bar{r}(t)$ is the politically ``moderate'' rate and $w(t)$ is window width.
+
+\hrulefill
+
+\textbf{Scenario 4: Medical Ethics---Procedure Acceptability}
+
+The evolution of end-of-life care options illustrates ethical window shifting.
+
+\textit{Historical sequence:}
+\begin{enumerate}
+    \item \textbf{Pre-1970s}: Life extension at all costs; euthanasia unthinkable
+    \item \textbf{1970s}: ``Right to die'' enters discourse; Quinlan case
+    \item \textbf{1990s}: DNR orders normalized; hospice care expands
+    \item \textbf{1997}: Oregon Death with Dignity Act---physician-assisted death legal
+    \item \textbf{2010s--20s}: Multiple states adopt similar laws; ``MAID'' terminology
+\end{enumerate}
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\mathcal{O}_{1960} = \{\text{preserve life unconditionally}\}$
+    \item $x_{\mathrm{target}} = \text{patient autonomy over end-of-life}$
+    \item Intermediate positions: DNR, palliative sedation, hospice, aid-in-dying
+    \item $\Frac_{\mathrm{shift}} = \langle 3 : 1 : 5 : 2 \rangle$ (reject old $\to$
+          awareness $\to$ absorb new $\to$ accept)
+    \item $\theta_{\mathrm{plausible}} =$ ``Patient's choice,'' ``Compassion,''
+          ``Dignity''
+\end{itemize}
+
+\textbf{Canonical equation application:}
+\[
+    \mu_{\mathrm{accept}}(\text{MAID}, t) = \mu_0 +
+    \int_0^t \alpha \cdot \mathrm{media\_exposure}(\tau) \cdot
+    (1 - \mu_{\mathrm{accept}}(\tau)) \, d\tau
+\]
+Saturation model where exposure drives acceptance toward ceiling.
+
+\end{tcolorbox}
+
+%% ============================================================================
+%% SECTION: CONSTRUCTION RULES
+%% ============================================================================
+\section{Overton Window Equation Construction Rules}
+\label{sec:overton-construction}
+
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!75!black,title=\textbf{Construction Algorithm},breakable]
+
+To construct Overton Window equations for a given scenario:
+
+\textbf{Step 1: Define the Discourse Space}
+\begin{itemize}
+    \item Identify the domain: politics, ethics, technology, economics, etc.
+    \item Map positions to a spectrum: $\mathrm{pos} : \mathcal{D} \to \mathbb{R}$
+    \item Identify current ``center'' and ``edges''
+\end{itemize}
+
+\textbf{Step 2: Measure Current Window}
+\begin{itemize}
+    \item Apply $\mathtt{measure\_overton\_window}$ to determine $\mathcal{O}(t)$
+    \item Compute $\mu_{\mathrm{center}}$, $w$, $\sigma$
+    \item Identify boundary positions $\partial^{\pm}\mathcal{O}$
+\end{itemize}
+
+\textbf{Step 3: Specify Target}
+\begin{itemize}
+    \item Define $x_{\mathrm{target}}$: the position to be normalized
+    \item Compute distance: $d(x_{\mathrm{target}}, \mathcal{O})$
+    \item Estimate required shift magnitude
+\end{itemize}
+
+\textbf{Step 4: Design Shift Fractal}
+\begin{itemize}
+    \item Apply Collage Theorem to minimize $d_H(\mathcal{O}^*, H_S(\mathcal{O}^*))$
+    \item Construct intermediate positions: $\Frac_{\mathrm{shift}} =
+          \langle x_1, x_2, \ldots, x_n \rangle$
+    \item Verify each step satisfies $d(x_i, x_{i+1}) \leq \delta_{\max}$
+\end{itemize}
+
+\textbf{Step 5: Apply Constraints}
+\begin{itemize}
+    \item Check plausible deniability: no single step too large
+    \item Verify time horizon: total shift time realistic
+    \item Ensure resource bounds: each step has implementation path
+\end{itemize}
+
+\textbf{Step 6: Model Normalization}
+\begin{itemize}
+    \item Apply Equation (OW-4) to each intermediate position
+    \item Compute $\mathtt{wait\_for\_normalization}(x_i)$ for each step
+    \item Verify cumulative time within $T_{\max}$
+\end{itemize}
+
+\textbf{Step 7: Verify Completion}
+\begin{itemize}
+    \item Check $x_{\mathrm{target}} \in \mathrm{Core}(\mathcal{O}_{\mathrm{final}})$
+    \item Verify stability: $d\mu_{\mathrm{accept}}/dt \geq 0$
+    \item Confirm attractor convergence via Equation (OW-5)
+\end{itemize}
+
+\end{tcolorbox}
+
+%% ============================================================================
+%% SECTION: CLASSIFICATION TABLE
+%% ============================================================================
+\section{Overton Window Shift Classification}
+\label{sec:overton-classification}
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.3}
+\begin{longtable}{p{2.2cm}|p{2cm}|p{2.5cm}|p{2cm}|p{3cm}}
+\caption{Overton Window Shift Classifications} \\
+\toprule
+\textbf{Shift Type} & \textbf{Direction} & \textbf{Characteristic Fractal} & \textbf{Typical Duration} & \textbf{Historical Example} \\
+\midrule
+\endfirsthead
+\multicolumn{5}{c}{\textit{Table continued from previous page}} \\
+\toprule
+\textbf{Shift Type} & \textbf{Direction} & \textbf{Characteristic Fractal} & \textbf{Typical Duration} & \textbf{Historical Example} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Rights Expansion & Progressive & $\langle 1:2:5:7 \rangle$ & 30--60 years & Civil rights, marriage equality \\
+Privacy Erosion & Both ways & $\langle 4:5:7 \rangle$ & 10--20 years & Social media norms \\
+Economic Shift & Oscillating & $\langle 7:2:3:7 \rangle$ & 20--40 years & Tax policy \\
+Medical Ethics & Progressive & $\langle 3:1:5:2 \rangle$ & 20--40 years & End-of-life care \\
+Technology Adoption & Progressive & $\langle 4:2:5:7 \rangle$ & 5--15 years & AI, genetic editing \\
+Environmental Policy & Contested & $\langle 1:3:2:7 \rangle$ & 30--50 years & Climate policy \\
+Security vs Liberty & Reactive & $\langle 8:3:5 \rangle$ & Event-driven & Post-crisis surveillance \\
+Cultural Values & Both ways & $\langle 7:5:7 \rangle$ & Generation-length & Religious observance \\
+\end{longtable}
+\end{center}
+
+%% ============================================================================
+%% SECTION: MATHEMATICAL PROPERTIES
+%% ============================================================================
+\section{Mathematical Properties of Window Dynamics}
+\label{sec:overton-properties}
+
+\begin{theorem}[Window Monotonicity]
+\label{thm:window-monotonicity}
+Under sustained one-directional pressure, the Overton Window centroid shifts
+monotonically:
+\[
+    \forall t_1 < t_2 : \mathrm{sign}\left(
+        \frac{d\mu_{\mathrm{center}}}{dt} \right) = \mathrm{const}
+    \implies \mu_{\mathrm{center}}(t_2) - \mu_{\mathrm{center}}(t_1) \text{ has same sign}
+\]
+\end{theorem}
+
+\begin{theorem}[Width Oscillation]
+\label{thm:width-oscillation}
+The window width $w(t)$ oscillates with social tension:
+\[
+    w(t) = w_0 + A \cdot \cos(\omega t + \phi) + \epsilon(t)
+\]
+where high-tension periods compress the window (smaller $w$) and low-tension
+periods expand it.
+\end{theorem}
+
+\begin{theorem}[Irreversibility Threshold]
+\label{thm:irreversibility}
+A window shift becomes effectively irreversible when:
+\[
+    \mu_{\mathrm{accept}}(x_{\mathrm{old}}) < \theta_{\mathrm{norm}} -
+    3\sigma_{\mu}
+\]
+That is, the former ``normal'' position has moved more than three standard
+deviations below the acceptance threshold.
+\end{theorem}
+
+\begin{corollary}[Generational Lock-In]
+\label{cor:generational}
+If a position $x$ achieves $\mu_{\mathrm{accept}}(x) \geq \theta_{\mathrm{policy}}$
+and remains there for one generation ($\approx 25$ years), then
+$\mu_{\mathrm{accept}}(x)$ becomes resistant to reversal:
+\[
+    \frac{d\mu_{\mathrm{accept}}(x)}{dt} \approx 0 \quad \text{for } t > t_0 + 25
+\]
+The position has entered the ``common sense'' attractor.
+\end{corollary}
+
+%% ============================================================================
+%% SECTION: CONNECTION TO TKS CANON
+%% ============================================================================
+\section{Connection to TKS Canonical Structures}
+\label{sec:overton-tks-connection}
+
+\begin{proposition}[Overton Window as Noetic Attractor]
+\label{prop:overton-noetic}
+The Overton Window $\mathcal{O}$ corresponds to a B-world psychological attractor
+in TKS:
+\[
+    \mathcal{O} \cong \PsychAttractor_{B,\mathrm{collective}}
+\]
+where the governing fractal is:
+\[
+    \Frac_{\mathcal{O}} = \langle 1 : 7 : 5 : 2 \rangle_{2b}
+\]
+applying the Wisdom sub-foundation ($\Foundations_{2b}$) in the intellectual world.
+\end{proposition}
+
+\begin{proposition}[Window Shift as RPM Process]
+\label{prop:overton-rpm}
+A designed window shift corresponds to an RPM monad computation:
+\[
+    \mathtt{shift\_window} : \RPM(\mathcal{O} \to \mathcal{O}')
+\]
+with:
+\begin{itemize}
+    \item Desire chain $D_n$: The target position $x_{\mathrm{target}}$
+    \item Wisdom chain $W_n$: The shift strategy $\mathcal{S}$
+    \item Power chain $P_n$: The implementation sequence $\Frac_{\mathrm{shift}}$
+\end{itemize}
+\end{proposition}
+
+\begin{proposition}[Collage Theorem Application]
+\label{prop:overton-collage}
+The optimal window shift design is the TKS Collage Theorem (Theorem~\ref{thm:collage})
+applied to discourse space:
+\[
+    d_H(\mathcal{O}^*, \FractalAttractor_{\Frac_{\mathrm{shift}}}) \leq
+    \frac{1}{1 - r_{\mathrm{shift}}} \cdot d_H(\mathcal{O}^*,
+    H_{\Frac_{\mathrm{shift}}}(\mathcal{O}^*))
+\]
+Minimizing the collage error yields the most efficient shift path.
+\end{proposition}
+
+%% ============================================================================
+%% SECTION: SUMMARY
+%% ============================================================================
+\section{Chapter Summary}
+\label{sec:overton-summary}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\textbf{Key Results},breakable]
+
+This chapter established the TKS formalization of Overton Window dynamics:
+
+\begin{enumerate}
+    \item \textbf{Definition}: The Overton Window is a psychological attractor basin
+          in discourse space, characterized by acceptability measure $\mu_{\mathrm{accept}}$
+          and normalization threshold $\theta_{\mathrm{norm}}$.
+
+    \item \textbf{Measurement}: The $\mathtt{measure\_overton\_window}$ function
+          extracts window parameters via discourse fractal analysis.
+
+    \item \textbf{Shifting}: Window shifts occur via transfinite sequences of
+          acceptable positions, governed by the shift fractal $\Frac_{\mathrm{shift}}$.
+
+    \item \textbf{Design}: Optimal shift strategies are computed via Collage Theorem
+          minimization subject to step-size, plausibility, and resource constraints.
+
+    \item \textbf{Normalization}: Acceptance dynamics follow exponential approach
+          models with exposure-dependent rates.
+
+    \item \textbf{Completion}: A shift is complete when the target enters the
+          policy core with stable or increasing acceptability.
+\end{enumerate}
+
+\textbf{Canonical Equations:}
+\begin{itemize}
+    \item (OW-1): Window measurement
+    \item (OW-2): Shift trajectory
+    \item (OW-3): Step size constraint
+    \item (OW-4): Normalization dynamics
+    \item (OW-5): Completion criterion
+\end{itemize}
+
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=\textbf{Methodological Note}]
+The mathematics presented in this chapter is \textbf{value-neutral}. The same equations
+describe:
+\begin{itemize}
+    \item Progressive social movements expanding rights
+    \item Corporate campaigns normalizing data collection
+    \item Authoritarian regimes shifting discourse boundaries
+    \item Organic cultural evolution over generations
+\end{itemize}
+The formalization provides tools for \textit{understanding} these dynamics, not for
+\textit{endorsing} any particular direction of change. Ethical evaluation of specific
+applications requires normative frameworks beyond the scope of TKS mathematics.
+\end{tcolorbox}

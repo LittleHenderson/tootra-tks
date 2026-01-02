@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TKS Playground</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-mark">T</div>
+                <h1>TKS Playground</h1>
+                <span class="subtitle">The Tootra Kabbalistic System</span>
+            </div>
+            <div class="controls">
+                <select id="examples" class="example-select">
+                    <option value="">Load Example...</option>
+                </select>
+                <button id="run-btn" class="btn-run">
+                    <span class="key-hint">Ctrl+Enter</span>
+                    Run
+                </button>
+                <button id="share-btn" class="btn-share">Share</button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Editor Panel -->
+            <section class="panel editor-panel">
+                <div class="panel-header">
+                    <span class="panel-title">Editor</span>
+                    <span class="file-indicator">untitled.tks</span>
+                </div>
+                <div class="editor-container">
+                    <div class="line-numbers" id="line-numbers"></div>
+                    <div class="code-area">
+                        <pre class="highlight-layer" id="highlight-layer"></pre>
+                        <textarea id="editor" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off">let x = 42;
+let y = x + 8;
+y</textarea>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Output Panel -->
+            <section class="panel output-panel">
+                <div class="panel-header">
+                    <span class="panel-title">Output</span>
+                    <span class="execution-time" id="exec-time"></span>
+                </div>
+                <div class="output-container">
+                    <pre id="output">Press Ctrl+Enter or click Run to execute</pre>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <span>TKS Language v0.1.0</span>
+            <span class="separator">|</span>
+            <span>Powered by WebAssembly</span>
+        </footer>
+    </div>
+
+    <!-- Background Watermark -->
+    <div class="watermark" aria-hidden="true">TOOTRA</div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>

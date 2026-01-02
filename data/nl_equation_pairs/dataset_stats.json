@@ -1,0 +1,23 @@
+{
+  "total_pairs": 6400,
+  "train_size": 5120,
+  "val_size": 640,
+  "test_size": 640,
+  "embedding_dim": 384,
+  "embedding_model": "all-MiniLM-L6-v2",
+  "random_seed": 7,
+  "operator_distribution": {
+    "+ (idx=0)": 1600,
+    "- (idx=1)": 1600,
+    "\u00d7 (idx=2)": 1600,
+    "\u00f7 (idx=3)": 1600
+  },
+  "element_range": [
+    0,
+    39
+  ],
+  "operator_range": [
+    0,
+    3
+  ]
+}

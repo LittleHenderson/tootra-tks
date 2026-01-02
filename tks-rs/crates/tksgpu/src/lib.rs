@@ -226,7 +226,7 @@ impl GpuContext {
             pass.set_bind_group(0, &bind_group, &[]);
             let workgroup_size = 64u32;
             let len = left.len() as u32;
-            let workgroups = (len + workgroup_size - 1) / workgroup_size;
+            let workgroups = len.div_ceil(workgroup_size);
             pass.dispatch_workgroups(workgroups, 1, 1);
         }
         encoder.copy_buffer_to_buffer(&out_buffer, 0, &readback, 0, size);

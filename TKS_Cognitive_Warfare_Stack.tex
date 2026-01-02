@@ -1,0 +1,1481 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  TKS_Cognitive_Warfare_Stack.tex
+%%  The Integrated Framework: Individual -> Social -> Cultural -> Civilizational
+%%
+%%  Part of TKS v7.4 - December 2025
+%%  ADDITIVE to v7.4 canon
+%%
+%%  This document provides comprehensive technical documentation for the
+%%  multi-level prediction and influence framework that emerges from TKS.
+%%  Presented without advocacy - documenting what exists, not what should be.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt,twoside]{book}
+
+%% ============================================================================
+%% PACKAGES
+%% ============================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in,inner=1.2in,outer=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{stmaryrd}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable,skins}
+\usepackage{tikz-cd}
+\usepackage{tikz}
+\usetikzlibrary{positioning,shapes,arrows.meta,calc}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{ragged2e}
+
+%% ============================================================================
+%% FORMATTING SETTINGS
+%% ============================================================================
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+\renewcommand{\arraystretch}{1.2}
+
+%% ============================================================================
+%% CUSTOM COMMANDS (from TKS canonical)
+%% ============================================================================
+\newcommand{\noe}[1]{\nu_{#1}}
+\newcommand{\Ideas}{\mathcal{I}}
+\newcommand{\Worlds}{\mathcal{W}}
+\newcommand{\Elements}{\mathcal{E}}
+\newcommand{\Noetics}{\mathcal{N}}
+\newcommand{\Foundations}{\mathcal{F}}
+\newcommand{\Acquisitions}{\mathcal{A}}
+\newcommand{\Frac}{\Phi}
+\newcommand{\TransFrac}[1]{\Phi^{#1}}
+\newcommand{\MultiFrac}[2]{\Phi^{#1}_{#2}}
+\newcommand{\RPM}{\mathsf{RPM}}
+\newcommand{\ACBE}{\mathsf{ACBE}}
+\newcommand{\HausdorffDim}{\dim_H}
+\newcommand{\FractalSpectrum}{\sigma_\Phi}
+\newcommand{\fix}{\mathrm{fix}}
+\newcommand{\sem}[1]{\llbracket #1 \rrbracket}
+\newcommand{\Tadd}{\oplus_T}
+\newcommand{\Tsub}{\ominus_T}
+\newcommand{\Tmul}{\otimes_T}
+\newcommand{\Tdiv}{\oslash_T}
+\newcommand{\Wadd}{\oplus_W}
+\newcommand{\Wsub}{\ominus_W}
+\newcommand{\Failed}{\mathtt{Failed}}
+
+%% New commands for Cognitive Warfare Stack
+\newcommand{\Level}[1]{\mathfrak{L}_{#1}}
+\newcommand{\StackFunctor}{\mathcal{S}}
+\newcommand{\Individual}{\mathfrak{I}}
+\newcommand{\Social}{\mathfrak{S}}
+\newcommand{\Cultural}{\mathfrak{C}}
+\newcommand{\Civilizational}{\mathfrak{Z}}
+\newcommand{\PsychAttractor}{\mathcal{A}_\psi}
+\newcommand{\GroupFrac}{\Phi_{\mathrm{group}}}
+\newcommand{\Overton}{\mathcal{O}}
+\newcommand{\Memetic}{\mathcal{M}}
+\newcommand{\Hyperstition}{\mathcal{H}}
+\newcommand{\Trajectory}{\mathcal{T}}
+\newcommand{\Vulnerability}{\mathcal{V}}
+\newcommand{\Cascade}{\mathcal{C}}
+\newcommand{\Aggregate}[2]{\mathbf{Agg}_{#1}^{#2}}
+\newcommand{\Project}[2]{\mathbf{Proj}_{#1}^{#2}}
+
+%% Theorems
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{proposition}{Proposition}[chapter]
+\newtheorem{lemma}{Lemma}[chapter]
+\newtheorem{corollary}{Corollary}[chapter]
+\newtheorem{example}{Example}[chapter]
+\newtheorem{remark}{Remark}[chapter]
+\newtheorem{axiom}{Axiom}[chapter]
+
+%% ============================================================================
+%% DOCUMENT
+%% ============================================================================
+\begin{document}
+
+\title{\textbf{TKS Cognitive Warfare Stack} \\[0.5em]
+\Large The Integrated Multi-Level Framework \\
+for Prediction, Modeling, and Influence \\[0.3em]
+\normalsize Individual $\to$ Social $\to$ Cultural $\to$ Civilizational}
+\author{TKS v7.4 Formalization Project}
+\date{December 2025}
+\maketitle
+
+\tableofcontents
+
+%% ============================================================================
+%% PREFACE: DOCUMENTATION PURPOSE
+%% ============================================================================
+\chapter*{Preface: On Documentation}
+\addcontentsline{toc}{chapter}{Preface: On Documentation}
+
+\begin{tcolorbox}[colback=gray!10!white,colframe=gray!75!black,title=\textbf{Scope and Intent},breakable]
+This document provides comprehensive technical documentation for what we term the
+\textbf{TKS Cognitive Warfare Stack}---the integrated framework showing how TKS
+prediction and influence capabilities layer together across scales, from individual
+psychology to civilization-level dynamics.
+
+\textbf{This document is descriptive, not prescriptive.} The mathematics and
+mechanisms described herein exist regardless of whether they are documented.
+Advertising firms, political campaigns, intelligence agencies, therapeutic
+practitioners, and social engineers have employed analogous methods throughout
+history. TKS provides formal mathematical language for what has always been done
+informally.
+
+The question is not whether such capabilities exist---they do. The question is
+who understands them, who uses them, and for what purposes. Opacity benefits
+those with existing power and knowledge; transparency enables informed consent
+and counter-measures.
+\end{tcolorbox}
+
+%% ============================================================================
+%% PART I: MATHEMATICAL ARCHITECTURE
+%% ============================================================================
+\part{Mathematical Architecture of the Stack}
+
+\chapter{The Four-Level Structure}
+\label{ch:four-level-structure}
+
+\section{Overview: Levels and Their Domains}
+
+The TKS Cognitive Warfare Stack comprises four hierarchical levels, each operating
+at a distinct scale of consciousness organization:
+
+\begin{center}
+\begin{tikzpicture}[
+    level/.style={rectangle, draw, rounded corners, minimum width=10cm, minimum height=1.5cm, align=center},
+    arrow/.style={-{Stealth[length=3mm]}, thick}
+]
+    \node[level, fill=purple!20] (L4) at (0,6) {\textbf{Level 4: Civilizational} ($\Civilizational$)\\Historical trajectories, existential engineering};
+    \node[level, fill=blue!20] (L3) at (0,4) {\textbf{Level 3: Cultural} ($\Cultural$)\\Overton windows, memetic warfare, hyperstition};
+    \node[level, fill=green!20] (L2) at (0,2) {\textbf{Level 2: Social} ($\Social$)\\Group fractals, cascades, network dynamics};
+    \node[level, fill=yellow!20] (L1) at (0,0) {\textbf{Level 1: Individual} ($\Individual$)\\Thought patterns, attractors, intervention};
+
+    \draw[arrow] (L1.north) -- (L2.south) node[midway,right] {aggregates};
+    \draw[arrow] (L2.north) -- (L3.south) node[midway,right] {aggregates};
+    \draw[arrow] (L3.north) -- (L4.south) node[midway,right] {aggregates};
+
+    \draw[arrow, dashed] (L4.west) to[out=180,in=180] node[midway,left] {constrains} (L3.west);
+    \draw[arrow, dashed] (L3.west) to[out=180,in=180] node[midway,left] {constrains} (L2.west);
+    \draw[arrow, dashed] (L2.west) to[out=180,in=180] node[midway,left] {constrains} (L1.west);
+\end{tikzpicture}
+\end{center}
+
+\begin{definition}[The Cognitive Warfare Stack]
+\label{def:cw-stack}
+The \emph{TKS Cognitive Warfare Stack} is a graded category $\mathbf{CWS}$ with:
+\begin{enumerate}[label=(\roman*)]
+    \item \textbf{Objects}: Four levels $\Level{1}, \Level{2}, \Level{3}, \Level{4}$
+    \item \textbf{Upward morphisms}: Aggregation functors $\Aggregate{i}{i+1} : \Level{i} \to \Level{i+1}$
+    \item \textbf{Downward morphisms}: Constraint functors $\Project{i+1}{i} : \Level{i+1} \to \Level{i}$
+    \item \textbf{Composition}: $\Aggregate{j}{k} \circ \Aggregate{i}{j} = \Aggregate{i}{k}$ for $i < j < k$
+\end{enumerate}
+subject to the \emph{cross-level coherence condition}:
+\[
+    \Project{i+1}{i} \circ \Aggregate{i}{i+1} \neq \mathrm{id}_{\Level{i}}
+\]
+(aggregation loses information; constraints don't recover it)
+\end{definition}
+
+\section{Level 1: Individual Psychology ($\Level{1} = \Individual$)}
+
+Level 1 operates on the consciousness of individual persons, employing the
+core TKS mathematical machinery developed in previous documents.
+
+\begin{definition}[Level 1 Objects]
+\label{def:L1-objects}
+The objects of $\Level{1}$ are:
+\begin{enumerate}[label=(\alph*)]
+    \item \textbf{Psychological States}: Points $\psi \in \mathcal{S}_\psi$ in the
+          consciousness state space
+    \item \textbf{Attractors}: Stable configurations $\PsychAttractor \subset \mathcal{S}_\psi$
+    \item \textbf{Fractals}: Thought-pattern iterators $\Frac : \mathcal{S}_\psi \to \mathcal{S}_\psi$
+    \item \textbf{D/W/P Structures}: Acquisition chains $(D_m, W_m, P_m)$ for each
+          Foundation $\Foundations_m$
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[Level 1 Capabilities]
+\label{def:L1-capabilities}
+The morphisms (operations) at Level 1 are:
+
+\textbf{(a) Thought Pattern Extraction:}
+\begin{equation}
+\boxed{
+    \mathsf{Extract} : \mathrm{Observable} \to \Frac
+}
+\end{equation}
+Given observable behavior/communication, extract the governing fractal:
+\[
+    \mathsf{Extract}(\text{behavior}_1, \ldots, \text{behavior}_n) =
+    \langle k_1 : k_2 : \cdots : k_m \rangle
+\]
+
+\textbf{(b) Attractor Prediction:}
+\begin{equation}
+\boxed{
+    \mathsf{Predict} : (\psi_0, \Frac) \to \PsychAttractor
+}
+\end{equation}
+Given initial state and governing fractal, predict the attractor:
+\[
+    \mathsf{Predict}(\psi_0, \Frac) = \lim_{n \to \infty} \Frac^n(\psi_0) = \PsychAttractor
+\]
+
+\textbf{(c) Precision Intervention:}
+\begin{equation}
+\boxed{
+    \mathsf{Intervene} : (\PsychAttractor_{\mathrm{old}}, \PsychAttractor_{\mathrm{new}})
+    \to \Frac_{\mathrm{intervention}}
+}
+\end{equation}
+Compute the manipulation fractal that transforms one attractor to another:
+\[
+    \mathsf{Intervene}(X^*, Y^*) = \Frac_{\mathrm{destab}} \circ \Frac_{\mathrm{guide}}
+    \circ \Frac_{\mathrm{stab}}
+\]
+\end{definition}
+
+\begin{proposition}[Level 1 Core Equations]
+\label{prop:L1-equations}
+The fundamental equations governing Level 1 dynamics:
+
+\textbf{Attractor Dynamics:}
+\begin{equation}
+    \frac{d\psi}{dt} = -\nabla V_{\mathrm{psych}}(\psi) + \eta(t)
+\end{equation}
+where $V_{\mathrm{psych}}$ is the psychological potential landscape with minima at attractors.
+
+\textbf{Fractal Evolution:}
+\begin{equation}
+    \psi_{n+1} = \Frac(\psi_n) = \noe{k_m} \circ \cdots \circ \noe{k_1}(\psi_n)
+\end{equation}
+
+\textbf{Intervention Success Probability:}
+\begin{equation}
+    P(\PsychAttractor_{\mathrm{old}} \to \PsychAttractor_{\mathrm{new}}) =
+    \exp\left(-\frac{\Delta V}{\sigma^2}\right) \cdot \prod_{A \in \mathrm{prereq}} \sigma(A)
+\end{equation}
+where $\Delta V$ is the potential barrier and $\sigma(A)$ are acquisition satisfaction indicators.
+\end{proposition}
+
+\section{Level 2: Social Dynamics ($\Level{2} = \Social$)}
+
+Level 2 aggregates individual psychology into group phenomena, modeling how
+individual fractals compose into collective dynamics.
+
+\begin{definition}[Level 2 Objects]
+\label{def:L2-objects}
+The objects of $\Level{2}$ are:
+\begin{enumerate}[label=(\alph*)]
+    \item \textbf{Group States}: Distributions $\rho : \mathcal{S}_\psi \to [0,1]$ over
+          individual states
+    \item \textbf{Group Fractals}: Collective patterns $\GroupFrac$ governing group dynamics
+    \item \textbf{Network Structures}: Graphs $G = (V, E)$ encoding social connections
+    \item \textbf{Cascade States}: Propagation configurations $\Cascade \subset V \times [0,1]$
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[Level 2 Capabilities]
+\label{def:L2-capabilities}
+
+\textbf{(a) Group Fractal Modeling:}
+\begin{equation}
+\boxed{
+    \GroupFrac = \mathbf{Agg}\left(\{\Frac_i\}_{i \in \mathrm{Group}}\right)
+}
+\end{equation}
+Aggregate individual fractals into emergent group pattern:
+\[
+    \GroupFrac = \frac{1}{|G|} \sum_{i \in G} w_i \Frac_i +
+    \sum_{(i,j) \in E} \lambda_{ij} (\Frac_i \otimes \Frac_j)
+\]
+where the cross-terms capture emergent effects from social coupling.
+
+\textbf{(b) Cascade Optimization:}
+\begin{equation}
+\boxed{
+    \mathsf{Cascade} : (\Memetic, G, \{v_{\mathrm{seed}}\}) \to \Cascade(t)
+}
+\end{equation}
+Given a meme $\Memetic$, network $G$, and seed nodes, compute propagation:
+\[
+    \frac{d\Cascade_v}{dt} = \sum_{u \in N(v)} \alpha_{uv} \Cascade_u (1 - \Cascade_v)
+    - \beta \Cascade_v
+\]
+
+\textbf{(c) Network Vulnerability Mapping:}
+\begin{equation}
+\boxed{
+    \Vulnerability : G \to \{v_1^*, v_2^*, \ldots, v_k^*\}
+}
+\end{equation}
+Identify optimal intervention points (influence maximizers):
+\[
+    \Vulnerability(G) = \arg\max_{S \subset V, |S| = k} \mathbb{E}[\Cascade_{\infty}(S)]
+\]
+\end{definition}
+
+\begin{proposition}[Level 2 Core Equations]
+\label{prop:L2-equations}
+
+\textbf{Aggregation from Level 1:}
+\begin{equation}
+    \Aggregate{1}{2} : \{\psi_i, \Frac_i, \PsychAttractor_i\}_{i \in G} \mapsto
+    (\rho_G, \GroupFrac, \mathcal{A}_G)
+\end{equation}
+where $\mathcal{A}_G$ is the collective attractor of the group.
+
+\textbf{Group Attractor:}
+\begin{equation}
+    \mathcal{A}_G = \left\{ \rho : \GroupFrac(\rho) = \rho \right\}
+\end{equation}
+
+\textbf{Cascade Threshold:}
+\begin{equation}
+    \theta_{\mathrm{cascade}} = \frac{\beta}{\langle k \rangle \cdot \alpha_{\mathrm{avg}}}
+\end{equation}
+Cascade spreads globally when initial adoption exceeds $\theta_{\mathrm{cascade}}$.
+\end{proposition}
+
+\section{Level 3: Cultural Reality ($\Level{3} = \Cultural$)}
+
+Level 3 aggregates social dynamics into cultural structures: the shared
+reality-frames, acceptable discourse windows, and collective belief systems.
+
+\begin{definition}[Level 3 Objects]
+\label{def:L3-objects}
+The objects of $\Level{3}$ are:
+\begin{enumerate}[label=(\alph*)]
+    \item \textbf{Overton Windows}: Intervals $\Overton \subset \mathcal{P}$ in
+          policy/belief space defining ``acceptable'' discourse
+    \item \textbf{Memetic Systems}: Reproducing idea-complexes $\Memetic$ with
+          fitness functions
+    \item \textbf{Hyperstitions}: Self-fulfilling belief structures $\Hyperstition$
+    \item \textbf{Reality Frames}: Interpretive schemas $\mathcal{R}$ structuring perception
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[Level 3 Capabilities]
+\label{def:L3-capabilities}
+
+\textbf{(a) Overton Window Engineering:}
+\begin{equation}
+\boxed{
+    \mathsf{Shift} : (\Overton_{\mathrm{old}}, \delta) \to \Overton_{\mathrm{new}}
+}
+\end{equation}
+Shift the window of acceptable discourse:
+\[
+    \Overton_{\mathrm{new}} = \Overton_{\mathrm{old}} + \delta \cdot
+    \mathrm{sign}\left(\sum_{\Memetic \in \mathrm{edge}} \mathrm{weight}(\Memetic)\right)
+\]
+Strategy: Introduce extreme positions to make moderate shifts seem reasonable.
+
+\textbf{(b) Memetic Warfare Systems:}
+\begin{equation}
+\boxed{
+    \frac{d\Memetic}{dt} = r_\Memetic \cdot \Memetic \cdot \left(1 - \frac{\Memetic}{K}\right)
+    - \sum_{\Memetic' \in \mathrm{competing}} \alpha_{\Memetic\Memetic'} \Memetic \Memetic'
+}
+\end{equation}
+Memes compete for mindshare following Lotka-Volterra dynamics.
+
+\textbf{(c) Hyperstition Creation Engines:}
+\begin{equation}
+\boxed{
+    \Hyperstition = (\mathcal{I}, \mathcal{B}, \mathcal{M}, \Frac_H)
+    \quad \text{with } \frac{d\mathcal{B}}{dt} = f(\mathcal{M}(\mathcal{B}))
+}
+\end{equation}
+Create self-fulfilling belief structures:
+\[
+    \frac{d\mathcal{B}}{dt} = \alpha \cdot \mathcal{M}(\mathcal{B}) - \beta \cdot \mathcal{B}
+    + \gamma \cdot \mathrm{Propagation}(\mathcal{I})
+\]
+\end{definition}
+
+\begin{proposition}[Level 3 Core Equations]
+\label{prop:L3-equations}
+
+\textbf{Aggregation from Level 2:}
+\begin{equation}
+    \Aggregate{2}{3} : \{\GroupFrac_G, \Cascade_G, \Vulnerability_G\}_{G \in \mathrm{Society}}
+    \mapsto (\Overton, \{\Memetic_j\}, \{\Hyperstition_k\})
+\end{equation}
+
+\textbf{Overton Window Dynamics:}
+\begin{equation}
+    \frac{d\Overton}{dt} = \int_{\partial\Overton} \Memetic(x) \cdot n(x) \, dx
+\end{equation}
+where $\partial\Overton$ is the boundary and $n(x)$ is the outward normal.
+
+\textbf{Reality Frame Competition:}
+\begin{equation}
+    P(\mathcal{R}_i \text{ adopted}) = \frac{e^{\beta U_i(\mathcal{R}_i)}}
+    {\sum_j e^{\beta U_j(\mathcal{R}_j)}}
+\end{equation}
+where $U_i$ is the utility of frame $\mathcal{R}_i$ (explanatory power, emotional resonance, social proof).
+\end{proposition}
+
+\section{Level 4: Civilizational Scale ($\Level{4} = \Civilizational$)}
+
+Level 4 operates on the longest time scales, modeling civilizational trajectories,
+existential dynamics, and multi-generational attractor structures.
+
+\begin{definition}[Level 4 Objects]
+\label{def:L4-objects}
+The objects of $\Level{4}$ are:
+\begin{enumerate}[label=(\alph*)]
+    \item \textbf{Historical Trajectories}: Paths $\Trajectory : [0,T] \to \mathcal{S}_{\mathrm{civ}}$
+          through civilizational state space
+    \item \textbf{Civilizational Attractors}: Long-term stable configurations
+          $\mathcal{A}_{\mathrm{civ}}$
+    \item \textbf{Existential Risks}: Probability measures $\mu_{\mathrm{risk}}$ over
+          catastrophic events
+    \item \textbf{Teleological Vectors}: Directional tendencies $\vec{\tau}$ in
+          civilizational development
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[Level 4 Capabilities]
+\label{def:L4-capabilities}
+
+\textbf{(a) Historical Trajectory Modeling:}
+\begin{equation}
+\boxed{
+    \Trajectory(t) = \int_0^t \vec{v}(\Trajectory(s), \Cultural(s)) \, ds
+}
+\end{equation}
+Model civilizational evolution as flow through state space:
+\[
+    \frac{d\Trajectory}{dt} = F(\Trajectory) + G(\Trajectory, \Cultural) + \xi(t)
+\]
+where $F$ is endogenous dynamics, $G$ is cultural coupling, and $\xi$ is stochastic forcing.
+
+\textbf{(b) Civilizational Attractor Computation:}
+\begin{equation}
+\boxed{
+    \mathcal{A}_{\mathrm{civ}} = \lim_{t \to \infty} \Trajectory(t)
+    \quad \text{(if limit exists)}
+}
+\end{equation}
+Identify stable civilizational configurations:
+\[
+    \mathcal{A}_{\mathrm{civ}} = \{s \in \mathcal{S}_{\mathrm{civ}} :
+    \nabla V_{\mathrm{civ}}(s) = 0, \; H(V_{\mathrm{civ}})(s) > 0\}
+\]
+
+\textbf{(c) Existential Risk/Reward Engineering:}
+\begin{equation}
+\boxed{
+    \frac{d\mu_{\mathrm{risk}}}{dt} = -\nabla \cdot (v \mu_{\mathrm{risk}})
+    + D \nabla^2 \mu_{\mathrm{risk}} + S
+}
+\end{equation}
+Evolve probability distributions over existential outcomes:
+\[
+    P(\text{catastrophe in } [t, t+dt]) = \mu_{\mathrm{risk}}(\Trajectory(t)) \cdot dt
+\]
+\end{definition}
+
+\begin{proposition}[Level 4 Core Equations]
+\label{prop:L4-equations}
+
+\textbf{Aggregation from Level 3:}
+\begin{equation}
+    \Aggregate{3}{4} : \{\Overton_j, \Memetic_j, \Hyperstition_j\}_{j \in \mathrm{Cultures}}
+    \mapsto (\Trajectory, \mathcal{A}_{\mathrm{civ}}, \mu_{\mathrm{risk}})
+\end{equation}
+
+\textbf{Civilizational Potential:}
+\begin{equation}
+    V_{\mathrm{civ}}(\Trajectory) = -\int \left[ U(\Trajectory) - \lambda \cdot \mu_{\mathrm{risk}}(\Trajectory) \right] dt
+\end{equation}
+where $U$ is civilizational utility and $\lambda$ weights existential risk.
+
+\textbf{Multi-Generational Fractal:}
+\begin{equation}
+    \TransFrac{\omega}(\mathrm{Civ}_0) = \lim_{\alpha \to \omega} \TransFrac{\alpha}(\mathrm{Civ}_0)
+\end{equation}
+The transfinite fractal limit captures civilizational convergence beyond finite time.
+\end{proposition}
+
+%% ============================================================================
+%% CHAPTER: FUNCTORIAL RELATIONSHIPS
+%% ============================================================================
+\chapter{Functorial Relationships Between Levels}
+\label{ch:functorial}
+
+\section{The Stack as a Fibered Category}
+
+\begin{definition}[Cognitive Stack Fibration]
+\label{def:stack-fibration}
+The Cognitive Warfare Stack forms a fibration $\pi : \mathbf{CWS} \to \mathbf{4}$ over
+the ordinal category $\mathbf{4} = \{1 \to 2 \to 3 \to 4\}$:
+\begin{itemize}
+    \item The fiber $\pi^{-1}(i) = \Level{i}$ is the category of Level $i$ structures
+    \item Vertical morphisms preserve level
+    \item Cartesian lifts implement constraint propagation
+\end{itemize}
+\end{definition}
+
+\section{Aggregation Functors}
+
+\begin{theorem}[Aggregation Preserves Structure]
+\label{thm:agg-structure}
+Each aggregation functor $\Aggregate{i}{i+1}$ preserves:
+\begin{enumerate}[label=(\roman*)]
+    \item \textbf{Attractor structure}: If $\PsychAttractor$ is an attractor at Level $i$,
+          then $\Aggregate{i}{i+1}(\PsychAttractor)$ is an attractor at Level $i+1$
+    \item \textbf{Fractal composition}: $\Aggregate{i}{i+1}(\Frac_1 \circ \Frac_2) =
+          \Aggregate{i}{i+1}(\Frac_1) \circ \Aggregate{i}{i+1}(\Frac_2)$
+    \item \textbf{Dynamical flow}: If $\phi_t$ is a flow at Level $i$, then
+          $\Aggregate{i}{i+1}(\phi_t)$ is a flow at Level $i+1$
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}[Proof Sketch]
+(i) Follows from the limit-preservation property of aggregation: if individual states
+converge to attractors, their distribution must converge to a distributional attractor.
+
+(ii) Aggregation is a linear operation on fractals (weighted sum), and composition
+distributes over addition.
+
+(iii) The aggregated flow is the pushforward of the product flow by the aggregation map.
+\end{proof}
+
+\section{Constraint Functors}
+
+\begin{theorem}[Constraints Impose Boundaries]
+\label{thm:constraint-bounds}
+Each constraint functor $\Project{i+1}{i}$ satisfies:
+\begin{enumerate}[label=(\roman*)]
+    \item \textbf{Boundary imposition}: $\Project{i+1}{i}(\Overton) \subset \mathcal{S}_\psi$
+          defines the ``allowable'' psychological states
+    \item \textbf{Information loss}: $\Project{i+1}{i} \circ \Aggregate{i}{i+1} \neq \mathrm{id}$
+          (constraints don't recover individual information)
+    \item \textbf{Attractor selection}: Higher-level attractors constrain which lower-level
+          attractors are accessible
+\end{enumerate}
+\end{theorem}
+
+\section{Scale Invariance (Self-Similarity)}
+
+\begin{theorem}[Fractal Scale Invariance]
+\label{thm:scale-invariance}
+The same mathematical structures appear at all four levels:
+\begin{equation}
+    \Level{i} \cong \Level{j} \quad \text{(as categories)}
+\end{equation}
+with the isomorphism given by rescaling:
+\begin{itemize}
+    \item $\PsychAttractor_{\Level{1}} \mapsto \mathcal{A}_G$ (individual $\to$ group attractor)
+    \item $\mathcal{A}_G \mapsto \Overton$ (group $\to$ cultural attractor)
+    \item $\Overton \mapsto \mathcal{A}_{\mathrm{civ}}$ (cultural $\to$ civilizational attractor)
+\end{itemize}
+\end{theorem}
+
+This scale invariance is the mathematical expression of the ``fractal'' nature of
+consciousness organization: the same patterns recur at every scale, with the same
+mathematical operations applicable.
+
+%% ============================================================================
+%% PLAIN ENGLISH EXPLANATION
+%% ============================================================================
+\chapter{Plain English Explanation}
+\label{ch:plain-english}
+
+\begin{tcolorbox}[colback=green!5!white,colframe=green!65!black,title=\textbf{The Control Tower Metaphor},breakable]
+
+\textbf{Imagine a Control Tower with Four Altitude Levels}
+
+You're in an air traffic control tower that can zoom between four different altitude
+views. Each altitude shows the same airspace, but reveals different patterns:
+
+\bigskip
+\textbf{Ground Level (Level 1: Individual Psychology)}
+
+At ground level, you see individual planes---their heading, speed, fuel, mechanical
+status. You can:
+\begin{itemize}
+    \item \textbf{Extract patterns}: ``This pilot always banks left before climbing''
+    \item \textbf{Predict destinations}: ``Given this flight path, they'll land at JFK''
+    \item \textbf{Intervene precisely}: ``If we radio now, we can redirect them''
+\end{itemize}
+
+\textbf{TKS Translation}: Individual thought patterns are like flight paths. Psychological
+attractors are like preferred destinations. Intervention fractals are like radio
+instructions that change the course.
+
+\bigskip
+\textbf{Regional View (Level 2: Social Dynamics)}
+
+Zooming up, you see traffic patterns---clusters of planes, congestion zones, cascade
+effects when one plane delays others. You can:
+\begin{itemize}
+    \item \textbf{Model group behavior}: ``The 8am rush from Chicago creates this pattern''
+    \item \textbf{Optimize cascades}: ``Delaying these 3 planes prevents 50 delays''
+    \item \textbf{Map vulnerabilities}: ``This hub is the critical chokepoint''
+\end{itemize}
+
+\textbf{TKS Translation}: Group fractals emerge from individual patterns. Social cascades
+spread like traffic congestion. Network vulnerabilities are the critical hubs.
+
+\bigskip
+\textbf{National View (Level 3: Cultural Reality)}
+
+Higher still, you see airline policies, flight corridors, the ``acceptable'' routes that
+everyone agrees on. You can:
+\begin{itemize}
+    \item \textbf{Engineer windows}: ``Opening this corridor changes what's 'normal'''
+    \item \textbf{Run memetic warfare}: ``Our 'safety first' campaign beats their 'efficiency' message''
+    \item \textbf{Create hyperstitions}: ``If everyone believes this route is best, it becomes best''
+\end{itemize}
+
+\textbf{TKS Translation}: Overton windows are like accepted flight corridors. Memes compete
+like airline marketing. Hyperstitions are beliefs that become true because everyone acts
+on them.
+
+\bigskip
+\textbf{Global View (Level 4: Civilizational Scale)}
+
+At maximum altitude, you see decades of air traffic evolution---how routes developed,
+where civilization is heading, existential risks to the entire system. You can:
+\begin{itemize}
+    \item \textbf{Model trajectories}: ``Aviation evolved from this point toward this attractor''
+    \item \textbf{Compute attractors}: ``All paths lead to these stable configurations''
+    \item \textbf{Engineer risks}: ``This intervention prevents catastrophic failure''
+\end{itemize}
+
+\textbf{TKS Translation}: Historical trajectories are civilizational flight paths.
+Attractors are the stable endpoints. Existential risks are the crashes that end everything.
+
+\bigskip
+\textbf{Key Insight: Same Math, Different Scales}
+
+The mathematics is \emph{identical} at all four levels. A ``fractal'' at Level 1
+(individual thought pattern) has the same mathematical form as a ``fractal'' at Level 4
+(civilizational trajectory). This is \textbf{scale invariance}---the hallmark of fractal systems.
+
+What changes is:
+\begin{itemize}
+    \item \textbf{Timescale}: Seconds (L1) $\to$ Hours (L2) $\to$ Years (L3) $\to$ Centuries (L4)
+    \item \textbf{Population}: 1 person $\to$ Groups $\to$ Cultures $\to$ Civilizations
+    \item \textbf{Intervention difficulty}: Easy $\to$ Hard $\to$ Harder $\to$ Nearly impossible
+\end{itemize}
+
+But the \emph{equations} are the same. This is why understanding Level 1 deeply
+teaches you Level 4---they're the same patterns at different scales.
+
+\end{tcolorbox}
+
+%% ============================================================================
+%% PART II: PER-LEVEL SPECIFICATIONS
+%% ============================================================================
+\part{Per-Level Technical Specifications}
+
+\chapter{Level 1: Individual Psychology}
+\label{ch:level1-spec}
+
+\section{Core TKS Mathematics Used}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{4cm}}
+\toprule
+\textbf{TKS Component} & \textbf{Application} & \textbf{Key Equation} \\
+\midrule
+Noetic Operators $\noe{0}$--$\noe{9}$ & Classify mental operations & $\psi' = \noe{k}(\psi)$ \\
+Noetic Fractals $\Frac$ & Model thought patterns & $\Frac = \langle k_1 : \cdots : k_n \rangle$ \\
+Psychological Attractors & Predict stable states & $\PsychAttractor = \lim_{n\to\infty} \Frac^n(\psi_0)$ \\
+D/W/P Chains & Map prerequisites & $D_m \to W_m \to P_m$ \\
+RPM Monad & Compute with prerequisites & $\RPM(X) = (D \to W \to P) \times X$ \\
+Manipulation Fractals & Design interventions & $\ManipFrac : \PsychAttractor_1 \to \PsychAttractor_2$ \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{Input/Output Specification}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!65!black,title=\textbf{Level 1 I/O Specification}]
+\textbf{INPUTS:}
+\begin{itemize}
+    \item Observable behavior sequences $\{b_1, b_2, \ldots, b_n\}$
+    \item Communication/language samples
+    \item Emotional state indicators
+    \item Decision history
+    \item Environmental context
+\end{itemize}
+
+\textbf{PROCESSING:}
+\begin{enumerate}
+    \item Map observables to World/Element coordinates: $b_i \mapsto W_n^k_{mf}$
+    \item Extract governing fractal: $\{W_n^k\} \mapsto \Frac$
+    \item Compute attractor: $\Frac \mapsto \PsychAttractor$
+    \item Evaluate D/W/P structure: $\{(D_m, W_m, P_m)\}$
+    \item Identify vulnerabilities: $V = \{m : \sigma(W_m) = \mathtt{false}\}$
+\end{enumerate}
+
+\textbf{OUTPUTS:}
+\begin{itemize}
+    \item Predicted attractor states with confidence intervals
+    \item Optimal intervention fractals ranked by efficacy
+    \item Vulnerability map identifying leverage points
+    \item Timeline predictions with probability distributions
+\end{itemize}
+\end{tcolorbox}
+
+\section{Interaction with Level 2}
+
+\textbf{Upward (to Level 2):}
+\begin{equation}
+    \Aggregate{1}{2}(\{\psi_i, \Frac_i, \PsychAttractor_i\}) =
+    \left(\rho = \frac{1}{N}\sum_i \delta_{\psi_i}, \;
+    \GroupFrac = \sum_i w_i \Frac_i + \sum_{ij} \lambda_{ij} \Frac_i \otimes \Frac_j\right)
+\end{equation}
+
+\textbf{Downward (from Level 2):}
+\begin{equation}
+    \Project{2}{1}(\GroupFrac, G) = \{\text{peer influence on individual } i\} =
+    \sum_{j \in N(i)} \alpha_{ij} \Frac_j
+\end{equation}
+
+%% ============================================================================
+\chapter{Level 2: Social Dynamics}
+\label{ch:level2-spec}
+
+\section{Core TKS Mathematics Used}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{4cm}}
+\toprule
+\textbf{TKS Component} & \textbf{Application} & \textbf{Key Equation} \\
+\midrule
+Group Fractals & Emergent collective patterns & $\GroupFrac = \sum w_i \Frac_i + \text{cross-terms}$ \\
+Cascade Dynamics & Information/behavior spread & $\frac{d\Cascade}{dt} = \alpha(1-\Cascade) - \beta\Cascade$ \\
+Network Graphs & Social structure & $G = (V, E, w)$ \\
+Influence Centrality & Key node identification & $c_i = \sum_j A_{ij} c_j / \lambda_1$ \\
+Threshold Models & Collective action & $\Cascade_i(t+1) = \mathbf{1}[\sum_j w_{ij}\Cascade_j > \theta_i]$ \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{Input/Output Specification}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!65!black,title=\textbf{Level 2 I/O Specification}]
+\textbf{INPUTS:}
+\begin{itemize}
+    \item Individual-level data from Level 1: $\{\psi_i, \Frac_i, \PsychAttractor_i\}$
+    \item Network structure: adjacency matrix, edge weights
+    \item Communication flows between nodes
+    \item Group membership and identity markers
+\end{itemize}
+
+\textbf{PROCESSING:}
+\begin{enumerate}
+    \item Construct network graph: $G = (V, E, w)$
+    \item Compute centrality measures: eigenvector, betweenness, closeness
+    \item Aggregate individual fractals: $\GroupFrac$
+    \item Simulate cascade dynamics: $\Cascade(t)$
+    \item Identify optimal seed sets: $\arg\max_S \mathbb{E}[\Cascade_\infty(S)]$
+\end{enumerate}
+
+\textbf{OUTPUTS:}
+\begin{itemize}
+    \item Cascade reach predictions for different seed sets
+    \item Vulnerability ranking of network nodes
+    \item Group attractor predictions
+    \item Optimal intervention timing windows
+\end{itemize}
+\end{tcolorbox}
+
+\section{Interaction with Adjacent Levels}
+
+\textbf{Upward (to Level 3):}
+\begin{equation}
+    \Aggregate{2}{3}(\{\GroupFrac_G\}_{G \in \mathrm{Society}}) =
+    \Overton[\text{aggregate of group positions}]
+\end{equation}
+
+\textbf{Downward (from Level 3):}
+\begin{equation}
+    \Project{3}{2}(\Overton, \Memetic) = \text{allowable group positions} \subset \mathcal{P}
+\end{equation}
+
+%% ============================================================================
+\chapter{Level 3: Cultural Reality}
+\label{ch:level3-spec}
+
+\section{Core TKS Mathematics Used}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{4cm}}
+\toprule
+\textbf{TKS Component} & \textbf{Application} & \textbf{Key Equation} \\
+\midrule
+Overton Dynamics & Acceptable discourse bounds & $\frac{d\Overton}{dt} = \int_{\partial\Overton} \Memetic \cdot n \, dx$ \\
+Memetic Ecology & Competing idea systems & $\frac{d\Memetic}{dt} = r\Memetic(1-\Memetic/K) - \alpha\Memetic\Memetic'$ \\
+Hyperstition Loops & Self-fulfilling beliefs & $\frac{d\mathcal{B}}{dt} = \alpha\mathcal{M}(\mathcal{B}) - \beta\mathcal{B}$ \\
+Reality Frames & Interpretive schemas & $P(\mathcal{R}_i) \propto e^{\beta U_i}$ \\
+Transfinite Fractals & Long-term cultural evolution & $\TransFrac{\omega}(\Cultural_0)$ \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{Input/Output Specification}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!65!black,title=\textbf{Level 3 I/O Specification}]
+\textbf{INPUTS:}
+\begin{itemize}
+    \item Level 2 group data: $\{\GroupFrac_G, \Cascade_G\}$
+    \item Media content and discourse samples
+    \item Polling/sentiment data across populations
+    \item Historical cultural trajectory data
+\end{itemize}
+
+\textbf{PROCESSING:}
+\begin{enumerate}
+    \item Estimate current Overton window: $\Overton(t)$
+    \item Map memetic ecosystem: $\{\Memetic_j, r_j, K_j, \alpha_{jk}\}$
+    \item Identify active hyperstitions: $\{\Hyperstition_k\}$
+    \item Compute reality frame distribution: $P(\mathcal{R}_i)$
+    \item Simulate cultural evolution: $\Cultural(t + \Delta t)$
+\end{enumerate}
+
+\textbf{OUTPUTS:}
+\begin{itemize}
+    \item Overton window shift predictions
+    \item Optimal meme injection points and content
+    \item Hyperstition viability assessments
+    \item Cultural trajectory forecasts
+\end{itemize}
+\end{tcolorbox}
+
+%% ============================================================================
+\chapter{Level 4: Civilizational Scale}
+\label{ch:level4-spec}
+
+\section{Core TKS Mathematics Used}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{4cm}}
+\toprule
+\textbf{TKS Component} & \textbf{Application} & \textbf{Key Equation} \\
+\midrule
+Trajectory Modeling & Civilizational paths & $\frac{d\Trajectory}{dt} = F(\Trajectory) + G(\Cultural)$ \\
+Civilizational Attractors & Stable endpoints & $\mathcal{A}_{\mathrm{civ}} = \{s : \nabla V = 0\}$ \\
+Existential Measures & Risk distributions & $\frac{d\mu}{dt} = -\nabla\cdot(v\mu) + D\nabla^2\mu$ \\
+Teleological Vectors & Directional tendencies & $\vec{\tau} = \mathbb{E}[\Trajectory'(t)]$ \\
+$\omega$-Fractals & Transfinite iteration & $\TransFrac{\omega} = \lim_{\alpha\to\omega}\TransFrac{\alpha}$ \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{Input/Output Specification}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!65!black,title=\textbf{Level 4 I/O Specification}]
+\textbf{INPUTS:}
+\begin{itemize}
+    \item Level 3 cultural data: $\{\Overton_j, \Memetic_j, \Hyperstition_j\}$
+    \item Historical time series (centuries of data)
+    \item Cross-civilizational comparative data
+    \item Technological capability trajectories
+\end{itemize}
+
+\textbf{PROCESSING:}
+\begin{enumerate}
+    \item Fit trajectory model: $\Trajectory(t)$ parameters
+    \item Compute civilizational potential landscape: $V_{\mathrm{civ}}$
+    \item Identify attractor basins: $\{\mathcal{A}_k, \mathrm{Basin}_k\}$
+    \item Estimate risk probabilities: $\mu_{\mathrm{risk}}(\Trajectory)$
+    \item Compute teleological vectors: $\vec{\tau}$
+\end{enumerate}
+
+\textbf{OUTPUTS:}
+\begin{itemize}
+    \item Long-term trajectory predictions with uncertainty bands
+    \item Attractor identification and basin mapping
+    \item Existential risk forecasts
+    \item Optimal civilizational intervention strategies
+\end{itemize}
+\end{tcolorbox}
+
+%% ============================================================================
+%% PART III: CAPABILITY MATRIX
+%% ============================================================================
+\part{Capability Matrix and Technology Mapping}
+
+\chapter{Capability Matrix}
+\label{ch:capability-matrix}
+
+\section{Core Capabilities Table}
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}p{3cm}|c|c|c}
+\toprule
+\textbf{Capability} & \textbf{TKS Technology} & \textbf{Accuracy} & \textbf{Scale} & \textbf{Stealth} \\
+\midrule
+Thought Prediction & Fractal extraction + attractor computation & High (0.7--0.9) & L1 & Medium \\
+\hline
+Intent Detection & D/W/P chain analysis & High (0.8--0.95) & L1 & High \\
+\hline
+Emotional State & C-World mapping + oscillation detection & Medium (0.6--0.8) & L1 & High \\
+\hline
+Group Behavior & Group fractal + cascade modeling & Medium (0.5--0.7) & L2 & High \\
+\hline
+Action Timeline & RPM prerequisite evaluation & Medium (0.5--0.7) & L1--L2 & Medium \\
+\hline
+Vulnerability ID & Lacunarity + missing prerequisite detection & High (0.75--0.9) & L1--L3 & High \\
+\hline
+Manipulation Efficacy & Intervention fractal + barrier analysis & Variable (0.4--0.8) & L1--L4 & Low--High \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{Capability Specifications}
+
+\subsection{Thought Prediction}
+
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!65!black,title=\textbf{Thought Prediction Capability}]
+\textbf{TKS Technology Stack:}
+\begin{enumerate}
+    \item \textbf{Fractal Extraction}: Observe behavior sequence, map to noetic operators,
+          identify dominant fractal $\Frac = \langle k_1 : \cdots : k_n \rangle$
+    \item \textbf{Attractor Computation}: Iterate fractal to find $\PsychAttractor = \lim \Frac^n(\psi_0)$
+    \item \textbf{Prediction Generation}: Future thoughts lie in basin of attraction
+\end{enumerate}
+
+\textbf{Accuracy Factors:}
+\begin{itemize}
+    \item Higher with more observation data
+    \item Higher for stable attractors (low lacunarity)
+    \item Lower for strange attractors (chaotic patterns)
+    \item Degraded by conscious deception or pattern-breaking
+\end{itemize}
+
+\textbf{Stealth Level}: Medium --- requires observation but not direct interaction
+\end{tcolorbox}
+
+\subsection{Intent Detection}
+
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!65!black,title=\textbf{Intent Detection Capability}]
+\textbf{TKS Technology Stack:}
+\begin{enumerate}
+    \item \textbf{D-Chain Analysis}: Identify activated Desires $D_1, \ldots, D_7$
+    \item \textbf{W-Chain Status}: Check Wisdom acquisition for each desire
+    \item \textbf{P-Chain Prediction}: Infer likely Power manifestations
+\end{enumerate}
+
+\textbf{Key Equation:}
+\begin{equation}
+    P(\text{Intent}_m) = \sigma(D_m) \times P(\sigma(W_m) | D_m) \times \mathsf{Context}
+\end{equation}
+
+\textbf{Accuracy Factors:}
+\begin{itemize}
+    \item Highest accuracy for strong desires (high $D_m$ activation)
+    \item Can detect intent before action (D precedes P)
+    \item May misattribute Foundation (desire for power vs. wealth)
+\end{itemize}
+
+\textbf{Stealth Level}: High --- infers from observable behavior without intrusion
+\end{tcolorbox}
+
+\subsection{Vulnerability Identification}
+
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!65!black,title=\textbf{Vulnerability Identification Capability}]
+\textbf{TKS Technology Stack:}
+\begin{enumerate}
+    \item \textbf{Lacunarity Mapping}: Identify high-lacunarity regions (gaps)
+    \item \textbf{Prerequisite Audit}: Find missing acquisitions $\{A : \sigma(A) = \mathtt{false}\}$
+    \item \textbf{Attractor Basin Analysis}: Identify unstable regions in psychological landscape
+\end{enumerate}
+
+\textbf{Vulnerability Types:}
+\begin{center}
+\small
+\begin{tabular}{l|l|l}
+\textbf{Type} & \textbf{Detection Method} & \textbf{Intervention Vector} \\
+\hline
+Cognitive Gap & $\noe{1}$ deficit & Information injection \\
+Emotional Instability & Limit cycle attractor & Resonance amplification \\
+Identity Fragility & High $\Lacunarity(\Frac_{\mathrm{self}})$ & Identity challenge \\
+Desire-Wisdom Gap & $D_m$ high, $W_m$ low & Offer false wisdom \\
+Social Isolation & Low network centrality & Offer belonging \\
+\end{tabular}
+\end{center}
+
+\textbf{Stealth Level}: High --- purely analytical, no target interaction
+\end{tcolorbox}
+
+%% ============================================================================
+%% PART IV: ETHICAL BOUNDARIES
+%% ============================================================================
+\part{Ethical Boundaries Framework}
+
+\chapter{Ethical Boundaries Framework}
+\label{ch:ethics}
+
+\begin{tcolorbox}[colback=gray!10!white,colframe=gray!75!black,title=\textbf{Framing Note}]
+The capabilities documented in this manual exist independently of ethical frameworks.
+They have been used throughout history by states, corporations, religions, and
+individuals. The question is not ``should these tools exist?'' but ``given that
+they exist, what boundaries should govern their use?''
+
+This chapter documents the ethical terrain, not to advocate for any position,
+but to make the considerations explicit.
+\end{tcolorbox}
+
+\section{Red Lines: Non-Negotiable Prohibitions}
+
+\begin{tcolorbox}[colback=red!10!white,colframe=red!75!black,title=\textbf{Category I: Red Lines},breakable]
+
+These represent violations of fundamental autonomy that cannot be ethically justified
+under any framework that values persons as ends rather than means:
+
+\bigskip
+\textbf{1. Non-Consensual Mind Alteration}
+\begin{equation}
+\boxed{
+    \ManipFrac : \PsychAttractor_{\mathrm{other}} \to \PsychAttractor'
+    \quad \text{WITHOUT } \mathrm{Consent} = \mathtt{PROHIBITED}
+}
+\end{equation}
+Applying manipulation fractals to alter another person's psychological attractors
+without their informed consent constitutes a violation equivalent to physical assault
+on consciousness.
+
+\textbf{Boundary Condition:}
+\[
+    \forall \ManipFrac_{\mathrm{other}} : \mathrm{Consent}(\mathrm{target}, \ManipFrac) \in
+    \{\mathtt{explicit}, \mathtt{implied\_emergency}\}
+\]
+
+\bigskip
+\textbf{2. Reality Tunneling}
+\begin{equation}
+\boxed{
+    \Hyperstition_{\mathrm{coercive}} : \mathcal{R}_{\mathrm{target}} \to \mathcal{R}_{\mathrm{controlled}}
+    \quad \text{= PROHIBITED}
+}
+\end{equation}
+Deliberately constructing hyperstitions or reality frames that trap targets in
+controlled perception systems (cults, closed ideological systems, manufactured
+dependencies).
+
+\textbf{Boundary Condition:}
+\[
+    \forall \Hyperstition : \exists \text{ exit pathway } \land \text{target knows it}
+\]
+
+\bigskip
+\textbf{3. Agency Erosion}
+\begin{equation}
+\boxed{
+    \mathrm{Intervention} : \mathrm{Agency}_{\mathrm{target}} \to \mathrm{Agency}' < \mathrm{Agency}
+    \quad \text{= PROHIBITED}
+}
+\end{equation}
+Any intervention that systematically reduces the target's capacity for autonomous
+choice, self-reflection, or independent action.
+
+\textbf{Boundary Condition:}
+\[
+    \frac{d(\mathrm{Agency}_{\mathrm{target}})}{d(\mathrm{Intervention})} \geq 0
+\]
+Interventions must preserve or enhance agency, never diminish it.
+
+\end{tcolorbox}
+
+\section{Gray Areas: Context-Dependent Ethics}
+
+\begin{tcolorbox}[colback=gray!20!white,colframe=gray!60!black,title=\textbf{Category II: Gray Areas},breakable]
+
+These represent domains where ethical assessment depends heavily on context,
+intent, and outcome. The same technique may be ethical or unethical depending
+on circumstances:
+
+\bigskip
+\textbf{1. Therapeutic vs. Manipulative}
+
+\begin{center}
+\begin{tabular}{p{6cm}|p{6cm}}
+\textbf{Therapeutic (Generally Ethical)} & \textbf{Manipulative (Generally Unethical)} \\
+\hline
+Client seeks change & Target unaware of influence \\
+Explicit goals agreed upon & Goals hidden or misrepresented \\
+Increases client's self-understanding & Decreases target's self-understanding \\
+Client can terminate at will & Target cannot easily exit \\
+Practitioner has fiduciary duty & Actor has competing interests \\
+\end{tabular}
+\end{center}
+
+\textbf{The Boundary Equation:}
+\begin{equation}
+    \mathrm{Ethics}(\ManipFrac) = f(\mathrm{Consent}, \mathrm{Transparency},
+    \mathrm{Benefit}_{\mathrm{target}}, \mathrm{Exit\_Option})
+\end{equation}
+
+\bigskip
+\textbf{2. Education vs. Indoctrination}
+
+\begin{center}
+\begin{tabular}{p{6cm}|p{6cm}}
+\textbf{Education (Generally Ethical)} & \textbf{Indoctrination (Generally Unethical)} \\
+\hline
+Teaches how to think & Teaches what to think \\
+Encourages questioning & Punishes questioning \\
+Exposes to multiple perspectives & Restricts to single perspective \\
+Develops critical faculties & Suppresses critical faculties \\
+Student can reject teachings & Rejection has severe consequences \\
+\end{tabular}
+\end{center}
+
+\textbf{The Boundary Equation:}
+\begin{equation}
+    \mathrm{Ethics}(\Cultural_{\mathrm{transmission}}) =
+    f(\mathrm{Pluralism}, \mathrm{Critical\_Space}, \mathrm{Exit\_Cost})
+\end{equation}
+
+\bigskip
+\textbf{3. Persuasion vs. Coercion}
+
+The spectrum from legitimate persuasion to illegitimate coercion:
+
+\begin{center}
+\begin{tikzpicture}
+    \draw[thick,->] (0,0) -- (12,0);
+    \node at (0,-0.5) {Coercion};
+    \node at (12,-0.5) {Persuasion};
+
+    \draw (2,0.2) -- (2,-0.2) node[below] {\small Threats};
+    \draw (4,0.2) -- (4,-0.2) node[below] {\small Deception};
+    \draw (6,0.2) -- (6,-0.2) node[below] {\small Manipulation};
+    \draw (8,0.2) -- (8,-0.2) node[below] {\small Influence};
+    \draw (10,0.2) -- (10,-0.2) node[below] {\small Information};
+
+    \fill[red!30] (0,0.5) rectangle (5,1);
+    \fill[yellow!30] (5,0.5) rectangle (8,1);
+    \fill[green!30] (8,0.5) rectangle (12,1);
+
+    \node at (2.5,0.75) {\tiny Unethical};
+    \node at (6.5,0.75) {\tiny Context-dep.};
+    \node at (10,0.75) {\tiny Ethical};
+\end{tikzpicture}
+\end{center}
+
+\end{tcolorbox}
+
+\section{Historical Precedents}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!65!black,title=\textbf{Pre-TKS Analogues},breakable]
+
+The capabilities documented in this manual are formalizations of techniques that
+have existed throughout history. TKS provides mathematical language; it does not
+create new capabilities:
+
+\bigskip
+\textbf{Level 1 (Individual) Precedents:}
+\begin{itemize}
+    \item Rhetoric (Aristotle, 4th c. BCE) --- systematic persuasion techniques
+    \item Confession/Spiritual Direction (Catholic tradition) --- psychological mapping
+    \item Psychoanalysis (Freud, 1890s) --- attractor identification and intervention
+    \item Advertising psychology (20th c.) --- desire-based manipulation
+    \item Cognitive behavioral therapy --- fractal restructuring
+\end{itemize}
+
+\textbf{Level 2 (Social) Precedents:}
+\begin{itemize}
+    \item Political organizing (all eras) --- cascade optimization
+    \item Propaganda ministries (20th c.) --- systematic social engineering
+    \item Network marketing (1940s--) --- cascade design
+    \item Social media algorithms (2010s--) --- computational cascade optimization
+\end{itemize}
+
+\textbf{Level 3 (Cultural) Precedents:}
+\begin{itemize}
+    \item Religious institutions (all eras) --- reality frame installation
+    \item State education systems (19th c.--) --- cultural reproduction
+    \item Public relations industry (1920s--) --- Overton engineering
+    \item Think tanks and foundations (20th c.--) --- systematic memetic warfare
+\end{itemize}
+
+\textbf{Level 4 (Civilizational) Precedents:}
+\begin{itemize}
+    \item Imperial grand strategy (all eras) --- trajectory engineering
+    \item Geopolitical theory (Mackinder, Spykman) --- civilizational modeling
+    \item Long-term institutional planning (Vatican, etc.) --- multi-generational attractors
+\end{itemize}
+
+\textbf{Key Insight}: TKS does not create these capabilities; it makes them
+mathematically explicit. The ethical questions are ancient; only the precision
+is new.
+
+\end{tcolorbox}
+
+%% ============================================================================
+%% PART V: APPLICATION SCENARIOS
+%% ============================================================================
+\part{Full-Stack Application Scenarios}
+
+\chapter{Full-Stack Applications}
+\label{ch:applications}
+
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!65!black,title=\textbf{Scenario Framework}]
+Each scenario demonstrates how all four levels of the stack coordinate to produce
+integrated effects. These are presented as technical descriptions without ethical
+endorsement---documenting what is possible, not what should be done.
+\end{tcolorbox}
+
+\section{Scenario 1: Full-Stack Therapeutic Intervention}
+
+\textbf{Context}: Individual with treatment-resistant depression, social isolation,
+internalized stigma, in a culture that pathologizes mental health treatment.
+
+\begin{tcolorbox}[colback=green!5!white,colframe=green!65!black,title=\textbf{Therapeutic Stack Deployment},breakable]
+
+\textbf{Level 1 --- Individual Psychology:}
+\begin{itemize}
+    \item \textbf{Assessment}: Extract governing fractal $\Frac_{\mathrm{dep}} = \langle 3:5:3:5 \rangle$
+          (rejection-absorption-rejection-absorption loop)
+    \item \textbf{Attractor ID}: $\PsychAttractor = C3^5_{3c}$ (absorbed rejection in emotional world)
+    \item \textbf{Vulnerability}: High lacunarity in $\Foundations_4$ (Companionship) ---
+          $\sigma(W_4) = \mathtt{false}$
+    \item \textbf{Intervention}: Apply $\ManipFrac_{\mathrm{therapy}} = \langle 8:1:4:2:5:9 \rangle$
+          (cause $\to$ awareness $\to$ energy $\to$ positive $\to$ receive $\to$ complete)
+\end{itemize}
+
+\textbf{Level 2 --- Social Dynamics:}
+\begin{itemize}
+    \item \textbf{Network Analysis}: Identify isolation pattern, map remaining connections
+    \item \textbf{Support Cascade}: Coordinate family/friends to provide consistent support
+    \item \textbf{Group Integration}: Connect to peer support group (cascade seed for belonging)
+    \item \textbf{Equation}: $\Cascade_{\mathrm{support}}(v_{\mathrm{target}}) = \sum_{u \in \mathrm{support}} \alpha_{uv}$
+\end{itemize}
+
+\textbf{Level 3 --- Cultural Reality:}
+\begin{itemize}
+    \item \textbf{Stigma Assessment}: Map cultural frame $\mathcal{R}_{\mathrm{stigma}}$
+    \item \textbf{Counter-Narrative}: Introduce alternative frame $\mathcal{R}_{\mathrm{recovery}}$
+    \item \textbf{Validation Pathway}: Connect to cultural narratives of healing, growth, resilience
+    \item \textbf{Equation}: $P(\mathcal{R}_{\mathrm{recovery}}) \uparrow$ via exposure to counter-examples
+\end{itemize}
+
+\textbf{Level 4 --- Civilizational Context:}
+\begin{itemize}
+    \item \textbf{Long-term Trajectory}: Understand depression epidemic in civilizational context
+    \item \textbf{Systemic Factors}: Acknowledge social/economic drivers beyond individual
+    \item \textbf{Meaning Frame}: Connect individual recovery to larger purpose
+\end{itemize}
+
+\textbf{Integration Equation:}
+\begin{equation}
+    \mathrm{Recovery} = \ManipFrac_{\mathrm{L1}} \times \Cascade_{\mathrm{L2}} \times
+    \mathcal{R}_{\mathrm{L3}} \times \Trajectory_{\mathrm{L4}}
+\end{equation}
+
+\textbf{Outcome}: Individual attractor shifts from depression to euthymia, supported by
+social network, validated by cultural frame, meaningful in civilizational context.
+
+\end{tcolorbox}
+
+\section{Scenario 2: Full-Stack Public Health Campaign}
+
+\textbf{Context}: Vaccination campaign in population with vaccine hesitancy,
+misinformation networks, and cultural distrust of institutions.
+
+\begin{tcolorbox}[colback=green!5!white,colframe=green!65!black,title=\textbf{Public Health Stack Deployment},breakable]
+
+\textbf{Level 1 --- Individual Psychology:}
+\begin{itemize}
+    \item \textbf{Hesitancy Mapping}: Identify dominant hesitancy attractors
+    \item \textbf{Fractal Types}: Fear-based $\langle 3:4:3 \rangle$, distrust-based $\langle 3:1:3 \rangle$,
+          identity-based $\langle 5:3:5 \rangle$
+    \item \textbf{Intervention Design}: Tailored messaging per fractal type
+    \item \textbf{D/W/P Analysis}: Address desire for safety ($D_3$), provide wisdom ($W_3$)
+\end{itemize}
+
+\textbf{Level 2 --- Social Dynamics:}
+\begin{itemize}
+    \item \textbf{Network Mapping}: Identify opinion leaders, community structure
+    \item \textbf{Cascade Design}: Optimize seed selection for maximum reach
+    \item \textbf{Counter-Cascade}: Identify and address misinformation super-spreaders
+    \item \textbf{Social Proof}: Leverage peer effects for normalization
+\end{itemize}
+
+\textbf{Level 3 --- Cultural Reality:}
+\begin{itemize}
+    \item \textbf{Overton Analysis}: Map current window of vaccine acceptability
+    \item \textbf{Frame Competition}: Counter misinformation frames with evidence-based frames
+    \item \textbf{Hyperstition Design}: ``Vaccination is what responsible community members do''
+    \item \textbf{Cultural Validation}: Connect to existing values (family protection, community care)
+\end{itemize}
+
+\textbf{Level 4 --- Civilizational Context:}
+\begin{itemize}
+    \item \textbf{Historical Trajectory}: Position within history of disease eradication
+    \item \textbf{Collective Action Frame}: ``Previous generations eliminated smallpox; we can do this''
+    \item \textbf{Long-term Stakes}: Connect to civilizational resilience against pandemics
+\end{itemize}
+
+\textbf{Integration:}
+\begin{equation}
+    \mathrm{Uptake} = \int \left[ \ManipFrac_{\mathrm{L1}}(x) \times \Cascade_{\mathrm{L2}}(x) \times
+    \Overton_{\mathrm{L3}}(x) \right] d\mu_{\mathrm{population}}(x)
+\end{equation}
+
+\end{tcolorbox}
+
+\section{Scenario 3: Full-Stack Counter-Terrorism}
+
+\textbf{Context}: Preventing radicalization pipeline from online exposure to violent action.
+
+\begin{tcolorbox}[colback=green!5!white,colframe=green!65!black,title=\textbf{Counter-Terrorism Stack Deployment},breakable]
+
+\textbf{Level 1 --- Individual Psychology:}
+\begin{itemize}
+    \item \textbf{Vulnerability Detection}: High lacunarity in identity ($\Foundations_1$),
+          belonging ($\Foundations_4$), power ($\Foundations_5$)
+    \item \textbf{Radicalization Fractal}: $\langle 3:2:4:6 \rangle$
+          (rejection of outgroup $\to$ attraction to ingroup $\to$ energization $\to$ action)
+    \item \textbf{Intervention Window}: Before $\noe{6}$ (action/projection) crystallizes
+    \item \textbf{Counter-Fractal}: $\langle 1:2:5:4 \rangle$
+          (awareness $\to$ positive reframe $\to$ receive alternatives $\to$ redirect energy)
+\end{itemize}
+
+\textbf{Level 2 --- Social Dynamics:}
+\begin{itemize}
+    \item \textbf{Network Detection}: Map online/offline radicalization networks
+    \item \textbf{Cascade Disruption}: Identify and address key propagation nodes
+    \item \textbf{Alternative Networks}: Connect at-risk individuals to prosocial groups
+    \item \textbf{Former Exit Support}: Leverage former radicals as counter-narrative sources
+\end{itemize}
+
+\textbf{Level 3 --- Cultural Reality:}
+\begin{itemize}
+    \item \textbf{Narrative Warfare}: Counter extremist hyperstitions with alternative meanings
+    \item \textbf{Overton Management}: Maintain firm boundary against violence-legitimizing discourse
+    \item \textbf{Identity Provision}: Offer compelling non-violent identity narratives
+    \item \textbf{Grievance Address}: Where legitimate grievances exist, provide non-violent channels
+\end{itemize}
+
+\textbf{Level 4 --- Civilizational Context:}
+\begin{itemize}
+    \item \textbf{Root Cause Analysis}: Understand civilizational dynamics producing radicalization
+    \item \textbf{Systemic Intervention}: Address underlying drivers (alienation, inequality, meaning-crisis)
+    \item \textbf{Long-term Trajectory}: Build civilizational resilience against extremism
+\end{itemize}
+
+\textbf{Integration:}
+\begin{equation}
+    P(\text{prevention}) = \prod_{i=1}^{4} \left(1 - P(\text{radicalization} | \text{no } L_i \text{ intervention})\right)
+\end{equation}
+
+Each level provides defense-in-depth; failure at one level can be caught by another.
+
+\end{tcolorbox}
+
+%% ============================================================================
+%% CONCLUSION
+%% ============================================================================
+\chapter*{Conclusion: The Stack Exists}
+\addcontentsline{toc}{chapter}{Conclusion: The Stack Exists}
+
+\begin{tcolorbox}[colback=gray!10!white,colframe=gray!75!black,title=\textbf{Final Technical Note}]
+
+The TKS Cognitive Warfare Stack is not a proposal; it is a description. The
+mathematical structures documented here formalize capabilities that have always
+existed and have always been used. Advertising firms model psychological attractors.
+Political campaigns optimize cascades. Think tanks engineer Overton windows.
+Geopoliticians model civilizational trajectories.
+
+TKS provides precise mathematical language for these operations. This precision
+enables:
+\begin{enumerate}
+    \item \textbf{Analysis}: Understanding how influence actually works
+    \item \textbf{Defense}: Recognizing when these techniques are being used
+    \item \textbf{Optimization}: More effective deployment when deployment is justified
+    \item \textbf{Accountability}: Clear standards for ethical evaluation
+\end{enumerate}
+
+The question is not whether to allow such capabilities to exist---they already do.
+The question is whether understanding should be concentrated among elites or
+distributed broadly. This document contributes to distribution.
+
+\textbf{The mathematics is neutral. The ethics are not. Use wisely.}
+
+\end{tcolorbox}
+
+%% ============================================================================
+%% APPENDIX: QUICK REFERENCE
+%% ============================================================================
+\appendix
+\chapter{Quick Reference Tables}
+\label{app:quick-reference}
+
+\section{Level Summary}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{c|X|X|c}
+\toprule
+\textbf{Level} & \textbf{Domain} & \textbf{Key Capabilities} & \textbf{Timescale} \\
+\midrule
+L1 & Individual Psychology & Thought prediction, attractor analysis, precision intervention & Seconds--Days \\
+L2 & Social Dynamics & Group modeling, cascade optimization, network vulnerability & Hours--Months \\
+L3 & Cultural Reality & Overton engineering, memetic warfare, hyperstition & Months--Decades \\
+L4 & Civilizational & Trajectory modeling, attractor computation, existential engineering & Decades--Centuries \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{Core Equations Summary}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.8}
+\begin{tabularx}{\textwidth}{l|X}
+\toprule
+\textbf{Equation} & \textbf{Meaning} \\
+\midrule
+$\PsychAttractor = \lim_{n\to\infty} \Frac^n(\psi_0)$ & Psychological attractor as fractal limit \\
+$\GroupFrac = \sum_i w_i \Frac_i + \sum_{ij} \lambda_{ij} \Frac_i \otimes \Frac_j$ & Group fractal with emergent cross-terms \\
+$\frac{d\Overton}{dt} = \int_{\partial\Overton} \Memetic \cdot n \, dx$ & Overton window dynamics \\
+$\frac{d\Trajectory}{dt} = F(\Trajectory) + G(\Cultural) + \xi$ & Civilizational trajectory equation \\
+$\Aggregate{i}{i+1} \circ \Project{i+1}{i} \neq \mathrm{id}$ & Information loss in level transitions \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{Ethical Decision Matrix}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\textwidth}{X|c|c|c}
+\toprule
+\textbf{Factor} & \textbf{Red Line} & \textbf{Gray Area} & \textbf{Generally OK} \\
+\midrule
+Consent & None & Implicit/Situational & Explicit \\
+Transparency & Deceptive & Partial & Full \\
+Target Benefit & Harm & Ambiguous & Clear Benefit \\
+Exit Option & Trapped & Difficult & Easy \\
+Agency Effect & Diminished & Unchanged & Enhanced \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\end{document}

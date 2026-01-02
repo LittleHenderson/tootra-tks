@@ -755,7 +755,7 @@ impl VmState {
                     let value = self.pop()?;
                     match value {
                         Value::Fractal { seq, subscript, .. } => {
-                            let level = subscript.unwrap_or_else(|| {
+                            let level = subscript.unwrap_or({
                                 OrdinalValue::Finite(seq.len() as u64)
                             });
                             self.stack.push(Value::Ordinal(level));

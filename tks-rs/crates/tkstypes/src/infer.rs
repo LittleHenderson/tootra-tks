@@ -1738,6 +1738,7 @@ fn infer_entangle(
     })
 }
 
+#[allow(clippy::too_many_arguments)]
 fn infer_transfinite_loop(
     state: &mut InferState,
     env: &mut TypeEnv,
@@ -2187,7 +2188,7 @@ fn free_type_vars_env(env: &TypeEnv) -> HashSet<String> {
     let mut vars: HashSet<String> = env
         .values
         .values()
-        .flat_map(|scheme| free_type_vars_scheme(scheme))
+        .flat_map(free_type_vars_scheme)
         .collect();
     for info in env.classes.values() {
         vars.extend(free_type_vars_class(info));
@@ -2199,7 +2200,7 @@ fn free_row_vars_env(env: &TypeEnv) -> HashSet<String> {
     let mut vars: HashSet<String> = env
         .values
         .values()
-        .flat_map(|scheme| free_row_vars_scheme(scheme))
+        .flat_map(free_row_vars_scheme)
         .collect();
     for info in env.classes.values() {
         vars.extend(free_row_vars_class(info));

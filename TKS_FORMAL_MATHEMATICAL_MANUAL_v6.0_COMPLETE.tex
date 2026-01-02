@@ -1,0 +1,1001 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% TKS FORMAL MATHEMATICAL MANUAL v6.0 — ACADEMIC RELEASE
+%% Complete Unified Document
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt,twoside,openright]{book}
+
+%% ============================================================================
+%% PACKAGES
+%% ============================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm,amsfonts}
+\usepackage{mathtools}
+\usepackage{stmaryrd}           % For semantic brackets
+\usepackage{bm}                 % Bold math
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{cd,arrows,positioning,calc}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{theorems,skins,breakable}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{geometry}
+\geometry{
+  paper=letterpaper,
+  inner=1.2in,
+  outer=1in,
+  top=1in,
+  bottom=1in
+}
+
+%% ============================================================================
+%% THEOREM ENVIRONMENTS
+%% ============================================================================
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{axiom}[definition]{Axiom}
+
+\theoremstyle{plain}
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{corollary}[definition]{Corollary}
+
+\theoremstyle{remark}
+\newtheorem{remark}[definition]{Remark}
+\newtheorem{example}[definition]{Example}
+\newtheorem{notation}[definition]{Notation}
+
+%% ============================================================================
+%% CUSTOM COMMANDS
+%% ============================================================================
+% Semantic brackets
+\newcommand{\sem}[1]{\llbracket #1 \rrbracket}
+
+% TKS-specific symbols
+\newcommand{\Worlds}{\mathcal{W}}
+\newcommand{\Ideas}{\mathcal{I}}
+\newcommand{\Elements}{\mathcal{E}}
+\newcommand{\Noetics}{\mathcal{N}}
+\newcommand{\Foundations}{\mathcal{F}}
+\newcommand{\Acquisitions}{\mathcal{A}}
+\newcommand{\Noetica}{\mathbf{Noetica}}
+\newcommand{\Acq}{\mathbf{Acq}}
+
+% Noetic operators
+\newcommand{\noe}[1]{\nu_{#1}}
+
+% Tootra operations
+\newcommand{\Tadd}{\oplus_T}
+\newcommand{\Tsub}{\ominus_T}
+\newcommand{\Tmul}{\otimes_T}
+\newcommand{\Tdiv}{\oslash_T}
+
+% World association
+\newcommand{\Wadd}{\oplus_W}
+\newcommand{\Wsub}{\ominus_W}
+
+% Type judgments
+\newcommand{\types}{\vdash}
+\newcommand{\typmark}{:}
+
+% RPM Monad
+\newcommand{\RPM}{\mathfrak{R}}
+
+% Category theory
+\newcommand{\Ob}{\mathrm{Ob}}
+\newcommand{\Hom}{\mathrm{Hom}}
+\newcommand{\id}{\mathrm{id}}
+\newcommand{\dom}{\mathrm{dom}}
+\newcommand{\cod}{\mathrm{cod}}
+
+% Ordinal function
+\newcommand{\ord}{\mathrm{ord}}
+
+%% ============================================================================
+%% HEADER/FOOTER
+%% ============================================================================
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE]{\leftmark}
+\fancyhead[RO]{\rightmark}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+%% ============================================================================
+%% TITLE INFO
+%% ============================================================================
+\title{%
+  \Huge\bfseries TKS FORMAL MATHEMATICAL MANUAL\\[0.5em]
+  \Large Version 6.0 — Academic Release\\[1em]
+  \large The Complete Rigorous Formalization of the\\
+  Tootra Kabbalistic System
+}
+\author{%
+  Compiled from Canonical Sources\\[0.5em]
+  \textit{A Graduate-Level Treatise in Formal Metaphysical Mathematics}
+}
+\date{2024}
+
+%% ============================================================================
+%% BEGIN DOCUMENT
+%% ============================================================================
+\begin{document}
+
+\frontmatter
+\maketitle
+
+%% ============================================================================
+%% ABSTRACT
+%% ============================================================================
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+
+This manual presents the complete formal mathematical specification of the \textbf{Tootra Kabbalistic System (TKS)}, a rigorous metaphysical-mathematical framework unifying consciousness, manifestation, and transformation. TKS provides:
+
+\begin{enumerate}[label=(\arabic*)]
+  \item A \textbf{complete ontology} of 40 Elements across 4 Worlds with 10 Noetic operators.
+  \item A \textbf{formal algebra} with Noetic composition, Foundation filtering, and Tootra arithmetic.
+  \item A \textbf{category-theoretic foundation} establishing TKS as the category $\Noetica$.
+  \item A \textbf{monadic formulation} of the Recursive Prerequisite Model (RPM).
+  \item A \textbf{complete type system} with inference rules and error taxonomy.
+  \item A \textbf{set-theoretic grounding} with formal definitions of all structures.
+  \item A \textbf{fractal calculus} extending single Noetics to nested transformation chains.
+  \item A \textbf{compiler specification} with complete BNF grammar and denotational semantics.
+  \item \textbf{Denotational semantics} providing formal meaning to all TKS operations.
+  \item \textbf{Rigorous proofs} of all major theorems with academic-level detail.
+\end{enumerate}
+
+Version 6.0 represents the \textbf{Academic Release}, upgrading v5.0 with strengthened mathematics, complete denotational semantics, fully formalized category theory, and expanded worked examples suitable for graduate-level study and formal implementation.
+
+\vspace{1em}
+\noindent\textbf{Keywords:} Formal metaphysics, category theory, type theory, denotational semantics, Kabbalistic mathematics, consciousness modeling, transformation algebra.
+
+%% ============================================================================
+%% TABLE OF CONTENTS
+%% ============================================================================
+\tableofcontents
+
+%% ============================================================================
+%% PREFACE
+%% ============================================================================
+\chapter*{Preface}
+\addcontentsline{toc}{chapter}{Preface}
+
+The Tootra Kabbalistic System (TKS) represents an ambitious attempt to formalize metaphysical concepts using the rigorous tools of modern mathematics. This manual serves as the definitive reference for TKS v6.0, the Academic Release.
+
+\section*{Relationship to Prior Versions}
+
+\begin{itemize}
+  \item \textbf{v3.2.1}: Established core definitions and initial formal structure.
+  \item \textbf{v5.0}: Unified all subsystems with category theory, type theory, and compiler specification.
+  \item \textbf{v6.0}: Academic Release with complete denotational semantics, strengthened proofs, and fully formalized algebraic structures.
+\end{itemize}
+
+\section*{Intended Audience}
+
+This manual is written for:
+\begin{itemize}
+  \item Graduate students in mathematics, computer science, or philosophy.
+  \item Researchers interested in formal approaches to metaphysics.
+  \item Implementers building TKS-based software systems.
+  \item Scholars studying the intersection of Kabbalistic thought and formal methods.
+\end{itemize}
+
+\section*{Prerequisites}
+
+Readers should have familiarity with:
+\begin{itemize}
+  \item Basic set theory and abstract algebra.
+  \item Elementary category theory (categories, functors, natural transformations).
+  \item Type theory fundamentals.
+  \item Programming language semantics (helpful but not required).
+\end{itemize}
+
+\section*{Document Structure}
+
+The manual is organized into four major parts:
+\begin{enumerate}
+  \item \textbf{Foundations}: Ontology, Elements, Noetics, and Foundations.
+  \item \textbf{Algebraic Structures}: Noetic algebra, Tootra arithmetic, and their properties.
+  \item \textbf{Categorical and Semantic Framework}: Category Noetica, ACBE functor, RPM monad, and denotational semantics.
+  \item \textbf{Applications}: Type theory, compiler specification, theorems, proofs, and worked examples.
+\end{enumerate}
+
+\mainmatter
+
+%% ============================================================================
+%% PART I: FOUNDATIONS
+%% ============================================================================
+\part{Foundations}
+
+%% ============================================================================
+%% CHAPTER 1: INTRODUCTION
+%% ============================================================================
+\chapter{Introduction}
+\label{ch:introduction}
+
+\section{Aims and Scope of TKS}
+
+The Tootra Kabbalistic System (TKS) is a formal mathematical framework designed to model the structure of consciousness, transformation, and manifestation. Unlike purely empirical theories, TKS operates in the domain of \emph{formal metaphysics}---it provides a rigorous algebraic and categorical language for reasoning about concepts traditionally relegated to philosophy or mysticism.
+
+\begin{definition}[Formal Metaphysics]
+\label{def:formal-metaphysics}
+A \textbf{formal metaphysical system} is a mathematical structure $\mathcal{S} = (\mathcal{O}, \mathcal{M}, \mathcal{A})$ where:
+\begin{itemize}
+  \item $\mathcal{O}$ is a set of \emph{ontological primitives} (the basic entities of the system),
+  \item $\mathcal{M}$ is a set of \emph{morphisms} or transformations between entities,
+  \item $\mathcal{A}$ is a set of \emph{axioms} governing the behavior of primitives and morphisms.
+\end{itemize}
+\end{definition}
+
+TKS instantiates this schema with:
+\begin{itemize}
+  \item $\mathcal{O}$: The 40 Elements, 4 Worlds, 7 Foundations, and the Idea space $\Ideas$.
+  \item $\mathcal{M}$: The 10 Noetic operators $\noe{0}, \ldots, \noe{9}$ and associated transformations.
+  \item $\mathcal{A}$: The axioms of composition, duality, precedence, and the prerequisite model.
+\end{itemize}
+
+\section{The Central Thesis}
+
+TKS is built on a single foundational claim:
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Central Thesis of TKS]
+\textbf{All phenomena of consciousness, transformation, and manifestation can be modeled as algebraic operations on a structured space of Ideas, mediated by a finite set of Noetic operators, organized across a hierarchy of Worlds, and filtered through life-domain Foundations.}
+\end{tcolorbox}
+
+This thesis is \emph{not} an empirical claim about physics or neuroscience. Rather, it is a \emph{formal postulate} that enables systematic reasoning about transformation processes.
+
+\section{Notation and Conventions}
+\label{sec:notation}
+
+Throughout this manual, we employ consistent notation:
+
+\begin{notation}[Symbol Classes]
+\label{not:symbols}
+The following symbol classes are used:
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Class} & \textbf{Notation} & \textbf{Domain} \\
+\midrule
+Worlds & $A, B, C, D$ & $\Worlds = \{A, B, C, D\}$ \\
+Noetics & $\noe{0}, \noe{1}, \ldots, \noe{9}$ & $\Noetics = \{\noe{k} : k \in \{0,\ldots,9\}\}$ \\
+Foundations & $F_1, F_2, \ldots, F_7$ & $\Foundations = \{F_m : m \in \{1,\ldots,7\}\}$ \\
+Elements & $Xn$ where $X \in \Worlds$, $n \in \{1,\ldots,10\}$ & $\Elements = \Worlds \times \{1,\ldots,10\}$ \\
+Ideas & $\Ideas$ & Space of all Ideas \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{notation}
+
+\begin{notation}[Operations]
+\label{not:operations}
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Operation} & \textbf{Symbol} & \textbf{Meaning} \\
+\midrule
+Tootra-Addition & $\Tadd$ & Idea union/co-presence \\
+Tootra-Subtraction & $\Tsub$ & Idea removal \\
+Tootra-Multiplication & $\Tmul$ & Idea interaction/scaling \\
+Tootra-Division & $\Tdiv$ & Idea decomposition \\
+World Association & $\oplus$ & Link expression to world \\
+Composition & $\circ$ & Sequential application \\
+Dependency & $\to$ & Prerequisite relation \\
+Fractal & $\langle X : Y : Z \rangle$ & Noetic fractal chain \\
+Semantic bracket & $\sem{\cdot}$ & Denotational meaning \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{notation}
+
+%% ============================================================================
+%% CHAPTER 2: CANONICAL ONTOLOGY
+%% ============================================================================
+\chapter{Canonical Ontology}
+\label{ch:ontology}
+
+This chapter establishes the foundational ontology of TKS: the primordial categories, the Four Worlds, and the 40 Elements.
+
+\section{The Primordial Duality: Mind and Idea}
+
+\begin{axiom}[Ontological Foundation]
+\label{ax:ontological-foundation}
+The TKS system posits two primordial categories from which all else derives:
+\begin{align}
+\textbf{MIND} &: \text{The operator that processes, stores, and transforms} \\
+\textbf{IDEA} &: \text{The operand---all that can be represented or structured}
+\end{align}
+\end{axiom}
+
+\begin{definition}[Idea Space]
+\label{def:idea-space}
+The \textbf{Idea space} is the collection of all Ideas:
+\[
+\Ideas = \{\text{all possible Ideas}\}
+\]
+An Idea encompasses spiritual, mental, emotional, or physical content, including any composite expression built from Elements, Foundations, and Worlds.
+\end{definition}
+
+\section{The Four Worlds}
+
+\begin{definition}[World Set]
+\label{def:world-set}
+The \textbf{World set} is:
+\[
+\Worlds = \{A, B, C, D\}
+\]
+with total ordering by metaphysical subtlety:
+\[
+A \succ B \succ C \succ D
+\]
+\end{definition}
+
+\begin{definition}[World Ordinal Function]
+\label{def:world-ord}
+The \textbf{ordinal function} assigns a natural number to each world:
+\[
+\ord : \Worlds \to \mathbb{N}
+\]
+\[
+\ord(A) = 0, \quad \ord(B) = 1, \quad \ord(C) = 2, \quad \ord(D) = 3
+\]
+\end{definition}
+
+\begin{table}[h]
+\centering
+\caption{World Signatures}
+\label{tab:world-signatures}
+\begin{tabular}{llllll}
+\toprule
+\textbf{World} & \textbf{Domain} & \textbf{Substrate} & \textbf{Kabbalistic} & \textbf{Mind} & \textbf{Idea} \\
+\midrule
+$A$ & Spiritual & Aether & Atziluth & $A1$ & $A10$ \\
+$B$ & Mental & Thought & Briah & $B1$ & $B10$ \\
+$C$ & Emotional & Feeling & Yetzirah & $C1$ & $C10$ \\
+$D$ & Physical & Matter & Assiah & $D1$ & $D10$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{The 40 Elements}
+
+\begin{definition}[Element Space]
+\label{def:element-space}
+The \textbf{Element space} is the Cartesian product:
+\[
+\Elements = \Worlds \times \{1, 2, 3, 4, 5, 6, 7, 8, 9, 10\}
+\]
+yielding $|\Elements| = 4 \times 10 = 40$ elements.
+\end{definition}
+
+\begin{theorem}[Element Tensor Structure]
+\label{thm:element-tensor}
+The 40 Elements form a $4 \times 10$ tensor grid:
+
+\[
+\begin{array}{c|cccccccccc}
+ & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+\hline
+A & A1 & A2 & A3 & A4 & A5 & A6 & A7 & A8 & A9 & A10 \\
+B & B1 & B2 & B3 & B4 & B5 & B6 & B7 & B8 & B9 & B10 \\
+C & C1 & C2 & C3 & C4 & C5 & C6 & C7 & C8 & C9 & C10 \\
+D & D1 & D2 & D3 & D4 & D5 & D6 & D7 & D8 & D9 & D10 \\
+\end{array}
+\]
+\end{theorem}
+
+\section{The Ten Noetic Operators}
+
+\begin{definition}[Noetic Operator Space]
+\label{def:noetic-space}
+The \textbf{Noetic operator space} is:
+\[
+\Noetics = \{\noe{0}, \noe{1}, \noe{2}, \noe{3}, \noe{4}, \noe{5}, \noe{6}, \noe{7}, \noe{8}, \noe{9}\}
+\]
+\end{definition}
+
+\begin{table}[h]
+\centering
+\caption{Noetic Operators}
+\label{tab:noetics}
+\begin{tabular}{clll}
+\toprule
+\textbf{Index} & \textbf{Symbol} & \textbf{Name} & \textbf{Function} \\
+\midrule
+0 & $\noe{0}$ & Idea & Neutral form, identity \\
+1 & $\noe{1}$ & Mind & Attention, awareness \\
+2 & $\noe{2}$ & Positive & Attraction, affirmation \\
+3 & $\noe{3}$ & Negative & Repulsion, negation \\
+4 & $\noe{4}$ & Vibration & Amplitude/frequency \\
+5 & $\noe{5}$ & Female & Receptive structuring \\
+6 & $\noe{6}$ & Male & Projective structuring \\
+7 & $\noe{7}$ & Rhythm & Periodicity, cycles \\
+8 & $\noe{8}$ & Above & Inner, higher, causal \\
+9 & $\noe{9}$ & Below & Outer, lower, effect \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{The Seven Foundations}
+
+\begin{definition}[Foundation Space]
+\label{def:foundation-space}
+The \textbf{Foundation space} is:
+\[
+\Foundations = \{F_1, F_2, F_3, F_4, F_5, F_6, F_7\}
+\]
+\end{definition}
+
+\begin{table}[h]
+\centering
+\caption{The Seven Foundations}
+\label{tab:foundations}
+\begin{tabular}{clll}
+\toprule
+$m$ & \textbf{Foundation} & \textbf{Core Meaning} & \textbf{Life Domain} \\
+\midrule
+1 & Unity & Coherence, integration & Spiritual wholeness \\
+2 & Wisdom & Knowledge, understanding & Truth and learning \\
+3 & Life & Vitality, health & Biological survival \\
+4 & Companionship & Connection, love & Relationships \\
+5 & Power & Influence, agency & Authority and action \\
+6 & Material & Resources, possessions & Economic domain \\
+7 & Lust & Sex, reproduction & Procreation \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%% ============================================================================
+%% PART II: ALGEBRAIC STRUCTURES
+%% ============================================================================
+\part{Algebraic Structures}
+
+%% ============================================================================
+%% CHAPTER 3: NOETIC OPERATOR ALGEBRA
+%% ============================================================================
+\chapter{Noetic Operator Algebra}
+\label{ch:noetic-algebra}
+
+\section{Composition as Binary Operation}
+
+\begin{definition}[Noetic Composition]
+\label{def:noetic-composition}
+The \textbf{composition operation} on Noetics is:
+\[
+\circ : \Noetics \times \Noetics \to \mathrm{End}(\Ideas)
+\]
+defined by:
+\[
+(\noe{j} \circ \noe{i})(X) = \noe{j}(\noe{i}(X))
+\]
+\end{definition}
+
+\section{Fundamental Composition Axioms}
+
+\begin{axiom}[Associativity of Composition]
+\label{ax:assoc-comp}
+For all $\noe{i}, \noe{j}, \noe{k} \in \Noetics$:
+\[
+\noe{k} \circ (\noe{j} \circ \noe{i}) = (\noe{k} \circ \noe{j}) \circ \noe{i}
+\]
+\end{axiom}
+
+\begin{axiom}[Identity Element]
+\label{ax:identity}
+The Noetic $\noe{0}$ (Idea) serves as the identity element:
+\[
+\noe{0} \circ \noe{k} = \noe{k} \circ \noe{0} = \noe{k} \quad \forall k \in \{0,\ldots,9\}
+\]
+\end{axiom}
+
+\begin{theorem}[Monoid Structure]
+\label{thm:monoid}
+The structure $(\Noetics, \circ, \noe{0})$ forms a monoid.
+\end{theorem}
+
+\begin{proof}
+We verify the monoid axioms:
+\begin{enumerate}
+  \item \textbf{Closure}: Compositions yield valid operators in extended closure.
+  \item \textbf{Associativity}: By Axiom~\ref{ax:assoc-comp}.
+  \item \textbf{Identity}: By Axiom~\ref{ax:identity}.
+\end{enumerate}
+\end{proof}
+
+\section{The Complete 10x10 Noetic Composition Table}
+
+\begin{table}[h]
+\centering
+\caption{Complete 10x10 Noetic Composition Table}
+\label{tab:composition}
+\small
+\begin{tabular}{c|cccccccccc}
+$\circ$ & $\noe{0}$ & $\noe{1}$ & $\noe{2}$ & $\noe{3}$ & $\noe{4}$ & $\noe{5}$ & $\noe{6}$ & $\noe{7}$ & $\noe{8}$ & $\noe{9}$ \\
+\hline
+$\noe{0}$ & $\noe{0}$ & $\noe{1}$ & $\noe{2}$ & $\noe{3}$ & $\noe{4}$ & $\noe{5}$ & $\noe{6}$ & $\noe{7}$ & $\noe{8}$ & $\noe{9}$ \\
+$\noe{1}$ & $\noe{1}$ & $\noe{1}^2$ & $\noe{12}$ & $\noe{13}$ & $\noe{14}$ & $\noe{15}$ & $\noe{16}$ & $\noe{17}$ & $\noe{18}$ & $\noe{19}$ \\
+$\noe{2}$ & $\noe{2}$ & $\noe{21}$ & $\noe{2}^2$ & $\approx\noe{0}$ & $\noe{24}$ & $\noe{25}$ & $\noe{26}$ & $\noe{27}$ & $\noe{28}$ & $\noe{29}$ \\
+$\noe{3}$ & $\noe{3}$ & $\noe{31}$ & $\approx\noe{0}$ & $\noe{3}^2$ & $\noe{34}$ & $\noe{35}$ & $\noe{36}$ & $\noe{37}$ & $\noe{38}$ & $\noe{39}$ \\
+$\noe{4}$ & $\noe{4}$ & $\noe{41}$ & $\noe{42}$ & $\noe{43}$ & $\noe{4}^2$ & $\noe{45}$ & $\noe{46}$ & $\noe{47}$ & $\noe{48}$ & $\noe{49}$ \\
+$\noe{5}$ & $\noe{5}$ & $\noe{51}$ & $\noe{52}$ & $\noe{53}$ & $\noe{54}$ & $\noe{5}^2$ & $\approx\noe{0}$ & $\noe{57}$ & $\noe{58}$ & $\noe{59}$ \\
+$\noe{6}$ & $\noe{6}$ & $\noe{61}$ & $\noe{62}$ & $\noe{63}$ & $\noe{64}$ & $\approx\noe{0}$ & $\noe{6}^2$ & $\noe{67}$ & $\noe{68}$ & $\noe{69}$ \\
+$\noe{7}$ & $\noe{7}$ & $\noe{71}$ & $\noe{72}$ & $\noe{73}$ & $\noe{74}$ & $\noe{75}$ & $\noe{76}$ & $\noe{7}^2$ & $\noe{78}$ & $\noe{79}$ \\
+$\noe{8}$ & $\noe{8}$ & $\noe{81}$ & $\noe{82}$ & $\noe{83}$ & $\noe{84}$ & $\noe{85}$ & $\noe{86}$ & $\noe{87}$ & $\noe{8}^2$ & $\approx\noe{0}$ \\
+$\noe{9}$ & $\noe{9}$ & $\noe{91}$ & $\noe{92}$ & $\noe{93}$ & $\noe{94}$ & $\noe{95}$ & $\noe{96}$ & $\noe{97}$ & $\approx\noe{0}$ & $\noe{9}^2$ \\
+\end{tabular}
+\end{table}
+
+\section{Dualities and Inversions}
+
+\begin{definition}[Dual Noetics]
+\label{def:dual-noetics}
+The three \textbf{fundamental dualities} are:
+\begin{align}
+\text{Duality}_1 &: \noe{2} \leftrightarrow \noe{3} && \text{(Positive } \leftrightarrow \text{ Negative)} \\
+\text{Duality}_2 &: \noe{5} \leftrightarrow \noe{6} && \text{(Female } \leftrightarrow \text{ Male)} \\
+\text{Duality}_3 &: \noe{8} \leftrightarrow \noe{9} && \text{(Above } \leftrightarrow \text{ Below)}
+\end{align}
+\end{definition}
+
+\begin{theorem}[Duality Neutralization]
+\label{thm:duality-neutral}
+For dual pairs $(\noe{a}, \noe{b})$:
+\[
+\noe{b} \circ \noe{a} \approx \noe{0}
+\]
+\end{theorem}
+
+%% ============================================================================
+%% CHAPTER 4: TOOTRA ARITHMETIC
+%% ============================================================================
+\chapter{Algebraic Structures of Tootra Arithmetic}
+\label{ch:tootra-arithmetic}
+
+\section{The Idea Space as a Mathematical Structure}
+
+\begin{definition}[Idea Space Structure]
+\label{def:idea-structure}
+The \textbf{Idea space} $\Ideas$ is defined as a \textbf{graded multiset algebra}:
+\[
+\Ideas = \bigcup_{W \in \Worlds} \mathcal{M}(\mathcal{P}_W)
+\]
+\end{definition}
+
+\section{Tootra-Addition}
+
+\begin{definition}[Tootra-Addition]
+\label{def:tootra-add}
+For Ideas $X, Y \in \Ideas$:
+\[
+X \Tadd Y = X \uplus Y
+\]
+where $\uplus$ denotes multiset union.
+\end{definition}
+
+\begin{theorem}[Properties of Tootra-Addition]
+\label{thm:tadd-properties}
+Tootra-Addition satisfies:
+\begin{enumerate}
+  \item \textbf{Commutativity}: $X \Tadd Y = Y \Tadd X$
+  \item \textbf{Associativity}: $(X \Tadd Y) \Tadd Z = X \Tadd (Y \Tadd Z)$
+  \item \textbf{Identity}: $X \Tadd \varnothing = X$
+\end{enumerate}
+\end{theorem}
+
+\section{Tootra Semiring}
+
+\begin{theorem}[Tootra Semiring Structure]
+\label{thm:semiring}
+Under simplified operations, $(\Ideas, \Tadd, \Tmul, \varnothing, \mathbf{1})$ forms a \textbf{commutative semiring}.
+\end{theorem}
+
+%% ============================================================================
+%% PART III: CATEGORICAL AND SEMANTIC FRAMEWORK
+%% ============================================================================
+\part{Categorical and Semantic Framework}
+
+%% ============================================================================
+%% CHAPTER 5: THE CATEGORY NOETICA
+%% ============================================================================
+\chapter{The Category Noetica}
+\label{ch:category-noetica}
+
+\section{Definition of Category Noetica}
+
+\begin{definition}[Category Noetica]
+\label{def:category-noetica}
+The category $\Noetica$ is defined by:
+
+\textbf{Objects:}
+\[
+\Ob(\Noetica) = \Ideas \cup \Worlds \cup \Elements \cup \Foundations \cup \Acquisitions
+\]
+
+\textbf{Morphisms:}
+\[
+\Hom(\Noetica) = \Noetics \cup \{\oplus_W, \ominus_W : W \in \Worlds\}
+\]
+
+\textbf{Identity:}
+\[
+\id_X = \noe{0} : X \to X
+\]
+\end{definition}
+
+\begin{theorem}[Noetica is a Category]
+\label{thm:noetica-category}
+The structure $\Noetica$ satisfies all category axioms.
+\end{theorem}
+
+\begin{proof}
+We verify each axiom:
+
+\textbf{(C1) Identity Law:}
+For any morphism $f : X \to Y$:
+\begin{align}
+f \circ \id_X &= f \circ \noe{0} = f \\
+\id_Y \circ f &= \noe{0} \circ f = f
+\end{align}
+
+\textbf{(C2) Associativity:}
+For morphisms $f : X \to Y$, $g : Y \to Z$, $h : Z \to W$:
+\[
+h \circ (g \circ f) = (h \circ g) \circ f
+\]
+
+\textbf{(C3) Composition Closure:}
+By closure of Noetic composition.
+\end{proof}
+
+%% ============================================================================
+%% CHAPTER 6: THE ACBE FUNCTOR
+%% ============================================================================
+\chapter{The ACBE Functor}
+\label{ch:acbe-functor}
+
+\begin{definition}[ACBE Functor]
+\label{def:acbe-functor}
+The \textbf{ACBE functor} is:
+\[
+\mathrm{ACBE} : \Noetica_A \to \Noetica_D
+\]
+
+\textbf{Object Mapping:}
+$\mathrm{ACBE}(An) = Dn$
+
+\textbf{Morphism Mapping:}
+$\mathrm{ACBE}(\noe{k}) = \noe{k}$
+\end{definition}
+
+\begin{theorem}[ACBE is a Functor]
+\label{thm:acbe-functor}
+ACBE preserves identity and composition, hence is a valid functor.
+\end{theorem}
+
+\begin{theorem}[ACBE Factorization]
+\label{thm:acbe-factor}
+ACBE factors through intermediate categories:
+\[
+\mathrm{ACBE} = F_D \circ F_C \circ F_B
+\]
+\end{theorem}
+
+%% ============================================================================
+%% CHAPTER 7: RPM AS A MONAD
+%% ============================================================================
+\chapter{RPM as a Recursive Prerequisite Monad}
+\label{ch:rpm-monad}
+
+\begin{definition}[Prerequisite Operators]
+\label{def:prereq-ops}
+The \textbf{Prerequisite operator set} is:
+\[
+\Pi = \{D, W, P\}
+\]
+where $D$: Desire, $W$: Wisdom, $P$: Power.
+\end{definition}
+
+\begin{theorem}[Strict Ordering]
+\label{thm:prereq-order}
+\[
+D \prec W \prec P
+\]
+\end{theorem}
+
+\begin{definition}[RPM Endofunctor]
+\label{def:rpm-endofunctor}
+The \textbf{RPM endofunctor} $\RPM : \Acq \to \Acq$ checks prerequisite satisfaction.
+\end{definition}
+
+\begin{theorem}[RPM Satisfies Monad Laws]
+\label{thm:rpm-monad-laws}
+The structure $(\RPM, \eta, \mu)$ satisfies the three monad laws.
+\end{theorem}
+
+%% ============================================================================
+%% CHAPTER 8: DENOTATIONAL SEMANTICS
+%% ============================================================================
+\chapter{Formal Semantics of TKS}
+\label{ch:denotational-semantics}
+
+\begin{definition}[Semantic Function]
+\label{def:sem-function}
+The \textbf{semantic function} $\sem{\cdot}$ maps syntax to semantics:
+\[
+\sem{\cdot} : \mathrm{Syn} \to \mathcal{D}
+\]
+\end{definition}
+
+\begin{definition}[Noetic Operator Semantics]
+\label{def:noetic-sem}
+\begin{align}
+\mathfrak{n}_0(d) &= d && \text{(Identity)} \\
+\mathfrak{n}_1(d) &= \mathrm{Aware}(d) \\
+\mathfrak{n}_2(d) &= \mathrm{Attract}(d) \\
+\mathfrak{n}_3(d) &= \mathrm{Repel}(d) \\
+\mathfrak{n}_4(d) &= \mathrm{Vibrate}(d) \\
+\mathfrak{n}_5(d) &= \mathrm{Receive}(d) \\
+\mathfrak{n}_6(d) &= \mathrm{Project}(d) \\
+\mathfrak{n}_7(d) &= \mathrm{Rhythm}(d) \\
+\mathfrak{n}_8(d) &= \mathrm{Elevate}(d) \\
+\mathfrak{n}_9(d) &= \mathrm{Ground}(d)
+\end{align}
+\end{definition}
+
+\begin{theorem}[Compositional Semantics]
+\label{thm:compositional}
+TKS semantics is compositional: the meaning of a complex expression is determined entirely by the meanings of its parts.
+\end{theorem}
+
+%% ============================================================================
+%% CHAPTER 9: TYPE THEORY
+%% ============================================================================
+\chapter{Type Theory of TKS Expressions}
+\label{ch:type-theory}
+
+\section{Type Inference Rules}
+
+\begin{definition}[Element Formation Rule]
+\label{def:elem-form}
+\[
+\frac{W : \mathtt{World} \quad n : \mathtt{Mode}}{\Gamma \types Wn : \mathtt{Element}} \quad [\textsc{Elem-Form}]
+\]
+\end{definition}
+
+\begin{definition}[Noetic Application Rule]
+\label{def:noetic-rule}
+\[
+\frac{\Gamma \types E : \mathtt{Expr} \quad k \in \{0,\ldots,9\}}{\Gamma \types E^k : \mathtt{Expr}} \quad [\textsc{Noetic-Apply}]
+\]
+\end{definition}
+
+\begin{definition}[Fractal Rule]
+\label{def:fractal-rule}
+\[
+\frac{\Gamma \types E : \mathtt{Expr} \quad \forall i. k_i \in \{0,\ldots,9\} \quad n \geq 1}{\Gamma \types \langle k_1 : \cdots : k_n \rangle(E) : \mathtt{Expr}} \quad [\textsc{Fractal}]
+\]
+\end{definition}
+
+\begin{theorem}[Type Safety]
+\label{thm:type-safety}
+Well-typed TKS expressions do not get stuck.
+\end{theorem}
+
+%% ============================================================================
+%% PART IV: APPLICATIONS
+%% ============================================================================
+\part{Applications}
+
+%% ============================================================================
+%% CHAPTER 10: LANGUAGE SPECIFICATION
+%% ============================================================================
+\chapter{The TKS Language Specification}
+\label{ch:language-spec}
+
+\section{Complete BNF Grammar}
+
+\begin{definition}[TKS Grammar (BNF)]
+\label{def:bnf-grammar}
+\begin{verbatim}
+<program>       ::= <expression>+
+<expression>    ::= <atom> | <modified-expr> | <compound-expr> | <fractal-expr>
+<atom>          ::= <element> | <acquisition> | <world>
+<element>       ::= <world-sym> <mode>
+<world-sym>     ::= 'A' | 'B' | 'C' | 'D'
+<mode>          ::= '1' | ... | '10'
+<noetic>        ::= '^' ('0' | '1' | ... | '9')
+<foundation>    ::= '_{' ('1'...'7') ('a'|'b'|'c'|'d')? '}'
+<fractal-expr>  ::= '<' <noetic-list> '>' '(' <expression> ')'
+\end{verbatim}
+\end{definition}
+
+\section{Big-Step Operational Semantics}
+
+\begin{definition}[Evaluation Rules]
+\label{def:bigstep}
+\[
+\frac{}{Wn \Downarrow e_{W,n}} \quad [\textsc{E-Elem}]
+\]
+
+\[
+\frac{E \Downarrow v}{\noe{k}(E) \Downarrow \mathfrak{n}_k(v)} \quad [\textsc{E-Noetic}]
+\]
+
+\[
+\frac{E \Downarrow v}{\langle k_1 : \cdots : k_n \rangle(E) \Downarrow \mathfrak{n}_{k_1}(\cdots\mathfrak{n}_{k_n}(v)\cdots)} \quad [\textsc{E-Fractal}]
+\]
+\end{definition}
+
+%% ============================================================================
+%% CHAPTER 11: FRACTAL CALCULUS
+%% ============================================================================
+\chapter{Noetic Fractal Calculus}
+\label{ch:fractal-calculus}
+
+\begin{definition}[Noetic Fractal]
+\label{def:noetic-fractal}
+A \textbf{Noetic Fractal} is a nested sequence of Noetic operators:
+\[
+\langle k_1 : k_2 : \cdots : k_n \rangle(E) = \noe{k_1}(\noe{k_2}(\cdots\noe{k_n}(E)\cdots))
+\]
+\end{definition}
+
+\begin{definition}[Fractal Simplification]
+\label{def:fractal-simp}
+When dual pairs appear adjacent:
+\begin{align}
+\langle \cdots : 2 : 3 : \cdots \rangle &\approx \langle \cdots : 0 : \cdots \rangle \\
+\langle \cdots : 5 : 6 : \cdots \rangle &\approx \langle \cdots : 0 : \cdots \rangle \\
+\langle \cdots : 8 : 9 : \cdots \rangle &\approx \langle \cdots : 0 : \cdots \rangle
+\end{align}
+\end{definition}
+
+\begin{theorem}[MVR Stability]
+\label{thm:mvr-stab}
+The MVR fractal $\langle 1 : 4 : 7 \rangle$ is stabilizing for compatible inputs.
+\end{theorem}
+
+%% ============================================================================
+%% CHAPTER 12: WORKED EXAMPLES
+%% ============================================================================
+\chapter{Worked Examples}
+\label{ch:examples}
+
+\begin{example}[Physical Health Restoration]
+\label{ex:health}
+\textbf{Expression:}
+\[
+\langle 1 : 4 : 7 \rangle(D2^2_{3d})
+\]
+
+\textbf{Evaluation:}
+\begin{enumerate}
+\item Evaluate base: $D2^2_{3d} = \text{Attract physical health}$
+\item Apply $\noe{7}$: Establish rhythm
+\item Apply $\noe{4}$: Charge with vibration
+\item Apply $\noe{1}$: Apply awareness
+\end{enumerate}
+
+\textbf{Result:} Rhythmic, vibratory, conscious health pattern.
+\end{example}
+
+\begin{example}[Wealth Failure Diagnosis]
+\label{ex:wealth-failure}
+\textbf{RPM Chain for $F_6$ (Material):}
+\[
+A0 \to D_6 \to W_6 \to P_6 \to \mathrm{Outcome}_6
+\]
+
+\textbf{Diagnostic:}
+\begin{itemize}
+  \item $A0$: $\checkmark$ Pure desire exists
+  \item $D_6$: $\checkmark$ Wants material resources
+  \item $W_6$: $\times$ \textbf{FAILED} --- Believes ``money is evil''
+\end{itemize}
+
+\textbf{Correction:} Repair mental models about wealth.
+\end{example}
+
+%% ============================================================================
+%% APPENDICES
+%% ============================================================================
+\appendix
+\part{Appendices}
+
+\chapter{Symbol Reference}
+\label{app:symbols}
+
+\begin{longtable}{lll}
+\toprule
+\textbf{Symbol} & \textbf{Name} & \textbf{Meaning} \\
+\midrule
+$\Worlds$ & World set & $\{A, B, C, D\}$ \\
+$\Ideas$ & Idea space & All Ideas \\
+$\Elements$ & Element space & 40 Elements \\
+$\Noetics$ & Noetic set & $\{\noe{0}, \ldots, \noe{9}\}$ \\
+$\Foundations$ & Foundation set & $\{F_1, \ldots, F_7\}$ \\
+$\Noetica$ & Category Noetica & TKS category \\
+$\RPM$ & RPM Monad & Prerequisite monad \\
+$\Tadd$ & Tootra-Addition & Idea union \\
+$\sem{\cdot}$ & Semantic brackets & Denotation \\
+\bottomrule
+\end{longtable}
+
+\chapter{Quick Reference Cards}
+\label{app:quickref}
+
+\section{Element Grid}
+
+\[
+\begin{array}{c|cccccccccc}
+ & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+\hline
+A & A1 & A2 & A3 & A4 & A5 & A6 & A7 & A8 & A9 & A10 \\
+B & B1 & B2 & B3 & B4 & B5 & B6 & B7 & B8 & B9 & B10 \\
+C & C1 & C2 & C3 & C4 & C5 & C6 & C7 & C8 & C9 & C10 \\
+D & D1 & D2 & D3 & D4 & D5 & D6 & D7 & D8 & D9 & D10 \\
+\end{array}
+\]
+
+\section{Mirror Principle}
+
+Noetic pairs summing to 9:
+\begin{align*}
+\noe{1} + \noe{8} &= 9 && \text{Mind} \leftrightarrow \text{Above} \\
+\noe{2} + \noe{7} &= 9 && \text{Positive} \leftrightarrow \text{Rhythm} \\
+\noe{3} + \noe{6} &= 9 && \text{Negative} \leftrightarrow \text{Male} \\
+\noe{4} + \noe{5} &= 9 && \text{Vibration} \leftrightarrow \text{Female}
+\end{align*}
+
+\chapter{Glossary}
+\label{app:glossary}
+
+\begin{description}
+\item[ACBE] Above-Cause-Below-Effect; the manifestation functor.
+\item[Element] One of 40 fundamental units (World $\times$ Mode).
+\item[Foundation] One of 7 life domains.
+\item[Fractal] Nested Noetic composition: $\langle X : Y : Z \rangle$.
+\item[MVR] Mind-Vibration-Rhythm; the core protocol.
+\item[Noetic] One of 10 transformation operators.
+\item[Noetica] The category formed by TKS.
+\item[RPM] Recursive Prerequisite Model.
+\item[Tootra Arithmetic] The four operations on Ideas.
+\end{description}
+
+%% ============================================================================
+%% BACK MATTER
+%% ============================================================================
+\backmatter
+
+\chapter*{Colophon}
+\addcontentsline{toc}{chapter}{Colophon}
+
+\begin{center}
+\textbf{TKS FORMAL MATHEMATICAL MANUAL v6.0}
+
+\textit{Academic Release}
+
+The Complete Rigorous Formalization of the Tootra Kabbalistic System
+
+\vspace{2em}
+
+This document represents the complete formal specification of TKS.
+
+\vspace{2em}
+
+\textbf{END OF DOCUMENT}
+\end{center}
+
+\end{document}

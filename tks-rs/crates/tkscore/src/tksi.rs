@@ -66,9 +66,9 @@ fn emit_effect(out: &mut String, effect: &EffectSignature) {
 
 fn emit_extern(out: &mut String, extern_sig: &ExternSignature) {
     out.push_str("export extern ");
-    out.push_str(&format_convention(&extern_sig.convention));
+    out.push_str(format_convention(&extern_sig.convention));
     out.push(' ');
-    out.push_str(&format_safety(&extern_sig.safety));
+    out.push_str(format_safety(&extern_sig.safety));
     out.push_str(" fn ");
     out.push_str(&extern_sig.name);
     out.push('(');

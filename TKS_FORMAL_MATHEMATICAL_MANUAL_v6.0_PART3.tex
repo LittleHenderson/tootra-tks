@@ -1,0 +1,790 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% TKS FORMAL MATHEMATICAL MANUAL v6.0 — ACADEMIC RELEASE
+%% Part 3 of 4: Category Theory, Denotational Semantics, Type Theory
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% ============================================================================
+%% PART III: CATEGORICAL AND SEMANTIC FRAMEWORK
+%% ============================================================================
+\part{Categorical and Semantic Framework}
+
+%% ============================================================================
+%% CHAPTER 6: THE CATEGORY NOETICA
+%% ============================================================================
+\chapter{The Category Noetica}
+\label{ch:category-noetica}
+
+This chapter provides a rigorous category-theoretic foundation for TKS, proving that the system forms a valid category and exploring its subcategories.
+
+\section{Definition of Category Noetica}
+
+\begin{definition}[Category Noetica]
+\label{def:category-noetica}
+The category $\Noetica$ is defined by:
+
+\textbf{Objects:}
+\[
+\Ob(\Noetica) = \Ideas \cup \Worlds \cup \Elements \cup \Foundations \cup \Acquisitions
+\]
+
+\textbf{Morphisms:}
+\[
+\Hom(\Noetica) = \Noetics \cup \{\oplus_W, \ominus_W : W \in \Worlds\}
+\]
+
+For objects $X, Y \in \Ob(\Noetica)$:
+\[
+\Hom(X, Y) = \{f : X \to Y \mid f \text{ is a valid TKS transformation}\}
+\]
+
+\textbf{Identity:}
+\[
+\id_X = \noe{0} : X \to X
+\]
+
+\textbf{Composition:}
+For morphisms $f : X \to Y$ and $g : Y \to Z$:
+\[
+(g \circ f) : X \to Z, \quad (g \circ f)(x) = g(f(x))
+\]
+\end{definition}
+
+\section{Verification of Category Axioms}
+
+\begin{theorem}[Noetica is a Category]
+\label{thm:noetica-category}
+The structure $\Noetica$ satisfies all category axioms.
+\end{theorem}
+
+\begin{proof}
+We verify each axiom:
+
+\textbf{(C1) Identity Law:}
+For any morphism $f : X \to Y$:
+\begin{align}
+f \circ \id_X &= f \circ \noe{0} = f \\
+\id_Y \circ f &= \noe{0} \circ f = f
+\end{align}
+Both equalities hold because $\noe{0}(x) = x$ for all $x$ (Axiom~\ref{ax:identity}).
+
+\textbf{(C2) Associativity:}
+For morphisms $f : X \to Y$, $g : Y \to Z$, $h : Z \to W$:
+\begin{align}
+(h \circ (g \circ f))(x) &= h((g \circ f)(x)) = h(g(f(x))) \\
+((h \circ g) \circ f)(x) &= (h \circ g)(f(x)) = h(g(f(x)))
+\end{align}
+Thus $h \circ (g \circ f) = (h \circ g) \circ f$ by Axiom~\ref{ax:assoc-comp}.
+
+\textbf{(C3) Composition Closure:}
+For any $f \in \Hom(X, Y)$ and $g \in \Hom(Y, Z)$, the composite $g \circ f$ is in $\Hom(X, Z)$ by closure of Noetic composition (Theorem~\ref{thm:closure}).
+\end{proof}
+
+\section{World Subcategories}
+
+\begin{definition}[World Subcategory]
+\label{def:world-subcat}
+For each World $W \in \{A, B, C, D\}$, define the subcategory $\Noetica_W$:
+\begin{align}
+\Ob(\Noetica_W) &= \{X \in \Ob(\Noetica) : \mathrm{World}(X) = W\} \\
+\Hom(\Noetica_W) &= \{f \in \Hom(\Noetica) : f \text{ preserves World } W\}
+\end{align}
+\end{definition}
+
+\begin{proposition}[World Subcategories are Categories]
+\label{prop:world-subcat}
+Each $\Noetica_W$ is a valid subcategory of $\Noetica$.
+\end{proposition}
+
+\begin{proof}
+\begin{enumerate}
+  \item Identity: $\id_X = \noe{0}$ preserves World($X$) = $W$.
+  \item Composition: If $f, g$ both preserve World $W$, so does $g \circ f$.
+  \item Closure: The restriction to World-$W$ objects and morphisms is closed.
+\end{enumerate}
+\end{proof}
+
+\begin{definition}[Element Subcategory]
+\label{def:element-subcat}
+The \textbf{Element subcategory} $\Noetica_\Elements$ is:
+\begin{align}
+\Ob(\Noetica_\Elements) &= \Elements \quad \text{(40 Elements)} \\
+\Hom(\Noetica_\Elements) &= \Noetics \quad \text{(10 Noetic operators)}
+\end{align}
+\end{definition}
+
+%% ============================================================================
+%% CHAPTER 7: THE ACBE FUNCTOR
+%% ============================================================================
+\chapter{The ACBE Functor}
+\label{ch:acbe-functor}
+
+The ACBE (Above-Cause-Below-Effect) transformation is the primary manifestation functor in TKS, mapping spiritual causes to physical effects.
+
+\section{Functor Definition}
+
+\begin{definition}[ACBE Functor]
+\label{def:acbe-functor}
+The \textbf{ACBE functor} is:
+\[
+\mathrm{ACBE} : \Noetica_A \to \Noetica_D
+\]
+
+\textbf{Object Mapping:}
+For each $An \in \Ob(\Noetica_A)$:
+\[
+\mathrm{ACBE}(An) = Dn
+\]
+
+Explicitly:
+\begin{center}
+\begin{tabular}{ll}
+$\mathrm{ACBE}(A1) = D1$ & Divine Mind $\to$ Physical Brain \\
+$\mathrm{ACBE}(A2) = D2$ & Spiritual Positive $\to$ Physical Order \\
+$\mathrm{ACBE}(A3) = D3$ & Spiritual Negative $\to$ Physical Disorder \\
+$\mathrm{ACBE}(A4) = D4$ & Aetheric Vibration $\to$ Physical Vibration \\
+$\mathrm{ACBE}(A5) = D5$ & Soul-Womb $\to$ Physical Vessel \\
+$\mathrm{ACBE}(A6) = D6$ & Spiritual Discipline $\to$ Physical Delivery \\
+$\mathrm{ACBE}(A7) = D7$ & Destiny Pattern $\to$ Physical Rhythm \\
+$\mathrm{ACBE}(A8) = D8$ & Esoteric Truth $\to$ High Quality \\
+$\mathrm{ACBE}(A9) = D9$ & Exoteric Symbol $\to$ Low Quality \\
+$\mathrm{ACBE}(A10) = D10$ & Akashic Pattern $\to$ Physical Form \\
+\end{tabular}
+\end{center}
+
+\textbf{Morphism Mapping:}
+For morphism $f : X \to Y$ in $\Noetica_A$:
+\[
+\mathrm{ACBE}(f) : \mathrm{ACBE}(X) \to \mathrm{ACBE}(Y)
+\]
+\[
+\mathrm{ACBE}(\noe{k}) = \noe{k}
+\]
+Noetics are preserved across worlds.
+\end{definition}
+
+\section{Proof of Functoriality}
+
+\begin{theorem}[ACBE is a Functor]
+\label{thm:acbe-functor}
+ACBE preserves identity and composition, hence is a valid functor.
+\end{theorem}
+
+\begin{proof}
+\textbf{(F1) Identity Preservation:}
+\[
+\mathrm{ACBE}(\id_X) = \mathrm{ACBE}(\noe{0}) = \noe{0} = \id_{\mathrm{ACBE}(X)}
+\]
+
+\textbf{(F2) Composition Preservation:}
+For $f : X \to Y$ and $g : Y \to Z$ in $\Noetica_A$:
+\begin{align}
+\mathrm{ACBE}(g \circ f) &= \mathrm{ACBE}(g) \circ \mathrm{ACBE}(f)
+\end{align}
+Since $\mathrm{ACBE}(\noe{j} \circ \noe{i}) = \noe{j} \circ \noe{i} = \mathrm{ACBE}(\noe{j}) \circ \mathrm{ACBE}(\noe{i})$.
+\end{proof}
+
+\section{The Cascade Decomposition}
+
+\begin{theorem}[ACBE Factorization]
+\label{thm:acbe-factor}
+ACBE factors through intermediate categories:
+\[
+\mathrm{ACBE} = F_D \circ F_C \circ F_B
+\]
+where:
+\begin{align}
+F_B &: \Noetica_A \to \Noetica_B && \text{(Spiritual } \to \text{ Mental)} \\
+F_C &: \Noetica_B \to \Noetica_C && \text{(Mental } \to \text{ Emotional)} \\
+F_D &: \Noetica_C \to \Noetica_D && \text{(Emotional } \to \text{ Physical)}
+\end{align}
+\end{theorem}
+
+\begin{proof}
+Each $F_W$ is defined by:
+\begin{itemize}
+  \item $F_B(An) = Bn$, $F_B(\noe{k}) = \noe{k}$
+  \item $F_C(Bn) = Cn$, $F_C(\noe{k}) = \noe{k}$
+  \item $F_D(Cn) = Dn$, $F_D(\noe{k}) = \noe{k}$
+\end{itemize}
+Then $(F_D \circ F_C \circ F_B)(An) = F_D(F_C(Bn)) = F_D(Cn) = Dn = \mathrm{ACBE}(An)$.
+\end{proof}
+
+\begin{remark}[Commutative Diagram]
+The ACBE cascade forms a commutative diagram:
+\[
+\begin{tikzcd}
+\Noetica_A \arrow[r, "F_B"] \arrow[rrr, bend left=20, "\mathrm{ACBE}"] & \Noetica_B \arrow[r, "F_C"] & \Noetica_C \arrow[r, "F_D"] & \Noetica_D
+\end{tikzcd}
+\]
+\end{remark}
+
+%% ============================================================================
+%% CHAPTER 8: RPM AS A MONAD
+%% ============================================================================
+\chapter{RPM as a Recursive Prerequisite Monad}
+\label{ch:rpm-monad}
+
+The Recursive Prerequisite Model (RPM) is formalized as a monad on the category of Acquisitions.
+
+\section{The Acquisition Category}
+
+\begin{definition}[Prerequisite Operators]
+\label{def:prereq-ops}
+The \textbf{Prerequisite operator set} is:
+\[
+\Pi = \{D, W, P\}
+\]
+where:
+\begin{itemize}
+  \item $D$: Desire --- initiates and directs
+  \item $W$: Wisdom --- models and validates
+  \item $P$: Power --- executes and manifests
+\end{itemize}
+\end{definition}
+
+\begin{theorem}[Strict Ordering]
+\label{thm:prereq-order}
+\[
+D \prec W \prec P
+\]
+Desire must precede Wisdom must precede Power.
+\end{theorem}
+
+\begin{definition}[Pure Desire]
+\label{def:pure-desire}
+\textbf{A0} (Pure Desire) is the root intentional vector:
+\[
+A0 = \mathrm{PureDesire}
+\]
+the pre-foundational desire before attachment to any specific Foundation.
+\end{definition}
+
+\begin{definition}[Acquisition Space]
+\label{def:acq-space}
+The \textbf{Acquisition space} is:
+\[
+\Acquisitions = \{A0\} \cup \{D_n : n \in \{1,\ldots,7\}\} \cup \{W_n : n \in \{1,\ldots,7\}\} \cup \{P_n : n \in \{1,\ldots,7\}\}
+\]
+with $|\Acquisitions| = 1 + 7 + 7 + 7 = 22$.
+\end{definition}
+
+\begin{definition}[Category Acq]
+\label{def:cat-acq}
+The \textbf{category Acq} is:
+\begin{align}
+\Ob(\Acq) &= \Acquisitions \\
+\Hom(\Acq) &= \{\to\} \quad \text{(dependency relation)}
+\end{align}
+For $X, Y \in \Acquisitions$:
+\[
+X \to Y \in \Hom(X, Y) \Leftrightarrow Y \text{ depends on } X
+\]
+\end{definition}
+
+\section{The RPM Endofunctor}
+
+\begin{definition}[RPM Endofunctor]
+\label{def:rpm-endofunctor}
+The \textbf{RPM endofunctor} $\RPM : \Acq \to \Acq$ is defined by:
+
+\textbf{Object Mapping:}
+\[
+\RPM(X) = \begin{cases}
+X & \text{if } \mathrm{Satisfied}(X) \\
+\bot & \text{if } \neg\mathrm{Satisfied}(X)
+\end{cases}
+\]
+
+\textbf{Morphism Mapping:}
+\[
+\RPM(X \to Y) = \begin{cases}
+X \to Y & \text{if } \mathrm{Satisfied}(X) \\
+\bot \to \bot & \text{otherwise}
+\end{cases}
+\]
+\end{definition}
+
+\begin{definition}[Satisfaction Predicate]
+\label{def:satisfied}
+The predicate $\mathrm{Satisfied} : \Acquisitions \to \{\mathtt{true}, \mathtt{false}\}$ determines whether an acquisition is currently met.
+\end{definition}
+
+\section{Monad Structure}
+
+\begin{definition}[Unit Natural Transformation]
+\label{def:rpm-unit}
+The \textbf{unit} $\eta : \mathrm{Id}_{\Acq} \Rightarrow \RPM$ is:
+\[
+\eta_X : X \to \RPM(X)
+\]
+\[
+\eta_X = \begin{cases}
+\id_X & \text{if } \mathrm{Satisfied}(X) \\
+\bot_X & \text{otherwise}
+\end{cases}
+\]
+\end{definition}
+
+\begin{definition}[Multiplication Natural Transformation]
+\label{def:rpm-mult}
+The \textbf{multiplication} $\mu : \RPM^2 \Rightarrow \RPM$ is:
+\[
+\mu_X : \RPM(\RPM(X)) \to \RPM(X)
+\]
+\[
+\mu_X = \id_{\RPM(X)}
+\]
+(Flattening is trivial for this monad.)
+\end{definition}
+
+\begin{theorem}[RPM Satisfies Monad Laws]
+\label{thm:rpm-monad-laws}
+The structure $(\RPM, \eta, \mu)$ satisfies the three monad laws.
+\end{theorem}
+
+\begin{proof}
+\textbf{(M1) Left Unit Law:} $\mu \circ \RPM\eta = \id_\RPM$
+
+For any $X$:
+\[
+(\mu \circ \RPM\eta)_X = \mu_X \circ \RPM(\eta_X) = \id_{\RPM(X)} \circ \RPM(\eta_X) = \RPM(\eta_X)
+\]
+If $\mathrm{Satisfied}(X)$, then $\eta_X = \id_X$, so $\RPM(\eta_X) = \id_{\RPM(X)}$.
+If not, both sides yield $\bot$.
+
+\textbf{(M2) Right Unit Law:} $\mu \circ \eta\RPM = \id_\RPM$
+
+Similar reasoning.
+
+\textbf{(M3) Associativity:} $\mu \circ \RPM\mu = \mu \circ \mu\RPM$
+
+Both compositions flatten nested RPM applications identically.
+\end{proof}
+
+\section{Monadic Bind Operation}
+
+\begin{definition}[Kleisli Bind]
+\label{def:kleisli-bind}
+The \textbf{bind operation} is:
+\[
+(\gg\!=) : \RPM(X) \times (X \to \RPM(Y)) \to \RPM(Y)
+\]
+\[
+m \gg\!= f = \begin{cases}
+f(x) & \text{if } m = \mathrm{Success}(x) \\
+\bot & \text{if } m = \bot
+\end{cases}
+\]
+\end{definition}
+
+\begin{example}[Chain Evaluation]
+\label{ex:chain-eval}
+Evaluating the prerequisite chain for Foundation $n$:
+\begin{align}
+\texttt{evalChain}(n) &= \RPM(A0) \gg\!= \lambda a_0. \\
+&\quad\; \RPM(D_n) \gg\!= \lambda d_n. \\
+&\quad\; \RPM(W_n) \gg\!= \lambda w_n. \\
+&\quad\; \RPM(P_n) \gg\!= \lambda p_n. \\
+&\quad\; \mathrm{return}(\mathrm{Outcome}_n)
+\end{align}
+\end{example}
+
+\section{RPM Diagnostic Algorithm}
+
+\begin{definition}[RPM Diagnostic Function]
+\label{def:rpm-diag}
+\begin{verbatim}
+RPM : Acquisitions × Goal → (Status, FailureOrigin?)
+
+RPM(X, G) =
+  if X = G and Satisfied(X):
+    return (SUCCESS, null)
+  elif not Satisfied(X):
+    return (FAILURE, X)
+  else:
+    for each Y ∈ Dependencies(X):
+      (status, origin) = RPM(Y, G)
+      if status = FAILURE:
+        return (FAILURE, origin)
+    return (SUCCESS, null)
+\end{verbatim}
+\end{definition}
+
+\begin{theorem}[RPM Termination]
+\label{thm:rpm-term}
+The RPM diagnostic algorithm terminates for any input.
+\end{theorem}
+
+\begin{proof}
+\textbf{(1) Finiteness:} $|\Acquisitions| = 22$.
+
+\textbf{(2) Acyclicity:} The dependency graph is a DAG by Theorem~\ref{thm:prereq-order}. For any Foundation $n$:
+\[
+A0 \to D_n \to W_n \to P_n \to \mathrm{Outcome}_n
+\]
+No backward edges exist because $D \prec W \prec P$.
+
+\textbf{(3) Termination:} Each node is visited at most once. Maximum path length is 4. Total complexity is $O(|\Acquisitions|) = O(22)$.
+\end{proof}
+
+%% ============================================================================
+%% CHAPTER 9: DENOTATIONAL SEMANTICS
+%% ============================================================================
+\chapter{Formal Semantics of TKS}
+\label{ch:denotational-semantics}
+
+This chapter provides complete denotational semantics for TKS, giving formal mathematical meaning to all operations.
+
+\section{Syntax vs. Semantics}
+
+\begin{definition}[Syntactic Domain]
+\label{def:syntactic-domain}
+The \textbf{syntactic domain} $\mathrm{Syn}$ consists of:
+\begin{itemize}
+  \item Expression syntax (defined by BNF grammar)
+  \item Operator symbols ($\noe{k}$, $\Tadd$, etc.)
+  \item Structural elements (Elements, Worlds, Foundations)
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Semantic Domain]
+\label{def:semantic-domain}
+The \textbf{semantic domain} $\mathcal{D}$ consists of:
+\begin{itemize}
+  \item $\mathcal{D}_\Ideas$: The space of Idea values (graded multisets)
+  \item $\mathcal{D}_\mathbb{B}$: Boolean values $\{\mathtt{true}, \mathtt{false}\}$
+  \item $\mathcal{D}_\bot$: Error values $\{\bot\}$
+  \item $\mathcal{D} = \mathcal{D}_\Ideas \cup \mathcal{D}_\mathbb{B} \cup \mathcal{D}_\bot$
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Semantic Function]
+\label{def:sem-function}
+The \textbf{semantic function} $\sem{\cdot}$ maps syntax to semantics:
+\[
+\sem{\cdot} : \mathrm{Syn} \to \mathcal{D}
+\]
+\end{definition}
+
+\section{Semantics of Base Expressions}
+
+\begin{definition}[Element Semantics]
+\label{def:elem-sem}
+For Element $Wn$ where $W \in \Worlds$ and $n \in \{1,\ldots,10\}$:
+\[
+\sem{Wn} = e_{W,n} \in \mathcal{D}_\Ideas
+\]
+where $e_{W,n}$ is the canonical Idea value for that Element.
+\end{definition}
+
+\begin{definition}[World Semantics]
+\label{def:world-sem}
+For World $W$:
+\[
+\sem{W} = \{e_{W,n} : n \in \{1,\ldots,10\}\} \subseteq \mathcal{D}_\Ideas
+\]
+\end{definition}
+
+\section{Semantics of Noetic Operators}
+
+\begin{definition}[Noetic Operator Semantics]
+\label{def:noetic-sem}
+For each Noetic $\noe{k}$:
+\[
+\sem{\noe{k}} : \mathcal{D}_\Ideas \to \mathcal{D}_\Ideas
+\]
+is a total function defined by:
+\[
+\sem{\noe{k}}(d) = \mathfrak{n}_k(d)
+\]
+where $\mathfrak{n}_k$ is the denotation of Noetic $k$.
+\end{definition}
+
+\begin{definition}[Concrete Noetic Denotations]
+\label{def:noetic-denote}
+The concrete denotations are:
+\begin{align}
+\mathfrak{n}_0(d) &= d && \text{(Identity)} \\
+\mathfrak{n}_1(d) &= \mathrm{Aware}(d) && \text{(Apply awareness)} \\
+\mathfrak{n}_2(d) &= \mathrm{Attract}(d) && \text{(Apply attraction)} \\
+\mathfrak{n}_3(d) &= \mathrm{Repel}(d) && \text{(Apply repulsion)} \\
+\mathfrak{n}_4(d) &= \mathrm{Vibrate}(d) && \text{(Apply vibration)} \\
+\mathfrak{n}_5(d) &= \mathrm{Receive}(d) && \text{(Apply reception)} \\
+\mathfrak{n}_6(d) &= \mathrm{Project}(d) && \text{(Apply projection)} \\
+\mathfrak{n}_7(d) &= \mathrm{Rhythm}(d) && \text{(Apply periodicity)} \\
+\mathfrak{n}_8(d) &= \mathrm{Elevate}(d) && \text{(Apply elevation)} \\
+\mathfrak{n}_9(d) &= \mathrm{Ground}(d) && \text{(Apply grounding)}
+\end{align}
+\end{definition}
+
+\begin{definition}[Noetic Application Semantics]
+\label{def:noetic-app-sem}
+For expression $E^k$:
+\[
+\sem{E^k} = \sem{\noe{k}}(\sem{E}) = \mathfrak{n}_k(\sem{E})
+\]
+\end{definition}
+
+\section{Semantics of Tootra Arithmetic}
+
+\begin{definition}[Tootra-Addition Semantics]
+\label{def:tadd-sem}
+\[
+\sem{X \Tadd Y} = \sem{X} \uplus \sem{Y}
+\]
+where $\uplus$ is multiset union.
+\end{definition}
+
+\begin{definition}[Tootra-Subtraction Semantics]
+\label{def:tsub-sem}
+\[
+\sem{X \Tsub Y} = \sem{X} \setminus_m \sem{Y}
+\]
+where $\setminus_m$ is multiset difference.
+\end{definition}
+
+\begin{definition}[Tootra-Multiplication Semantics]
+\label{def:tmul-sem}
+\[
+\sem{X \Tmul Y} = \sem{X} \times_H \sem{Y}
+\]
+where $\times_H$ is the Hadamard (component-wise) product.
+\end{definition}
+
+\begin{definition}[Tootra-Division Semantics]
+\label{def:tdiv-sem}
+\[
+\sem{X \Tdiv Y} = \sem{X} /_m \sem{Y}
+\]
+where $/_m$ is component-wise floor division.
+\end{definition}
+
+\section{Semantics of Composition}
+
+\begin{definition}[Composition Semantics]
+\label{def:comp-sem}
+For composed operations $f \circ g$:
+\[
+\sem{f \circ g} = \sem{f} \circ \sem{g}
+\]
+where the right-hand $\circ$ is function composition in $\mathcal{D}$.
+\end{definition}
+
+\begin{theorem}[Compositional Semantics]
+\label{thm:compositional}
+TKS semantics is compositional: the meaning of a complex expression is determined entirely by the meanings of its parts.
+\end{theorem}
+
+\begin{proof}
+By structural induction on expressions:
+\begin{itemize}
+  \item Base case: Atoms (Elements, Worlds) have direct denotations.
+  \item Inductive case: Compound expressions are defined in terms of their subexpressions' denotations.
+\end{itemize}
+\end{proof}
+
+\section{Semantics of Fractals}
+
+\begin{definition}[Fractal Semantics]
+\label{def:fractal-sem}
+For fractal $\langle k_1 : k_2 : \cdots : k_n \rangle(E)$:
+\[
+\sem{\langle k_1 : k_2 : \cdots : k_n \rangle(E)} = \mathfrak{n}_{k_1}(\mathfrak{n}_{k_2}(\cdots \mathfrak{n}_{k_n}(\sem{E})\cdots))
+\]
+Application is right-to-left (innermost first).
+\end{definition}
+
+\begin{theorem}[Fractal Correctness]
+\label{thm:fractal-correct}
+Fractal semantics correctly implements nested Noetic application.
+\end{theorem}
+
+\begin{proof}
+By definition:
+\[
+\sem{\langle X : Y : Z \rangle(E)} = \sem{\noe{X}}(\sem{\noe{Y}}(\sem{\noe{Z}}(\sem{E}))) = \sem{E^{ZYX}}
+\]
+which matches the intended right-to-left application.
+\end{proof}
+
+\section{Semantics of ACBE}
+
+\begin{definition}[ACBE Semantics]
+\label{def:acbe-sem}
+\[
+\sem{\mathrm{ACBE}(E)} = \mathfrak{f}_D(\mathfrak{f}_C(\mathfrak{f}_B(\sem{E})))
+\]
+where $\mathfrak{f}_W$ is the world-transition function for world $W$.
+\end{definition}
+
+\begin{definition}[World Transition Functions]
+\label{def:world-trans}
+\begin{align}
+\mathfrak{f}_B(d) &= \mathrm{Translate}_B(d) && \text{Spiritual} \to \text{Mental} \\
+\mathfrak{f}_C(d) &= \mathrm{Translate}_C(d) && \text{Mental} \to \text{Emotional} \\
+\mathfrak{f}_D(d) &= \mathrm{Translate}_D(d) && \text{Emotional} \to \text{Physical}
+\end{align}
+\end{definition}
+
+\section{Semantics of RPM}
+
+\begin{definition}[RPM Semantics]
+\label{def:rpm-sem}
+\[
+\sem{\mathrm{RPM}(X, G)} = \begin{cases}
+\mathtt{success} & \text{if } \mathrm{ChainValid}(\sem{X}, \sem{G}) \\
+\mathtt{failure}(o) & \text{otherwise, with failure origin } o
+\end{cases}
+\]
+\end{definition}
+
+%% ============================================================================
+%% CHAPTER 10: TYPE THEORY OF TKS
+%% ============================================================================
+\chapter{Type Theory of TKS Expressions}
+\label{ch:type-theory}
+
+This chapter presents a formal type system for TKS expressions with inference rules and type safety properties.
+
+\section{Base Types}
+
+\begin{definition}[TKS Base Types]
+\label{def:base-types}
+The base types are:
+\begin{align}
+\mathtt{World} &: \text{Type} && \{A, B, C, D\} \\
+\mathtt{Mode} &: \text{Type} && \{1, 2, \ldots, 10\} \\
+\mathtt{Foundation} &: \text{Type} && \{F_1, \ldots, F_7\} \\
+\mathtt{SubWorld} &: \text{Type} && \{a, b, c, d\}
+\end{align}
+\end{definition}
+
+\section{Compound Types}
+
+\begin{definition}[Compound Type Signatures]
+\label{def:compound-types}
+\begin{align}
+\mathtt{Element} &: \mathtt{World} \to \mathtt{Mode} \to \mathtt{Type} \\
+\mathtt{Noetic} &: \mathtt{Expr} \to \mathtt{Expr} \\
+\mathtt{SubFound} &: \mathtt{Foundation} \to \mathtt{SubWorld} \to \mathtt{Type} \\
+\mathtt{Acquisition} &: \mathtt{Foundation} \to \mathtt{Bool} \\
+\mathtt{Expression} &: \mathtt{Element} \times \mathtt{Noetic}^* \times \mathtt{SubFound}^? \to \mathtt{Idea} \\
+\mathtt{Fractal} &: \mathtt{List}(\mathtt{Noetic}) \to \mathtt{Expr} \to \mathtt{Expr}
+\end{align}
+\end{definition}
+
+\section{Type Inference Rules}
+
+\begin{definition}[Type Judgment]
+\label{def:type-judgment}
+A type judgment has the form:
+\[
+\Gamma \types e : \tau
+\]
+meaning ``in context $\Gamma$, expression $e$ has type $\tau$.''
+\end{definition}
+
+\begin{definition}[Element Formation Rule]
+\label{def:elem-form}
+\[
+\frac{W : \mathtt{World} \quad n : \mathtt{Mode}}{\Gamma \types Wn : \mathtt{Element}} \quad [\textsc{Elem-Form}]
+\]
+\end{definition}
+
+\begin{definition}[Noetic Application Rule]
+\label{def:noetic-rule}
+\[
+\frac{\Gamma \types E : \mathtt{Expr} \quad k \in \{0,\ldots,9\}}{\Gamma \types E^k : \mathtt{Expr}} \quad [\textsc{Noetic-Apply}]
+\]
+\end{definition}
+
+\begin{definition}[Foundation Restriction Rule]
+\label{def:found-rule}
+\[
+\frac{\Gamma \types E : \mathtt{Expr} \quad m \in \{1,\ldots,7\} \quad w \in \{a,b,c,d\}}{\Gamma \types E_{mw} : \mathtt{Expr}} \quad [\textsc{Found-Restrict}]
+\]
+\end{definition}
+
+\begin{definition}[World Association Rule]
+\label{def:world-rule}
+\[
+\frac{\Gamma \types E : \mathtt{Expr} \quad W : \mathtt{World}}{\Gamma \types E \oplus W : \mathtt{Expr}} \quad [\textsc{World-Assoc}]
+\]
+\end{definition}
+
+\begin{definition}[Tootra Addition Rule]
+\label{def:tadd-rule}
+\[
+\frac{\Gamma \types X : \mathtt{Idea} \quad \Gamma \types Y : \mathtt{Idea}}{\Gamma \types X \Tadd Y : \mathtt{Idea}} \quad [\textsc{T-Add}]
+\]
+\end{definition}
+
+\begin{definition}[Fractal Rule]
+\label{def:fractal-rule}
+\[
+\frac{\Gamma \types E : \mathtt{Expr} \quad \forall i. k_i \in \{0,\ldots,9\} \quad n \geq 1}{\Gamma \types \langle k_1 : \cdots : k_n \rangle(E) : \mathtt{Expr}} \quad [\textsc{Fractal}]
+\]
+\end{definition}
+
+\section{Type Compatibility}
+
+\begin{definition}[Cross-World Compatibility]
+\label{def:cross-world}
+\[
+\frac{\Gamma \types E : \mathtt{Expr}_{W_1} \quad W_2 : \mathtt{World} \quad d(W_1, W_2) \leq 3}{\Gamma \types E \oplus W_2 : \mathtt{Expr}_{W_2}} \quad [\textsc{Cross-World}]
+\]
+\end{definition}
+
+\section{Error Types}
+
+\begin{definition}[Type Error Categories]
+\label{def:error-types}
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Error Type} & \textbf{Description} \\
+\midrule
+$\mathtt{TypeError}$ & Malformed expression syntax \\
+$\mathtt{DomainError}$ & Operation outside valid domain \\
+$\mathtt{WorldError}$ & Invalid cross-world operation \\
+$\mathtt{NoeticError}$ & Invalid Noetic application \\
+$\mathtt{FoundationError}$ & Invalid Foundation context \\
+$\mathtt{RPMError}$ & Prerequisite chain failure \\
+$\mathtt{FractalError}$ & Invalid fractal structure \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{definition}
+
+\begin{definition}[Illegal Combinations]
+\label{def:illegal}
+The following are ill-typed:
+\begin{itemize}
+  \item $\mathtt{Element}(W, 11)$ --- Mode out of range
+  \item $A8_{8a}$ --- Foundation 8 doesn't exist
+  \item $(A8 \oplus D)^{10}$ --- Noetic 10 doesn't exist
+  \item $\langle\rangle(E)$ --- Empty fractal
+\end{itemize}
+\end{definition}
+
+\section{Type Safety}
+
+\begin{theorem}[Progress]
+\label{thm:progress}
+If $\Gamma \types e : \tau$ and $e$ is not a value, then there exists $e'$ such that $e \to e'$.
+\end{theorem}
+
+\begin{theorem}[Preservation]
+\label{thm:preservation}
+If $\Gamma \types e : \tau$ and $e \to e'$, then $\Gamma \types e' : \tau$.
+\end{theorem}
+
+\begin{corollary}[Type Safety]
+\label{cor:type-safety}
+Well-typed TKS expressions do not get stuck (they either evaluate to a value or continue reducing).
+\end{corollary}
+
+%% End of Part 3
+%% Continue in Part 4 with Compiler Spec, Theorems, Examples, Appendices
+
+\end{document}

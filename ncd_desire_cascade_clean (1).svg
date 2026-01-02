@@ -1,0 +1,236 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 700">
+            <defs>
+                <style>
+                    :root { --bg: #0a0e1e; --grid:#19203b; --ink:#e8f0ff; --muted:#9bb0d6;
+                            --green:#00ff87; --cyan:#00ffff; --mag:#ff48ff; --badge:#7bb6ff; --yellow:#ffe14a; }
+                    .wire { stroke: var(--green); stroke-width: 3; fill: none; }
+                    .gate { stroke: #ffffff; stroke-width: 2.5; fill: none; }
+                    .label { fill: var(--cyan); font: 700 14px ui-monospace,Consolas,monospace; }
+                    .muted { fill: var(--muted); font: 12px ui-monospace,Consolas,monospace;}
+                    .badge { fill: #0a0e1e; stroke: var(--badge); stroke-width: 2; }
+                    .badgeText { fill: #cfe6ff; font: 12px ui-monospace,Consolas,monospace; dominant-baseline: middle; text-anchor: middle; }
+                    .acq { fill: none; stroke: var(--yellow); stroke-width: 2.5; }
+                    .title { fill: var(--cyan); font: 700 18px ui-monospace,Consolas,monospace; }
+                    .feedback { stroke: var(--mag); stroke-width: 2.5; fill: none; stroke-dasharray: 8,6; }
+                    
+                    @media print {
+                        .wire { stroke: #000; stroke-width: 3; }
+                        .gate { stroke: #000; stroke-width: 2.5; }
+                        .label { fill: #000; }
+                        .muted { fill: #444; }
+                        .badge { fill: #fff; stroke: #000; stroke-width: 2; }
+                        .badgeText { fill: #000; }
+                        .acq { stroke: #000; stroke-width: 2.5; stroke-dasharray: 5,3; }
+                        .feedback { stroke: #333; stroke-width: 2.5; stroke-dasharray: 8,6; }
+                    }
+                </style>
+                <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
+                    <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#19203b" stroke-width="0.8"/>
+                </pattern>
+                <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="b"/>
+                    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+            </defs>
+
+            <rect x="0" y="0" width="1500" height="700" fill="url(#grid)"/>
+            <text x="750" y="40" class="title" text-anchor="middle">Noetic Circuit Dynamics — Desire Cascade</text>
+
+            <!-- INPUT LABELS with Foundation markers -->
+            <g class="label">
+                <text x="40" y="140">F1 · Unity</text>
+                <text x="40" y="210">F3 · Life</text>
+                <text x="40" y="360">D · Desire</text>
+                <text x="40" y="460">W · Wisdom</text>
+            </g>
+
+            <!-- INPUT WIRES with badges -->
+            <!-- Unity wire with +N2 badge -->
+            <line x1="110" y1="135" x2="200" y2="135" class="wire"/>
+            <g transform="translate(155,135)">
+                <rect x="-22" y="-12" width="44" height="24" rx="5" class="badge"/>
+                <text x="0" y="0" class="badgeText">+N2</text>
+            </g>
+
+            <!-- Life wire with N7 badge -->
+            <line x1="110" y1="205" x2="200" y2="205" class="wire"/>
+            <g transform="translate(155,205)">
+                <rect x="-40" y="-12" width="80" height="24" rx="5" class="badge"/>
+                <text x="0" y="0" class="badgeText">N7: rhythm</text>
+            </g>
+
+            <!-- AND gate for Unity + Life -->
+            <g transform="translate(200,120)">
+                <path d="M0,0 L0,100 L40,100 Q80,100 80,50 Q80,0 40,0 Z" class="gate"/>
+                <text x="10" y="-10" class="muted">AND = min(p1,p2)</text>
+            </g>
+            <line x1="280" y1="170" x2="340" y2="170" class="wire"/>
+
+            <!-- A7 Acquisition node -->
+            <g transform="translate(310,170)">
+                <circle r="16" class="acq"/>
+                <text x="0" y="5" fill="#ffe14a" font-size="12" text-anchor="middle">A7</text>
+            </g>
+
+            <!-- Desire wire with N8→N9 badge -->
+            <line x1="110" y1="355" x2="280" y2="355" class="wire"/>
+            <g transform="translate(195,355)">
+                <rect x="-42" y="-12" width="84" height="24" rx="5" class="badge"/>
+                <text x="0" y="0" class="badgeText">N8→N9 cue</text>
+            </g>
+
+            <!-- Wisdom wire -->
+            <line x1="115" y1="455" x2="200" y2="455" class="wire"/>
+
+            <!-- NOT gate for Wisdom -->
+            <g transform="translate(200,442)">
+                <path d="M0,0 L0,26 L40,13 Z" class="gate"/>
+                <circle cx="46" cy="13" r="6" class="gate"/>
+                <text x="0" y="-10" class="muted">NOT = 1−p</text>
+            </g>
+            <line x1="246" y1="455" x2="280" y2="455" class="wire"/>
+
+            <!-- XOR gate for Desire and NOT(Wisdom) -->
+            <g transform="translate(280,340)">
+                <path d="M10,0 Q34,0 46,0 Q92,0 92,60 Q34,60 10,60 Q34,30 10,0" class="gate"/>
+                <path d="M0,0 Q24,30 0,60" class="gate"/>
+                <text x="20" y="-10" class="muted">XOR = |p1−p2|</text>
+            </g>
+            <!-- Connect NOT(W) to XOR -->
+            <line x1="280" y1="455" x2="280" y2="386" class="wire"/>
+            <line x1="372" y1="370" x2="450" y2="370" class="wire"/>
+
+            <!-- OR gate combining AND and XOR outputs -->
+            <g transform="translate(450,200)">
+                <path d="M0,0 Q28,0 40,0 Q96,0 96,120 Q28,120 0,120 Q28,60 0,0" class="gate"/>
+                <text x="20" y="-10" class="muted">OR = max(p1,p2)</text>
+            </g>
+            <!-- Connect AND to OR top input -->
+            <line x1="340" y1="170" x2="450" y2="230" class="wire"/>
+            <!-- XOR output to OR bottom input -->
+            <line x1="372" y1="370" x2="410" y2="370" class="wire"/>
+            <path d="M 410 370 Q 430 370 450 320" class="wire"/>
+            <!-- OR output -->
+            <line x1="546" y1="260" x2="620" y2="260" class="wire"/>
+
+            <!-- A22 Integration node -->
+            <g transform="translate(580,260)">
+                <circle r="18" class="acq"/>
+                <text x="0" y="5" fill="#ffe14a" font-size="12" text-anchor="middle">A22</text>
+            </g>
+
+            <!-- World Router (MUX) -->
+            <g transform="translate(700,200)">
+                <path d="M0,0 L0,120 L120,90 L120,30 Z" class="gate"/>
+                <text x="30" y="-10" class="muted">World Router</text>
+                <g class="muted">
+                    <text x="-20" y="20">A</text>
+                    <text x="-20" y="50">B</text>
+                    <text x="-20" y="80">C</text>
+                    <text x="-20" y="110">D</text>
+                </g>
+            </g>
+            <!-- MUX input wires (only C connected from OR) -->
+            <line x1="620" y1="260" x2="700" y2="260" class="wire"/>
+            <!-- MUX output -->
+            <line x1="820" y1="240" x2="900" y2="240" class="wire"/>
+            
+            <!-- World weights with sum notation -->
+            <g transform="translate(700,340)">
+                <text class="muted">weights: A 0.1 · B 0.2 · <tspan fill="#00ffff">C 0.6</tspan> · D 0.1   <tspan font-weight="bold">(Σw=1)</tspan></text>
+            </g>
+
+            <!-- N6 badge on MUX output -->
+            <g transform="translate(860,240)">
+                <rect x="-22" y="-12" width="44" height="24" rx="5" class="badge"/>
+                <text x="0" y="0" class="badgeText">N6</text>
+            </g>
+
+            <!-- D→W→P latches with example τ values -->
+            <g transform="translate(920,220)">
+                <rect x="0" y="0" width="56" height="40" class="gate"/>
+                <rect x="70" y="0" width="56" height="40" class="gate"/>
+                <rect x="140" y="0" width="56" height="40" class="gate"/>
+                <g class="muted" text-anchor="middle">
+                    <text x="28" y="-8">D</text>
+                    <text x="98" y="-8">W</text>
+                    <text x="168" y="-8">P</text>
+                    <text x="28" y="58">τ_D</text>
+                    <text x="98" y="58">τ_W</text>
+                    <text x="168" y="58">τ_P</text>
+                    <text x="28" y="74" font-size="10" fill="#7bb6ff">0.3</text>
+                    <text x="98" y="74" font-size="10" fill="#7bb6ff">0.5</text>
+                    <text x="168" y="74" font-size="10" fill="#7bb6ff">0.7</text>
+                </g>
+            </g>
+            <!-- N5 memory consolidation note -->
+            <text x="948" y="295" class="muted" font-size="10" text-anchor="middle">N5↑mem</text>
+                
+            
+            <!-- Connect latches -->
+            <line x1="900" y1="240" x2="920" y2="240" class="wire"/>
+            <line x1="976" y1="240" x2="990" y2="240" class="wire"/>
+            <line x1="1046" y1="240" x2="1060" y2="240" class="wire"/>
+            <line x1="1116" y1="240" x2="1130" y2="240" class="wire"/>
+
+            <!-- ×N4 badge (positioned between P and clamp) -->
+            <g transform="translate(1145,240)">
+                <rect x="-22" y="-12" width="44" height="24" rx="5" class="badge"/>
+                <text x="0" y="0" class="badgeText">×N4</text>
+            </g>
+            
+            <!-- Connector from ×N4 to clamp -->
+            <line x1="1167" y1="240" x2="1180" y2="240" class="wire"/>
+
+            <!-- Clamp/Saturator box -->
+            <g transform="translate(1180,220)">
+                <rect x="0" y="0" width="80" height="40" class="gate"/>
+                <text x="40" y="25" class="muted" text-anchor="middle" font-size="11">clamp[0,1]</text>
+            </g>
+            <line x1="1260" y1="240" x2="1280" y2="240" class="wire"/>
+
+            <!-- Manifestation output -->
+            <g transform="translate(1280,220)">
+                <rect x="0" y="0" width="140" height="40" fill="none" stroke="#00ffff" stroke-width="3" filter="url(#glow)"/>
+                <text x="70" y="26" text-anchor="middle" fill="#00ffff" font="700 16px ui-monospace,Consolas,monospace">MANIFESTATION</text>
+            </g>
+
+            <!-- Feedback loop with badges and landing arrow -->
+            <path d="M 1330 260 C 1330 520 700 580 280 520 C 180 500 180 400 246 455" class="feedback"/>
+            
+            <!-- Feedback landing arrow and label (repositioned) -->
+            <polygon points="190,455 198,450 198,460" fill="#ff48ff" stroke="#ff48ff" stroke-width="1"/>
+            <text x="140" y="435" class="muted" font-size="11">to W line</text>
+            <text x="140" y="448" class="muted" font-size="11">pre-NOT</text>
+            
+            <!-- N5 store badge at feedback landing (repositioned) -->
+            <g transform="translate(120,490)">
+                <rect x="-30" y="-12" width="60" height="24" rx="5" class="badge" stroke="#ff48ff" fill="#1a0a1a"/>
+                <text x="0" y="0" class="badgeText">N5 store</text>
+            </g>
+            
+            <!-- Feedback badges -->
+            <g transform="translate(1100,400)">
+                <rect x="-22" y="-12" width="44" height="24" rx="5" class="badge" stroke="#ff48ff" fill="#1a0a1a"/>
+                <text x="0" y="0" class="badgeText">N7</text>
+            </g>
+            <g transform="translate(750,520)">
+                <rect x="-22" y="-12" width="44" height="24" rx="5" class="badge" stroke="#ff48ff" fill="#1a0a1a"/>
+                <text x="0" y="0" class="badgeText">×N4</text>
+            </g>
+            <g transform="translate(400,500)">
+                <rect x="-22" y="-12" width="44" height="24" rx="5" class="badge" stroke="#ff48ff" fill="#1a0a1a"/>
+                <text x="0" y="0" class="badgeText">−N3</text>
+            </g>
+            
+            <text x="650" y="570" class="muted">Feedback loop modulation</text>
+            
+            <!-- Micro-legend (moved to bottom center) -->
+            <g transform="translate(600,650)">
+                <rect x="-110" y="-20" width="220" height="40" fill="#0a0e1e" stroke="#19203b" stroke-width="1" rx="4"/>
+                <text class="muted" font-size="11" text-anchor="middle">
+                    <tspan x="0" y="-5">p∈[0,1] = progress value</tspan>
+                    <tspan x="0" y="10">clamp[0,1] = saturator (bounds output)</tspan>
+                </text>
+            </g>
+        </svg>

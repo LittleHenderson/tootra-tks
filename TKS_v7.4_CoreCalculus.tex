@@ -1,0 +1,825 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  TKS_v7.4_CoreCalculus.tex
+%%  Core Calculus Overview: Minimal Central Engine for Academic Readers
+%%
+%%  Part of TKS v7.4 --- To be placed in Part 0 (Canonical Foundation)
+%%  AFTER Chapter: Ontological Foundations Reference
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Core Calculus Overview}
+\label{ch:core-calculus}
+
+\begin{tcolorbox}[colback=cyan!5!white,colframe=cyan!75!black,title=\textbf{Purpose}]
+This chapter provides a self-contained summary of the \emph{minimal} TKS formal system
+for academics unfamiliar with the full manual. It distills the essential objects,
+algebraic structures, and core theorems into a concise reference suitable for
+researchers seeking rapid orientation before engaging with advanced material.
+All definitions herein are consistent with and derived from the canonical TKS v6.1--v7.4
+formalization.
+\end{tcolorbox}
+
+%% ============================================================================
+%% SECTION 1: CORE OBJECTS
+%% ============================================================================
+\section{Core Objects}
+\label{sec:core-objects}
+
+The TKS formal system is built upon six fundamental object classes: Worlds, Elements,
+Noetics, Foundations, Sub-Foundations, and Acquisitions. We define each precisely.
+
+\begin{definition}[Worlds]
+\label{def:core-worlds}
+The \textbf{World set} $\Worlds$ is the finite totally ordered set:
+\[
+    \Worlds := \{A, B, C, D\}
+\]
+equipped with the ordering $A \succ B \succ C \succ D$, representing decreasing
+ontological subtlety. Each world carries a distinct interpretation:
+\begin{center}
+\begin{tabular}{clll}
+\toprule
+\textbf{World} & \textbf{Label} & \textbf{Domain} & \textbf{Ordinal} \\
+\midrule
+$A$ & Archetypal & Spiritual / Divine & $\mathrm{ord}(A) = 0$ \\
+$B$ & Intellectual & Mental / Conceptual & $\mathrm{ord}(B) = 1$ \\
+$C$ & Conceptual & Emotional / Formative & $\mathrm{ord}(C) = 2$ \\
+$D$ & Material & Physical / Manifest & $\mathrm{ord}(D) = 3$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+The \emph{world distance} $d(W_1, W_2) := |\mathrm{ord}(W_1) - \mathrm{ord}(W_2)|$
+quantifies separation between ontological strata.
+\end{definition}
+
+\begin{definition}[Elements]
+\label{def:core-elements}
+The \textbf{Element space} $\Elements$ is the Cartesian product:
+\[
+    \Elements := \Worlds \times \{1, 2, 3, 4, 5, 6, 7, 8, 9, 10\}
+\]
+yielding $|\Elements| = 40$ atomic constituents. An element $Wn$ (where $W \in \Worlds$
+and $n \in \{1, \ldots, 10\}$) combines a world stratum with a \emph{mode} encoding
+its functional role. The ten modes are:
+\begin{center}
+\begin{tabular}{cl|cl}
+\toprule
+\textbf{Mode} & \textbf{Role} & \textbf{Mode} & \textbf{Role} \\
+\midrule
+1 & Mind / Awareness & 6 & Male / Projective \\
+2 & Positive / Attraction & 7 & Rhythm / Periodicity \\
+3 & Negative / Repulsion & 8 & Above / Causal / Inner \\
+4 & Vibration / Energy & 9 & Below / Effect / Outer \\
+5 & Female / Receptive & 10 & Idea / Pure Potential \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{definition}
+
+\begin{definition}[Noetics]
+\label{def:core-noetics}
+The \textbf{Noetic operator space} $\Noetics$ is the set of ten consciousness operators:
+\[
+    \Noetics := \{\noe{0}, \noe{1}, \noe{2}, \noe{3}, \noe{4}, \noe{5},
+                  \noe{6}, \noe{7}, \noe{8}, \noe{9}\}
+\]
+Each noetic $\noe{k}$ is an endofunction on the Idea space:
+\[
+    \noe{k} : \Ideas \longrightarrow \Ideas
+\]
+The noetic $\noe{0}$ (Idea) acts as the identity. Noetics form three \emph{dual pairs}
+summing to 9: $(\noe{2}, \noe{7})$, $(\noe{3}, \noe{6})$, $(\noe{4}, \noe{5})$,
+plus the distinguished pairs $(\noe{1}, \noe{8})$ (Mind--Above). Composition of
+dual pairs approximately yields the identity: $\noe{j} \circ \noe{i} \approx \noe{0}$
+when $i + j = 9$.
+\end{definition}
+
+\begin{definition}[Foundations]
+\label{def:core-foundations}
+The \textbf{Foundation space} $\Foundations$ consists of seven organizational principles:
+\[
+    \Foundations := \{\Foundations_1, \Foundations_2, \Foundations_3, \Foundations_4,
+                      \Foundations_5, \Foundations_6, \Foundations_7\}
+\]
+Each Foundation $\Foundations_m$ governs a life domain:
+\begin{center}
+\begin{tabular}{cll}
+\toprule
+\textbf{Index} & \textbf{Foundation} & \textbf{Formal Principle} \\
+\midrule
+$\Foundations_1$ & Unity / Association & \textsc{Coherence} \\
+$\Foundations_2$ & Wisdom & \textsc{Epistemic-Structure} \\
+$\Foundations_3$ & Life & \textsc{Vitality} \\
+$\Foundations_4$ & Companionship & \textsc{Relational-Binding} \\
+$\Foundations_5$ & Power & \textsc{Causal-Efficacy} \\
+$\Foundations_6$ & Material / Wealth & \textsc{Resource-Structure} \\
+$\Foundations_7$ & Lust / Continuation & \textsc{Generative-Drive} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{definition}
+
+\begin{definition}[Sub-Foundations]
+\label{def:core-subfoundations}
+The \textbf{Sub-Foundation space} is the Cartesian product:
+\[
+    \Foundations^* := \Foundations \times \{a, b, c, d\}
+\]
+yielding $|\Foundations^*| = 28$ refinements, where the second index indicates
+world-level manifestation ($a$ = Spiritual, $b$ = Mental, $c$ = Emotional, $d$ = Physical).
+For example, $\Foundations_{3d}$ denotes Physical Life (biological vitality).
+\end{definition}
+
+\begin{definition}[Acquisitions]
+\label{def:core-acquisitions}
+The \textbf{Acquisition space} $\Acquisitions$ consists of 22 derived composite structures:
+\[
+    \Acquisitions := \{A_0\} \cup \{D_m\}_{m=1}^{7} \cup \{W_m\}_{m=1}^{7}
+                     \cup \{P_m\}_{m=1}^{7}
+\]
+where:
+\begin{itemize}
+    \item $A_0$: Pure Desire (root intentional vector),
+    \item $D_m$: Desire for Foundation $\Foundations_m$,
+    \item $W_m$: Wisdom about Foundation $\Foundations_m$,
+    \item $P_m$: Power to achieve Foundation $\Foundations_m$.
+\end{itemize}
+An \emph{acquisition state} $\sigma : \Acquisitions \to \{\mathtt{true}, \mathtt{false}\}$
+tracks which acquisitions are satisfied.
+\end{definition}
+
+%% ============================================================================
+%% SECTION 2: ALGEBRAIC STRUCTURE
+%% ============================================================================
+\section{Algebraic Structure}
+\label{sec:algebraic-structure}
+
+We now specify the algebraic structures governing TKS: the monoid of Ideas and the
+category $\Noetica$.
+
+\begin{definition}[Idea Space]
+\label{def:core-idea-space}
+The \textbf{Idea space} $\Ideas$ is the collection of all Ideas---formal objects
+representing spiritual, mental, emotional, or physical content. Formally, $\Ideas$
+is realized as a graded multiset algebra:
+\[
+    \Ideas := \bigcup_{W \in \Worlds} \mathcal{M}(\mathcal{P}_W)
+\]
+where $\mathcal{M}(\mathcal{P}_W)$ denotes finite multisets over a property space
+$\mathcal{P}_W$ for world $W$.
+\end{definition}
+
+\begin{definition}[Tootra-Addition Monoid]
+\label{def:core-monoid}
+The structure $(\Ideas, \Tadd, \mathbf{0})$ is an \textbf{abelian monoid}, where:
+\begin{enumerate}[label=(\roman*)]
+    \item \textbf{Binary operation} $\Tadd : \Ideas \times \Ideas \to \Ideas$ is
+          multiset union:
+          \[
+              (X \Tadd Y)(p) := X(p) + Y(p) \quad \text{for all properties } p
+          \]
+    \item \textbf{Identity element} $\mathbf{0} := \varnothing$ (the empty multiset).
+\end{enumerate}
+This operation satisfies:
+\begin{align}
+    X \Tadd Y &= Y \Tadd X && \text{(Commutativity)} \\
+    (X \Tadd Y) \Tadd Z &= X \Tadd (Y \Tadd Z) && \text{(Associativity)} \\
+    X \Tadd \mathbf{0} &= X && \text{(Identity)}
+\end{align}
+\end{definition}
+
+\begin{definition}[Category $\Noetica$]
+\label{def:core-noetica}
+The category $\Noetica$ is defined by:
+
+\textbf{Objects:}
+\[
+    \mathrm{Ob}(\Noetica) := \Ideas \cup \Worlds \cup \Elements \cup \Foundations
+                             \cup \Acquisitions
+\]
+
+\textbf{Morphisms:} The hom-sets consist of noetic transitions---primarily the
+Noetic operators and world-association morphisms:
+\[
+    \mathrm{Hom}(\Noetica) := \Noetics \cup \{\oplus_W, \ominus_W : W \in \Worlds\}
+\]
+
+\textbf{Composition:} For morphisms $f : X \to Y$ and $g : Y \to Z$:
+\[
+    g \circ f : X \to Z
+\]
+is standard function composition (apply $f$ first, then $g$).
+
+\textbf{Identity:} For each object $X$, the identity morphism is:
+\[
+    \mathrm{id}_X := \noe{0}|_X
+\]
+\end{definition}
+
+\begin{proposition}[Category Axioms]
+\label{prop:noetica-category}
+$\Noetica$ satisfies the category axioms:
+\begin{enumerate}[label=(\alph*)]
+    \item \textbf{Associativity}: $(h \circ g) \circ f = h \circ (g \circ f)$,
+    \item \textbf{Identity}: $\mathrm{id}_Y \circ f = f = f \circ \mathrm{id}_X$
+          for all $f : X \to Y$.
+\end{enumerate}
+\end{proposition}
+
+\begin{definition}[Noetic Monoid]
+\label{def:core-noetic-monoid}
+The structure $(\Noetics, \circ, \noe{0})$ forms a \textbf{monoid} where composition
+$\circ$ is associative and $\noe{0}$ is the identity. The $10 \times 10$ composition
+table is canonically specified in v6.1.
+\end{definition}
+
+%% ============================================================================
+%% SECTION 3: THE RPM MONAD
+%% ============================================================================
+\section{The RPM Monad}
+\label{sec:rpm-monad}
+
+The Recursive Prerequisite Model (RPM) is formalized as a monad encoding prerequisite-dependent
+computation with potential failure.
+
+\begin{definition}[RPM Monad Structure]
+\label{def:rpm-monad}
+The \textbf{RPM monad} is a triple $(\RPM, \rpmret, \rpmbind)$ where:
+\begin{enumerate}[label=(\roman*)]
+    \item $\RPM : \Noetica \to \Noetica$ is an endofunctor assigning to each object $X$
+          the type of RPM computations returning $X$:
+          \[
+              \RPM(X) := (\mathrm{AcqState} \to (X + \Failed) \times \mathrm{AcqState})
+          \]
+          where $\Failed$ is the failure token and $\mathrm{AcqState} = 2^{\Acquisitions}$.
+
+    \item $\rpmret : X \to \RPM(X)$ is the \textbf{unit} (return):
+          \[
+              \rpmret\; v := \lambda \sigma.\, (\mathrm{inl}\; v,\, \sigma)
+          \]
+          It lifts a pure value into an RPM computation that succeeds immediately.
+
+    \item $\rpmbind : \RPM(X) \times (X \to \RPM(Y)) \to \RPM(Y)$ is the \textbf{bind}:
+          \[
+              m \rpmbind f := \lambda \sigma.\,
+              \begin{cases}
+                  f(v)(\sigma') & \text{if } m(\sigma) = (\mathrm{inl}\; v, \sigma') \\
+                  (\mathrm{inr}\; \Failed, \sigma') & \text{if } m(\sigma) = (\mathrm{inr}\; \Failed, \sigma')
+              \end{cases}
+          \]
+          Sequentially composes RPM computations, propagating failure.
+\end{enumerate}
+\end{definition}
+
+\begin{theorem}[RPM Monad Laws]
+\label{thm:rpm-monad-laws}
+The RPM monad $(\RPM, \rpmret, \rpmbind)$ satisfies the monad axioms:
+
+\textbf{Left Unit:}
+\[
+    \rpmret\; x \rpmbind f \;=\; f(x)
+\]
+
+\textbf{Right Unit:}
+\[
+    m \rpmbind \rpmret \;=\; m
+\]
+
+\textbf{Associativity:}
+\[
+    (m \rpmbind f) \rpmbind g \;=\; m \rpmbind (\lambda x.\, f(x) \rpmbind g)
+\]
+\end{theorem}
+
+\begin{proof}[Proof Sketch]
+\textit{Left Unit}: $(\rpmret\; x \rpmbind f)(\sigma) = f(x)(\sigma)$ since
+$\rpmret\; x$ returns $(\mathrm{inl}\; x, \sigma)$ immediately.
+
+\textit{Right Unit}: $(m \rpmbind \rpmret)(\sigma)$: if $m(\sigma) = (\mathrm{inl}\; v, \sigma')$,
+then $\rpmret\; v(\sigma') = (\mathrm{inl}\; v, \sigma')$, recovering $m(\sigma)$.
+
+\textit{Associativity}: Both sides thread state identically through $m$, then $f$,
+then $g$, with failure short-circuiting at each stage.
+\end{proof}
+
+%% ============================================================================
+%% SECTION 4: FINITE FRACTALS
+%% ============================================================================
+\section{Finite Fractals}
+\label{sec:finite-fractals}
+
+Noetic fractals formalize recursive self-application of noetic transformations.
+
+\begin{definition}[Noetic Fractal]
+\label{def:noetic-fractal-core}
+A \textbf{noetic fractal} $\Frac$ is a finite sequence of noetic indices:
+\[
+    \Frac := \langle k_1 : k_2 : \cdots : k_n \rangle
+\]
+where $k_i \in \{0, 1, \ldots, 9\}$ and $n \geq 1$. As an operator:
+\[
+    \Frac : \Ideas \to \Ideas, \qquad
+    \Frac(X) := \noe{k_1}(\noe{k_2}(\cdots \noe{k_n}(X) \cdots))
+\]
+Application is right-to-left (innermost first).
+\end{definition}
+
+\begin{definition}[Fractal as Endofunctor]
+\label{def:fractal-endofunctor}
+Each fractal $\Frac$ induces an endofunctor $\Frac : \Noetica \to \Noetica$ by:
+\begin{itemize}
+    \item \textbf{On objects}: $\Frac(X) := \noe{k_1} \circ \cdots \circ \noe{k_n}(X)$,
+    \item \textbf{On morphisms}: $\Frac(f) := \noe{k_1} \circ \cdots \circ \noe{k_n} \circ f
+          \circ \noe{k_n}^{-1} \circ \cdots \circ \noe{k_1}^{-1}$ (conjugation).
+\end{itemize}
+The \emph{self-similarity} property is encoded by the equation:
+\[
+    \Frac \circ \Frac = \Frac^2
+\]
+which generalizes to $n$-fold iteration.
+\end{definition}
+
+\begin{definition}[Fractal Iteration]
+\label{def:fractal-iteration}
+For $n \in \mathbb{N}$, define the $n$-fold iteration:
+\[
+    \Frac^n := \underbrace{\Frac \circ \Frac \circ \cdots \circ \Frac}_{n \text{ times}}
+\]
+with $\Frac^0 := \mathrm{id}$ (the identity functor). Explicitly:
+\[
+    \Frac^n(X) = \Frac(\Frac^{n-1}(X))
+\]
+\end{definition}
+
+\begin{definition}[Fractal Fixed Point]
+\label{def:fractal-fixpoint-core}
+A \textbf{fixed point} of fractal $\Frac$ is an object $X^* \in \mathrm{Ob}(\Noetica)$
+satisfying:
+\[
+    \Frac(X^*) = X^*
+\]
+The \emph{formal fixed-point equation} for fractals is:
+\[
+    \Frac^* = \Frac \circ \Frac^*
+\]
+where $\Frac^*$ denotes the limiting fractal (when convergent).
+\end{definition}
+
+\begin{definition}[Fractal Orbit and Convergence]
+\label{def:fractal-orbit}
+The \textbf{orbit} of $X$ under $\Frac$ is:
+\[
+    \mathcal{O}_\Frac(X) := \{X,\, \Frac(X),\, \Frac^2(X),\, \Frac^3(X),\, \ldots\}
+\]
+The fractal \textbf{converges} on $X$ if $\lim_{n \to \infty} \Frac^n(X) = X^*$ exists
+in a suitable topology on $\Ideas$.
+\end{definition}
+
+%% ============================================================================
+%% SECTION 5: CORE THEOREMS
+%% ============================================================================
+\section{Core Theorems}
+\label{sec:core-theorems}
+
+We state the three foundational theorems of TKS without full proof; detailed proofs
+appear in the main body of this manual.
+
+\begin{theorem}[RPM Monad Laws]
+\label{thm:core-rpm}
+The RPM monad $(\RPM, \rpmret, \rpmbind)$ satisfies the monad axioms over the category
+$\Noetica$:
+\begin{enumerate}[label=(\alph*)]
+    \item \textbf{Left Unit}: $\rpmret\; x \rpmbind f = f(x)$,
+    \item \textbf{Right Unit}: $m \rpmbind \rpmret = m$,
+    \item \textbf{Associativity}: $(m \rpmbind f) \rpmbind g = m \rpmbind (\lambda x.\, f(x) \rpmbind g)$.
+\end{enumerate}
+These laws ensure that prerequisite-dependent computations compose coherently, with
+failure propagating correctly through chains of dependent operations.
+\end{theorem}
+
+\begin{theorem}[ACBE Functor]
+\label{thm:core-acbe}
+The Acquisition-Completion-Binding-Emission functor
+\[
+    \mathsf{ACBE} : \Noetica \longrightarrow \Acq
+\]
+preserves composition and identities:
+\begin{enumerate}[label=(\alph*)]
+    \item \textbf{Identity Preservation}: $\mathsf{ACBE}(\mathrm{id}_X) = \mathrm{id}_{\mathsf{ACBE}(X)}$,
+    \item \textbf{Composition Preservation}: $\mathsf{ACBE}(g \circ f) = \mathsf{ACBE}(g) \circ \mathsf{ACBE}(f)$.
+\end{enumerate}
+Here $\Acq$ is the category of acquisition states and transitions. The ACBE functor
+encodes the manifestation process from archetypal cause to material effect via the
+composition $\noe{8} \circ (-) \circ \noe{9}$ (Above-morphism-Below).
+\end{theorem}
+
+\begin{theorem}[Fractal Fixed Point --- Kleene Convergence]
+\label{thm:core-fixpoint}
+Let $\Frac : \Noetica \to \Noetica$ be a finite noetic fractal satisfying the
+\emph{Scott-continuity} condition (preserving directed suprema). Then the
+Kleene iteration converges:
+\[
+    \fix(\Frac) \;=\; \bigsqcup_{n < \omega} \Frac^n(\bot)
+\]
+where $\bot$ is the bottom element of the noetic domain and $\bigsqcup$ denotes
+the directed supremum. Explicitly:
+\[
+    \fix(\Frac) = \bot \sqcup \Frac(\bot) \sqcup \Frac^2(\bot) \sqcup \cdots
+\]
+This fixed point is the \emph{least} solution to the equation $X = \Frac(X)$ and
+represents the stable attractor of iterated fractal application.
+\end{theorem}
+
+\begin{remark}[Domain-Theoretic Foundation]
+\label{rem:domain-theory}
+Theorem~\ref{thm:core-fixpoint} relies on the domain-theoretic structure of $\Noetica$
+established in Part~VI. The noetic domain $\NoeticDomain$ forms a dcpo (directed-complete
+partial order) under the information ordering $\sqsubseteq$. Scott-continuous functors
+on dcpos admit least fixed points by the Kleene fixed-point theorem.
+\end{remark}
+
+\begin{corollary}[Stabilizing Fractals Converge]
+\label{cor:stabilizing-convergence}
+A fractal $\Frac$ is \emph{stabilizing} if and only if for all compatible inputs $X$:
+\[
+    \exists\, X^* \in \Ideas : \lim_{n \to \infty} \Frac^n(X) = X^*
+\]
+Examples include the MVR fractal $\langle 1 : 4 : 7 \rangle$ (Mind-Vibration-Rhythm)
+and the Deep Mind fractal $\langle 1 : 1 : 1 \rangle$.
+\end{corollary}
+
+%% ============================================================================
+%% SECTION 6: DENOTATIONAL SEMANTICS OF THE CORE CALCULUS
+%% ============================================================================
+\section{Denotational Semantics of the Core Calculus}
+\label{sec:core-denotational}
+
+We now establish a denotational semantics for the TKS core calculus, mapping syntactic
+constructs to elements of a domain-theoretic model. This provides a compositional
+interpretation independent of evaluation order.
+
+\begin{definition}[Core Language Syntax]
+\label{def:core-lang-syntax}
+The \textbf{core language} $\mathcal{L}_{\mathrm{core}}$ is generated by the grammar:
+\[
+e ::= \iota \mid w \vdash \iota \mid \Foundations_i(\iota) \mid \rpmret(e) \mid
+      e_1 \rpmbind e_2 \mid \Frac^n(e) \mid \fix(\Frac)
+\]
+where $\iota$ ranges over ideas, $w \in \Worlds$, $\Foundations_i \in \Foundations$,
+$\Frac$ is a fractal, and $n \in \mathbb{N}$.
+\end{definition}
+
+\begin{definition}[Semantic Domain]
+\label{def:semantic-domain}
+The \textbf{semantic domain} $\mathbf{D}$ is a dcpo (directed-complete partial order)
+constructed as follows:
+\[
+\mathbf{D} := \Ideas_\bot \times \mathrm{AcqState}_\bot
+\]
+where $\Ideas_\bot = \Ideas \cup \{\bot\}$ is the lifted Idea space, and
+$\mathrm{AcqState}_\bot = 2^{\Acquisitions} \cup \{\bot\}$ is the lifted acquisition state.
+The ordering is componentwise: $(X_1, \sigma_1) \sqsubseteq (X_2, \sigma_2)$ iff
+$X_1 \sqsubseteq X_2$ and $\sigma_1 \sqsubseteq \sigma_2$.
+\end{definition}
+
+\begin{definition}[Semantic Valuation Function]
+\label{def:sem-valuation}
+The \textbf{semantic function} $\sem{-} : \mathcal{L}_{\mathrm{core}} \to \mathbf{D}$
+is defined inductively:
+
+\medskip
+\textbf{(1) Ideas:}
+\[
+\sem{\iota} := (\iota, \sigma_0) \in \Ideas_\bot \times \mathrm{AcqState}_\bot
+\]
+where $\sigma_0$ is the initial acquisition state.
+
+\medskip
+\textbf{(2) World Membership:}
+\[
+\sem{w \vdash \iota} :=
+\begin{cases}
+(\iota, \sigma_0) & \text{if } \mathrm{world}(\iota) = w \\
+(\bot, \sigma_0) & \text{otherwise}
+\end{cases}
+\]
+The predicate $\mathrm{world}(\iota) = w$ holds when idea $\iota$ is associated with world $w$.
+
+\medskip
+\textbf{(3) Foundation Application:}
+\[
+\sem{\Foundations_i(\iota)} := (\Foundations_i \cdot \iota, \sigma_0[\mathsf{D}_i \mapsto \mathtt{true}])
+\]
+where $\Foundations_i \cdot \iota$ denotes the application of Foundation $\Foundations_i$
+to idea $\iota$, filtering or projecting through the domain's organizational principle.
+
+\medskip
+\textbf{(4) RPM Return:}
+\[
+\sem{\rpmret(e)} := \lambda \sigma.\, (\mathrm{inl}\,\sem{e}_{\mathrm{val}}, \sigma)
+\]
+where $\sem{e}_{\mathrm{val}}$ extracts the value component from $\sem{e}$.
+
+\medskip
+\textbf{(5) RPM Bind (Sequencing):}
+\[
+\sem{m \rpmbind f} := \lambda \sigma.\,
+\begin{cases}
+\sem{f}(v)(\sigma') & \text{if } \sem{m}(\sigma) = (\mathrm{inl}\, v, \sigma') \\
+(\mathrm{inr}\,\Failed, \sigma') & \text{if } \sem{m}(\sigma) = (\mathrm{inr}\,\Failed, \sigma')
+\end{cases}
+\]
+This propagates state through sequential composition and short-circuits on failure.
+
+\medskip
+\textbf{(6) Fractal Iteration:}
+\[
+\sem{\Frac^n(\iota)} := \underbrace{\sem{\Frac} \circ \sem{\Frac} \circ \cdots \circ \sem{\Frac}}_{n \text{ times}}(\sem{\iota})
+\]
+where $\sem{\Frac} = \sem{\noe{k_1}} \circ \cdots \circ \sem{\noe{k_m}}$ for
+$\Frac = \langle k_1 : \cdots : k_m \rangle$.
+
+\medskip
+\textbf{(7) Fractal Fixed Point:}
+\[
+\sem{\fix(\Frac)} := \bigsqcup_{n < \omega} \sem{\Frac}^n(\bot)
+\]
+the least fixed point computed via Kleene iteration.
+\end{definition}
+
+\begin{proposition}[Compositionality]
+\label{prop:denotational-compositionality}
+The semantic function $\sem{-}$ is compositional: the meaning of a compound expression
+depends only on the meanings of its immediate subexpressions.
+\end{proposition}
+
+\begin{theorem}[Semantic Domain Properties]
+\label{thm:sem-domain-props}
+The semantic domain $\mathbf{D}$ satisfies:
+\begin{enumerate}[label=(\roman*)]
+    \item $\mathbf{D}$ is a pointed dcpo with bottom element $(\bot, \bot)$.
+    \item All semantic operators $\sem{\Frac}$, $\sem{\noe{k}}$ are Scott-continuous.
+    \item The RPM operations preserve continuity: if $f$ is continuous, so is
+          $\sem{m \rpmbind f}$ as a function of $\sem{m}$.
+\end{enumerate}
+\end{theorem}
+
+%% ============================================================================
+%% SECTION 7: OPERATIONAL SEMANTICS OF THE CORE CALCULUS
+%% ============================================================================
+\section{Operational Semantics of the Core Calculus}
+\label{sec:core-operational}
+
+We define a big-step operational semantics that specifies how core calculus expressions
+evaluate to values. This provides an executable specification complementing the
+denotational account.
+
+\begin{definition}[Values and Configurations]
+\label{def:operational-values}
+\textbf{Values} are terminal expressions:
+\[
+v ::= \iota \mid \rpmret(v) \mid \mathrm{inr}\,\Failed
+\]
+A \textbf{configuration} is a pair $(e, \sigma)$ of an expression $e$ and an acquisition
+state $\sigma \in 2^{\Acquisitions}$. We write $e \bigstep v$ for pure evaluation and
+$(e, \sigma) \bigstep (v, \sigma')$ for stateful evaluation.
+\end{definition}
+
+\begin{definition}[Big-Step Evaluation Rules]
+\label{def:bigstep-rules}
+The big-step relation $\bigstep$ is defined by the following inference rules:
+
+\medskip
+\textbf{Rule (Val) --- Values:}
+\[
+\infer[\textsc{Val}]{v \bigstep v}{}
+\]
+Values evaluate to themselves.
+
+\medskip
+\textbf{Rule (World) --- World Membership:}
+\[
+\infer[\textsc{World-Ok}]{(w \vdash \iota, \sigma) \bigstep (\iota, \sigma)}{\mathrm{world}(\iota) = w}
+\]
+\[
+\infer[\textsc{World-Fail}]{(w \vdash \iota, \sigma) \bigstep (\bot, \sigma)}{\mathrm{world}(\iota) \neq w}
+\]
+
+\medskip
+\textbf{Rule (Found) --- Foundation Application:}
+\[
+\infer[\textsc{Found}]{(\Foundations_i(\iota), \sigma) \bigstep (\Foundations_i \cdot \iota,\, \sigma[\mathsf{D}_i \mapsto \mathtt{true}])}{}
+\]
+
+\medskip
+\textbf{Rule (Ret) --- RPM Return:}
+\[
+\infer[\textsc{Ret}]{(\rpmret(v), \sigma) \bigstep (\mathrm{inl}\, v, \sigma)}{}
+\]
+The unit lifts a value into a successful RPM computation.
+
+\medskip
+\textbf{Rule (Bind-Ok) --- RPM Bind (Success):}
+\[
+\infer[\textsc{Bind-Ok}]{(m \rpmbind f, \sigma) \bigstep (v', \sigma'')}{%
+    (m, \sigma) \bigstep (\mathrm{inl}\, v, \sigma') & (f(v), \sigma') \bigstep (v', \sigma'')}
+\]
+If the first computation succeeds with value $v$ and updated state $\sigma'$,
+then apply the continuation $f$ to $v$ in state $\sigma'$.
+
+\medskip
+\textbf{Rule (Bind-Fail) --- RPM Bind (Failure Propagation):}
+\[
+\infer[\textsc{Bind-Fail}]{(m \rpmbind f, \sigma) \bigstep (\mathrm{inr}\,\Failed, \sigma')}{%
+    (m, \sigma) \bigstep (\mathrm{inr}\,\Failed, \sigma')}
+\]
+If the first computation fails, the failure propagates without invoking the continuation.
+
+\medskip
+\textbf{Rule (Frac-Zero) --- Fractal Base Case:}
+\[
+\infer[\textsc{Frac-0}]{\Frac^0(\iota) \bigstep \iota}{}
+\]
+Zero iterations yield the input unchanged.
+
+\medskip
+\textbf{Rule (Frac-Step) --- Fractal Iteration Step:}
+\[
+\infer[\textsc{Frac-Step}]{\Frac^{n+1}(\iota) \bigstep v'}{%
+    \Frac^n(\iota) \bigstep v & \Frac(v) \bigstep v'}
+\]
+Iteration proceeds by evaluating $n$ steps, then applying $\Frac$ once more.
+
+\medskip
+\textbf{Rule (Noetic) --- Noetic Application:}
+\[
+\infer[\textsc{Noetic}]{\noe{k}(\iota) \bigstep \noe{k} \cdot \iota}{}
+\]
+where $\noe{k} \cdot \iota$ denotes the result of applying noetic $\noe{k}$ to idea $\iota$.
+
+\medskip
+\textbf{Rule (Fix) --- Fixed Point Unfolding:}
+\[
+\infer[\textsc{Fix}]{\fix(\Frac) \bigstep v}{\Frac(\fix(\Frac)) \bigstep v}
+\]
+The fixed point satisfies $\fix(\Frac) = \Frac(\fix(\Frac))$.
+\end{definition}
+
+\begin{proposition}[Determinism]
+\label{prop:bigstep-determinism}
+The big-step relation is deterministic: if $e \bigstep v_1$ and $e \bigstep v_2$,
+then $v_1 = v_2$.
+\end{proposition}
+
+\begin{proof}[Proof Sketch]
+By induction on the derivation of $e \bigstep v_1$. Each rule has disjoint applicability
+conditions (e.g., \textsc{Bind-Ok} vs. \textsc{Bind-Fail} are distinguished by the
+outcome of the first premise), ensuring at most one rule applies to any configuration.
+\end{proof}
+
+%% ============================================================================
+%% SECTION 8: SOUNDNESS AND ADEQUACY
+%% ============================================================================
+\section{Soundness and Adequacy}
+\label{sec:core-soundness}
+
+We establish that the denotational and operational semantics agree, ensuring that
+the domain-theoretic model faithfully represents the computational behavior of
+the core calculus.
+
+\begin{theorem}[Soundness]
+\label{thm:core-soundness}
+If $e \bigstep v$, then $\sem{e} = \sem{v}$.
+
+\noindent
+Equivalently, operational evaluation preserves denotational meaning: a program's
+mathematical semantics equals the semantics of its computed result.
+\end{theorem}
+
+\begin{proof}[Proof Sketch]
+By induction on the derivation $e \bigstep v$.
+
+\textit{Case} \textsc{Val}: Immediate, since $\sem{v} = \sem{v}$.
+
+\textit{Case} \textsc{Ret}: We have $\rpmret(v) \bigstep \mathrm{inl}\, v$.
+By definition, $\sem{\rpmret(v)} = \lambda \sigma.\, (\mathrm{inl}\,\sem{v}, \sigma)$,
+which equals $\sem{\mathrm{inl}\, v}$ as a semantic object.
+
+\textit{Case} \textsc{Bind-Ok}: Suppose $(m, \sigma) \bigstep (\mathrm{inl}\, v, \sigma')$
+and $(f(v), \sigma') \bigstep (v', \sigma'')$. By IH, $\sem{m}(\sigma) = \sem{\mathrm{inl}\, v}$
+at state $\sigma'$, and $\sem{f(v)}(\sigma') = \sem{v'}$ at state $\sigma''$.
+The definition of $\sem{m \rpmbind f}$ then yields $\sem{v'}$ at $\sigma''$.
+
+\textit{Case} \textsc{Bind-Fail}: If $(m, \sigma) \bigstep (\mathrm{inr}\,\Failed, \sigma')$,
+by IH $\sem{m}(\sigma)$ is the failure case. The semantics of bind propagates this failure.
+
+\textit{Case} \textsc{Frac-Step}: By IH on both premises and compositionality of $\sem{-}$.
+
+\textit{Case} \textsc{Fix}: The fixed-point equation $\fix(\Frac) = \Frac(\fix(\Frac))$
+holds both operationally (by the rule) and denotationally (by Kleene's theorem).
+\end{proof}
+
+\begin{theorem}[Adequacy]
+\label{thm:core-adequacy}
+If $\sem{e} \neq \bot$, then there exists a value $v$ such that $e \bigstep v$.
+
+\noindent
+Equivalently, if a program has a defined (non-bottom) denotation, then operational
+evaluation terminates with a result.
+\end{theorem}
+
+\begin{proof}[Proof Sketch]
+By induction on the structure of expressions in $\mathcal{L}_{\mathrm{core}}$.
+
+\textit{Case} $e = \iota$ (Idea): $\sem{\iota} = (\iota, \sigma_0) \neq \bot$,
+and $\iota \bigstep \iota$ by \textsc{Val}.
+
+\textit{Case} $e = w \vdash \iota$: If $\sem{w \vdash \iota} \neq \bot$, then
+$\mathrm{world}(\iota) = w$, so \textsc{World-Ok} applies.
+
+\textit{Case} $e = m \rpmbind f$: If $\sem{m \rpmbind f}(\sigma) \neq \bot$, then either:
+\begin{itemize}
+    \item $\sem{m}(\sigma) = (\mathrm{inl}\, v, \sigma')$ with $\sem{f(v)}(\sigma') \neq \bot$:
+          by IH on $m$ and $f(v)$, both evaluate, so \textsc{Bind-Ok} applies.
+    \item $\sem{m}(\sigma) = (\mathrm{inr}\,\Failed, \sigma')$: by IH on $m$,
+          $m$ evaluates to failure, so \textsc{Bind-Fail} applies.
+\end{itemize}
+
+\textit{Case} $e = \Frac^n(\iota)$: By induction on $n$. Base case $n = 0$ is immediate.
+For $n + 1$, by IH $\Frac^n(\iota) \bigstep v$ for some $v$, and $\Frac(v)$ is
+well-defined by the finitary nature of fractals.
+
+\textit{Case} $e = \fix(\Frac)$: The Kleene fixed-point theorem guarantees that
+$\bigsqcup_n \Frac^n(\bot)$ is reached in finite iterations for Scott-continuous $\Frac$
+over the finite noetic domain. Hence operational unfolding terminates.
+\end{proof}
+
+\begin{corollary}[Semantic Equivalence]
+\label{cor:semantic-equivalence}
+The denotational and operational semantics define the same partial function:
+\[
+e \bigstep v \quad \Longleftrightarrow \quad \sem{e} = \sem{v} \neq \bot
+\]
+\end{corollary}
+
+\begin{remark}[Adequacy for the Finite Core]
+\label{rem:adequacy-finite}
+Adequacy holds straightforwardly for the \emph{finite} core calculus because:
+\begin{enumerate}[label=(\roman*)]
+    \item The Idea space $\Ideas$ is finite (40 elements).
+    \item All noetics and fractals operate over this finite domain.
+    \item Fractal iteration either stabilizes or cycles within finite steps.
+    \item RPM computations are parametrized by finite acquisition states ($2^{22}$ possibilities).
+\end{enumerate}
+Extension to transfinite fractals requires additional continuity conditions, established
+in the full domain-theoretic treatment of Part~VI.
+\end{remark}
+
+\begin{theorem}[Type Soundness (Core Fragment)]
+\label{thm:type-soundness-core}
+If $\Gamma \vdash e : \tau$ is derivable in the TKS type system, then either:
+\begin{enumerate}[label=(\roman*)]
+    \item $e$ is a value, or
+    \item $e \bigstep v$ for some value $v$ with $\Gamma \vdash v : \tau$.
+\end{enumerate}
+Well-typed programs do not get stuck.
+\end{theorem}
+
+\begin{proof}[Proof Sketch]
+By the standard technique of progress and preservation:
+\begin{itemize}
+    \item \textbf{Progress}: A well-typed, non-value expression can always take an
+          evaluation step (some rule in Definition~\ref{def:bigstep-rules} applies).
+    \item \textbf{Preservation}: Evaluation preserves typing: if $\Gamma \vdash e : \tau$
+          and $e \bigstep v$, then $\Gamma \vdash v : \tau$.
+\end{itemize}
+The finite core fragment's simple type structure (Ideas, RPM-wrapped values, fractals)
+ensures both properties hold.
+\end{proof}
+
+%% ============================================================================
+%% CLOSING SUMMARY
+%% ============================================================================
+
+\begin{tcolorbox}[colback=gray!5!white,colframe=gray!75!black,title=\textbf{Summary: The TKS Core Calculus},breakable]
+The minimal TKS formal system comprises:
+\begin{enumerate}
+    \item \textbf{Finite ontology}: 4 Worlds, 40 Elements, 10 Noetics, 7 Foundations,
+          28 Sub-Foundations, 22 Acquisitions.
+    \item \textbf{Algebraic structure}: The abelian monoid $(\Ideas, \Tadd, \mathbf{0})$
+          and the category $\Noetica$ of noetic objects and transitions.
+    \item \textbf{Computational monad}: The RPM monad $(\RPM, \rpmret, \rpmbind)$ encoding
+          prerequisite-dependent computation with failure.
+    \item \textbf{Recursive dynamics}: Noetic fractals as endofunctors with self-similarity,
+          admitting fixed points via Kleene iteration.
+    \item \textbf{Manifestation functor}: ACBE mapping archetypal causes to manifest effects.
+    \item \textbf{Denotational semantics}: Compositional mapping $\sem{-} : \mathcal{L}_{\mathrm{core}} \to \mathbf{D}$
+          to a dcpo semantic domain.
+    \item \textbf{Operational semantics}: Big-step evaluation relation $\bigstep$ specifying
+          how expressions reduce to values.
+    \item \textbf{Soundness and adequacy}: The operational and denotational semantics agree---evaluation
+          preserves meaning, and defined programs terminate.
+\end{enumerate}
+This core suffices to formalize consciousness transformations, prerequisite reasoning,
+and iterative refinement processes within the TKS framework, with rigorous semantic foundations.
+\end{tcolorbox}
+

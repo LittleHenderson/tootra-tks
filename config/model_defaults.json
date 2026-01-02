@@ -1,0 +1,78 @@
+{
+  "default_checkpoint": "output/teacher_model_long_v4/final_model.pt",
+  "next_checkpoint": "output/teacher_model_mvr_v1/final_model.pt",
+  "model_version": "long_v4",
+  "next_version": "mvr_v1",
+  "trained_on": "teacher_long_train_train.jsonl",
+  "promoted_date": "2025-12-15",
+  "notes": "Long-chain optimized model - 63% lower loss vs v3 on long-chain data. PENDING: MVR v1 realignment (D={ν1,ν4,ν7}, W={ν5,ν6}, P={ν8,ν9})",
+  "model": {
+    "checkpoint": "output/teacher_model_long_v4/final_model.pt",
+    "vocab_size": 127,
+    "hidden_dim": 128,
+    "num_layers": 2
+  },
+  "training": {
+    "epochs": 30,
+    "batch_size": 8,
+    "learning_rate": 0.001,
+    "weight_decay": 0.01,
+    "reverse_oversample": 2.0,
+    "reverse_loss_weight": 1.5,
+    "early_stop_patience": 6,
+    "scheduler": "cosine_annealing_warm_restarts",
+    "scheduler_T0": 5,
+    "scheduler_T_mult": 2,
+    "scheduler_eta_min_factor": 0.01
+  },
+  "data": {
+    "train": "output/teacher_long_train_train.jsonl",
+    "holdout": "output/teacher_long_train_holdout.jsonl",
+    "holdout_ratio": 0.15
+  },
+  "validation": {
+    "worlds": ["A", "B", "C", "D"],
+    "noetics": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    "senses": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "foundations": [1, 2, 3, 4, 5, 6, 7],
+    "operators": ["+", "-", "+T", "-T", "->", "<-", "*T", "/T", "o"]
+  },
+  "metrics": {
+    "v3_train_accuracy": 0.7127,
+    "v3_holdout_accuracy": 0.6967,
+    "v3_validator_pass_rate": 1.0,
+    "v3_reverse_holdout_accuracy": 0.6454
+  },
+  "previous_default": {
+    "checkpoint": "output/teacher_model_v3/final_model.pt",
+    "model_version": "v3",
+    "trained_on": "teacher_rich_v2_train.jsonl"
+  },
+  "mvr_realignment": {
+    "canonical_mapping": {
+      "Desire": ["ν1", "ν4", "ν7"],
+      "Wisdom": ["ν5", "ν6"],
+      "Power": ["ν8", "ν9"]
+    },
+    "noetic_names": {
+      "ν1": "Mind",
+      "ν4": "Vibration",
+      "ν5": "Female/Receptivity",
+      "ν6": "Male/Projection",
+      "ν7": "Rhythm",
+      "ν8": "Cause",
+      "ν9": "Effect"
+    },
+    "status": "PENDING_TRAINING",
+    "target_checkpoint": "output/teacher_model_mvr_v1/final_model.pt",
+    "ci_test": "tests/test_dwp_canonical.py",
+    "promotion_criteria": [
+      "All D/W/P canonical tests pass",
+      "RPM gate = D × W × P verified",
+      "Indices match MVR mapping exactly",
+      "No regression in core benchmarks"
+    ]
+  },
+  "locked": true,
+  "locked_date": "2025-12-15"
+}

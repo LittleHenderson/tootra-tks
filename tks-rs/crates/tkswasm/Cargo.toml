@@ -1,0 +1,29 @@
+[package]
+name = "tkswasm"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = ["console_error_panic_hook"]
+
+[dependencies]
+# TKS crates (without FFI for WASM compatibility)
+tkscore = { path = "../tkscore" }
+tkstypes = { path = "../tkstypes" }
+tksir = { path = "../tksir" }
+tksbytecode = { path = "../tksbytecode" }
+tksvm = { path = "../tksvm", default-features = false }
+
+# WASM bindings
+wasm-bindgen = "0.2"
+console_error_panic_hook = { version = "0.1", optional = true }
+serde = { version = "1.0", features = ["derive"] }
+serde-wasm-bindgen = "0.6"
+js-sys = "0.3"
+
+[profile.release]
+opt-level = "s"
+lto = true

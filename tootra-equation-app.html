@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tootra Equation Builder - True Kabbalah System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0f1f 50%, #0f1420 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #e8e8e8;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .logo-header {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            animation: logoGlow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes logoGlow {
+            0% {
+                filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.5));
+            }
+            100% {
+                filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.8));
+            }
+        }
+        
+        .tootra-logo {
+            filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.5));
+            transition: transform 0.3s ease;
+        }
+        
+        .tootra-logo:hover {
+            transform: scale(1.05);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #f0e68c;
+            margin-bottom: 10px;
+            font-size: 2.8em;
+            text-shadow: 0 0 20px rgba(240, 230, 140, 0.5);
+            font-weight: normal;
+            letter-spacing: 2px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #a8dadc;
+            margin-bottom: 30px;
+            font-size: 1.2em;
+            font-style: italic;
+        }
+        
+        .main-card {
+            background: rgba(20, 20, 40, 0.95);
+            border: 1px solid rgba(240, 230, 140, 0.3);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5), inset 0 0 30px rgba(240, 230, 140, 0.05);
+        }
+        
+        .builder-section {
+            margin-bottom: 35px;
+            padding: 20px;
+            background: rgba(30, 30, 50, 0.5);
+            border-radius: 10px;
+            border: 1px solid rgba(168, 218, 220, 0.2);
+        }
+        
+        .section-title {
+            font-size: 1.4em;
+            color: #f0e68c;
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgba(240, 230, 140, 0.3);
+            padding-bottom: 10px;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+        
+        .component-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .component-card {
+            background: linear-gradient(135deg, rgba(40, 40, 70, 0.8), rgba(30, 30, 60, 0.8));
+            border: 1px solid rgba(168, 218, 220, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .component-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #f0e68c, #a8dadc, #f0e68c);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+            border-radius: 8px;
+        }
+        
+        .component-card:hover::before {
+            opacity: 0.5;
+        }
+        
+        .component-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(240, 230, 140, 0.3);
+        }
+        
+        .component-card.selected {
+            background: linear-gradient(135deg, rgba(240, 230, 140, 0.2), rgba(168, 218, 220, 0.2));
+            border-color: #f0e68c;
+        }
+        
+        .component-code {
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            color: #f0e68c;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .component-name {
+            font-size: 0.95em;
+            color: #a8dadc;
+            margin-bottom: 3px;
+        }
+        
+        .component-description {
+            font-size: 0.85em;
+            color: rgba(255, 255, 255, 0.6);
+            font-style: italic;
+        }
+        
+        .equation-display {
+            background: #000;
+            border: 2px solid #f0e68c;
+            color: #00ff00;
+            padding: 25px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.3em;
+            margin: 30px 0;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2), inset 0 0 20px rgba(0, 255, 0, 0.1);
+            letter-spacing: 2px;
+            position: relative;
+        }
+        
+        .equation-display::before {
+            content: 'MAJIK EQUATION MATRIX';
+            position: absolute;
+            top: 5px;
+            left: 10px;
+            font-size: 0.7em;
+            color: rgba(0, 255, 0, 0.5);
+            letter-spacing: 3px;
+        }
+        
+        .operator-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+        
+        .operator-btn {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, rgba(60, 60, 90, 0.8), rgba(40, 40, 70, 0.8));
+            color: #f0e68c;
+            border: 1px solid rgba(240, 230, 140, 0.5);
+            border-radius: 6px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+        
+        .operator-btn:hover {
+            background: linear-gradient(135deg, rgba(240, 230, 140, 0.2), rgba(168, 218, 220, 0.2));
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(240, 230, 140, 0.4);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 35px;
+        }
+        
+        .action-btn {
+            padding: 15px 50px;
+            font-size: 1.15em;
+            font-weight: normal;
+            border: 2px solid;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-family: 'Georgia', serif;
+        }
+        
+        .interpret-btn {
+            background: linear-gradient(135deg, rgba(240, 230, 140, 0.2), rgba(240, 230, 140, 0.1));
+            color: #f0e68c;
+            border-color: #f0e68c;
+        }
+        
+        .interpret-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, rgba(240, 230, 140, 0.4), rgba(240, 230, 140, 0.2));
+            box-shadow: 0 0 30px rgba(240, 230, 140, 0.5);
+            transform: scale(1.02);
+        }
+        
+        .interpret-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        
+        .clear-btn {
+            background: linear-gradient(135deg, rgba(220, 20, 60, 0.2), rgba(220, 20, 60, 0.1));
+            color: #dc143c;
+            border-color: #dc143c;
+        }
+        
+        .clear-btn:hover {
+            background: linear-gradient(135deg, rgba(220, 20, 60, 0.4), rgba(220, 20, 60, 0.2));
+            box-shadow: 0 0 20px rgba(220, 20, 60, 0.5);
+        }
+        
+        .interpretation-section {
+            margin-top: 40px;
+            padding: 30px;
+            background: rgba(30, 30, 50, 0.8);
+            border: 1px solid rgba(240, 230, 140, 0.3);
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .interpretation-section.active {
+            display: block;
+        }
+        
+        .interpretation-title {
+            font-size: 1.6em;
+            color: #f0e68c;
+            margin-bottom: 25px;
+            text-align: center;
+            text-shadow: 0 0 15px rgba(240, 230, 140, 0.5);
+            letter-spacing: 2px;
+            font-weight: normal;
+        }
+        
+        .interpretation-content {
+            line-height: 1.9;
+            color: #e8e8e8;
+            font-size: 1.05em;
+        }
+        
+        .interpretation-block {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(20, 20, 40, 0.5);
+            border-left: 3px solid #f0e68c;
+            border-radius: 5px;
+        }
+        
+        .interpretation-block h4 {
+            color: #a8dadc;
+            margin-bottom: 12px;
+            font-size: 1.2em;
+            letter-spacing: 1px;
+            font-weight: normal;
+        }
+        
+        .formula-display {
+            background: #000;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            border: 1px solid #00ff00;
+            margin: 15px 0;
+            letter-spacing: 1px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .loading-spinner {
+            border: 3px solid rgba(240, 230, 140, 0.2);
+            border-top: 3px solid #f0e68c;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        select {
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: 1px solid rgba(240, 230, 140, 0.5);
+            background: rgba(30, 30, 50, 0.8);
+            color: #f0e68c;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Georgia', serif;
+        }
+        
+        select:hover {
+            border-color: #f0e68c;
+            box-shadow: 0 0 10px rgba(240, 230, 140, 0.3);
+        }
+        
+        .world-selector {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .world-selector label {
+            margin-right: 15px;
+            font-size: 1.1em;
+            color: #a8dadc;
+            letter-spacing: 1px;
+        }
+        
+        .grammar-label {
+            color: #f0e68c;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            display: inline-block;
+            min-width: 100px;
+            margin-right: 10px;
+        }
+        
+        .math-symbols {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(20, 20, 40, 0.5);
+            border-radius: 8px;
+        }
+        
+        .symbol-note {
+            color: #a8dadc;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        
+        .ai-btn {
+            background: linear-gradient(135deg, rgba(100, 200, 255, 0.2), rgba(100, 200, 255, 0.1));
+            color: #64c8ff;
+            border-color: #64c8ff;
+        }
+        
+        .ai-btn:hover {
+            background: linear-gradient(135deg, rgba(100, 200, 255, 0.4), rgba(100, 200, 255, 0.2));
+            box-shadow: 0 0 30px rgba(100, 200, 255, 0.5);
+        }
+        
+        .ai-panel {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(20, 20, 40, 0.98);
+            border: 2px solid #64c8ff;
+            border-radius: 15px;
+            padding: 0;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            z-index: 1000;
+        }
+        
+        .ai-panel.active {
+            display: block;
+        }
+        
+        .ai-panel-header {
+            background: linear-gradient(135deg, rgba(100, 200, 255, 0.2), rgba(100, 200, 255, 0.1));
+            padding: 20px;
+            border-bottom: 1px solid rgba(100, 200, 255, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .ai-panel-header h3 {
+            color: #64c8ff;
+            margin: 0;
+            font-size: 1.4em;
+        }
+        
+        .close-btn {
+            background: transparent;
+            border: none;
+            color: #64c8ff;
+            font-size: 2em;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .close-btn:hover {
+            transform: scale(1.2);
+        }
+        
+        .ai-panel-content {
+            padding: 30px;
+        }
+        
+        .api-selection, .api-key-input, .custom-endpoint {
+            margin-bottom: 25px;
+        }
+        
+        .api-selection label, .api-key-input label, .custom-endpoint label {
+            display: block;
+            color: #a8dadc;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .api-selection select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(30, 30, 50, 0.8);
+            border: 1px solid rgba(100, 200, 255, 0.5);
+            border-radius: 8px;
+            color: #64c8ff;
+            font-size: 1em;
+        }
+        
+        .api-key-input input, .custom-endpoint input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(30, 30, 50, 0.8);
+            border: 1px solid rgba(100, 200, 255, 0.5);
+            border-radius: 8px;
+            color: #e8e8e8;
+            font-size: 1em;
+        }
+        
+        .api-key-input input:focus, .custom-endpoint input:focus {
+            outline: none;
+            border-color: #64c8ff;
+            box-shadow: 0 0 10px rgba(100, 200, 255, 0.3);
+        }
+        
+        .api-key-input small {
+            display: block;
+            color: rgba(168, 218, 220, 0.7);
+            font-size: 0.85em;
+            margin-top: 8px;
+        }
+        
+        .ai-execute-btn {
+            width: 100%;
+            background: linear-gradient(135deg, rgba(100, 200, 255, 0.3), rgba(100, 200, 255, 0.2));
+            color: #64c8ff;
+            border: 2px solid #64c8ff;
+            padding: 15px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .ai-execute-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, rgba(100, 200, 255, 0.5), rgba(100, 200, 255, 0.3));
+            box-shadow: 0 0 30px rgba(100, 200, 255, 0.6);
+        }
+        
+        .ai-execute-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+        }
+        
+        .overlay.active {
+            display: block;
+        }
+        
+        .ai-interpretation-block {
+            background: linear-gradient(135deg, rgba(100, 200, 255, 0.05), rgba(100, 200, 255, 0.02));
+            border-left: 3px solid #64c8ff;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 5px;
+        }
+        
+        .ai-interpretation-block h4 {
+            color: #64c8ff;
+            margin-bottom: 12px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-header">
+            <svg class="tootra-logo" width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <!-- Triangle border -->
+                <polygon points="60,10 110,95 10,95" fill="#D4AF37" stroke="#8B7500" stroke-width="2"/>
+                <!-- Inner blue triangle -->
+                <polygon points="60,20 102,87 18,87" fill="#0055AA"/>
+                <!-- Red flame -->
+                <g transform="translate(60, 55)">
+                    <path d="M 0,-20 C -5,-15 -8,-10 -10,-5 C -12,0 -10,10 -5,15 C -3,17 -1,18 0,18 C 1,18 3,17 5,15 C 10,10 12,0 10,-5 C 8,-10 5,-15 0,-20 Z" fill="#FF0000" opacity="0.9"/>
+                    <path d="M 0,-15 C -3,-12 -5,-8 -6,-3 C -7,2 -5,8 -2,12 C -1,13 0,14 0,14 C 0,14 1,13 2,12 C 5,8 7,2 6,-3 C 5,-8 3,-12 0,-15 Z" fill="#FF4500" opacity="0.8"/>
+                    <path d="M 0,-10 C -2,-8 -3,-5 -3,0 C -3,3 -2,6 0,8 C 2,6 3,3 3,0 C 3,-5 2,-8 0,-10 Z" fill="#FFA500" opacity="0.7"/>
+                </g>
+                <!-- Text around triangle (simplified) -->
+                <text x="60" y="8" text-anchor="middle" fill="#FFF" font-size="8" font-family="serif" font-weight="bold">TOOTRA</text>
+                <text x="15" y="92" fill="#FFF" font-size="6" font-family="serif">MAJIK</text>
+                <text x="90" y="92" fill="#FFF" font-size="6" font-family="serif">SYSTEM</text>
+            </svg>
+        </div>
+        <h1>TOOTRA MAJIK EQUATION BUILDER</h1>
+        <p class="subtitle">The True Kabbalah • Programming Language of Consciousness</p>
+        
+        <div class="main-card">
+            <!-- Foundations Section -->
+            <div class="builder-section">
+                <h2 class="section-title">THE 7 FOUNDATIONS • Core Human Drives</h2>
+                <div class="component-grid" id="foundations-grid">
+                    <!-- Foundations will be populated correctly -->
+                </div>
+            </div>
+            
+            <!-- Noetics Section -->
+            <div class="builder-section">
+                <h2 class="section-title">THE 10 NOETICS [0-9] • Laws of Consciousness</h2>
+                <div class="component-grid" id="noetics-grid">
+                    <!-- Noetics will be populated correctly -->
+                </div>
+            </div>
+            
+            <!-- Acquisitions Section -->
+            <div class="builder-section">
+                <h2 class="section-title">THE 22 ACQUISITIONS • Desire/Wisdom/Power Prerequisites</h2>
+                <div class="component-grid" id="acquisitions-grid">
+                    <!-- Acquisitions will be populated correctly -->
+                </div>
+            </div>
+            
+            <!-- Elements Section -->
+            <div class="builder-section">
+                <h2 class="section-title">THE 40 ELEMENTS • World-Noetic Intersections</h2>
+                <div class="world-selector">
+                    <label for="world-select">SELECT WORLD:</label>
+                    <select id="world-select">
+                        <option value="A">A - Spiritual (Atziluth)</option>
+                        <option value="B">B - Mental (Beriah)</option>
+                        <option value="C">C - Emotional (Yetzirah)</option>
+                        <option value="D">D - Physical (Assiyah)</option>
+                    </select>
+                </div>
+                <div class="component-grid" id="elements-grid">
+                    <!-- Elements will be populated -->
+                </div>
+            </div>
+            
+            <!-- Mathematical Operations Info -->
+            <div class="math-symbols">
+                <div class="symbol-note">
+                    ♥ (+) Association/Combining • ♠ (-) Disassociation/Removal • 
+                    ♣ (÷) Opposition/Cancellation • ♦ (×) Amplification/Exacerbation
+                </div>
+            </div>
+            
+            <!-- Equation Building Area -->
+            <div class="equation-display" id="equation-display">
+                [ AWAITING MAJIK FORMULA ]
+            </div>
+            
+            <div class="operator-buttons">
+                <button class="operator-btn" onclick="addOperator('+')">+ [♥]</button>
+                <button class="operator-btn" onclick="addOperator('-')">- [♠]</button>
+                <button class="operator-btn" onclick="addOperator('×')">× [♦]</button>
+                <button class="operator-btn" onclick="addOperator('÷')">÷ [♣]</button>
+                <button class="operator-btn" onclick="addOperator('^')">^ [↑]</button>
+                <button class="operator-btn" onclick="addOperator('˅')">˅ [↓]</button>
+                <button class="operator-btn" onclick="addOperator('7')">7 [RHY]</button>
+                <button class="operator-btn" onclick="addOperator('(')">(</button>
+                <button class="operator-btn" onclick="addOperator(')')">)</button>
+                <button class="operator-btn" onclick="addOperator('=')">=</button>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="action-btn clear-btn" onclick="clearEquation()">Clear Formula</button>
+                <button class="action-btn interpret-btn" id="interpret-btn" onclick="interpretEquation()">
+                    Execute Majik (Local)
+                </button>
+                <button class="action-btn ai-btn" id="ai-btn" onclick="showAIPanel()">
+                    🤖 AI Interpretation
+                </button>
+            </div>
+            
+            <!-- AI Panel -->
+            <div class="ai-panel" id="ai-panel">
+                <div class="ai-panel-header">
+                    <h3>AI Interpretation Settings</h3>
+                    <button class="close-btn" onclick="closeAIPanel()">×</button>
+                </div>
+                <div class="ai-panel-content">
+                    <div class="api-selection">
+                        <label>Select AI Provider:</label>
+                        <select id="ai-provider">
+                            <option value="backend">Secure Backend (Recommended)</option>
+                            <option value="openai">OpenAI (GPT-4)</option>
+                            <option value="anthropic">Anthropic (Claude)</option>
+                            <option value="custom">Custom Endpoint</option>
+                        </select>
+                    </div>
+                    <div class="api-key-input" id="api-key-input">
+                        <label for="api-key">API Key:</label>
+                        <input type="password" id="api-key" placeholder="Enter your API key">
+                        <small>Your API key is stored locally and never sent to our servers</small>
+                    </div>
+                    <div class="backend-info" id="backend-info" style="display: none;">
+                        <p style="color: #64c8ff; margin: 15px 0;">
+                            ✓ Using secure backend server<br>
+                            <small style="color: #a8dadc;">Make sure your backend is running on http://localhost:3001</small><br>
+                            <small style="color: #f0e68c;">Your API key is safely stored on the server</small>
+                        </p>
+                    </div>
+                    <div class="custom-endpoint" id="custom-endpoint-div" style="display: none;">
+                        <label for="custom-url">Custom API URL:</label>
+                        <input type="text" id="custom-url" placeholder="https://your-api-endpoint.com/v1/completions">
+                    </div>
+                    <button class="action-btn ai-execute-btn" onclick="executeAIInterpretation()">
+                        Generate AI Interpretation
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Interpretation Display -->
+            <div class="interpretation-section" id="interpretation-section">
+                <h3 class="interpretation-title">◆ MAJIK INTERPRETATION ◆</h3>
+                <div class="interpretation-content" id="interpretation-content">
+                    <!-- Interpretation will appear here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // CORRECT TOOTRA System Data from source material
+        const foundations = [
+            { code: 'F1', name: 'Unity with God', description: 'Desire to be & be with God' },
+            { code: 'F2', name: 'Wisdom/Insight/Knowledge', description: 'Desire for wisdom & understanding' },
+            { code: 'F3', name: 'Life Vitality/Health', description: 'Desire for life force & wellness' },
+            { code: 'F4', name: 'Companionship/Love/Friendship', description: 'Desire for connection & relationships' },
+            { code: 'F5', name: 'Worldly Power/Influence/Control', description: 'Desire for power & influence' },
+            { code: 'F6', name: 'Material Greed/Food/Things', description: 'Desire for material possessions' },
+            { code: 'F7', name: 'Lust/Sex/Reproduction', description: 'Desire for sexual expression' }
+        ];
+        
+        // CORRECT Noetics from Tootra source
+        const noetics = [
+            { code: '0', name: 'Idea', description: 'All things in/outside Mind' },
+            { code: '1', name: 'Mind', description: 'Awareness that processes Ideas' },
+            { code: '2', name: 'Positive', description: 'Ideas Mind is attracted to' },
+            { code: '3', name: 'Negative', description: 'Ideas Mind is repelled by' },
+            { code: '4', name: 'Vibration', description: 'Degree Idea resonates with Mind' },
+            { code: '5', name: 'Female', description: 'Mind impregnated with Idea' },
+            { code: '6', name: 'Male', description: 'Idea impregnated with Ideas' },
+            { code: '7', name: 'Rhythm', description: 'Rate/pattern Mind exposed to Idea' },
+            { code: '8', name: 'Above/Cause', description: 'Idea triggering different Idea' },
+            { code: '9', name: 'Below/Effect', description: 'Idea brought to Mind by trigger' }
+        ];
+        
+        // CORRECT Acquisitions mapped to Foundations
+        const acquisitions = [
+            { code: '1', name: 'DESIRE to be & be w/ God', foundation: 'F1', type: 'D' },
+            { code: '2', name: 'WISDOM be & be w/ God', foundation: 'F1', type: 'W' },
+            { code: '3', name: 'POWER be & be w/ God', foundation: 'F1', type: 'P' },
+            
+            { code: '4', name: 'DESIRE for wisdom insight', foundation: 'F2', type: 'D' },
+            { code: '5', name: 'WISDOM to obtain wisdom insight', foundation: 'F2', type: 'W' },
+            { code: '6', name: 'POWER to obtain wisdom insight', foundation: 'F2', type: 'P' },
+            
+            { code: '7', name: 'DESIRE to obtain life vitality health', foundation: 'F3', type: 'D' },
+            { code: '8', name: 'WISDOM to obtain life vitality health', foundation: 'F3', type: 'W' },
+            { code: '9', name: 'POWER to obtain life vitality health', foundation: 'F3', type: 'P' },
+            
+            { code: '10', name: 'DESIRE to obtain companionship love', foundation: 'F4', type: 'D' },
+            { code: '11', name: 'WISDOM to obtain companionship love', foundation: 'F4', type: 'W' },
+            { code: '12', name: 'POWER to obtain companionship love', foundation: 'F4', type: 'P' },
+            
+            { code: '13', name: 'DESIRE to obtain worldly power', foundation: 'F5', type: 'D' },
+            { code: '14', name: 'WISDOM to obtain worldly power', foundation: 'F5', type: 'W' },
+            { code: '15', name: 'POWER to obtain worldly power', foundation: 'F5', type: 'P' },
+            
+            { code: '16', name: 'DESIRE to obtain material things', foundation: 'F6', type: 'D' },
+            { code: '17', name: 'WISDOM to obtain material things', foundation: 'F6', type: 'W' },
+            { code: '18', name: 'POWER to obtain material things', foundation: 'F6', type: 'P' },
+            
+            { code: '19', name: 'DESIRE to obtain lust sex', foundation: 'F7', type: 'D' },
+            { code: '20', name: 'WISDOM to obtain lust sex', foundation: 'F7', type: 'W' },
+            { code: '21', name: 'POWER to obtain lust sex', foundation: 'F7', type: 'P' },
+            
+            { code: '22', name: 'Integration', foundation: 'Hidden', type: 'I' }
+        ];
+        
+        const worlds = {
+            'A': 'Spiritual',
+            'B': 'Mental', 
+            'C': 'Emotional',
+            'D': 'Physical'
+        };
+        
+        // Global equation state
+        let equationParts = [];
+        let equationCounter = 1;
+        
+        // Initialize the interface
+        function initializeInterface() {
+            // Populate Foundations
+            const foundationsGrid = document.getElementById('foundations-grid');
+            foundations.forEach(f => {
+                const card = createComponentCard(f, 'foundation');
+                foundationsGrid.appendChild(card);
+            });
+            
+            // Populate Noetics
+            const noeticsGrid = document.getElementById('noetics-grid');
+            noetics.forEach(n => {
+                const card = createComponentCard(n, 'noetic');
+                noeticsGrid.appendChild(card);
+            });
+            
+            // Populate Acquisitions
+            const acquisitionsGrid = document.getElementById('acquisitions-grid');
+            acquisitions.forEach(a => {
+                const card = createComponentCard(a, 'acquisition');
+                acquisitionsGrid.appendChild(card);
+            });
+            
+            // Initialize Elements based on selected world
+            updateElements();
+            
+            // Add world selector listener
+            document.getElementById('world-select').addEventListener('change', updateElements);
+        }
+        
+        function createComponentCard(component, type) {
+            const card = document.createElement('div');
+            card.className = 'component-card';
+            card.onclick = () => addToEquation(component.code);
+            
+            let typeLabel = '';
+            if (type === 'acquisition' && component.type) {
+                const typeMap = { 'D': 'Desire', 'W': 'Wisdom', 'P': 'Power', 'I': 'Integration' };
+                typeLabel = ` [${typeMap[component.type]}]`;
+            }
+            
+            card.innerHTML = `
+                <div class="component-code">${component.code}</div>
+                <div class="component-name">${component.name}${typeLabel}</div>
+                ${component.description ? `<div class="component-description">${component.description}</div>` : ''}
+            `;
+            
+            return card;
+        }
+        
+        function updateElements() {
+            const world = document.getElementById('world-select').value;
+            const elementsGrid = document.getElementById('elements-grid');
+            elementsGrid.innerHTML = '';
+            
+            // Elements are World + Noetic (e.g., A0, A1, B2, etc.)
+            noetics.forEach(n => {
+                const element = {
+                    code: `${world}${n.code}`,
+                    name: `${worlds[world]}-${n.name}`,
+                    description: `${n.name} in ${worlds[world]} world`
+                };
+                const card = createComponentCard(element, 'element');
+                elementsGrid.appendChild(card);
+            });
+        }
+        
+        function addToEquation(component) {
+            equationParts.push(component);
+            updateEquationDisplay();
+        }
+        
+        function addOperator(op) {
+            equationParts.push(op);
+            updateEquationDisplay();
+        }
+        
+        function updateEquationDisplay() {
+            const display = document.getElementById('equation-display');
+            if (equationParts.length === 0) {
+                display.textContent = '[ AWAITING MAJIK FORMULA ]';
+            } else {
+                display.textContent = equationParts.join(' ');
+            }
+        }
+        
+        function clearEquation() {
+            equationParts = [];
+            updateEquationDisplay();
+            document.getElementById('interpretation-section').classList.remove('active');
+        }
+        
+        async function interpretEquation() {
+            if (equationParts.length === 0) {
+                alert('Please construct a Majik formula first.');
+                return;
+            }
+            
+            const interpretBtn = document.getElementById('interpret-btn');
+            const interpretSection = document.getElementById('interpretation-section');
+            const interpretContent = document.getElementById('interpretation-content');
+            
+            // Show loading state
+            interpretBtn.disabled = true;
+            interpretBtn.textContent = 'Channeling...';
+            interpretSection.classList.add('active');
+            interpretContent.innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>Accessing Akashic Records...</p></div>';
+            
+            // Build the equation string
+            const equation = equationParts.join(' ');
+            
+            // Simulate processing time
+            setTimeout(() => {
+                const interpretation = generateTootraInterpretation(equation);
+                interpretContent.innerHTML = interpretation;
+                interpretBtn.disabled = false;
+                interpretBtn.textContent = 'Execute Majik';
+                equationCounter++;
+            }, 2000);
+        }
+        
+        function generateTootraInterpretation(equation) {
+            const components = analyzeEquation(equation);
+            const equationName = `MAJIK_${String(equationCounter).padStart(3, '0')}`;
+            const manifestationOutcome = generateManifestationOutcome(components);
+            
+            // Build interpretation following TOOTRA grammar
+            let interpretation = '';
+            
+            // MARK/NAME/NUMBER
+            interpretation += `<div class="interpretation-block">
+                <h4>EQUATION IDENTIFICATION</h4>
+                <div><span class="grammar-label">MARK:</span> ${equationName}</div>
+                <div><span class="grammar-label">NAME:</span> ${manifestationOutcome}</div>
+                <div><span class="grammar-label">NUMBER:</span> ${equationCounter * 7}</div>
+            </div>`;
+            
+            // CAUSE (the formula)
+            interpretation += `<div class="interpretation-block">
+                <h4>CAUSE [MAJIK FORMULA]</h4>
+                <div class="formula-display">
+                    ${equation} = ${manifestationOutcome}
+                </div>
+                <div style="margin-top: 10px; font-size: 0.9em;">
+                    Translation: ${generateFormulaTranslation(equation, components)}
+                </div>
+            </div>`;
+            
+            // FUNDS (Acquisitions being satisfied)
+            if (components.acquisitions.length > 0) {
+                interpretation += `<div class="interpretation-block">
+                    <h4>FUNDS [ACQUISITIONS ACTIVATED]</h4>
+                    <div>Prerequisites: ${components.acquisitions.map(a => {
+                        const acq = acquisitions.find(x => x.code === a);
+                        return `${a} (${acq ? acq.name : 'Unknown'})`;
+                    }).join(', ')}</div>
+                    <div>Satisfaction state: These acquisitions must be fulfilled for manifestation.</div>
+                </div>`;
+            }
+            
+            // PARTS (Foundations involved)
+            if (components.foundations.length > 0) {
+                interpretation += `<div class="interpretation-block">
+                    <h4>PARTS [FOUNDATION DRIVES]</h4>
+                    <div>Active Foundations: ${components.foundations.map(f => {
+                        const found = foundations.find(x => x.code === f);
+                        return `${f} (${found ? found.name : 'Unknown'})`;
+                    }).join(', ')}</div>
+                    <div>These core human drives power the equation, channeling primal energy through the consciousness matrix.</div>
+                </div>`;
+            }
+            
+            // ELEMENTS (World-Noetic intersections)
+            if (components.elements.length > 0) {
+                interpretation += `<div class="interpretation-block">
+                    <h4>ELEMENTS [WORLD-NOETIC NODES]</h4>
+                    <div>Active Elements: ${components.elements.join(', ')}</div>
+                    <div>${generateElementInterpretation(components.elements)}</div>
+                </div>`;
+            }
+            
+            // OPS (Operations)
+            if (components.operators.length > 0) {
+                interpretation += `<div class="interpretation-block">
+                    <h4>OPS [MATHEMATICAL OPERATIONS]</h4>
+                    <div>${generateOperationInterpretation(components.operators)}</div>
+                </div>`;
+            }
+            
+            // TIMING
+            interpretation += `<div class="interpretation-block">
+                <h4>TIMING [MANIFESTATION WINDOW]</h4>
+                <div>According to Saint John's Formula: ${generateTimingWindow(components)}</div>
+            </div>`;
+            
+            // RECEIPTS
+            interpretation += `<div class="interpretation-block">
+                <h4>RECEIPTS [CONFIRMATION SIGNALS]</h4>
+                <div>Sacred: ${generateSacredReceipt(components)}</div>
+                <div>Plain: ${generatePlainReceipt(components)}</div>
+            </div>`;
+            
+            // Circuit/Metaphysical Analysis
+            interpretation += `<div class="interpretation-block">
+                <h4>CONSCIOUSNESS CIRCUIT ANALYSIS</h4>
+                <div>${generateCircuitAnalysis(components)}</div>
+            </div>`;
+            
+            // Advanced Interpretation
+            interpretation += `<div class="interpretation-block">
+                <h4>MAJIK INTERPRETATION</h4>
+                <div style="line-height: 2;">
+                    ${generateMajikInterpretation(components, equation)}
+                </div>
+            </div>`;
+            
+            return interpretation;
+        }
+        
+        function analyzeEquation(equation) {
+            const parts = equation.split(' ');
+            const components = {
+                foundations: [],
+                noetics: [],
+                acquisitions: [],
+                elements: [],
+                operators: []
+            };
+            
+            parts.forEach(part => {
+                if (part.startsWith('F') && part.length === 2) {
+                    components.foundations.push(part);
+                } else if (part.length === 1 && /[0-9]/.test(part)) {
+                    components.noetics.push(part);
+                } else if (/^[1-9]$|^1[0-9]$|^2[0-2]$/.test(part)) {
+                    components.acquisitions.push(part);
+                } else if (['A', 'B', 'C', 'D'].includes(part[0]) && part.length === 2 && /[0-9]/.test(part[1])) {
+                    components.elements.push(part);
+                } else if (['+', '-', '×', '÷', '^', '˅', '=', '(', ')', '7'].includes(part)) {
+                    components.operators.push(part);
+                }
+            });
+            
+            return components;
+        }
+        
+        function generateFormulaTranslation(equation, components) {
+            let translation = "This formula states that ";
+            
+            // Build natural language translation
+            if (components.noetics.includes('1') && components.noetics.includes('2')) {
+                translation += "Mind associated with Positive Ideas ";
+            }
+            if (components.noetics.includes('7')) {
+                translation += "through Rhythm conditioning ";
+            }
+            if (components.operators.includes('×')) {
+                translation += "amplified and exacerbated ";
+            }
+            if (components.operators.includes('^')) {
+                translation += "raised in power ";
+            }
+            
+            translation += "results in manifestation.";
+            return translation;
+        }
+        
+        function generateElementInterpretation(elements) {
+            let interp = "These elements represent: ";
+            elements.forEach((el, idx) => {
+                const world = el[0];
+                const noetic = el[1];
+                const noeticObj = noetics.find(n => n.code === noetic);
+                
+                if (idx > 0) interp += ", ";
+                interp += `${el} (${noeticObj ? noeticObj.name : 'Unknown'} in ${worlds[world]} world)`;
+            });
+            
+            return interp + ". Each element anchors consciousness operations into specific dimensional layers.";
+        }
+        
+        function generateOperationInterpretation(operators) {
+            let interp = "Operations: ";
+            const opMap = {
+                '+': 'Association (combines Ideas)',
+                '-': 'Disassociation (removes Ideas)',
+                '×': 'Multiplication (amplifies/exacerbates)',
+                '÷': 'Division (opposes/cancels)',
+                '^': 'Increase (raises power)',
+                '˅': 'Decrease (lowers power)',
+                '7': 'Rhythm (conditions through repetition)'
+            };
+            
+            operators.forEach((op, idx) => {
+                if (opMap[op]) {
+                    if (idx > 0) interp += ", ";
+                    interp += opMap[op];
+                }
+            });
+            
+            return interp;
+        }
+        
+        function generateTimingWindow(components) {
+            const base = components.foundations.length + components.acquisitions.length;
+            const days = (base * 7) || 7;
+            return `Manifestation window: ${days} to ${days * 7} days with proper Rhythm application (7^7 repetitions for permanence).`;
+        }
+        
+        function generateSacredReceipt(components) {
+            const receipts = [
+                "Synchronicities multiply exponentially",
+                "Dreams reveal symbolic confirmations",
+                "Intuitive knowing becomes undeniable",
+                "Reality reorganizes around the intention",
+                "Signs appear in threes"
+            ];
+            return receipts[components.noetics.length % receipts.length];
+        }
+        
+        function generatePlainReceipt(components) {
+            const receipts = [
+                "Physical circumstances align",
+                "Opportunities present themselves",
+                "Resources become available",
+                "People and situations support the goal",
+                "Obstacles dissolve naturally"
+            ];
+            return receipts[components.foundations.length % receipts.length];
+        }
+        
+        function generateCircuitAnalysis(components) {
+            let analysis = "From a consciousness circuit perspective: ";
+            
+            if (components.foundations.length > 0) {
+                analysis += `${components.foundations.length} Foundation drives provide voltage/power. `;
+            }
+            
+            if (components.noetics.length > 0) {
+                analysis += `${components.noetics.length} Noetic operators process the consciousness signals. `;
+            }
+            
+            if (components.acquisitions.length > 0) {
+                analysis += `${components.acquisitions.length} Acquisition capacitors must charge with Desire/Wisdom/Power. `;
+            }
+            
+            analysis += "The equation creates a feedback loop between Mind and Idea, with each iteration strengthening the manifestation template in the Akashic Records.";
+            
+            return analysis;
+        }
+        
+        function generateMajikInterpretation(components, equation) {
+            let interpretation = `This Majik formula operates on the principle that consciousness programs reality through specific mathematical relationships. `;
+            
+            if (components.noetics.includes('0')) {
+                interpretation += "The Idea (0) serves as the prima materia - the raw potential waiting to be shaped. ";
+            }
+            
+            if (components.noetics.includes('1')) {
+                interpretation += "Mind (1) acts as the processor, the awareness that observes and collapses probability into actuality. ";
+            }
+            
+            if (components.noetics.includes('2') && components.noetics.includes('3')) {
+                interpretation += "The tension between Positive (2) and Negative (3) creates the necessary polarity for manifestation. ";
+            }
+            
+            if (components.noetics.includes('7')) {
+                interpretation += "Rhythm (7) conditions the subconscious through repetition - the key to permanent installation. Remember: 7 times creates habit, 7^7 times creates permanent reality restructuring. ";
+            }
+            
+            if (components.noetics.includes('8') && components.noetics.includes('9')) {
+                interpretation += "The Cause (8) and Effect (9) pair creates automatic triggering mechanisms in consciousness. ";
+            }
+            
+            interpretation += `\n\nThe complete equation writes new code into the Akashic Records, the spiritual hard drive containing all probable outcomes. Through proper application of this formula with sufficient Mind-Vibration-Rhythm (M.V.R.), the practitioner becomes a conscious co-creator with the Divine Mind (A1).`;
+            
+            return interpretation;
+        }
+        
+        function generateManifestationOutcome(components) {
+            const outcomes = [
+                'Divine Unity Protocol',
+                'Wisdom Download Sequence',
+                'Vitality Restoration Matrix',
+                'Love Magnetism Field',
+                'Power Amplification Circuit',
+                'Material Abundance Algorithm',
+                'Sacred Union Activation',
+                'Consciousness Elevation Code',
+                'Rhythm Installation Program',
+                'Vibration Attunement Process',
+                'Female Receptivity Opening',
+                'Male Structure Building',
+                'Cause-Effect Programming',
+                'Idea Manifestation Template',
+                'Mind-Reality Interface'
+            ];
+            
+            // Select based on equation components
+            const index = (components.foundations.length + components.noetics.length + 
+                          components.acquisitions.length + components.elements.length) % outcomes.length;
+            return outcomes[index];
+        }
+        
+        // Initialize on load
+        window.onload = initializeInterface;
+        
+        // AI Integration Functions
+        function showAIPanel() {
+            document.getElementById('ai-panel').classList.add('active');
+            // Create overlay
+            let overlay = document.getElementById('overlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'overlay';
+                overlay.className = 'overlay active';
+                overlay.onclick = closeAIPanel;
+                document.body.appendChild(overlay);
+            } else {
+                overlay.classList.add('active');
+            }
+        }
+        
+        function closeAIPanel() {
+            document.getElementById('ai-panel').classList.remove('active');
+            const overlay = document.getElementById('overlay');
+            if (overlay) {
+                overlay.classList.remove('active');
+            }
+        }
+        
+        // Listen for provider changes
+        document.addEventListener('DOMContentLoaded', function() {
+            const providerSelect = document.getElementById('ai-provider');
+            const customEndpointDiv = document.getElementById('custom-endpoint-div');
+            const apiKeyInput = document.getElementById('api-key-input');
+            const backendInfo = document.getElementById('backend-info');
+            
+            if (providerSelect) {
+                providerSelect.addEventListener('change', function() {
+                    // Show/hide fields based on provider
+                    if (this.value === 'custom') {
+                        customEndpointDiv.style.display = 'block';
+                        apiKeyInput.style.display = 'block';
+                        backendInfo.style.display = 'none';
+                    } else if (this.value === 'backend') {
+                        customEndpointDiv.style.display = 'none';
+                        apiKeyInput.style.display = 'none';
+                        backendInfo.style.display = 'block';
+                    } else {
+                        customEndpointDiv.style.display = 'none';
+                        apiKeyInput.style.display = 'block';
+                        backendInfo.style.display = 'none';
+                    }
+                });
+            }
+            
+            // Load saved API key from localStorage
+            const savedKey = localStorage.getItem('tootra_api_key');
+            const savedProvider = localStorage.getItem('tootra_api_provider');
+            if (savedKey) {
+                document.getElementById('api-key').value = savedKey;
+            }
+            if (savedProvider) {
+                document.getElementById('ai-provider').value = savedProvider;
+                // Trigger change event to update UI
+                providerSelect.dispatchEvent(new Event('change'));
+            }
+        });
+        
+        async function executeAIInterpretation() {
+            if (equationParts.length === 0) {
+                alert('Please build an equation first!');
+                return;
+            }
+            
+            const provider = document.getElementById('ai-provider').value;
+            const apiKey = document.getElementById('api-key').value;
+            
+            // Backend doesn't need API key from user
+            if (provider !== 'backend' && !apiKey) {
+                alert('Please enter your API key');
+                return;
+            }
+            
+            // Save settings if not using backend
+            if (provider !== 'backend') {
+                localStorage.setItem('tootra_api_key', apiKey);
+            }
+            localStorage.setItem('tootra_api_provider', provider);
+            
+            const equation = equationParts.join(' ');
+            const components = analyzeEquation(equation);
+            
+            // Close AI panel
+            closeAIPanel();
+            
+            // Show loading state
+            const interpretSection = document.getElementById('interpretation-section');
+            const interpretContent = document.getElementById('interpretation-content');
+            interpretSection.classList.add('active');
+            interpretContent.innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>AI is channeling interpretation from the Akashic Records...</p></div>';
+            
+            try {
+                const interpretation = await callAIAPI(provider, apiKey, equation, components);
+                displayAIInterpretation(interpretation);
+            } catch (error) {
+                console.error('AI API Error:', error);
+                interpretContent.innerHTML = `<div class="interpretation-block">
+                    <h4>Error</h4>
+                    <p>Failed to get AI interpretation. Please check your settings and try again.</p>
+                    <p style="color: #dc143c; font-size: 0.9em;">${error.message}</p>
+                    ${provider === 'backend' ? '<p style="color: #f0e68c; font-size: 0.9em;">Make sure your backend server is running on port 3001</p>' : ''}
+                </div>`;
+            }
+        }
+        
+        async function callAIAPI(provider, apiKey, equation, components) {
+            const prompt = generateTootraPrompt(equation, components);
+            let response;
+            
+            if (provider === 'backend') {
+                response = await callBackend(equation, components);
+            } else if (provider === 'openai') {
+                response = await callOpenAI(apiKey, prompt);
+            } else if (provider === 'anthropic') {
+                response = await callAnthropic(apiKey, prompt);
+            } else if (provider === 'custom') {
+                response = await callCustomAPI(apiKey, prompt);
+            }
+            
+            return response;
+        }
+        
+        async function callBackend(equation, components) {
+            const response = await fetch('http://localhost:3001/api/interpret', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    equation: equation,
+                    components: components
+                })
+            });
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || `Backend error: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            return data.interpretation;
+        }
+        
+        function generateTootraPrompt(equation, components) {
+            return `You are helping analyze an equation from the Tootra System, a structured framework for personal development and goal manifestation that uses mathematical symbolism. Your task is to interpret the equation according to the specific rules and definitions provided below. Treat this as a technical analysis using the system's internal logic and terminology.
+
+THE EQUATION TO ANALYZE: ${equation}
+
+EQUATION COMPONENTS:
+${JSON.stringify(components, null, 2)}
+
+═══════════════════════════════════════════════════════════════
+SYSTEM FRAMEWORK AND DEFINITIONS
+═══════════════════════════════════════════════════════════════
+
+This system uses mathematical notation to represent psychological and personal development concepts. Here are the definitions you must use:
+
+THE 10 NOETICS (Psychological/Conceptual Operators):
+0: IDEA - Represents any concept, goal, or thought
+1: MIND - Represents awareness and mental processing
+2: POSITIVE - Represents attraction/affinity toward concepts
+3: NEGATIVE - Represents aversion/resistance to concepts
+4: VIBRATION - Represents intensity of engagement/resonance
+5: FEMALE - Represents receptive/integrative mental states
+6: MALE - Represents active/structured conceptual states
+7: RHYTHM - Represents repetition patterns and habit formation
+8: ABOVE/CAUSE - Represents triggering concepts
+9: BELOW/EFFECT - Represents triggered responses
+
+THE 7 FOUNDATIONS (Core Motivational Categories):
+F1: Spiritual/Purpose - Motivation for meaning and purpose
+F2: Knowledge/Learning - Motivation for understanding
+F3: Health/Vitality - Motivation for wellness
+F4: Relationships/Connection - Motivation for bonds
+F5: Influence/Leadership - Motivation for impact
+F6: Resources/Security - Motivation for material stability
+F7: Creativity/Expression - Motivation for creation
+
+THE 22 ACQUISITIONS (Development Stages):
+Each Foundation has three stages:
+- Desire (wanting it)
+- Wisdom (understanding it)
+- Power (achieving it)
+Numbered 1-21 (3 per Foundation), plus 22 for Integration
+
+THE 40 ELEMENTS (Context Layers):
+Combinations of Worlds and Noetics:
+A (Spiritual/Philosophical): Abstract concepts and values
+B (Mental/Strategic): Thoughts and planning
+C (Emotional/Experiential): Feelings and experiences
+D (Physical/Practical): Concrete actions and results
+
+MATHEMATICAL OPERATIONS (Process Types):
++ (Addition): Combining/associating concepts
+- (Subtraction): Removing/dissociating concepts
+× (Multiplication): Amplifying/intensifying
+÷ (Division): Opposing/neutralizing
+^ (Power): Increasing intensity
+7 (Special): Rhythm/repetition operator
+
+KEY SYSTEM PRINCIPLES:
+1. Repetition Principle: 7 repetitions creates a pattern, 49 (7×7) makes it stable
+2. Intensity Principle: Higher intensity (vibration) requires less repetition
+3. Balance Principle: Positive and negative must be balanced
+4. Layer Principle: Changes must work through all four layers (A,B,C,D)
+5. Time Principle: 7 days minimum, 49 days for stability, 40 days for transformation
+
+═══════════════════════════════════════════════════════════════
+ANALYSIS STRUCTURE REQUIRED
+═══════════════════════════════════════════════════════════════
+
+Please provide a comprehensive analysis including:
+
+1. **EQUATION BREAKDOWN**
+   - Identify each component and its meaning in the system
+   - Explain how the operations connect the components
+   - Describe the overall transformation being represented
+
+2. **PROCESS ANALYSIS**
+   - Which motivations (Foundations) are involved?
+   - Which development stages (Acquisitions) are active?
+   - Which context layers (Elements) are engaged?
+   - How do the operations transform the inputs?
+
+3. **PRACTICAL INTERPRETATION**
+   - What real-world process does this equation represent?
+   - What specific actions would someone take?
+   - What timeline would be involved (using the time principles)?
+   - What would be the observable outcomes?
+
+4. **SCENARIO EXAMPLE**
+   Create a concrete example showing how someone might apply this equation:
+   - Initial situation
+   - Daily practices (based on the equation)
+   - Progressive changes over time
+   - Final outcome
+
+5. **TECHNICAL ANALYSIS** (Using System Metaphors)
+   - Energy flow: How do the Foundations provide "power"?
+   - Processing: How do the Noetics "process" the concepts?
+   - Transformation: How do the operations change states?
+   - Feedback loops: What reinforcement patterns exist?
+
+6. **IMPLEMENTATION GUIDE**
+   Specific steps for applying this equation:
+   - Morning routine elements
+   - Key focus points throughout the day
+   - Evening reflection practices
+   - Repetition schedule (based on the 7-principle)
+   - Milestone markers
+
+7. **CONSIDERATIONS AND OPTIMIZATIONS**
+   - Potential challenges in the process
+   - Ways to enhance effectiveness
+   - Common obstacles and solutions
+   - Complementary practices
+
+Please format your response clearly with headers and provide specific, actionable insights based on the equation's structure and the system's rules. Remember to use the exact definitions provided above and maintain consistency with the system's internal logic.
+
+Focus on practical application while respecting the system's symbolic framework. This is a structured methodology for personal development that uses mathematical notation as its organizing principle.`;
+        }
+        
+        async function callOpenAI(apiKey, prompt) {
+            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: 'gpt-4',
+                    messages: [
+                        {
+                            role: 'system',
+                            content: 'You are a master of the Tootra Kabbalistic System, expert in consciousness programming and metaphysical equations.'
+                        },
+                        {
+                            role: 'user',
+                            content: prompt
+                        }
+                    ],
+                    temperature: 0.8,
+                    max_tokens: 2000
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`OpenAI API error: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            return data.choices[0].message.content;
+        }
+        
+        async function callAnthropic(apiKey, prompt) {
+            const response = await fetch('https://api.anthropic.com/v1/messages', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-api-key': apiKey,
+                    'anthropic-version': '2023-06-01'
+                },
+                body: JSON.stringify({
+                    model: 'claude-3-opus-20240229',
+                    max_tokens: 2000,
+                    messages: [
+                        {
+                            role: 'user',
+                            content: prompt
+                        }
+                    ]
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Anthropic API error: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            return data.content[0].text;
+        }
+        
+        async function callCustomAPI(apiKey, prompt) {
+            const customUrl = document.getElementById('custom-url').value;
+            if (!customUrl) {
+                throw new Error('Please provide a custom API endpoint URL');
+            }
+            
+            const response = await fetch(customUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    prompt: prompt,
+                    max_tokens: 2000,
+                    temperature: 0.8
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Custom API error: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            // Adjust based on your custom API response format
+            return data.response || data.text || data.output || data.choices?.[0]?.text;
+        }
+        
+        function displayAIInterpretation(interpretation) {
+            const interpretContent = document.getElementById('interpretation-content');
+            const equation = equationParts.join(' ');
+            
+            let html = `
+                <div class="ai-interpretation-block">
+                    <h4>🤖 AI-GENERATED TOOTRA INTERPRETATION</h4>
+                    <div class="formula-display">
+                        EQUATION: ${equation}
+                    </div>
+                </div>
+                <div class="ai-interpretation-block">
+                    <div style="white-space: pre-wrap; line-height: 1.8;">
+${interpretation}
+                    </div>
+                </div>
+                <div class="ai-interpretation-block" style="text-align: center; font-size: 0.9em; color: rgba(168, 218, 220, 0.7);">
+                    <p>This interpretation was generated by AI using the Tootra Kabbalistic System</p>
+                    <p>Remember: You are the Majikian - trust your intuition above all</p>
+                </div>
+            `;
+            
+            interpretContent.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

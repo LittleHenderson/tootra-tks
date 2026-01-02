@@ -1,0 +1,31 @@
+\contentsline {chapter}{v7.0 → v7.1 Continuity Bridge}{iii}{chapter*.1}%
+\contentsline {part}{I\hspace {1em}Canonical Reference}{1}{part.1}%
+\contentsline {chapter}{\numberline {1}The 28 Sub-Foundations}{3}{chapter.1}%
+\contentsline {part}{II\hspace {1em}Categorical Extensions}{5}{part.2}%
+\contentsline {chapter}{\numberline {2}Natural Transformations Between Worlds}{7}{chapter.2}%
+\contentsline {section}{\numberline {2.1}World Functors}{7}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Inter-World Natural Transformations}{8}{section.2.2}%
+\contentsline {section}{\numberline {2.3}ACBE as Composite Natural Transformation}{9}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Vertical Composition and 2-Category Structure}{9}{section.2.4}%
+\contentsline {part}{III\hspace {1em}Extended Formal Semantics}{11}{part.3}%
+\contentsline {chapter}{\numberline {3}Domain-Theoretic Foundations}{13}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Directed-Complete Partial Orders}{13}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Scott Topology}{14}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Fixed-Point Theorems}{15}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Continuous Lattice Structure}{15}{section.3.4}%
+\contentsline {chapter}{\numberline {4}Extended Denotational Semantics}{17}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Domain-Theoretic Semantic Function}{17}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Logical Relations}{18}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Full Abstraction}{18}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Metric Semantics for Fractal Convergence}{19}{section.4.4}%
+\contentsline {chapter}{\numberline {5}Topological Structure of Noetic Space}{21}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Noetic Space as Topological Space}{21}{section.5.1}%
+\contentsline {section}{\numberline {5.2}World Manifold Structure}{21}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Sheaf-Theoretic Interpretation}{22}{section.5.3}%
+\contentsline {section}{\numberline {5.4}Fractal Dimension Theory}{22}{section.5.4}%
+\contentsline {part}{IV\hspace {1em}Advanced RPM Theory}{23}{part.4}%
+\contentsline {chapter}{\numberline {6}Multi-Goal RPM Algebra}{25}{chapter.6}%
+\contentsline {section}{\numberline {6.1}RPM Products}{25}{section.6.1}%
+\contentsline {section}{\numberline {6.2}RPM Coproducts}{26}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Multi-Goal Pursuit}{26}{section.6.3}%
+\contentsline {chapter}{\numberline {7}Version History}{27}{chapter.7}%

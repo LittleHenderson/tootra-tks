@@ -143,7 +143,7 @@ impl EmitState {
             }
             IRTerm::Handle(expr, handler) => {
                 let (ret_name, ret_term) = &handler.return_clause;
-                self.emit_closure(&[ret_name.clone()], ret_term)?;
+                self.emit_closure(std::slice::from_ref(ret_name), ret_term)?;
                 for clause in &handler.op_clauses {
                     let op_id = self.op_id(&clause.op);
                     self.code.push(inst1(Opcode::PushInt, op_id));
@@ -285,7 +285,7 @@ impl EmitState {
                 Ok(())
             }
             IRVal::Lam(param, body) => {
-                self.emit_closure(&[param.clone()], body)
+                self.emit_closure(std::slice::from_ref(param), body)
             }
             IRVal::Extern(name, arity) => {
                 let id = extern_id(name);

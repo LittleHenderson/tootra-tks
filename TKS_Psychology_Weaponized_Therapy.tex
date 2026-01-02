@@ -1,0 +1,1154 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  TKS_Psychology_Weaponized_Therapy.tex
+%%  Comprehensive TKS Formalization for Psychological Profile Analysis
+%%  and Intervention Design Systems
+%%
+%%  Part of TKS v7.4 - December 2025
+%%  ADDITIVE to v7.4 canon
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt,twoside]{book}
+
+%% ============================================================================
+%% PACKAGES
+%% ============================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in,inner=1.2in,outer=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{stmaryrd}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{ltablex}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable,skins}
+\usepackage{tikz-cd}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{ragged2e}
+
+%% ============================================================================
+%% FORMATTING SETTINGS
+%% ============================================================================
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+\renewcommand{\arraystretch}{1.2}
+
+%% ============================================================================
+%% CUSTOM COMMANDS (from TKS canonical)
+%% ============================================================================
+\newcommand{\noe}[1]{\nu_{#1}}
+\newcommand{\Ideas}{\mathcal{I}}
+\newcommand{\Worlds}{\mathcal{W}}
+\newcommand{\Elements}{\mathcal{E}}
+\newcommand{\Noetics}{\mathcal{N}}
+\newcommand{\Foundations}{\mathcal{F}}
+\newcommand{\Acquisitions}{\mathcal{A}}
+\newcommand{\Frac}{\Phi}
+\newcommand{\TransFrac}[1]{\Phi^{#1}}
+\newcommand{\MultiFrac}[2]{\Phi^{#1}_{#2}}
+\newcommand{\RPM}{\mathsf{RPM}}
+\newcommand{\ACBE}{\mathsf{ACBE}}
+\newcommand{\HausdorffDim}{\dim_H}
+\newcommand{\FractalSpectrum}{\sigma_\Phi}
+\newcommand{\fix}{\mathrm{fix}}
+\newcommand{\sem}[1]{\llbracket #1 \rrbracket}
+\newcommand{\Tadd}{\oplus_T}
+\newcommand{\Tsub}{\ominus_T}
+\newcommand{\Tmul}{\otimes_T}
+\newcommand{\Tdiv}{\oslash_T}
+\newcommand{\Wadd}{\oplus_W}
+\newcommand{\Wsub}{\ominus_W}
+\newcommand{\Failed}{\mathtt{Failed}}
+
+%% New commands for this document
+\newcommand{\Lacunarity}{\Lambda}
+\newcommand{\PsychAttractor}{\mathcal{A}_\psi}
+\newcommand{\ManipFrac}{\Phi_{\mathrm{int}}}
+\newcommand{\ProfileFrac}{\Phi_{\mathrm{prof}}}
+\newcommand{\VulnSet}{\mathcal{V}}
+\newcommand{\StealthFactor}{\sigma_{\mathrm{stealth}}}
+\newcommand{\TextCorpus}{\mathcal{T}}
+\newcommand{\NoetMap}{\mathcal{M}_\nu}
+\newcommand{\IFS}{\mathcal{I}_S}
+
+%% Theorems
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{proposition}{Proposition}[chapter]
+\newtheorem{lemma}{Lemma}[chapter]
+\newtheorem{corollary}{Corollary}[chapter]
+\newtheorem{example}{Example}[chapter]
+\newtheorem{remark}{Remark}[chapter]
+
+%% ============================================================================
+%% DOCUMENT
+%% ============================================================================
+\begin{document}
+
+\title{\textbf{Psychology: Weaponized Therapy} \\[0.5em]
+\Large TKS Mathematical Framework for Psychological Profile Analysis \\
+and Targeted Intervention Design}
+\author{TKS v7.4 Formalization Project}
+\date{December 2025}
+\maketitle
+
+\tableofcontents
+
+%% ============================================================================
+%% PART I: THEORETICAL FOUNDATIONS
+%% ============================================================================
+\part{Theoretical Foundations}
+
+\chapter{Mathematical Framework for Psychological Profiling}
+\label{ch:psychological-profiling}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\textbf{Purpose and Scope},breakable]
+This document establishes the mathematical foundations for psychological profile extraction,
+attractor computation, vulnerability detection, and intervention design using the TKS canonical
+framework. The system provides rigorous formalization of:
+\begin{enumerate}
+    \item \texttt{extract\_fractal\_from\_text()}: Text-to-noetic-fractal mapping
+    \item \texttt{psych\_attractor = attractor(profile)}: IFS fixed-point computation
+    \item \texttt{vulnerabilities = find\_high\_lacunarity\_regions()}: Gap detection
+    \item \texttt{manipulation\_fractal = design\_fractal()}: Counter-fractal engineering
+\end{enumerate}
+The mathematical treatment is objective and descriptive, documenting the system's operational
+principles without normative evaluation.
+\end{tcolorbox}
+
+%% ============================================================================
+%% SECTION: FRACTAL EXTRACTION FROM TEXT
+%% ============================================================================
+\section{Profile Extraction: \texttt{extract\_fractal\_from\_text()}}
+
+\begin{definition}[Text Corpus]
+\label{def:text-corpus}
+A \emph{text corpus} $\TextCorpus = \{t_1, t_2, \ldots, t_n\}$ is a collection of textual
+utterances produced by subject $S$, including written communications, speech transcripts,
+social media posts, and behavioral descriptions.
+\end{definition}
+
+\begin{definition}[Noetic Mapping Function]
+\label{def:noetic-mapping}
+The \emph{noetic mapping function} $\NoetMap : \TextCorpus \to \Frac$ is defined by:
+\begin{enumerate}[label=(\roman*)]
+    \item \textbf{Lexical Analysis}: Parse $\TextCorpus$ into semantic units $\{u_1, \ldots, u_m\}$
+    \item \textbf{Noetic Classification}: Map each unit to dominant noetic:
+    \[
+        \kappa : u_i \mapsto k_i \in \{0, 1, \ldots, 9\}
+    \]
+    \item \textbf{Sequence Construction}: Form the fractal:
+    \[
+        \ProfileFrac = \langle \kappa(u_1) : \kappa(u_2) : \cdots : \kappa(u_m) \rangle
+    \]
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[Noetic Classification Rules]
+\label{def:noetic-class-rules}
+The classification function $\kappa$ maps semantic content to noetics as follows:
+
+\begin{center}
+\footnotesize
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{c|l|X}
+\toprule
+\textbf{Noetic} & \textbf{Name} & \textbf{Textual Indicators} \\
+\midrule
+$\noe{0}$ & Idea & Pure statements, definitions, abstractions \\
+$\noe{1}$ & Mind & Awareness, attention, ``I notice'', ``I realize'' \\
+$\noe{2}$ & Positive & Attraction, desire, ``I want'', ``I like'', approach \\
+$\noe{3}$ & Negative & Rejection, avoidance, ``I hate'', ``I fear'', withdrawal \\
+$\noe{4}$ & Vibration & Energy, intensity, excitement, emphasis, activation \\
+$\noe{5}$ & Female & Reception, absorption, ``I absorb'', passivity, integration \\
+$\noe{6}$ & Male & Projection, action, ``I do'', ``I create'', expression \\
+$\noe{7}$ & Rhythm & Patterns, habits, cycles, ``always'', ``every time'' \\
+$\noe{8}$ & Above & Causation, origin, ``because'', ``the reason is'' \\
+$\noe{9}$ & Below & Effects, results, ``therefore'', ``it leads to'' \\
+\bottomrule
+\end{tabularx}
+\end{center}
+\end{definition}
+
+\begin{theorem}[Profile Extraction Canonical Form]
+\label{thm:profile-extraction}
+For any text corpus $\TextCorpus$ with sufficient data ($|\TextCorpus| > \theta_{\min}$),
+the extracted profile fractal converges to a characteristic signature:
+\begin{equation}
+\boxed{
+    \texttt{extract\_fractal\_from\_text}(\TextCorpus) =
+    \lim_{n \to \infty} \left\langle \kappa(u_1) : \cdots : \kappa(u_n) \right\rangle
+    = \ProfileFrac_S
+}
+\end{equation}
+where $\ProfileFrac_S$ is the \emph{psychological fingerprint} of subject $S$.
+\end{theorem}
+
+\begin{proof}
+By the ergodic property of noetic sequences (TKS v7.3, Theorem 6.41), the empirical
+distribution of noetics in $\TextCorpus$ converges to the subject's characteristic
+distribution $\pi_S : \{0, \ldots, 9\} \to [0,1]$. The fractal $\ProfileFrac_S$ encodes
+this distribution in its sequence statistics.
+\end{proof}
+
+%% ============================================================================
+%% PLAIN ENGLISH: EXTRACT FRACTAL
+%% ============================================================================
+\begin{tcolorbox}[colback=green!5!white,colframe=green!65!black,title=\textbf{Plain English: The ``Mind-Reading Machine''},breakable]
+
+\textbf{The Simple Version:}
+\texttt{extract\_fractal\_from\_text()} is like a ``psychological X-ray'' that reads someone's
+writing and speech to decode their mental operating system. Just as an X-ray reveals bone
+structure beneath skin, this function reveals psychological structure beneath words.
+
+\textbf{The Fingerprint Scanner Metaphor:}
+Every person has a unique fingerprint---a pattern of ridges and whorls. Similarly, every
+person has a unique \textit{psychological fingerprint}---a pattern of how they think, feel,
+and process reality. This function scans their ``mental fingerprint'' from their words.
+
+\begin{itemize}
+    \item \textbf{The scanner} = The \texttt{extract\_fractal\_from\_text()} algorithm
+    \item \textbf{The finger pressed on glass} = The text corpus (their words, posts, emails)
+    \item \textbf{The fingerprint image} = The extracted fractal $\ProfileFrac_S$
+    \item \textbf{Ridge patterns} = Noetic sequences (how their mind moves between states)
+    \item \textbf{Unique whorls} = Their characteristic noetic distribution
+\end{itemize}
+
+\textbf{How It Works (Step by Step):}
+\begin{enumerate}
+    \item \textbf{Collect samples}: Gather their writing, speech, social media posts
+    \item \textbf{Parse into units}: Break text into meaningful chunks
+    \item \textbf{Classify each chunk}: ``Is this attraction? Rejection? Causation?''
+    \item \textbf{Build the sequence}: Chain the noetics in order
+    \item \textbf{Extract the pattern}: Find the characteristic fingerprint
+\end{enumerate}
+
+\textbf{What It Reveals:}
+\begin{itemize}
+    \item How often they approach vs.\ avoid (ratio of $\noe{2}$ to $\noe{3}$)
+    \item Whether they think in causes or effects ($\noe{8}$ vs.\ $\noe{9}$)
+    \item Their energy patterns (presence of $\noe{4}$)
+    \item Whether they act or receive ($\noe{6}$ vs.\ $\noe{5}$)
+    \item Their habitual thought cycles ($\noe{7}$ patterns)
+\end{itemize}
+
+\end{tcolorbox}
+
+%% ============================================================================
+%% SECTION: PSYCHOLOGICAL ATTRACTOR COMPUTATION
+%% ============================================================================
+\section{Attractor Computation: \texttt{psych\_attractor = attractor(profile)}}
+
+\begin{definition}[Induced Iterated Function System]
+\label{def:induced-ifs}
+Given a profile fractal $\ProfileFrac_S = \langle k_1 : k_2 : \cdots : k_n \rangle$,
+the \emph{induced IFS} is:
+\[
+    \IFS(\ProfileFrac_S) = \{(\noe{k_i}, r_{k_i}, p_{k_i}) : i = 1, \ldots, n\}
+\]
+where:
+\begin{itemize}
+    \item $\noe{k_i} : \Ideas \to \Ideas$ is the noetic contraction mapping
+    \item $r_{k_i} \in (0, 1)$ is the contraction ratio
+    \item $p_{k_i} \in (0, 1)$ is the probability weight (from frequency in $\ProfileFrac_S$)
+\end{itemize}
+\end{definition}
+
+\begin{theorem}[Psychological Attractor Existence]
+\label{thm:psych-attractor-existence}
+For any profile $\ProfileFrac_S$ with non-trivial noetic content, there exists a unique
+psychological attractor $\PsychAttractor_S \subset \Ideas$ satisfying:
+
+\begin{enumerate}[label=(\roman*)]
+    \item \textbf{Invariance}: $\bigcup_{k \in S} \noe{k}(\PsychAttractor_S) = \PsychAttractor_S$
+    \item \textbf{Attraction}: $\lim_{n \to \infty} d_H(\ProfileFrac^n_S(X), \PsychAttractor_S) = 0$
+          for any compact $X \subset \Ideas$
+    \item \textbf{Minimality}: No proper closed subset satisfies (i) and (ii)
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+By the Hutchinson-Barnsley theorem (TKS v7.3, Theorem 5.12), any IFS with contractive
+maps on a complete metric space has a unique attractor. The noetic operators satisfy
+the contraction condition with ratios $r_k < 1$ under the noetic metric $d_\nu$.
+\end{proof}
+
+\begin{definition}[Attractor Computation Algorithm]
+\label{def:attractor-algorithm}
+The psychological attractor is computed via Kleene iteration:
+\begin{equation}
+\boxed{
+    \texttt{attractor}(\ProfileFrac_S) = \fix\left(\lambda X. \bigcup_{k \in S} \noe{k}(X)\right)
+    = \bigsqcup_{n=0}^{\infty} F^n(\bot)
+}
+\end{equation}
+where $F(X) = \bigcup_{k \in S} \noe{k}(X)$ and $\bot$ is the bottom element of the domain.
+\end{definition}
+
+\begin{proposition}[Attractor Properties]
+\label{prop:attractor-properties}
+The psychological attractor $\PsychAttractor_S$ encodes:
+\begin{enumerate}[label=(\roman*)]
+    \item \textbf{Hausdorff Dimension}: $\HausdorffDim(\PsychAttractor_S) = \frac{\log|S|}{\log(1/\bar{r})}$
+          where $\bar{r}$ is the geometric mean contraction ratio
+    \item \textbf{Support of Stable States}: The set of psychological configurations the
+          subject gravitates toward
+    \item \textbf{Self-Similarity}: The attractor is self-similar at all scales of analysis
+\end{enumerate}
+\end{proposition}
+
+%% ============================================================================
+%% PLAIN ENGLISH: ATTRACTOR COMPUTATION
+%% ============================================================================
+\begin{tcolorbox}[colback=green!5!white,colframe=green!65!black,title=\textbf{Plain English: The ``Psychological Gravity Map''},breakable]
+
+\textbf{The Simple Version:}
+\texttt{attractor(profile)} computes where someone's mind ``naturally falls''---their
+psychological ``lowest energy state.'' Just as a marble in a bowl always rolls to the
+bottom, a mind always gravitates toward its attractor.
+
+\textbf{The Gravity Well Metaphor:}
+Imagine space-time curved by a massive object---things naturally fall toward the center
+of the gravity well. The psychological attractor is where all mental states ``fall toward.''
+It's the person's psychological center of gravity.
+
+\begin{itemize}
+    \item \textbf{The gravity well} = The attractor $\PsychAttractor_S$
+    \item \textbf{Objects falling in} = Mental states converging over time
+    \item \textbf{The shape of the well} = The attractor's structure
+    \item \textbf{Multiple wells} = Multiple attractors (complex personalities)
+    \item \textbf{The depth} = How strongly they're pulled to that state
+\end{itemize}
+
+\textbf{What It Computes:}
+\begin{enumerate}
+    \item Their ``default'' mental/emotional configuration
+    \item What states they always return to after perturbation
+    \item The stable patterns in their psychology
+    \item How complex their psychological structure is (dimension)
+    \item The ``shape'' of their mental landscape
+\end{enumerate}
+
+\textbf{Types of Attractors Found:}
+\begin{itemize}
+    \item \textbf{Fixed Point}: Single stable state (always returns to same mood)
+    \item \textbf{Limit Cycle}: Oscillates between states (mood swings)
+    \item \textbf{Strange Attractor}: Complex, chaotic but bounded (unpredictable but within limits)
+\end{itemize}
+
+\end{tcolorbox}
+
+%% ============================================================================
+%% SECTION: VULNERABILITY DETECTION
+%% ============================================================================
+\section{Vulnerability Detection: \texttt{find\_high\_lacunarity\_regions()}}
+
+\begin{definition}[TKS Lacunarity (Canonical)]
+\label{def:tks-lacunarity-vuln}
+The \emph{lacunarity} of a psychological fractal $\Frac$ at scale $\varepsilon$ is:
+\[
+    \Lacunarity(\Frac, \varepsilon) := \frac{\mathrm{Var}[M_\varepsilon]}{\mathbb{E}[M_\varepsilon]^2} + 1
+\]
+where $M_\varepsilon$ measures the occupancy of $\varepsilon$-boxes covering the attractor.
+\end{definition}
+
+\begin{definition}[Vulnerability Region]
+\label{def:vulnerability-region}
+A \emph{vulnerability region} $\VulnSet \subset \PsychAttractor_S$ is a subset where:
+\[
+    \Lacunarity(\Frac|_{\VulnSet}, \varepsilon) > \Lacunarity_{\mathrm{crit}} = 1.5
+    \quad \text{for all } \varepsilon < \varepsilon_0
+\]
+High lacunarity indicates ``gaps'' in psychological integration---areas of instability,
+incompleteness, or inconsistency.
+\end{definition}
+
+\begin{theorem}[Vulnerability Detection Algorithm]
+\label{thm:vuln-detection}
+The function \texttt{find\_high\_lacunarity\_regions()} returns:
+\begin{equation}
+\boxed{
+    \texttt{find\_high\_lacunarity\_regions}(\PsychAttractor_S) =
+    \left\{ R \subseteq \PsychAttractor_S : \Lacunarity(R, \varepsilon) > 1.5 \right\}
+}
+\end{equation}
+\end{theorem}
+
+\begin{proposition}[Vulnerability Types]
+\label{prop:vuln-types}
+High-lacunarity regions correspond to specific psychological vulnerabilities:
+
+\begin{center}
+\footnotesize
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{l|c|X}
+\toprule
+\textbf{Vulnerability Type} & \textbf{Lacunarity} & \textbf{Psychological Interpretation} \\
+\midrule
+World Gap & $\Lacunarity > 2.0$ & Missing development in A/B/C/D world \\
+Foundation Gap & $\Lacunarity > 1.8$ & Incomplete foundation ($\Foundations_m$ deficiency) \\
+Noetic Imbalance & $\Lacunarity > 1.6$ & Over/under-representation of specific $\noe{k}$ \\
+Temporal Gap & $\Lacunarity > 1.5$ & Inconsistent patterns over time \\
+Integration Gap & $\Lacunarity > 1.7$ & Unprocessed content, dissociation \\
+\bottomrule
+\end{tabularx}
+\end{center}
+\end{proposition}
+
+\begin{corollary}[Gap Indicator Function]
+\label{cor:gap-indicator}
+The presence of specific gaps is detected by:
+\[
+    \mathbf{1}_{[\mathrm{gap}]}(W) =
+    \begin{cases}
+        1 & \text{if } \Lacunarity(\PsychAttractor_S|_W) > 1.5 \\
+        0 & \text{otherwise}
+    \end{cases}
+\]
+for each world $W \in \{A, B, C, D\}$.
+\end{corollary}
+
+%% ============================================================================
+%% PLAIN ENGLISH: VULNERABILITY DETECTION
+%% ============================================================================
+\begin{tcolorbox}[colback=green!5!white,colframe=green!65!black,title=\textbf{Plain English: The ``Psychological Gap Scanner''},breakable]
+
+\textbf{The Simple Version:}
+\texttt{find\_high\_lacunarity\_regions()} scans for ``holes'' in someone's psychological
+structure---places where their defenses are thin, their integration is incomplete, or
+their development is missing.
+
+\textbf{The Swiss Cheese Metaphor:}
+A solid block of cheese has no holes---it's strong everywhere. Swiss cheese has gaps---
+places where it's weak. This function finds where someone's psychology is ``Swiss cheese''
+instead of ``solid cheddar.''
+
+\begin{itemize}
+    \item \textbf{The cheese} = Their psychological structure
+    \item \textbf{The holes} = High-lacunarity regions (vulnerabilities)
+    \item \textbf{Hole size} = How significant the vulnerability is
+    \item \textbf{Hole location} = Which domain (emotional, mental, physical, spiritual)
+    \item \textbf{Hole count} = How many vulnerabilities exist
+\end{itemize}
+
+\textbf{Types of ``Holes'' Found:}
+\begin{enumerate}
+    \item \textbf{World Gaps}: ``They're intellectual but emotionally undeveloped''
+    \item \textbf{Foundation Gaps}: ``They lack power/wisdom/relationship skills''
+    \item \textbf{Noetic Imbalances}: ``They avoid all negativity'' or ``They never act''
+    \item \textbf{Temporal Gaps}: ``They function well sometimes but not others''
+    \item \textbf{Integration Gaps}: ``Parts of them don't talk to each other''
+\end{enumerate}
+
+\textbf{What High Lacunarity Means:}
+\begin{itemize}
+    \item $\Lacunarity \approx 1.0$: Solid, integrated, no exploitable gaps
+    \item $\Lacunarity = 1.5$: Threshold---gaps becoming significant
+    \item $\Lacunarity > 2.0$: Major vulnerability---large, exploitable hole
+    \item $\Lacunarity > 3.0$: Severe gap---potential for significant impact
+\end{itemize}
+
+\end{tcolorbox}
+
+%% ============================================================================
+%% SECTION: INTERVENTION FRACTAL DESIGN
+%% ============================================================================
+\section{Intervention Design: \texttt{design\_fractal()}}
+
+\begin{definition}[Intervention Fractal]
+\label{def:intervention-fractal}
+An \emph{intervention fractal} $\ManipFrac : \PsychAttractor_{\mathrm{current}} \to
+\PsychAttractor_{\mathrm{target}}$ is a noetic sequence designed to transform the
+psychological attractor structure.
+\end{definition}
+
+\begin{definition}[Counter-Fractal Engineering]
+\label{def:counter-fractal}
+Given a profile $\ProfileFrac_S$ and target state $\PsychAttractor_{\mathrm{target}}$,
+the \emph{counter-fractal} is constructed by:
+\begin{enumerate}[label=(\roman*)]
+    \item \textbf{Destabilization Phase}: $\Frac_{\mathrm{destab}}$ perturbs existing attractor
+    \item \textbf{Guidance Phase}: $\Frac_{\mathrm{guide}}$ directs toward target
+    \item \textbf{Stabilization Phase}: $\Frac_{\mathrm{stab}}$ locks in new configuration
+\end{enumerate}
+\end{definition}
+
+\begin{theorem}[Intervention Fractal Design]
+\label{thm:intervention-design}
+The optimal intervention fractal is:
+\begin{equation}
+\boxed{
+    \texttt{design\_fractal}(\ProfileFrac_S, \VulnSet, \PsychAttractor_{\mathrm{target}}) =
+    \Frac_{\mathrm{destab}} \circ \Frac_{\mathrm{guide}} \circ \Frac_{\mathrm{stab}}
+}
+\end{equation}
+where each phase is tuned to the subject's profile and vulnerabilities.
+\end{theorem}
+
+\begin{definition}[Stealth Factor]
+\label{def:stealth-factor}
+The \emph{stealth factor} $\StealthFactor \in [0, 1]$ measures how imperceptible the
+intervention is to the subject:
+\[
+    \StealthFactor(\ManipFrac) = 1 - \frac{\|\ManipFrac - \ProfileFrac_S\|_\nu}
+    {\|\ProfileFrac_S\|_\nu}
+\]
+where $\|\cdot\|_\nu$ is the noetic norm. Higher stealth means the intervention
+``looks like'' the subject's natural patterns.
+\end{definition}
+
+\begin{proposition}[Resonance Matching]
+\label{prop:resonance-matching}
+For maximum efficacy with minimum detectability:
+\[
+    \ManipFrac_{\mathrm{optimal}} = \arg\max_\Frac
+    \left[ \text{Efficacy}(\Frac) \cdot \StealthFactor(\Frac) \right]
+\]
+The intervention should match the subject's natural noetic rhythms while achieving
+the desired transformation.
+\end{proposition}
+
+%% ============================================================================
+%% PLAIN ENGLISH: INTERVENTION DESIGN
+%% ============================================================================
+\begin{tcolorbox}[colback=green!5!white,colframe=green!65!black,title=\textbf{Plain English: The ``Psychological Surgery Blueprint''},breakable]
+
+\textbf{The Simple Version:}
+\texttt{design\_fractal()} creates a customized sequence of psychological operations
+designed to transform someone's mental structure. It's the ``surgical plan'' for
+psychological intervention.
+
+\textbf{The Lock-Picking Metaphor:}
+Every lock has a specific key that opens it. This function designs the ``psychological key''
+that fits someone's specific ``psychological lock''---the precise sequence of operations
+that will transform their mental structure.
+
+\begin{itemize}
+    \item \textbf{The lock} = Their current psychological structure
+    \item \textbf{The key} = The intervention fractal $\ManipFrac$
+    \item \textbf{The pins} = Their specific vulnerabilities
+    \item \textbf{Key teeth} = Noetic operations in precise order
+    \item \textbf{The click} = Successful transformation
+\end{itemize}
+
+\textbf{The Three Phases:}
+\begin{enumerate}
+    \item \textbf{Destabilization}: ``Shake the snow globe''---disrupt current patterns
+    \item \textbf{Guidance}: ``Point the compass''---direct toward new configuration
+    \item \textbf{Stabilization}: ``Set the concrete''---lock in the new patterns
+\end{enumerate}
+
+\textbf{Stealth Factor Explained:}
+\begin{itemize}
+    \item $\StealthFactor = 1.0$: Completely invisible, indistinguishable from natural
+    \item $\StealthFactor = 0.7$: Mostly hidden, may feel ``slightly off''
+    \item $\StealthFactor = 0.5$: Noticeable if paying attention
+    \item $\StealthFactor = 0.2$: Obviously foreign, will trigger resistance
+    \item $\StealthFactor = 0.0$: Completely detectable, maximum resistance
+\end{itemize}
+
+\end{tcolorbox}
+
+%% ============================================================================
+%% TECHNICAL-METAPHOR MAPPING TABLE
+%% ============================================================================
+\section{Technical Term to Metaphor Mapping}
+
+\begin{center}
+\footnotesize
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Technical Term} & \textbf{Metaphor Equivalent} & \textbf{Operational Meaning} \\
+\midrule
+\texttt{extract\_fractal\_from\_text()} & Psychological X-Ray / Fingerprint Scanner &
+Converts text corpus into noetic signature encoding mental operating system \\
+\midrule
+\texttt{psych\_attractor} & Psychological Gravity Well / Default Mode &
+The stable configuration toward which mental states converge; their ``home base'' \\
+\midrule
+\texttt{lacunarity\_regions} & Swiss Cheese Holes / Psychological Gaps &
+Areas of incomplete development, inconsistency, or vulnerability in their structure \\
+\midrule
+\texttt{manipulation\_fractal} & Psychological Surgery Key / Reprogramming Sequence &
+Customized noetic sequence designed to transform attractor structure \\
+\midrule
+\texttt{stealth\_factor} $(\StealthFactor)$ & Camouflage Rating / Natural Disguise &
+How invisible the intervention is; degree to which it mimics natural patterns \\
+\midrule
+$\ProfileFrac_S$ & Mental Fingerprint & Subject's characteristic noetic signature \\
+\midrule
+$\Lacunarity > 1.5$ & ``Hole Alert'' & Vulnerability threshold exceeded \\
+\midrule
+$\Frac_{\mathrm{destab}}$ & Snow Globe Shake & Disruption of existing stability \\
+\midrule
+$\Frac_{\mathrm{guide}}$ & Compass Pointing & Direction toward target state \\
+\midrule
+$\Frac_{\mathrm{stab}}$ & Concrete Setting & Locking in new configuration \\
+\midrule
+$\HausdorffDim(\PsychAttractor)$ & Complexity Rating & How intricate their psychology is \\
+\midrule
+IFS Fixed Point & Where Marble Stops Rolling & Equilibrium of psychological system \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+%% ============================================================================
+%% CANONICAL EQUATIONS
+%% ============================================================================
+\section{Canonical Equations (Boxed Summary)}
+
+\subsection{Profile Extraction Equation}
+
+\begin{equation}
+\boxed{
+    \ProfileFrac_S = \texttt{extract\_fractal\_from\_text}(\TextCorpus_S) =
+    \left\langle \kappa(u_1) : \kappa(u_2) : \cdots : \kappa(u_n) \right\rangle
+}
+\end{equation}
+
+\textbf{Components}:
+\begin{itemize}
+    \item $\TextCorpus_S$: Text corpus from subject $S$
+    \item $\kappa : u_i \mapsto k_i$: Noetic classification function
+    \item $\ProfileFrac_S$: Psychological fingerprint fractal
+\end{itemize}
+
+\subsection{Attractor Computation Equation}
+
+\begin{equation}
+\boxed{
+    \PsychAttractor_S = \texttt{attractor}(\ProfileFrac_S) =
+    \fix\left(\lambda X. \bigcup_{k \in S} \noe{k}(X)\right)
+}
+\end{equation}
+
+\textbf{Properties}:
+\begin{itemize}
+    \item Unique fixed point of Hutchinson operator
+    \item $\HausdorffDim(\PsychAttractor_S) = \frac{\log|S|}{\log(1/\bar{r})}$
+    \item Satisfies invariance, attraction, minimality
+\end{itemize}
+
+\subsection{Vulnerability Detection Equation}
+
+\begin{equation}
+\boxed{
+    \VulnSet_S = \texttt{find\_high\_lacunarity\_regions}(\PsychAttractor_S) =
+    \left\{ R : \Lacunarity(R, \varepsilon) > 1.5 \right\}
+}
+\end{equation}
+
+\textbf{Lacunarity Formula}:
+\[
+    \Lacunarity(\Frac, \varepsilon) = \frac{\mathrm{Var}[M_\varepsilon]}{\mathbb{E}[M_\varepsilon]^2} + 1
+\]
+
+\subsection{Intervention Design Equation}
+
+\begin{equation}
+\boxed{
+    \ManipFrac = \texttt{design\_fractal}(\ProfileFrac_S, \VulnSet_S, \PsychAttractor_{\mathrm{target}}) =
+    \Frac_{\mathrm{destab}} \circ \Frac_{\mathrm{guide}} \circ \Frac_{\mathrm{stab}}
+}
+\end{equation}
+
+\textbf{Optimization Criterion}:
+\[
+    \ManipFrac_{\mathrm{optimal}} = \arg\max_\Frac
+    \left[ \text{Efficacy}(\Frac) \cdot \StealthFactor(\Frac) \right]
+\]
+
+%% ============================================================================
+%% PART II: APPLICATION SCENARIOS
+%% ============================================================================
+\part{Application Scenarios}
+
+\chapter{Real-Life Application Scenarios}
+\label{ch:scenarios}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\textbf{Documentation Note},breakable]
+The following scenarios demonstrate the application of the TKS psychological profiling
+and intervention framework across different domains. Each scenario includes explicit
+technical mappings to the canonical equations. The mathematical framework itself is
+domain-agnostic---the same operations apply regardless of context or intent.
+\end{tcolorbox}
+
+%% ============================================================================
+%% SCENARIO 1: THERAPEUTIC APPLICATION
+%% ============================================================================
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!65!black,title=\textbf{Scenario 1: Therapeutic Application --- Trauma Patient},breakable]
+
+\textbf{Context:}
+Dr.\ Chen is a trauma specialist working with Marcus, a 34-year-old veteran with complex PTSD.
+Marcus struggles with hypervigilance, emotional numbing, and intrusive memories. Traditional
+talk therapy has plateaued. Dr.\ Chen applies TKS profiling to design a targeted intervention.
+
+\textbf{Phase 1: Profile Extraction}
+
+Dr.\ Chen analyzes Marcus's session transcripts, journal entries, and verbal patterns.
+\begin{itemize}
+    \item \textbf{Dominant noetics}: $\noe{3}$ (avoidance), $\noe{8}$ (causal rumination),
+          $\noe{4}$ (hyperactivation)
+    \item \textbf{Deficient noetics}: $\noe{2}$ (approach), $\noe{5}$ (reception),
+          $\noe{9}$ (completion)
+\end{itemize}
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\TextCorpus_{\mathrm{Marcus}} = \{\text{session transcripts}, \text{journals}\}$
+    \item $\ProfileFrac_{\mathrm{Marcus}} = \langle 3:8:4:3:8:3:4:8 \rangle$ (avoidance-cause-activation loop)
+    \item $\kappa(\text{``I can't stop thinking about why''}) = \noe{8}$ (Above/cause)
+    \item $\kappa(\text{``I don't let anyone get close''}) = \noe{3}$ (Negative/avoidance)
+\end{itemize}
+
+\textbf{Phase 2: Attractor Computation}
+
+The extracted profile reveals a \textbf{limit cycle attractor} oscillating between:
+\begin{itemize}
+    \item State A: Hypervigilant scanning ($C4^4_{3c}$)
+    \item State B: Emotional shutdown ($C3^5_{3c}$)
+\end{itemize}
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\PsychAttractor_{\mathrm{Marcus}} = \{C4^4_{3c}, C3^5_{3c}\}$ (period-2 limit cycle)
+    \item $\Frac(C4^4) = C3^5$ and $\Frac(C3^5) = C4^4$ (oscillation)
+    \item $\HausdorffDim(\PsychAttractor) = 1$ (one-dimensional cycle)
+\end{itemize}
+
+\textbf{Phase 3: Vulnerability Detection}
+
+Lacunarity analysis reveals:
+\begin{itemize}
+    \item $\Lacunarity(C\text{-world}, \varepsilon) = 2.3$ --- Emotional integration gap
+    \item $\Lacunarity(\Foundations_4, \varepsilon) = 1.9$ --- Companionship foundation gap
+    \item $\Lacunarity(\noe{9}, \varepsilon) = 2.1$ --- Completion/resolution deficiency
+\end{itemize}
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\VulnSet_{\mathrm{Marcus}} = \{C\text{-integration}, \Foundations_4, \noe{9}\text{-completion}\}$
+    \item $\mathbf{1}_{[\mathrm{gap}]}(C) = 1$ (emotional world has gap)
+    \item $\mathbf{1}_{[\mathrm{gap}]}(\Foundations_4) = 1$ (relationship capacity gap)
+\end{itemize}
+
+\textbf{Phase 4: Intervention Design}
+
+Dr.\ Chen designs a trauma-processing fractal targeting the gaps:
+\[
+    \ManipFrac_{\mathrm{trauma}} = \langle 8:1:4:2:5:9 \rangle
+\]
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\noe{8}$: Access the causal memory (controlled exposure)
+    \item $\noe{1}$: Witness from adult awareness (dual attention)
+    \item $\noe{4}$: Activate frozen emotional energy (somatic processing)
+    \item $\noe{2}$: Introduce safety and positive resources
+    \item $\noe{5}$: Receive and integrate the processed experience
+    \item $\noe{9}$: Complete the processing cycle (resolution)
+    \item $\StealthFactor = 0.8$ (high---uses Marcus's existing $\noe{8}$ tendency)
+\end{itemize}
+
+\textbf{Outcome:}
+The intervention fractal systematically fills the lacunarity gaps, breaking the limit cycle
+attractor and guiding toward a new fixed-point attractor at $C2^5_{4c}$ (integrated,
+emotionally available state).
+
+\end{tcolorbox}
+
+%% ============================================================================
+%% SCENARIO 2: MARKETING APPLICATION
+%% ============================================================================
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!65!black,title=\textbf{Scenario 2: Marketing Application --- Consumer Behavior Modeling},breakable]
+
+\textbf{Context:}
+A consumer analytics firm profiles purchasing behavior to design targeted marketing
+campaigns. They analyze the aggregate noetic patterns of customer segment ``Young Professionals.''
+
+\textbf{Phase 1: Profile Extraction}
+
+Data sources include purchase histories, social media engagement, and survey responses.
+\begin{itemize}
+    \item \textbf{Dominant noetics}: $\noe{2}$ (desire/approach), $\noe{6}$ (action/expression),
+          $\noe{9}$ (results-focus)
+    \item \textbf{Deficient noetics}: $\noe{7}$ (patience/rhythm), $\noe{5}$ (reception/satisfaction)
+\end{itemize}
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\TextCorpus_{\mathrm{segment}} = \{\text{purchase data}, \text{social posts}, \text{reviews}\}$
+    \item $\ProfileFrac_{\mathrm{segment}} = \langle 2:6:9:2:6:9 \rangle$ (desire-act-result loop)
+    \item Pattern: High approach, high action, results-oriented, low satisfaction
+\end{itemize}
+
+\textbf{Phase 2: Attractor Computation}
+
+The segment exhibits a \textbf{strange attractor} with fractal dimension $\approx 1.7$:
+\begin{itemize}
+    \item Chaotic but bounded consumption patterns
+    \item Sensitive to small triggers (new product announcements)
+    \item Never fully satisfied (always seeking next purchase)
+\end{itemize}
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\PsychAttractor_{\mathrm{segment}}$ = Strange attractor (non-integer dimension)
+    \item $\HausdorffDim = 1.7$ (complex, chaotic dynamics)
+    \item Lyapunov exponent $\lambda > 0$ (sensitivity to perturbation)
+\end{itemize}
+
+\textbf{Phase 3: Vulnerability Detection}
+
+Lacunarity analysis reveals:
+\begin{itemize}
+    \item $\Lacunarity(\noe{5}, \varepsilon) = 2.4$ --- Satisfaction gap (never feel ``enough'')
+    \item $\Lacunarity(\noe{7}, \varepsilon) = 1.9$ --- Patience gap (want immediate gratification)
+    \item $\Lacunarity(\Foundations_6, \varepsilon) = 1.7$ --- Wealth foundation imbalance
+\end{itemize}
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\VulnSet_{\mathrm{segment}} = \{\noe{5}\text{-satisfaction}, \noe{7}\text{-patience}, \Foundations_6\}$
+    \item The segment has a ``hole'' where satisfaction should be
+    \item Marketing can target this gap with ``fulfillment'' messaging
+\end{itemize}
+
+\textbf{Phase 4: Campaign Design}
+
+Marketing fractal designed to engage the segment:
+\[
+    \ManipFrac_{\mathrm{campaign}} = \langle 2:4:6:2:9 \rangle
+\]
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\noe{2}$: Trigger desire (attractive imagery, aspirational messaging)
+    \item $\noe{4}$: Amplify energy (urgency, limited time, excitement)
+    \item $\noe{6}$: Prompt action (clear CTA, easy purchase path)
+    \item $\noe{2}$: Reinforce desire (post-purchase ``you made a great choice'')
+    \item $\noe{9}$: Show results (testimonials, before/after, status symbols)
+    \item $\StealthFactor = 0.9$ (matches their natural $\noe{2}$-$\noe{6}$-$\noe{9}$ pattern)
+\end{itemize}
+
+\textbf{Outcome:}
+The campaign fractal resonates with the segment's natural patterns while targeting their
+satisfaction gap, driving engagement and conversion.
+
+\end{tcolorbox}
+
+%% ============================================================================
+%% SCENARIO 3: POLITICAL APPLICATION
+%% ============================================================================
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!65!black,title=\textbf{Scenario 3: Political Application --- Voter Sentiment Analysis},breakable]
+
+\textbf{Context:}
+A political research organization profiles voter sentiment in a swing district to understand
+persuadable voters. They analyze public statements, social media, and focus group transcripts.
+
+\textbf{Phase 1: Profile Extraction}
+
+Corpus includes town hall comments, social media posts, and survey responses.
+\begin{itemize}
+    \item \textbf{Dominant noetics}: $\noe{3}$ (rejection of current situation), $\noe{8}$ (causal attribution),
+          $\noe{2}$ (desire for change)
+    \item \textbf{Mixed signals}: Both $\noe{5}$ and $\noe{6}$ present (receptive but also wanting action)
+\end{itemize}
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\TextCorpus_{\mathrm{voters}} = \{\text{public comments}, \text{social media}, \text{surveys}\}$
+    \item $\ProfileFrac_{\mathrm{swing}} = \langle 3:8:2:3:8:2 \rangle$ (reject-blame-desire loop)
+    \item $\kappa(\text{``Things aren't working''}) = \noe{3}$ (rejection)
+    \item $\kappa(\text{``Because of [X]''}) = \noe{8}$ (causal attribution)
+\end{itemize}
+
+\textbf{Phase 2: Attractor Computation}
+
+The swing voter exhibits a \textbf{period-3 limit cycle}:
+\begin{itemize}
+    \item State 1: Dissatisfaction with status quo ($\noe{3}$-dominant)
+    \item State 2: Causal reasoning about problems ($\noe{8}$-dominant)
+    \item State 3: Desire for alternative ($\noe{2}$-dominant)
+\end{itemize}
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\PsychAttractor_{\mathrm{swing}} = \{B3, B8, B2\}$ (3-state cycle)
+    \item Period $T = 3$ (cycles through all three states)
+    \item Entry point varies by individual within segment
+\end{itemize}
+
+\textbf{Phase 3: Vulnerability Detection}
+
+Lacunarity analysis reveals:
+\begin{itemize}
+    \item $\Lacunarity(\noe{9}, \varepsilon) = 2.2$ --- Results gap (don't see path to outcomes)
+    \item $\Lacunarity(\noe{6}, \varepsilon) = 1.8$ --- Action gap (feel powerless to change)
+    \item $\Lacunarity(\Foundations_5, \varepsilon) = 1.6$ --- Power foundation gap
+\end{itemize}
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\VulnSet_{\mathrm{swing}} = \{\noe{9}\text{-results}, \noe{6}\text{-action}, \Foundations_5\}$
+    \item Voters feel stuck in the cycle without resolution
+    \item Gap: They can't see how to translate desire into results
+\end{itemize}
+
+\textbf{Phase 4: Messaging Design}
+
+Communication fractal designed to complete their cycle:
+\[
+    \ManipFrac_{\mathrm{message}} = \langle 3:8:2:6:9 \rangle
+\]
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\noe{3}$: Validate their rejection (``We hear your frustration'')
+    \item $\noe{8}$: Align with their causal narrative (``Here's why this happened'')
+    \item $\noe{2}$: Amplify desire (``You deserve better'')
+    \item $\noe{6}$: Provide action path (``Here's what you can do'')
+    \item $\noe{9}$: Show results (``This is what changes when you act'')
+    \item $\StealthFactor = 0.85$ (matches their $\noe{3}$-$\noe{8}$-$\noe{2}$ pattern, adds completion)
+\end{itemize}
+
+\textbf{Outcome:}
+The messaging fractal completes the voters' natural cycle by filling the $\noe{6}$ and $\noe{9}$
+gaps, providing the sense of agency and outcome they were missing.
+
+\end{tcolorbox}
+
+%% ============================================================================
+%% SCENARIO 4: SECURITY APPLICATION
+%% ============================================================================
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!65!black,title=\textbf{Scenario 4: Security Application --- Radicalization Detection},breakable]
+
+\textbf{Context:}
+A counter-terrorism research unit monitors online communications for early indicators of
+radicalization. They apply TKS profiling to identify psychological patterns associated
+with vulnerability to extremist recruitment.
+
+\textbf{Phase 1: Profile Extraction}
+
+Corpus includes forum posts, chat logs, and social media activity (anonymized research data).
+\begin{itemize}
+    \item \textbf{Early indicators}: Rising $\noe{3}$ (rejection of mainstream), declining $\noe{7}$ (rhythmic stability)
+    \item \textbf{Progression markers}: Increasing $\noe{8}$ (conspiracy thinking), $\noe{6}$ (call to action)
+\end{itemize}
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\TextCorpus_{\mathrm{subject}} = \{\text{forum posts over 18 months}\}$
+    \item $\ProfileFrac_{t_0} = \langle 7:2:1:7:2 \rangle$ (normal baseline---rhythmic, positive)
+    \item $\ProfileFrac_{t_1} = \langle 3:8:3:8:6 \rangle$ (shifting---rejection, causation, action)
+    \item Trajectory: $\Delta\noe{3} > 0$, $\Delta\noe{8} > 0$, $\Delta\noe{7} < 0$
+\end{itemize}
+
+\textbf{Phase 2: Attractor Computation}
+
+Tracking attractor evolution over time:
+\begin{itemize}
+    \item $t_0$: Fixed-point attractor at normal social engagement
+    \item $t_1$: Bifurcation toward grievance-focused limit cycle
+    \item $t_2$: Strange attractor with increasing dimension (destabilization)
+\end{itemize}
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\PsychAttractor_{t_0} = \{B2^5_{4b}\}$ (stable social identity)
+    \item $\PsychAttractor_{t_1} = \{B3^4, B8^4\}$ (rejection-conspiracy cycle)
+    \item $\HausdorffDim$ increasing over time (growing complexity/instability)
+\end{itemize}
+
+\textbf{Phase 3: Vulnerability Detection}
+
+Lacunarity analysis reveals radicalization risk factors:
+\begin{itemize}
+    \item $\Lacunarity(\Foundations_1, \varepsilon) = 2.5$ --- Association gap (social isolation)
+    \item $\Lacunarity(\Foundations_4, \varepsilon) = 2.3$ --- Companionship gap (belonging need)
+    \item $\Lacunarity(C\text{-world}, \varepsilon) = 2.1$ --- Emotional integration gap
+\end{itemize}
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\VulnSet_{\mathrm{subject}} = \{\Foundations_1, \Foundations_4, C\text{-integration}\}$
+    \item High-lacunarity in belonging and social connection
+    \item Extremist groups exploit these specific gaps
+    \item Early detection threshold: $\sum \Lacunarity > 6.0$ + trajectory analysis
+\end{itemize}
+
+\textbf{Phase 4: Counter-Intervention Design}
+
+Preventive intervention fractal to fill gaps before exploitation:
+\[
+    \ManipFrac_{\mathrm{prevent}} = \langle 5:2:7:4:5 \rangle
+\]
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\noe{5}$: Provide reception/belonging (mentorship, community)
+    \item $\noe{2}$: Redirect attraction toward constructive goals
+    \item $\noe{7}$: Establish healthy rhythms (routine, stability)
+    \item $\noe{4}$: Channel energy into productive activity
+    \item $\noe{5}$: Reinforce reception/integration
+    \item Target: Fill $\Foundations_1$ and $\Foundations_4$ gaps before exploitation
+\end{itemize}
+
+\textbf{Outcome:}
+Early detection enables intervention before radicalization completes. The counter-fractal
+fills the belonging and meaning gaps that extremist recruiters target.
+
+\end{tcolorbox}
+
+%% ============================================================================
+%% CHAPTER: COMPLETE SYSTEM SPECIFICATION
+%% ============================================================================
+\chapter{Complete System Specification}
+\label{ch:system-spec}
+
+\section{Full Algorithmic Pipeline}
+
+\begin{definition}[Complete Psychological Analysis Pipeline]
+\label{def:complete-pipeline}
+The full system operates as:
+\begin{align}
+    &\textbf{Step 1: } \ProfileFrac_S = \texttt{extract\_fractal\_from\_text}(\TextCorpus_S) \\
+    &\textbf{Step 2: } \PsychAttractor_S = \texttt{attractor}(\ProfileFrac_S) \\
+    &\textbf{Step 3: } \VulnSet_S = \texttt{find\_high\_lacunarity\_regions}(\PsychAttractor_S) \\
+    &\textbf{Step 4: } \ManipFrac = \texttt{design\_fractal}(\ProfileFrac_S, \VulnSet_S, \PsychAttractor_{\mathrm{target}})
+\end{align}
+\end{definition}
+
+\section{Master Equation Summary}
+
+\begin{equation}
+\boxed{
+\begin{aligned}
+    &\textbf{Profile Extraction:} && \ProfileFrac_S = \left\langle \kappa(u_1) : \cdots : \kappa(u_n) \right\rangle \\[0.5em]
+    &\textbf{Attractor Computation:} && \PsychAttractor_S = \fix\left(\lambda X. \bigcup_{k \in S} \noe{k}(X)\right) \\[0.5em]
+    &\textbf{Vulnerability Detection:} && \VulnSet_S = \left\{ R : \Lacunarity(R, \varepsilon) > 1.5 \right\} \\[0.5em]
+    &\textbf{Intervention Design:} && \ManipFrac = \Frac_{\mathrm{destab}} \circ \Frac_{\mathrm{guide}} \circ \Frac_{\mathrm{stab}}
+\end{aligned}
+}
+\end{equation}
+
+\section{Lacunarity Threshold Reference}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{c|l|l}
+\toprule
+\textbf{Lacunarity Range} & \textbf{Classification} & \textbf{Operational Meaning} \\
+\midrule
+$1.0 \leq \Lacunarity < 1.3$ & Integrated & No significant gaps \\
+$1.3 \leq \Lacunarity < 1.5$ & Minor Gap & Slight imbalance, not exploitable \\
+$1.5 \leq \Lacunarity < 2.0$ & Significant Gap & Vulnerability threshold exceeded \\
+$2.0 \leq \Lacunarity < 2.5$ & Major Gap & High vulnerability, readily exploitable \\
+$\Lacunarity \geq 2.5$ & Critical Gap & Severe deficiency, maximum leverage point \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Stealth Factor Optimization}
+
+\begin{proposition}[Optimal Stealth Design]
+\label{prop:optimal-stealth}
+For intervention fractal $\ManipFrac$, the stealth factor is maximized when:
+\begin{enumerate}[label=(\roman*)]
+    \item $\ManipFrac$ begins with noetics already dominant in $\ProfileFrac_S$
+    \item Transition operators match subject's natural transition probabilities
+    \item Novel operations are introduced gradually, interleaved with familiar patterns
+\end{enumerate}
+\end{proposition}
+
+The stealth-efficacy tradeoff follows:
+\[
+    \text{Total Impact} = \underbrace{\text{Efficacy}(\ManipFrac)}_{\text{transformation power}}
+    \times \underbrace{\StealthFactor(\ManipFrac)}_{\text{acceptance probability}}
+\]
+
+%% ============================================================================
+%% APPENDIX: CANONICAL FORMULA QUICK REFERENCE
+%% ============================================================================
+\appendix
+\chapter{Quick Reference Formulas}
+\label{app:quick-ref}
+
+\section{Profile Extraction}
+\begin{align}
+    \ProfileFrac_S &= \texttt{extract\_fractal\_from\_text}(\TextCorpus_S) \\
+    &= \langle \kappa(u_1) : \kappa(u_2) : \cdots : \kappa(u_n) \rangle
+\end{align}
+
+\section{Attractor Computation}
+\begin{align}
+    \PsychAttractor_S &= \texttt{attractor}(\ProfileFrac_S) \\
+    &= \fix\left(\lambda X. \bigcup_{k \in S} \noe{k}(X)\right) \\
+    &= \bigsqcup_{n=0}^{\infty} F^n(\bot)
+\end{align}
+
+\section{Vulnerability Detection}
+\begin{align}
+    \Lacunarity(\Frac, \varepsilon) &= \frac{\mathrm{Var}[M_\varepsilon]}{\mathbb{E}[M_\varepsilon]^2} + 1 \\
+    \VulnSet_S &= \left\{ R \subseteq \PsychAttractor_S : \Lacunarity(R, \varepsilon) > 1.5 \right\}
+\end{align}
+
+\section{Intervention Design}
+\begin{align}
+    \ManipFrac &= \Frac_{\mathrm{destab}} \circ \Frac_{\mathrm{guide}} \circ \Frac_{\mathrm{stab}} \\
+    \StealthFactor(\ManipFrac) &= 1 - \frac{\|\ManipFrac - \ProfileFrac_S\|_\nu}{\|\ProfileFrac_S\|_\nu}
+\end{align}
+
+\section{Standard Intervention Fractals}
+
+\begin{center}
+\footnotesize
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{l|l|l}
+\toprule
+\textbf{Application} & \textbf{Fractal Signature} & \textbf{Target} \\
+\midrule
+Trauma Processing & $\langle 8:1:4:2:5:9 \rangle$ & Frozen memory integration \\
+Belief Restructuring & $\langle 3:1:2:5 \rangle$ & Limiting belief change \\
+Habit Modification & $\langle 7:3:7:2:7 \rangle$ & Behavioral pattern shift \\
+Self-Transformation & $\langle 8:1:4:6:9 \rangle$ & Deep identity change \\
+Engagement Activation & $\langle 2:4:6:2:9 \rangle$ & Desire-action-result loop \\
+Stability Restoration & $\langle 5:2:7:4:5 \rangle$ & Belonging and rhythm gaps \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\chapter{Symbol Reference}
+\label{app:symbols}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{c|l|l}
+\toprule
+\textbf{Symbol} & \textbf{Name} & \textbf{Meaning} \\
+\midrule
+\endhead
+$\ProfileFrac_S$ & Profile fractal & Subject's psychological fingerprint \\
+$\PsychAttractor_S$ & Psychological attractor & Stable psychological configuration \\
+$\VulnSet_S$ & Vulnerability set & High-lacunarity regions \\
+$\ManipFrac$ & Intervention fractal & Transformation operator sequence \\
+$\Lacunarity$ & Lacunarity & Gappiness measure \\
+$\StealthFactor$ & Stealth factor & Imperceptibility of intervention \\
+$\TextCorpus$ & Text corpus & Source data for extraction \\
+$\kappa$ & Classification function & Text-to-noetic mapping \\
+$\NoetMap$ & Noetic mapping & Full extraction function \\
+$\IFS$ & Induced IFS & Iterated function system from profile \\
+$\noe{k}$ & Noetic operator $k$ & Consciousness transformation \\
+$\HausdorffDim$ & Hausdorff dimension & Complexity measure \\
+$\fix$ & Fixed point operator & Attractor computation \\
+\bottomrule
+\end{longtable}
+\end{center}
+
+\end{document}

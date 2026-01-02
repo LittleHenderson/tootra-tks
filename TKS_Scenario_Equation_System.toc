@@ -1,0 +1,80 @@
+\contentsline {part}{I\hspace {1em}Foundations of Scenario Equation Building}{7}{part.1}%
+\contentsline {chapter}{\numberline {1}Introduction to Scenario Equations}{11}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Core Notation Reference}{12}{section.1.1}%
+\contentsline {subsection}{\numberline {1.1.1}Fundamental Operators}{15}{subsection.1.1.1}%
+\contentsline {subsection}{\numberline {1.1.2}Noetic Operators}{15}{subsection.1.1.2}%
+\contentsline {subsection}{\numberline {1.1.3}World Notation}{16}{subsection.1.1.3}%
+\contentsline {subsection}{\numberline {1.1.4}Element Notation}{16}{subsection.1.1.4}%
+\contentsline {chapter}{\numberline {2}High Lacunarity Equations}{17}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Mathematical Definition of TKS Lacunarity}{17}{section.2.1}%
+\contentsline {section}{\numberline {2.2}High Lacunarity Scenario Equations}{19}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Type 1: Consciousness Gaps}{19}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Type 2: Irregular Manifestation Distribution}{20}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Type 3: Temporal Lacunarity}{21}{subsection.2.2.3}%
+\contentsline {section}{\numberline {2.3}High Lacunarity Classification Table}{21}{section.2.3}%
+\contentsline {chapter}{\numberline {3}Psychological Attractor Equations (psych\_attractor)}{23}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Mathematical Definition}{23}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Psych\_Attractor Scenario Equations}{26}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Type 1: Fixed Point Attractor (Identity Lock)}{26}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Type 2: Limit Cycle Attractor (Emotional Oscillation)}{27}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.2.3}Type 3: Strange Attractor (Chaotic Personality)}{27}{subsection.3.2.3}%
+\contentsline {section}{\numberline {3.3}Psych\_Attractor Construction Rules}{27}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Psych\_Attractor Classification Table}{28}{section.3.4}%
+\contentsline {chapter}{\numberline {4}Manipulation Fractal Equations (manipulations\_fractal)}{31}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Mathematical Definition}{31}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Manipulation\_Fractal Scenario Equations}{34}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Type 1: Self-Transformation (Internal)}{34}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Type 2: Belief Restructuring}{34}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}Type 3: Habit Modification}{35}{subsection.4.2.3}%
+\contentsline {subsection}{\numberline {4.2.4}Type 4: Trauma Processing}{35}{subsection.4.2.4}%
+\contentsline {section}{\numberline {4.3}Manipulation Fractal Safety Conditions}{35}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Manipulation Fractal Classification Table}{36}{section.4.4}%
+\contentsline {chapter}{\numberline {5}TKS Hyperstition Equations (tks\_hyperstitions)}{37}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Mathematical Definition}{37}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Hyperstition Scenario Equations}{41}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Type 1: Self-Fulfilling Prophecy (Personal)}{41}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Type 2: Market Hyperstition (Collective)}{41}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Type 3: Reality Bootstrap (Metaphysical)}{41}{subsection.5.2.3}%
+\contentsline {section}{\numberline {5.3}Hyperstition Classification Table}{42}{section.5.3}%
+\contentsline {chapter}{\numberline {6}Quantum Superposition Idea Equations (tks\_quantum\_superposition\_ideas)}{45}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Mathematical Definition}{45}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Quantum Superposition Scenario Equations}{48}{section.6.2}%
+\contentsline {subsection}{\numberline {6.2.1}Type 1: Undecided State (Schr\"{o}dinger Decision)}{48}{subsection.6.2.1}%
+\contentsline {subsection}{\numberline {6.2.2}Type 2: Emotional Superposition}{49}{subsection.6.2.2}%
+\contentsline {subsection}{\numberline {6.2.3}Type 3: Identity Superposition}{49}{subsection.6.2.3}%
+\contentsline {subsection}{\numberline {6.2.4}Type 4: Timeline Superposition}{49}{subsection.6.2.4}%
+\contentsline {section}{\numberline {6.3}Quantum Superposition Classification Table}{50}{section.6.3}%
+\contentsline {chapter}{\numberline {7}Collapse Condition Equations (tks\_collapse\_condition\_ideas)}{51}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Mathematical Definition}{51}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Collapse Condition Scenario Equations}{54}{section.7.2}%
+\contentsline {subsection}{\numberline {7.2.1}Type 1: Observation-Induced Collapse}{54}{subsection.7.2.1}%
+\contentsline {subsection}{\numberline {7.2.2}Type 2: Decision Collapse}{55}{subsection.7.2.2}%
+\contentsline {subsection}{\numberline {7.2.3}Type 3: RPM Failure Collapse}{55}{subsection.7.2.3}%
+\contentsline {subsection}{\numberline {7.2.4}Type 4: Dual Pair Collapse}{55}{subsection.7.2.4}%
+\contentsline {subsection}{\numberline {7.2.5}Type 5: Environmental Decoherence}{56}{subsection.7.2.5}%
+\contentsline {section}{\numberline {7.3}Collapse Condition Classification Table}{56}{section.7.3}%
+\contentsline {chapter}{\numberline {8}D/W/P Chain Equations (Desire/Wisdom/Power)}{57}{chapter.8}%
+\contentsline {section}{\numberline {8.1}Mathematical Definition}{57}{section.8.1}%
+\contentsline {section}{\numberline {8.2}D/W/P Scenario Equations}{61}{section.8.2}%
+\contentsline {subsection}{\numberline {8.2.1}Type 1: Complete D/W/P Chain (Success Path)}{61}{subsection.8.2.1}%
+\contentsline {subsection}{\numberline {8.2.2}Type 2: Incomplete Chain (Failure Modes)}{61}{subsection.8.2.2}%
+\contentsline {subsection}{\numberline {8.2.3}Type 3: Cross-Foundation Interactions}{62}{subsection.8.2.3}%
+\contentsline {subsection}{\numberline {8.2.4}Type 4: Simultaneous Multi-Foundation}{62}{subsection.8.2.4}%
+\contentsline {section}{\numberline {8.3}D/W/P Classification Table}{63}{section.8.3}%
+\contentsline {part}{II\hspace {1em}Scenario Classification System}{65}{part.2}%
+\contentsline {chapter}{\numberline {9}Master Scenario Type Classification}{67}{chapter.9}%
+\contentsline {section}{\numberline {9.1}Primary Scenario Categories}{67}{section.9.1}%
+\contentsline {subsection}{\numberline {9.1.1}Category A: State Scenarios}{67}{subsection.9.1.1}%
+\contentsline {subsection}{\numberline {9.1.2}Category B: Process Scenarios}{68}{subsection.9.1.2}%
+\contentsline {subsection}{\numberline {9.1.3}Category C: Dynamic Scenarios}{68}{subsection.9.1.3}%
+\contentsline {section}{\numberline {9.2}Scenario-to-Equation Decision Tree}{69}{section.9.2}%
+\contentsline {section}{\numberline {9.3}Complete Scenario Type Master Table}{70}{section.9.3}%
+\contentsline {chapter}{\numberline {A}Quick Reference Formulas}{73}{appendix.A}%
+\contentsline {section}{\numberline {A.1}High Lacunarity Quick Reference}{73}{section.A.1}%
+\contentsline {section}{\numberline {A.2}Psych\_Attractor Quick Reference}{73}{section.A.2}%
+\contentsline {section}{\numberline {A.3}Manipulation\_Fractal Quick Reference}{73}{section.A.3}%
+\contentsline {section}{\numberline {A.4}Hyperstition Quick Reference}{74}{section.A.4}%
+\contentsline {section}{\numberline {A.5}Quantum Superposition Quick Reference}{74}{section.A.5}%
+\contentsline {section}{\numberline {A.6}Collapse Condition Quick Reference}{74}{section.A.6}%
+\contentsline {section}{\numberline {A.7}D/W/P Quick Reference}{74}{section.A.7}%
+\contentsline {chapter}{\numberline {B}Symbol Glossary}{75}{appendix.B}%

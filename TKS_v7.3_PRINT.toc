@@ -1,0 +1,650 @@
+\contentsline {chapter}{v7.2 -> v7.3 Continuity Bridge}{iii}{chapter*.1}%
+\contentsline {chapter}{Guide to This Manual}{xxi}{chapter*.3}%
+\contentsline {part}{I\hspace {1em}Canonical Foundation (v6.1 Reference)}{1}{part.1}%
+\contentsline {chapter}{\numberline {1}Ontological Foundations}{3}{chapter.1}%
+\contentsline {section}{\numberline {1.1}The Four Worlds}{3}{section.1.1}%
+\contentsline {section}{\numberline {1.2}The Forty Elements}{3}{section.1.2}%
+\contentsline {section}{\numberline {1.3}The Ten Noetics}{4}{section.1.3}%
+\contentsline {section}{\numberline {1.4}The 7 Foundations and 28 Sub-Foundations}{4}{section.1.4}%
+\contentsline {subsection}{\numberline {1.4.1}The 7 Core Foundations}{4}{subsection.1.4.1}%
+\contentsline {subsection}{\numberline {1.4.2}The 28 Sub-Foundations}{5}{subsection.1.4.2}%
+\contentsline {section}{\numberline {1.5}The Twenty-Two Acquisitions}{5}{section.1.5}%
+\contentsline {chapter}{\numberline {2}Foundations as Algebra}{7}{chapter.2}%
+\contentsline {section}{\numberline {2.1}The Foundation Algebra}{7}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Foundation Homomorphisms}{8}{section.2.2}%
+\contentsline {section}{\numberline {2.3}The Category of Foundations}{9}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Foundation Inference System}{10}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}Formation Rules}{10}{subsection.2.4.1}%
+\contentsline {subsection}{\numberline {2.4.2}ACBE Descent Rules}{10}{subsection.2.4.2}%
+\contentsline {subsection}{\numberline {2.4.3}Foundation Interaction Rules}{10}{subsection.2.4.3}%
+\contentsline {subsection}{\numberline {2.4.4}Development Rules}{11}{subsection.2.4.4}%
+\contentsline {section}{\numberline {2.5}Categorical Semantics of Foundations}{11}{section.2.5}%
+\contentsline {section}{\numberline {2.6}Theorems on Foundations in TKS}{12}{section.2.6}%
+\contentsline {section}{\numberline {2.7}Soundness and Completeness}{13}{section.2.7}%
+\contentsline {part}{II\hspace {1em}Transfinite Noetic Fractals}{15}{part.2}%
+\contentsline {chapter}{\numberline {3}Ordinal Fractal Structures}{17}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Review: Transfinite Fractals from v7.2}{17}{section.3.1}%
+\contentsline {section}{\numberline {3.2}The Category of Ordinal Fractals}{17}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Objects and Morphisms of $\mathfrak {F}_{\mathbf {Ord}}$}{17}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Initial and Terminal Objects}{19}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.2.3}Products and Coproducts}{19}{subsection.3.2.3}%
+\contentsline {subsection}{\numberline {3.2.4}The Prefix Order as a Subcategory}{20}{subsection.3.2.4}%
+\contentsline {subsection}{\numberline {3.2.5}Limits and Colimits in $\mathfrak {F}_{\mathbf {Ord}}$}{20}{subsection.3.2.5}%
+\contentsline {subsection}{\numberline {3.2.6}Illustrative Example: Morphisms Between Grades}{21}{subsection.3.2.6}%
+\contentsline {section}{\numberline {3.3}Limits and Colimits in $\mathfrak {F}_{\mathbf {Ord}}$}{22}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Transfinite Induction on Fractals}{22}{section.3.4}%
+\contentsline {section}{\numberline {3.5}Large Cardinal Considerations}{22}{section.3.5}%
+\contentsline {chapter}{\numberline {4}Fractal Dimension Theory}{23}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Hausdorff Measure on Idea Space}{23}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Metric Foundations for Dimension}{23}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}Hausdorff Measure Construction}{24}{subsection.4.1.2}%
+\contentsline {section}{\numberline {4.2}Hausdorff Dimension of Fractal Orbits}{25}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Box-Counting Dimension}{25}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Definition and Basic Properties}{26}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Computational Aspects}{26}{subsection.4.3.2}%
+\contentsline {section}{\numberline {4.4}Noetic Interpretation of Dimension}{27}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Dimension as Noetic Complexity}{27}{subsection.4.4.1}%
+\contentsline {subsection}{\numberline {4.4.2}Information Content of Fractal Sequences}{28}{subsection.4.4.2}%
+\contentsline {subsection}{\numberline {4.4.3}Dimension of Attractor Sets}{28}{subsection.4.4.3}%
+\contentsline {section}{\numberline {4.5}Dimension of Eigenfractals}{29}{section.4.5}%
+\contentsline {section}{\numberline {4.6}The Noetic Dimension Theorem}{30}{section.4.6}%
+\contentsline {chapter}{\numberline {5}Iterated Function Systems on Ideas}{33}{chapter.5}%
+\contentsline {section}{\numberline {5.1}IFS Foundations}{33}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Classical IFS Theory}{33}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Noetic IFS on Idea Space}{34}{subsection.5.1.2}%
+\contentsline {section}{\numberline {5.2}Noetics as Contractive Operators}{34}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Contraction Analysis}{34}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Classification of Noetic Contractions}{35}{subsection.5.2.2}%
+\contentsline {section}{\numberline {5.3}The Hutchinson Operator}{36}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Definition and Basic Properties}{36}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Contractivity of the Hutchinson Operator}{37}{subsection.5.3.2}%
+\contentsline {section}{\numberline {5.4}Existence and Uniqueness of Attractors}{37}{section.5.4}%
+\contentsline {subsection}{\numberline {5.4.1}The Attractor Theorem}{38}{subsection.5.4.1}%
+\contentsline {subsection}{\numberline {5.4.2}Finite Space Simplifications}{39}{subsection.5.4.2}%
+\contentsline {section}{\numberline {5.5}Noetic IFS and Transfinite Evaluation}{39}{section.5.5}%
+\contentsline {subsection}{\numberline {5.5.1}From Fractals to IFS}{39}{subsection.5.5.1}%
+\contentsline {subsection}{\numberline {5.5.2}Composition and Iteration}{40}{subsection.5.5.2}%
+\contentsline {section}{\numberline {5.6}Attractor Properties and Self-Similarity}{40}{section.5.6}%
+\contentsline {subsection}{\numberline {5.6.1}Self-Similarity Structure}{41}{subsection.5.6.1}%
+\contentsline {subsection}{\numberline {5.6.2}Dimension of Attractors}{41}{subsection.5.6.2}%
+\contentsline {section}{\numberline {5.7}The Collage Theorem for TKS}{42}{section.5.7}%
+\contentsline {section}{\numberline {5.8}Main Theorem: Noetic IFS Characterization}{43}{section.5.8}%
+\contentsline {chapter}{\numberline {6}Fractal Self-Similarity}{45}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Exact Self-Similarity}{45}{section.6.1}%
+\contentsline {subsection}{\numberline {6.1.1}Definitions and Characterizations}{45}{subsection.6.1.1}%
+\contentsline {subsection}{\numberline {6.1.2}Examples of Exact Self-Similarity}{46}{subsection.6.1.2}%
+\contentsline {section}{\numberline {6.2}Statistical Self-Similarity}{47}{section.6.2}%
+\contentsline {subsection}{\numberline {6.2.1}Probabilistic IFS}{47}{subsection.6.2.1}%
+\contentsline {subsection}{\numberline {6.2.2}Statistical Self-Similarity}{48}{subsection.6.2.2}%
+\contentsline {subsection}{\numberline {6.2.3}Ergodic Theory on Fractal Space}{48}{subsection.6.2.3}%
+\contentsline {section}{\numberline {6.3}Self-Similar Measures}{49}{section.6.3}%
+\contentsline {subsection}{\numberline {6.3.1}The Hutchinson Measure}{49}{subsection.6.3.1}%
+\contentsline {subsection}{\numberline {6.3.2}Properties of Self-Similar Measures}{50}{subsection.6.3.2}%
+\contentsline {subsection}{\numberline {6.3.3}Measure-Theoretic Self-Similarity}{51}{subsection.6.3.3}%
+\contentsline {section}{\numberline {6.4}Lacunarity and Texture}{52}{section.6.4}%
+\contentsline {subsection}{\numberline {6.4.1}Lacunarity Fundamentals}{52}{subsection.6.4.1}%
+\contentsline {subsection}{\numberline {6.4.2}Lacunarity of Self-Similar Sets}{53}{subsection.6.4.2}%
+\contentsline {subsection}{\numberline {6.4.3}Texture Analysis}{53}{subsection.6.4.3}%
+\contentsline {subsection}{\numberline {6.4.4}Main Theorem: Lacunarity-Noetic Correspondence}{54}{subsection.6.4.4}%
+\contentsline {section}{\numberline {6.5}Chapter Summary and Connections}{56}{section.6.5}%
+\contentsline {chapter}{\numberline {7}Convergence and Stability of Transfinite Fractals}{57}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Ordinal Convergence}{57}{section.7.1}%
+\contentsline {subsection}{\numberline {7.1.1}Transfinite Sequences and Their Limits}{57}{subsection.7.1.1}%
+\contentsline {subsection}{\numberline {7.1.2}Rate of Convergence}{58}{subsection.7.1.2}%
+\contentsline {subsection}{\numberline {7.1.3}Convergence at Limit Ordinals}{59}{subsection.7.1.3}%
+\contentsline {section}{\numberline {7.2}Stability of Attractors}{59}{section.7.2}%
+\contentsline {subsection}{\numberline {7.2.1}The Attractor Map}{60}{subsection.7.2.1}%
+\contentsline {subsection}{\numberline {7.2.2}Perturbation of Noetic Sequences}{60}{subsection.7.2.2}%
+\contentsline {subsection}{\numberline {7.2.3}Sensitivity Analysis}{61}{subsection.7.2.3}%
+\contentsline {section}{\numberline {7.3}Basin of Attraction}{62}{section.7.3}%
+\contentsline {subsection}{\numberline {7.3.1}Basin Structure}{62}{subsection.7.3.1}%
+\contentsline {section}{\numberline {7.4}Omega-Limit Sets}{62}{section.7.4}%
+\contentsline {subsection}{\numberline {7.4.1}Definition and Basic Properties}{63}{subsection.7.4.1}%
+\contentsline {subsection}{\numberline {7.4.2}Periodic Orbits}{63}{subsection.7.4.2}%
+\contentsline {section}{\numberline {7.5}Lyapunov Exponents for Noetic Fractals}{64}{section.7.5}%
+\contentsline {subsection}{\numberline {7.5.1}Lyapunov Exponent Definition}{64}{subsection.7.5.1}%
+\contentsline {subsection}{\numberline {7.5.2}Interpretation and Classification}{64}{subsection.7.5.2}%
+\contentsline {subsection}{\numberline {7.5.3}Lyapunov Spectrum}{65}{subsection.7.5.3}%
+\contentsline {section}{\numberline {7.6}Stabilization Theorems}{65}{section.7.6}%
+\contentsline {subsection}{\numberline {7.6.1}Finite Stabilization}{66}{subsection.7.6.1}%
+\contentsline {subsection}{\numberline {7.6.2}Stabilization Ordinal Bounds}{67}{subsection.7.6.2}%
+\contentsline {subsection}{\numberline {7.6.3}Connection to v7.2 Results}{67}{subsection.7.6.3}%
+\contentsline {section}{\numberline {7.7}Chapter Summary and Connections}{68}{section.7.7}%
+\contentsline {chapter}{\numberline {8}Extended Fractal Calculus}{71}{chapter.8}%
+\contentsline {section}{\numberline {8.1}Fractal Derivatives}{71}{section.8.1}%
+\contentsline {subsection}{\numberline {8.1.1}The Fractal Derivative on Idea Space}{71}{subsection.8.1.1}%
+\contentsline {subsection}{\numberline {8.1.2}Global Fractal Derivative Operators}{72}{subsection.8.1.2}%
+\contentsline {subsection}{\numberline {8.1.3}Noetic Derivative Operators}{73}{subsection.8.1.3}%
+\contentsline {section}{\numberline {8.2}Fractal Integrals}{73}{section.8.2}%
+\contentsline {subsection}{\numberline {8.2.1}Hausdorff Measure Integration}{73}{subsection.8.2.1}%
+\contentsline {subsection}{\numberline {8.2.2}Integration over Attractor Sets}{74}{subsection.8.2.2}%
+\contentsline {subsection}{\numberline {8.2.3}Fractal Fubini Theorem}{75}{subsection.8.2.3}%
+\contentsline {subsection}{\numberline {8.2.4}Fractal Path Integrals}{75}{subsection.8.2.4}%
+\contentsline {section}{\numberline {8.3}Fractal Differential Equations}{76}{section.8.3}%
+\contentsline {subsection}{\numberline {8.3.1}Fractal ODEs on Idea Trajectories}{76}{subsection.8.3.1}%
+\contentsline {subsection}{\numberline {8.3.2}Existence and Uniqueness}{76}{subsection.8.3.2}%
+\contentsline {subsection}{\numberline {8.3.3}Connection to Transfinite Iteration}{77}{subsection.8.3.3}%
+\contentsline {section}{\numberline {8.4}Fractal Laplacian}{78}{section.8.4}%
+\contentsline {subsection}{\numberline {8.4.1}Definition of the Fractal Laplacian}{78}{subsection.8.4.1}%
+\contentsline {subsection}{\numberline {8.4.2}Spectral Properties}{79}{subsection.8.4.2}%
+\contentsline {subsection}{\numberline {8.4.3}Heat Kernel on Fractal Domains}{79}{subsection.8.4.3}%
+\contentsline {subsection}{\numberline {8.4.4}Connection to Noetic Dynamics}{80}{subsection.8.4.4}%
+\contentsline {section}{\numberline {8.5}Chapter Summary and Connections}{82}{section.8.5}%
+\contentsline {chapter}{\numberline {9}Transfinite Fractals and RPM Dynamics}{85}{chapter.9}%
+\contentsline {section}{\numberline {9.1}RPM Chains as Transfinite Fractals}{85}{section.9.1}%
+\contentsline {subsection}{\numberline {9.1.1}The RPM-Fractal Correspondence}{85}{subsection.9.1.1}%
+\contentsline {subsection}{\numberline {9.1.2}RPM Dynamics as Fractal Iteration}{86}{subsection.9.1.2}%
+\contentsline {section}{\numberline {9.2}Attractor Semantics for Goals}{87}{section.9.2}%
+\contentsline {subsection}{\numberline {9.2.1}Goals as Fixed Points}{87}{subsection.9.2.1}%
+\contentsline {subsection}{\numberline {9.2.2}Basin of Attraction}{87}{subsection.9.2.2}%
+\contentsline {subsection}{\numberline {9.2.3}Multi-Goal Dynamics}{88}{subsection.9.2.3}%
+\contentsline {section}{\numberline {9.3}Fractal Complexity of Acquisitions}{88}{section.9.3}%
+\contentsline {subsection}{\numberline {9.3.1}Acquisition Path Dimension}{88}{subsection.9.3.1}%
+\contentsline {subsection}{\numberline {9.3.2}Entropy of RPM Sequences}{89}{subsection.9.3.2}%
+\contentsline {subsection}{\numberline {9.3.3}Optimal Path Characterization}{90}{subsection.9.3.3}%
+\contentsline {section}{\numberline {9.4}Transfinite RPM and the Unified Semantic Theorem}{90}{section.9.4}%
+\contentsline {subsection}{\numberline {9.4.1}Transfinite RPM Extension}{90}{subsection.9.4.1}%
+\contentsline {subsection}{\numberline {9.4.2}The Unified Semantic Theorem}{91}{subsection.9.4.2}%
+\contentsline {section}{\numberline {9.5}Chapter Summary and v7.3 Math Track Handoff}{93}{section.9.5}%
+\contentsline {subsection}{\numberline {9.5.1}Key Theorems of v7.3 Math Track}{95}{subsection.9.5.1}%
+\contentsline {subsection}{\numberline {9.5.2}Open Problems for Future Work}{95}{subsection.9.5.2}%
+\contentsline {subsection}{\numberline {9.5.3}Handoff Notes for Continuation}{95}{subsection.9.5.3}%
+\contentsline {part}{III\hspace {1em}Extended TKS Language and Virtual Machine}{99}{part.3}%
+\contentsline {chapter}{\numberline {10}Extended TKS Language Specification}{101}{chapter.10}%
+\contentsline {section}{\numberline {10.1}Review: v7.2 Language Core}{101}{section.10.1}%
+\contentsline {section}{\numberline {10.2}Extended Lexical Structure}{102}{section.10.2}%
+\contentsline {subsection}{\numberline {10.2.1}New Keywords}{102}{subsection.10.2.1}%
+\contentsline {subsection}{\numberline {10.2.2}Extended Token Set}{103}{subsection.10.2.2}%
+\contentsline {section}{\numberline {10.3}Extended Grammar}{103}{section.10.3}%
+\contentsline {subsection}{\numberline {10.3.1}Top-Level Declarations}{103}{subsection.10.3.1}%
+\contentsline {subsection}{\numberline {10.3.2}Expression Extensions}{104}{subsection.10.3.2}%
+\contentsline {section}{\numberline {10.4}Transfinite Expression Syntax}{104}{section.10.4}%
+\contentsline {subsection}{\numberline {10.4.1}Transfinite Fractal Literals}{104}{subsection.10.4.1}%
+\contentsline {subsection}{\numberline {10.4.2}Transfinite Loop Syntax}{106}{subsection.10.4.2}%
+\contentsline {section}{\numberline {10.5}Effect Declaration Syntax}{106}{section.10.5}%
+\contentsline {subsection}{\numberline {10.5.1}Effect Declarations}{106}{subsection.10.5.1}%
+\contentsline {section}{\numberline {10.6}Handler Syntax}{107}{section.10.6}%
+\contentsline {subsection}{\numberline {10.6.1}Handler Expressions}{107}{subsection.10.6.1}%
+\contentsline {subsection}{\numberline {10.6.2}Quantum Operation Syntax}{108}{subsection.10.6.2}%
+\contentsline {section}{\numberline {10.7}Summary: v7.3 Syntax Extensions}{109}{section.10.7}%
+\contentsline {chapter}{\numberline {11}Extended Type System}{111}{chapter.11}%
+\contentsline {section}{\numberline {11.1}Review: v7.2 Type System Core}{111}{section.11.1}%
+\contentsline {section}{\numberline {11.2}Effect Types}{111}{section.11.2}%
+\contentsline {subsection}{\numberline {11.2.1}Effect Type Syntax}{112}{subsection.11.2.1}%
+\contentsline {section}{\numberline {11.3}Row Polymorphism for Effects}{112}{section.11.3}%
+\contentsline {subsection}{\numberline {11.3.1}Row Variables and Quantification}{113}{subsection.11.3.1}%
+\contentsline {subsection}{\numberline {11.3.2}Row Unification}{113}{subsection.11.3.2}%
+\contentsline {section}{\numberline {11.4}Ordinal-Indexed Types}{114}{section.11.4}%
+\contentsline {subsection}{\numberline {11.4.1}Ordinal Type Indices}{114}{subsection.11.4.1}%
+\contentsline {subsection}{\numberline {11.4.2}Bounded Ordinal Quantification}{114}{subsection.11.4.2}%
+\contentsline {section}{\numberline {11.5}World-Stratified Types}{115}{section.11.5}%
+\contentsline {subsection}{\numberline {11.5.1}World-Parameterized Types}{115}{subsection.11.5.1}%
+\contentsline {subsection}{\numberline {11.5.2}ACBE-Respecting Type Coercions}{115}{subsection.11.5.2}%
+\contentsline {section}{\numberline {11.6}Subtyping for Effects}{116}{section.11.6}%
+\contentsline {subsection}{\numberline {11.6.1}Effect Row Subtyping}{116}{subsection.11.6.1}%
+\contentsline {subsection}{\numberline {11.6.2}Type Subtyping with Effects}{116}{subsection.11.6.2}%
+\contentsline {section}{\numberline {11.7}Typing Rules for v7.3 Constructs}{117}{section.11.7}%
+\contentsline {subsection}{\numberline {11.7.1}Effect Operation Typing}{117}{subsection.11.7.1}%
+\contentsline {subsection}{\numberline {11.7.2}Handler Typing}{117}{subsection.11.7.2}%
+\contentsline {subsection}{\numberline {11.7.3}Transfinite Fractal Typing}{117}{subsection.11.7.3}%
+\contentsline {subsection}{\numberline {11.7.4}Quantum Operation Typing}{117}{subsection.11.7.4}%
+\contentsline {section}{\numberline {11.8}Extended Algorithm W}{118}{section.11.8}%
+\contentsline {subsection}{\numberline {11.8.1}Extended Type Inference State}{118}{subsection.11.8.1}%
+\contentsline {subsection}{\numberline {11.8.2}Principal Types with Effects}{119}{subsection.11.8.2}%
+\contentsline {section}{\numberline {11.9}Type Soundness}{119}{section.11.9}%
+\contentsline {chapter}{\numberline {12}Algebraic Effect Handlers}{121}{chapter.12}%
+\contentsline {section}{\numberline {12.1}Effect Handler Theory}{121}{section.12.1}%
+\contentsline {subsection}{\numberline {12.1.1}Algebraic Effects and Operations}{121}{subsection.12.1.1}%
+\contentsline {subsection}{\numberline {12.1.2}Free Monad Interpretation}{122}{subsection.12.1.2}%
+\contentsline {subsection}{\numberline {12.1.3}Delimited Continuations}{122}{subsection.12.1.3}%
+\contentsline {subsection}{\numberline {12.1.4}Handler Syntax and Structure}{123}{subsection.12.1.4}%
+\contentsline {section}{\numberline {12.2}RPM Effect Handlers}{123}{section.12.2}%
+\contentsline {subsection}{\numberline {12.2.1}RPM Effect Operations}{123}{subsection.12.2.1}%
+\contentsline {subsection}{\numberline {12.2.2}RPM Handler Definition}{124}{subsection.12.2.2}%
+\contentsline {subsection}{\numberline {12.2.3}Connection to v7.2 RPM Monad}{124}{subsection.12.2.3}%
+\contentsline {subsection}{\numberline {12.2.4}Deep vs Shallow RPM Handlers}{124}{subsection.12.2.4}%
+\contentsline {section}{\numberline {12.3}Quantum Effect Handlers}{125}{section.12.3}%
+\contentsline {subsection}{\numberline {12.3.1}Quantum Effect Operations}{125}{subsection.12.3.1}%
+\contentsline {subsection}{\numberline {12.3.2}Quantum Handler Definition}{125}{subsection.12.3.2}%
+\contentsline {subsection}{\numberline {12.3.3}Measurement and Collapse}{126}{subsection.12.3.3}%
+\contentsline {subsection}{\numberline {12.3.4}Entanglement Handling}{126}{subsection.12.3.4}%
+\contentsline {section}{\numberline {12.4}Handler Composition}{126}{section.12.4}%
+\contentsline {subsection}{\numberline {12.4.1}Handler Nesting}{126}{subsection.12.4.1}%
+\contentsline {subsection}{\numberline {12.4.2}Effect Commutativity}{127}{subsection.12.4.2}%
+\contentsline {subsection}{\numberline {12.4.3}Handler Combinators}{127}{subsection.12.4.3}%
+\contentsline {section}{\numberline {12.5}Operational Semantics of Handlers}{127}{section.12.5}%
+\contentsline {subsection}{\numberline {12.5.1}Values and Evaluation Contexts}{127}{subsection.12.5.1}%
+\contentsline {subsection}{\numberline {12.5.2}Small-Step Reduction Rules}{128}{subsection.12.5.2}%
+\contentsline {subsection}{\numberline {12.5.3}RPM Handler Reduction Examples}{128}{subsection.12.5.3}%
+\contentsline {subsection}{\numberline {12.5.4}Quantum Handler Reduction}{129}{subsection.12.5.4}%
+\contentsline {section}{\numberline {12.6}Type Soundness for Handlers}{129}{section.12.6}%
+\contentsline {chapter}{\numberline {13}Extended Compiler Architecture}{133}{chapter.13}%
+\contentsline {section}{\numberline {13.1}Extended Lexer}{133}{section.13.1}%
+\contentsline {subsection}{\numberline {13.1.1}Token Set Extensions}{133}{subsection.13.1.1}%
+\contentsline {subsection}{\numberline {13.1.2}Unicode Support}{134}{subsection.13.1.2}%
+\contentsline {subsection}{\numberline {13.1.3}Lexer State Machine}{134}{subsection.13.1.3}%
+\contentsline {subsection}{\numberline {13.1.4}Lexer Pseudocode}{135}{subsection.13.1.4}%
+\contentsline {section}{\numberline {13.2}Extended Parser}{136}{section.13.2}%
+\contentsline {subsection}{\numberline {13.2.1}Extended Grammar}{136}{subsection.13.2.1}%
+\contentsline {subsection}{\numberline {13.2.2}Precedence and Associativity}{137}{subsection.13.2.2}%
+\contentsline {subsection}{\numberline {13.2.3}Parser Implementation}{138}{subsection.13.2.3}%
+\contentsline {subsection}{\numberline {13.2.4}Error Recovery}{139}{subsection.13.2.4}%
+\contentsline {section}{\numberline {13.3}Extended AST}{139}{section.13.3}%
+\contentsline {subsection}{\numberline {13.3.1}AST Node Types}{139}{subsection.13.3.1}%
+\contentsline {subsection}{\numberline {13.3.2}AST Annotations}{141}{subsection.13.3.2}%
+\contentsline {subsection}{\numberline {13.3.3}AST Well-formedness}{142}{subsection.13.3.3}%
+\contentsline {section}{\numberline {13.4}Effect-Aware Intermediate Representation}{142}{section.13.4}%
+\contentsline {subsection}{\numberline {13.4.1}IR Design}{142}{subsection.13.4.1}%
+\contentsline {subsection}{\numberline {13.4.2}ANF Transformation}{144}{subsection.13.4.2}%
+\contentsline {subsection}{\numberline {13.4.3}CPS Transformation for Handlers}{144}{subsection.13.4.3}%
+\contentsline {subsection}{\numberline {13.4.4}IR Typing Preservation}{145}{subsection.13.4.4}%
+\contentsline {section}{\numberline {13.5}Optimization Passes}{146}{section.13.5}%
+\contentsline {subsection}{\numberline {13.5.1}Effect-Aware Optimization Framework}{146}{subsection.13.5.1}%
+\contentsline {subsection}{\numberline {13.5.2}Dead Effect Elimination}{146}{subsection.13.5.2}%
+\contentsline {subsection}{\numberline {13.5.3}Handler Fusion}{146}{subsection.13.5.3}%
+\contentsline {subsection}{\numberline {13.5.4}Handler Inlining}{147}{subsection.13.5.4}%
+\contentsline {subsection}{\numberline {13.5.5}Ordinal Loop Optimization}{147}{subsection.13.5.5}%
+\contentsline {chapter}{\numberline {14}TKS Virtual Machine}{151}{chapter.14}%
+\contentsline {section}{\numberline {14.1}VM Architecture}{151}{section.14.1}%
+\contentsline {subsection}{\numberline {14.1.1}Design Overview}{151}{subsection.14.1.1}%
+\contentsline {subsection}{\numberline {14.1.2}VM State}{151}{subsection.14.1.2}%
+\contentsline {subsection}{\numberline {14.1.3}Memory Model}{152}{subsection.14.1.3}%
+\contentsline {section}{\numberline {14.2}Instruction Set}{153}{section.14.2}%
+\contentsline {subsection}{\numberline {14.2.1}Instruction Encoding}{153}{subsection.14.2.1}%
+\contentsline {subsection}{\numberline {14.2.2}Core Instructions}{154}{subsection.14.2.2}%
+\contentsline {subsection}{\numberline {14.2.3}TKS Domain Instructions}{154}{subsection.14.2.3}%
+\contentsline {subsection}{\numberline {14.2.4}RPM Instructions}{155}{subsection.14.2.4}%
+\contentsline {subsection}{\numberline {14.2.5}Effect Instructions (v7.3)}{155}{subsection.14.2.5}%
+\contentsline {subsection}{\numberline {14.2.6}Transfinite Instructions (v7.3)}{156}{subsection.14.2.6}%
+\contentsline {subsection}{\numberline {14.2.7}Quantum Instructions (v7.3)}{156}{subsection.14.2.7}%
+\contentsline {subsection}{\numberline {14.2.8}Closure and Allocation Instructions}{157}{subsection.14.2.8}%
+\contentsline {subsection}{\numberline {14.2.9}Instruction Examples}{157}{subsection.14.2.9}%
+\contentsline {section}{\numberline {14.3}RPM-Aware Execution}{157}{section.14.3}%
+\contentsline {subsection}{\numberline {14.3.1}RPM State in VM Context}{157}{subsection.14.3.1}%
+\contentsline {subsection}{\numberline {14.3.2}RPM Instruction Semantics}{158}{subsection.14.3.2}%
+\contentsline {subsection}{\numberline {14.3.3}Goal and Prerequisite Tracking}{159}{subsection.14.3.3}%
+\contentsline {section}{\numberline {14.4}Effect Handling in VM}{159}{section.14.4}%
+\contentsline {subsection}{\numberline {14.4.1}Handler Stack Management}{160}{subsection.14.4.1}%
+\contentsline {subsection}{\numberline {14.4.2}Continuation Capture and Restoration}{160}{subsection.14.4.2}%
+\contentsline {subsection}{\numberline {14.4.3}Handler Return Clause}{162}{subsection.14.4.3}%
+\contentsline {subsection}{\numberline {14.4.4}Correctness Theorem}{162}{subsection.14.4.4}%
+\contentsline {section}{\numberline {14.5}Transfinite Loop Execution}{163}{section.14.5}%
+\contentsline {subsection}{\numberline {14.5.1}Ordinal Representation}{164}{subsection.14.5.1}%
+\contentsline {subsection}{\numberline {14.5.2}Transfinite Loop Execution Model}{164}{subsection.14.5.2}%
+\contentsline {subsection}{\numberline {14.5.3}Convergence Detection}{165}{subsection.14.5.3}%
+\contentsline {section}{\numberline {14.6}Garbage Collection}{166}{section.14.6}%
+\contentsline {subsection}{\numberline {14.6.1}GC Design}{166}{subsection.14.6.1}%
+\contentsline {subsection}{\numberline {14.6.2}Idea Persistence}{166}{subsection.14.6.2}%
+\contentsline {chapter}{\numberline {15}Module System}{169}{chapter.15}%
+\contentsline {section}{\numberline {15.1}Module Syntax}{169}{section.15.1}%
+\contentsline {subsection}{\numberline {15.1.1}Module Declarations}{169}{subsection.15.1.1}%
+\contentsline {subsection}{\numberline {15.1.2}Import Statements}{170}{subsection.15.1.2}%
+\contentsline {subsection}{\numberline {15.1.3}Qualified Names and Aliasing}{171}{subsection.15.1.3}%
+\contentsline {subsection}{\numberline {15.1.4}Module Declarations}{171}{subsection.15.1.4}%
+\contentsline {section}{\numberline {15.2}Module Types}{171}{section.15.2}%
+\contentsline {subsection}{\numberline {15.2.1}Signature Declarations}{172}{subsection.15.2.1}%
+\contentsline {subsection}{\numberline {15.2.2}Abstract vs Transparent Type Components}{172}{subsection.15.2.2}%
+\contentsline {subsection}{\numberline {15.2.3}Value and Effect Specifications}{173}{subsection.15.2.3}%
+\contentsline {subsection}{\numberline {15.2.4}Signature Matching and Subtyping}{173}{subsection.15.2.4}%
+\contentsline {section}{\numberline {15.3}Functor Modules}{174}{section.15.3}%
+\contentsline {subsection}{\numberline {15.3.1}Functor Syntax}{174}{subsection.15.3.1}%
+\contentsline {subsection}{\numberline {15.3.2}Functor Application}{175}{subsection.15.3.2}%
+\contentsline {subsection}{\numberline {15.3.3}Higher-Order Functors}{175}{subsection.15.3.3}%
+\contentsline {subsection}{\numberline {15.3.4}Applicative vs Generative Functors}{176}{subsection.15.3.4}%
+\contentsline {section}{\numberline {15.4}Separate Compilation}{176}{section.15.4}%
+\contentsline {subsection}{\numberline {15.4.1}File Organization}{176}{subsection.15.4.1}%
+\contentsline {subsection}{\numberline {15.4.2}Interface Files}{177}{subsection.15.4.2}%
+\contentsline {subsection}{\numberline {15.4.3}Implementation Files}{178}{subsection.15.4.3}%
+\contentsline {subsection}{\numberline {15.4.4}Compilation Pipeline}{179}{subsection.15.4.4}%
+\contentsline {subsection}{\numberline {15.4.5}Linking and Dependency Resolution}{179}{subsection.15.4.5}%
+\contentsline {section}{\numberline {15.5}Standard Library}{180}{section.15.5}%
+\contentsline {subsection}{\numberline {15.5.1}Library Overview}{180}{subsection.15.5.1}%
+\contentsline {subsection}{\numberline {15.5.2}TKS.Core}{180}{subsection.15.5.2}%
+\contentsline {subsection}{\numberline {15.5.3}TKS.Noetics}{181}{subsection.15.5.3}%
+\contentsline {subsection}{\numberline {15.5.4}TKS.RPM}{182}{subsection.15.5.4}%
+\contentsline {subsection}{\numberline {15.5.5}TKS.Fractals}{183}{subsection.15.5.5}%
+\contentsline {subsection}{\numberline {15.5.6}TKS.Quantum}{184}{subsection.15.5.6}%
+\contentsline {subsection}{\numberline {15.5.7}Module Soundness}{185}{subsection.15.5.7}%
+\contentsline {chapter}{\numberline {16}Foreign Function Interface}{189}{chapter.16}%
+\contentsline {section}{\numberline {16.1}FFI Declarations}{189}{section.16.1}%
+\contentsline {subsection}{\numberline {16.1.1}External Function Declarations}{189}{subsection.16.1.1}%
+\contentsline {subsection}{\numberline {16.1.2}Library Linking}{190}{subsection.16.1.2}%
+\contentsline {subsection}{\numberline {16.1.3}Variadic Functions}{190}{subsection.16.1.3}%
+\contentsline {section}{\numberline {16.2}Type Marshalling}{191}{section.16.2}%
+\contentsline {subsection}{\numberline {16.2.1}Foreign Type System}{191}{subsection.16.2.1}%
+\contentsline {subsection}{\numberline {16.2.2}Automatic Marshalling}{192}{subsection.16.2.2}%
+\contentsline {subsection}{\numberline {16.2.3}Custom Marshallers}{192}{subsection.16.2.3}%
+\contentsline {subsection}{\numberline {16.2.4}TKS Domain Type Marshalling}{194}{subsection.16.2.4}%
+\contentsline {section}{\numberline {16.3}Safety and Effects}{195}{section.16.3}%
+\contentsline {subsection}{\numberline {16.3.1}Safe vs Unsafe FFI}{195}{subsection.16.3.1}%
+\contentsline {subsection}{\numberline {16.3.2}FFI Effects}{196}{subsection.16.3.2}%
+\contentsline {subsection}{\numberline {16.3.3}Memory Safety}{197}{subsection.16.3.3}%
+\contentsline {section}{\numberline {16.4}Callbacks}{197}{section.16.4}%
+\contentsline {subsection}{\numberline {16.4.1}Function Pointer Creation}{197}{subsection.16.4.1}%
+\contentsline {subsection}{\numberline {16.4.2}Callback Lifetime}{198}{subsection.16.4.2}%
+\contentsline {section}{\numberline {16.5}Platform Bindings}{199}{section.16.5}%
+\contentsline {subsection}{\numberline {16.5.1}File System}{199}{subsection.16.5.1}%
+\contentsline {subsection}{\numberline {16.5.2}Networking}{200}{subsection.16.5.2}%
+\contentsline {subsection}{\numberline {16.5.3}Process Management}{200}{subsection.16.5.3}%
+\contentsline {subsection}{\numberline {16.5.4}Concurrency Primitives}{201}{subsection.16.5.4}%
+\contentsline {subsection}{\numberline {16.5.5}External Library Integration}{202}{subsection.16.5.5}%
+\contentsline {section}{\numberline {16.6}Chapter 7 Summary and v7.3 Compiler Track Handoff}{203}{section.16.6}%
+\contentsline {subsection}{\numberline {16.6.1}Complete v7.3 Compiler Track Summary}{204}{subsection.16.6.1}%
+\contentsline {subsection}{\numberline {16.6.2}Key Components Checklist}{205}{subsection.16.6.2}%
+\contentsline {subsection}{\numberline {16.6.3}Implementation Priorities}{205}{subsection.16.6.3}%
+\contentsline {subsection}{\numberline {16.6.4}Detailed Handoff Notes}{206}{subsection.16.6.4}%
+\contentsline {part}{IV\hspace {1em}Quantum Noetics}{209}{part.4}%
+\contentsline {chapter}{\numberline {17}Hilbert Space Semantics for Ideas}{211}{chapter.17}%
+\contentsline {section}{\numberline {17.1}The Base Hilbert Space of Ideas}{211}{section.17.1}%
+\contentsline {section}{\numberline {17.2}Embedding of Classical Idea States}{212}{section.17.2}%
+\contentsline {section}{\numberline {17.3}Inner Product as Similarity and Interference}{213}{section.17.3}%
+\contentsline {section}{\numberline {17.4}Noetic Operators on the Idea Hilbert Space}{215}{section.17.4}%
+\contentsline {chapter}{\numberline {18}Quantum Noetic Operators}{217}{chapter.18}%
+\contentsline {section}{\numberline {18.1}Review: Noetic Hilbert Spaces from v7.2}{217}{section.18.1}%
+\contentsline {section}{\numberline {18.2}The C*-Algebra of Noetic Operators}{217}{section.18.2}%
+\contentsline {section}{\numberline {18.3}Noetic Commutators and Non-Commutativity}{219}{section.18.3}%
+\contentsline {section}{\numberline {18.4}Unitarity and Hermiticity}{221}{section.18.4}%
+\contentsline {section}{\numberline {18.5}Spectral Theory of Noetic Operators}{222}{section.18.5}%
+\contentsline {chapter}{\numberline {19}Spectral Theory of Noetics}{227}{chapter.19}%
+\contentsline {section}{\numberline {19.1}Spectrum of Each Noetic}{227}{section.19.1}%
+\contentsline {section}{\numberline {19.2}Spectral Decomposition}{227}{section.19.2}%
+\contentsline {section}{\numberline {19.3}Functional Calculus}{227}{section.19.3}%
+\contentsline {section}{\numberline {19.4}Joint Spectra}{227}{section.19.4}%
+\contentsline {section}{\numberline {19.5}Spectral Gaps}{227}{section.19.5}%
+\contentsline {chapter}{\numberline {20}Density Matrix Formalism}{229}{chapter.20}%
+\contentsline {section}{\numberline {20.1}Pure vs Mixed Noetic States}{229}{section.20.1}%
+\contentsline {section}{\numberline {20.2}Density Matrix Properties}{231}{section.20.2}%
+\contentsline {section}{\numberline {20.3}Time Evolution of Density Matrices}{233}{section.20.3}%
+\contentsline {section}{\numberline {20.4}Noetic Mixtures}{235}{section.20.4}%
+\contentsline {section}{\numberline {20.5}Partial Trace and Reduced States}{236}{section.20.5}%
+\contentsline {chapter}{\numberline {21}Quantum Channels and Noetic Dynamics}{239}{chapter.21}%
+\contentsline {section}{\numberline {21.1}Completely Positive Maps}{239}{section.21.1}%
+\contentsline {subsection}{\numberline {21.1.1}Positive and Completely Positive Maps}{239}{subsection.21.1.1}%
+\contentsline {subsection}{\numberline {21.1.2}Choi-Jamio\l {}kowski Isomorphism}{240}{subsection.21.1.2}%
+\contentsline {section}{\numberline {21.2}Kraus Representation}{241}{section.21.2}%
+\contentsline {section}{\numberline {21.3}Noetic Channels}{243}{section.21.3}%
+\contentsline {subsection}{\numberline {21.3.1}Depolarizing Channel}{243}{subsection.21.3.1}%
+\contentsline {subsection}{\numberline {21.3.2}Dephasing Channel}{244}{subsection.21.3.2}%
+\contentsline {subsection}{\numberline {21.3.3}World Dephasing}{245}{subsection.21.3.3}%
+\contentsline {subsection}{\numberline {21.3.4}Amplitude Damping}{245}{subsection.21.3.4}%
+\contentsline {subsection}{\numberline {21.3.5}Fixed Points and Attractors}{246}{subsection.21.3.5}%
+\contentsline {section}{\numberline {21.4}Channel Composition}{247}{section.21.4}%
+\contentsline {section}{\numberline {21.5}Lindblad Master Equation}{247}{section.21.5}%
+\contentsline {subsection}{\numberline {21.5.1}Quantum Dynamical Semigroups}{247}{subsection.21.5.1}%
+\contentsline {subsection}{\numberline {21.5.2}Lindblad Form}{248}{subsection.21.5.2}%
+\contentsline {subsection}{\numberline {21.5.3}Noetic Jump Operators}{249}{subsection.21.5.3}%
+\contentsline {subsection}{\numberline {21.5.4}Steady States of Lindblad Dynamics}{249}{subsection.21.5.4}%
+\contentsline {chapter}{\numberline {22}Noetic Entanglement}{251}{chapter.22}%
+\contentsline {section}{\numberline {22.1}Bipartite Noetic States}{251}{section.22.1}%
+\contentsline {subsection}{\numberline {22.1.1}Tensor Product of Idea Spaces}{251}{subsection.22.1.1}%
+\contentsline {subsection}{\numberline {22.1.2}Schmidt Decomposition}{252}{subsection.22.1.2}%
+\contentsline {subsection}{\numberline {22.1.3}Separable and Entangled Mixed States}{253}{subsection.22.1.3}%
+\contentsline {section}{\numberline {22.2}Entanglement Measures}{254}{section.22.2}%
+\contentsline {subsection}{\numberline {22.2.1}Entanglement Entropy}{254}{subsection.22.2.1}%
+\contentsline {subsection}{\numberline {22.2.2}Entanglement of Formation}{254}{subsection.22.2.2}%
+\contentsline {subsection}{\numberline {22.2.3}Negativity and PPT Criterion}{255}{subsection.22.2.3}%
+\contentsline {subsection}{\numberline {22.2.4}Concurrence}{256}{subsection.22.2.4}%
+\contentsline {section}{\numberline {22.3}Noetic Bell States and Maximal Entanglement}{256}{section.22.3}%
+\contentsline {subsection}{\numberline {22.3.1}Bell Basis for TKS}{256}{subsection.22.3.1}%
+\contentsline {subsection}{\numberline {22.3.2}World-Restricted Bell States}{257}{subsection.22.3.2}%
+\contentsline {subsection}{\numberline {22.3.3}Bell Inequalities in TKS}{257}{subsection.22.3.3}%
+\contentsline {section}{\numberline {22.4}World-World Entanglement}{258}{section.22.4}%
+\contentsline {subsection}{\numberline {22.4.1}Inter-World Entanglement Structure}{258}{subsection.22.4.1}%
+\contentsline {subsection}{\numberline {22.4.2}ACBE and Entanglement Dynamics}{259}{subsection.22.4.2}%
+\contentsline {subsection}{\numberline {22.4.3}Monogamy of Entanglement}{260}{subsection.22.4.3}%
+\contentsline {section}{\numberline {22.5}Multipartite Entanglement}{260}{section.22.5}%
+\contentsline {subsection}{\numberline {22.5.1}Tripartite Hilbert Space}{260}{subsection.22.5.1}%
+\contentsline {subsection}{\numberline {22.5.2}GHZ and W States}{261}{subsection.22.5.2}%
+\contentsline {subsection}{\numberline {22.5.3}Noetic Graph States}{261}{subsection.22.5.3}%
+\contentsline {chapter}{\numberline {23}Quantum Measurement in TKS}{263}{chapter.23}%
+\contentsline {section}{\numberline {23.1}Projective Measurements}{263}{section.23.1}%
+\contentsline {subsection}{\numberline {23.1.1}Projection-Valued Measures}{263}{subsection.23.1.1}%
+\contentsline {subsection}{\numberline {23.1.2}Measurement in the Idea Basis}{264}{subsection.23.1.2}%
+\contentsline {subsection}{\numberline {23.1.3}Post-Measurement State Collapse}{265}{subsection.23.1.3}%
+\contentsline {subsection}{\numberline {23.1.4}Measurement on Bipartite States}{266}{subsection.23.1.4}%
+\contentsline {section}{\numberline {23.2}POVM Measurements}{266}{section.23.2}%
+\contentsline {subsection}{\numberline {23.2.1}POVM Definition and Properties}{266}{subsection.23.2.1}%
+\contentsline {subsection}{\numberline {23.2.2}POVM from Kraus Operators}{267}{subsection.23.2.2}%
+\contentsline {subsection}{\numberline {23.2.3}Important POVMs for TKS}{267}{subsection.23.2.3}%
+\contentsline {subsection}{\numberline {23.2.4}Neumark's Dilation Theorem}{268}{subsection.23.2.4}%
+\contentsline {section}{\numberline {23.3}Noetic Observables}{268}{section.23.3}%
+\contentsline {subsection}{\numberline {23.3.1}General Observable Theory}{269}{subsection.23.3.1}%
+\contentsline {subsection}{\numberline {23.3.2}World Observable}{269}{subsection.23.3.2}%
+\contentsline {subsection}{\numberline {23.3.3}Element Observable}{270}{subsection.23.3.3}%
+\contentsline {subsection}{\numberline {23.3.4}Noetic-Induced Observables}{270}{subsection.23.3.4}%
+\contentsline {subsection}{\numberline {23.3.5}Compatible and Incompatible Observables}{271}{subsection.23.3.5}%
+\contentsline {section}{\numberline {23.4}Measurement Disturbance}{271}{section.23.4}%
+\contentsline {subsection}{\numberline {23.4.1}State Disturbance}{272}{subsection.23.4.1}%
+\contentsline {subsection}{\numberline {23.4.2}Measurement Back-Action on Entangled States}{272}{subsection.23.4.2}%
+\contentsline {subsection}{\numberline {23.4.3}Quantum Zeno Effect}{272}{subsection.23.4.3}%
+\contentsline {section}{\numberline {23.5}Weak Measurements}{273}{section.23.5}%
+\contentsline {subsection}{\numberline {23.5.1}Weak Measurement Formalism}{273}{subsection.23.5.1}%
+\contentsline {subsection}{\numberline {23.5.2}Weak Values in TKS Context}{274}{subsection.23.5.2}%
+\contentsline {subsection}{\numberline {23.5.3}Weak Measurement and Classical TKS}{274}{subsection.23.5.3}%
+\contentsline {chapter}{\numberline {24}Quantum Noetic Fractals}{277}{chapter.24}%
+\contentsline {section}{\numberline {24.1}Quantum Fractal Operators}{277}{section.24.1}%
+\contentsline {subsection}{\numberline {24.1.1}Finite Quantum Fractals}{277}{subsection.24.1.1}%
+\contentsline {subsection}{\numberline {24.1.2}Spectral Properties of Finite Quantum Fractals}{278}{subsection.24.1.2}%
+\contentsline {subsection}{\numberline {24.1.3}Quantum Fractal Algebra}{278}{subsection.24.1.3}%
+\contentsline {section}{\numberline {24.2}Transfinite Quantum Fractals}{279}{section.24.2}%
+\contentsline {subsection}{\numberline {24.2.1}Ordinal-Indexed Quantum Operators}{279}{subsection.24.2.1}%
+\contentsline {subsection}{\numberline {24.2.2}Transfinite Operator Composition}{280}{subsection.24.2.2}%
+\contentsline {section}{\numberline {24.3}Quantum Eigenfractals}{280}{section.24.3}%
+\contentsline {subsection}{\numberline {24.3.1}Eigenstates of Finite Fractals}{280}{subsection.24.3.1}%
+\contentsline {subsection}{\numberline {24.3.2}Non-Classical Eigenfractals}{281}{subsection.24.3.2}%
+\contentsline {subsection}{\numberline {24.3.3}Spectral Decomposition of Quantum Fractals}{281}{subsection.24.3.3}%
+\contentsline {section}{\numberline {24.4}Quantum Fractal Attractors}{282}{section.24.4}%
+\contentsline {subsection}{\numberline {24.4.1}Quantum Iterated Function Systems}{282}{subsection.24.4.1}%
+\contentsline {subsection}{\numberline {24.4.2}Fixed-Point Density Matrices}{282}{subsection.24.4.2}%
+\contentsline {subsection}{\numberline {24.4.3}Structure of Quantum Attractors}{283}{subsection.24.4.3}%
+\contentsline {section}{\numberline {24.5}Decoherence and Fractal Dynamics}{284}{section.24.5}%
+\contentsline {subsection}{\numberline {24.5.1}Decoherence Channels}{284}{subsection.24.5.1}%
+\contentsline {subsection}{\numberline {24.5.2}Decohered Quantum Fractals}{284}{subsection.24.5.2}%
+\contentsline {subsection}{\numberline {24.5.3}Environment-Induced Superselection}{285}{subsection.24.5.3}%
+\contentsline {subsection}{\numberline {24.5.4}Decoherence Time Scales}{286}{subsection.24.5.4}%
+\contentsline {section}{\numberline {24.6}Quantum-Classical Correspondence}{286}{section.24.6}%
+\contentsline {subsection}{\numberline {24.6.1}Ehrenfest Theorem for Noetic Fractals}{286}{subsection.24.6.1}%
+\contentsline {subsection}{\numberline {24.6.2}Correspondence Conditions}{287}{subsection.24.6.2}%
+\contentsline {subsection}{\numberline {24.6.3}Main Correspondence Theorem}{287}{subsection.24.6.3}%
+\contentsline {part}{V\hspace {1em}Noetic Meta-System: 2-Categories and Topoi}{291}{part.5}%
+\contentsline {chapter}{\numberline {25}2-Categorical Structure of TKS}{293}{chapter.25}%
+\contentsline {section}{\numberline {25.1}Review: Monoidal 2-Categories from v7.2}{293}{section.25.1}%
+\contentsline {section}{\numberline {25.2}TKS as a 2-Category: Overview}{293}{section.25.2}%
+\contentsline {subsection}{\numberline {25.2.1}Objects: Semantic Domains and Worlds}{293}{subsection.25.2.1}%
+\contentsline {subsection}{\numberline {25.2.2}1-Morphisms: Noetic Transformations, ACBE Maps, and RPM Flows}{294}{subsection.25.2.2}%
+\contentsline {subsection}{\numberline {25.2.3}2-Morphisms: Natural Transformations and Fractal Evolution}{295}{subsection.25.2.3}%
+\contentsline {subsection}{\numberline {25.2.4}Diagrammatic Overview}{296}{subsection.25.2.4}%
+\contentsline {subsection}{\numberline {25.2.5}Unification Summary}{297}{subsection.25.2.5}%
+\contentsline {section}{\numberline {25.3}Bicategorical Coherence in TKS}{297}{section.25.3}%
+\contentsline {subsection}{\numberline {25.3.1}Why TKS is a Bicategory}{297}{subsection.25.3.1}%
+\contentsline {subsubsection}{Non-Trivial Associators in TKS}{298}{subsubsection*.4}%
+\contentsline {subsubsection}{Non-Trivial Unitors in TKS}{299}{subsubsection*.5}%
+\contentsline {subsection}{\numberline {25.3.2}Coherence Conditions}{299}{subsection.25.3.2}%
+\contentsline {subsubsection}{The Pentagon Identity}{299}{subsubsection*.6}%
+\contentsline {subsubsection}{The Triangle Identity}{300}{subsubsection*.7}%
+\contentsline {subsection}{\numberline {25.3.3}Mac Lane's Coherence Theorem for TKS}{301}{subsection.25.3.3}%
+\contentsline {subsection}{\numberline {25.3.4}Coherence Example: ACBE Cascade Composition}{301}{subsection.25.3.4}%
+\contentsline {subsection}{\numberline {25.3.5}Summary: Bicategorical Structure}{302}{subsection.25.3.5}%
+\contentsline {section}{\numberline {25.4}2-Functors Between TKS Structures}{302}{section.25.4}%
+\contentsline {section}{\numberline {25.5}2-Natural Transformations}{302}{section.25.5}%
+\contentsline {chapter}{\numberline {26}Lax and Pseudo-Functors in TKS}{303}{chapter.26}%
+\contentsline {section}{\numberline {26.1}Lax 2-Functors}{303}{section.26.1}%
+\contentsline {section}{\numberline {26.2}Pseudo-Functors (Homomorphisms)}{304}{section.26.2}%
+\contentsline {section}{\numberline {26.3}Noetic Pseudo-Functors}{305}{section.26.3}%
+\contentsline {section}{\numberline {26.4}Coherence Conditions for Lax/Pseudo-Functors}{305}{section.26.4}%
+\contentsline {section}{\numberline {26.5}ACBE as a Pseudo-Functor}{306}{section.26.5}%
+\contentsline {subsection}{\numberline {26.5.1}Source and Target 2-Categories}{306}{subsection.26.5.1}%
+\contentsline {subsection}{\numberline {26.5.2}The ACBE Pseudo-Functor Structure}{306}{subsection.26.5.2}%
+\contentsline {subsection}{\numberline {26.5.3}Comparison 2-Cells for ACBE}{307}{subsection.26.5.3}%
+\contentsline {section}{\numberline {26.6}RPM as a Lax 2-Functor}{308}{section.26.6}%
+\contentsline {subsection}{\numberline {26.6.1}The RPM Monad in 2-Categorical Terms}{308}{subsection.26.6.1}%
+\contentsline {subsection}{\numberline {26.6.2}Kleisli Construction in 2-Categories}{309}{subsection.26.6.2}%
+\contentsline {subsection}{\numberline {26.6.3}Comparison: ACBE vs RPM Functoriality}{309}{subsection.26.6.3}%
+\contentsline {section}{\numberline {26.7}Master Coherence Proposition}{310}{section.26.7}%
+\contentsline {chapter}{\numberline {27}The Noetic Topos}{313}{chapter.27}%
+\contentsline {section}{\numberline {27.1}Topos Foundations}{313}{section.27.1}%
+\contentsline {subsection}{\numberline {27.1.1}Elementary Topos: Definition}{313}{subsection.27.1.1}%
+\contentsline {subsection}{\numberline {27.1.2}Grothendieck Topoi: Sheaves on a Site}{314}{subsection.27.1.2}%
+\contentsline {subsection}{\numberline {27.1.3}Why TKS Forms a Topos}{314}{subsection.27.1.3}%
+\contentsline {section}{\numberline {27.2}Construction of the Noetic Topos}{315}{section.27.2}%
+\contentsline {subsection}{\numberline {27.2.1}The Noetic Site}{315}{subsection.27.2.1}%
+\contentsline {subsection}{\numberline {27.2.2}The Noetic Topos}{315}{subsection.27.2.2}%
+\contentsline {subsection}{\numberline {27.2.3}Objects of the Noetic Topos}{316}{subsection.27.2.3}%
+\contentsline {section}{\numberline {27.3}Subobject Classifier}{317}{section.27.3}%
+\contentsline {subsection}{\numberline {27.3.1}Construction of the Subobject Classifier}{317}{subsection.27.3.1}%
+\contentsline {subsection}{\numberline {27.3.2}Noetic Truth Values}{317}{subsection.27.3.2}%
+\contentsline {subsection}{\numberline {27.3.3}Characteristic Morphisms for Noetic Predicates}{318}{subsection.27.3.3}%
+\contentsline {section}{\numberline {27.4}Internal Logic of the Noetic Topos}{319}{section.27.4}%
+\contentsline {subsection}{\numberline {27.4.1}Intuitionistic Logic}{319}{subsection.27.4.1}%
+\contentsline {subsection}{\numberline {27.4.2}Interpretation of Logical Connectives}{319}{subsection.27.4.2}%
+\contentsline {subsection}{\numberline {27.4.3}Embedding Classical TKS Propositions}{320}{subsection.27.4.3}%
+\contentsline {section}{\numberline {27.5}Geometric Morphisms}{321}{section.27.5}%
+\contentsline {subsection}{\numberline {27.5.1}Definition and Basic Properties}{321}{subsection.27.5.1}%
+\contentsline {subsection}{\numberline {27.5.2}World-Topoi and ACBE-Induced Morphisms}{321}{subsection.27.5.2}%
+\contentsline {subsection}{\numberline {27.5.3}Essential Geometric Morphisms}{322}{subsection.27.5.3}%
+\contentsline {subsection}{\numberline {27.5.4}Points of the Noetic Topos}{322}{subsection.27.5.4}%
+\contentsline {section}{\numberline {27.6}Summary and Connections}{323}{section.27.6}%
+\contentsline {chapter}{\numberline {28}Internal Language of the Noetic Topos}{325}{chapter.28}%
+\contentsline {section}{\numberline {28.1}Type Theory and Topoi: The Correspondence}{325}{section.28.1}%
+\contentsline {subsection}{\numberline {28.1.1}Historical Context}{325}{subsection.28.1.1}%
+\contentsline {subsection}{\numberline {28.1.2}The General Framework}{325}{subsection.28.1.2}%
+\contentsline {section}{\numberline {28.2}Types as Objects}{326}{section.28.2}%
+\contentsline {subsection}{\numberline {28.2.1}Base Types}{326}{subsection.28.2.1}%
+\contentsline {subsection}{\numberline {28.2.2}Type Constructors}{327}{subsection.28.2.2}%
+\contentsline {subsection}{\numberline {28.2.3}World-Indexed Types}{327}{subsection.28.2.3}%
+\contentsline {section}{\numberline {28.3}Terms as Morphisms}{328}{section.28.3}%
+\contentsline {subsection}{\numberline {28.3.1}Contexts and Substitution}{328}{subsection.28.3.1}%
+\contentsline {subsection}{\numberline {28.3.2}Introduction and Elimination Rules}{329}{subsection.28.3.2}%
+\contentsline {subsection}{\numberline {28.3.3}Noetic Operations as Terms}{329}{subsection.28.3.3}%
+\contentsline {section}{\numberline {28.4}Dependent Types}{330}{section.28.4}%
+\contentsline {subsection}{\numberline {28.4.1}Dependent Types via Display Maps}{330}{subsection.28.4.1}%
+\contentsline {subsection}{\numberline {28.4.2}Pi-Types (Dependent Function Types)}{331}{subsection.28.4.2}%
+\contentsline {subsection}{\numberline {28.4.3}Sigma-Types (Dependent Pair Types)}{331}{subsection.28.4.3}%
+\contentsline {subsection}{\numberline {28.4.4}Identity Types}{332}{subsection.28.4.4}%
+\contentsline {section}{\numberline {28.5}Propositions as Types}{333}{section.28.5}%
+\contentsline {subsection}{\numberline {28.5.1}The Curry-Howard Correspondence}{333}{subsection.28.5.1}%
+\contentsline {subsection}{\numberline {28.5.2}Connection to the Subobject Classifier}{334}{subsection.28.5.2}%
+\contentsline {subsection}{\numberline {28.5.3}Proof Terms as Morphisms}{334}{subsection.28.5.3}%
+\contentsline {subsection}{\numberline {28.5.4}Logical Operations in NTT}{334}{subsection.28.5.4}%
+\contentsline {section}{\numberline {28.6}Noetic Type Theory: Typing Rules}{335}{section.28.6}%
+\contentsline {subsection}{\numberline {28.6.1}Judgments and Contexts}{335}{subsection.28.6.1}%
+\contentsline {subsection}{\numberline {28.6.2}World-Indexed Typing}{335}{subsection.28.6.2}%
+\contentsline {subsection}{\numberline {28.6.3}Noetic Operator Typing}{336}{subsection.28.6.3}%
+\contentsline {subsection}{\numberline {28.6.4}ACBE Descent Typing}{336}{subsection.28.6.4}%
+\contentsline {subsection}{\numberline {28.6.5}RPM Monad Typing}{337}{subsection.28.6.5}%
+\contentsline {section}{\numberline {28.7}Soundness of Noetic Type Theory}{337}{section.28.7}%
+\contentsline {subsection}{\numberline {28.7.1}Interpretation Function}{337}{subsection.28.7.1}%
+\contentsline {subsection}{\numberline {28.7.2}Soundness Theorem}{337}{subsection.28.7.2}%
+\contentsline {section}{\numberline {28.8}Connection to Compiler Track}{338}{section.28.8}%
+\contentsline {subsection}{\numberline {28.8.1}Type System Correspondence}{338}{subsection.28.8.1}%
+\contentsline {subsection}{\numberline {28.8.2}Effect System}{339}{subsection.28.8.2}%
+\contentsline {section}{\numberline {28.9}Summary and Connections}{339}{section.28.9}%
+\contentsline {chapter}{\numberline {29}Extended Coalgebraic Dynamics}{341}{chapter.29}%
+\contentsline {section}{\numberline {29.1}Coalgebras for Noetic Systems}{341}{section.29.1}%
+\contentsline {subsection}{\numberline {29.1.1}F-Coalgebras: Definition}{341}{subsection.29.1.1}%
+\contentsline {subsection}{\numberline {29.1.2}Noetic Coalgebras}{342}{subsection.29.1.2}%
+\contentsline {subsection}{\numberline {29.1.3}Final Coalgebra}{343}{subsection.29.1.3}%
+\contentsline {section}{\numberline {29.2}Bisimulation}{343}{section.29.2}%
+\contentsline {subsection}{\numberline {29.2.1}Bisimulation Relations}{343}{subsection.29.2.1}%
+\contentsline {subsection}{\numberline {29.2.2}Bisimulation for Noetic Systems}{344}{subsection.29.2.2}%
+\contentsline {subsection}{\numberline {29.2.3}Coinductive Proof Principles}{345}{subsection.29.2.3}%
+\contentsline {section}{\numberline {29.3}Comonads for Dynamics}{345}{section.29.3}%
+\contentsline {subsection}{\numberline {29.3.1}Comonad Definition}{345}{subsection.29.3.1}%
+\contentsline {subsection}{\numberline {29.3.2}The Noetic Context Comonad}{346}{subsection.29.3.2}%
+\contentsline {subsection}{\numberline {29.3.3}CoKleisli Category and Composition}{347}{subsection.29.3.3}%
+\contentsline {subsection}{\numberline {29.3.4}Comonad-Coalgebra Interaction}{347}{subsection.29.3.4}%
+\contentsline {section}{\numberline {29.4}Temporal Logic on Coalgebras}{348}{section.29.4}%
+\contentsline {subsection}{\numberline {29.4.1}Temporal Operators}{348}{subsection.29.4.1}%
+\contentsline {subsection}{\numberline {29.4.2}Noetic Temporal Formulas}{349}{subsection.29.4.2}%
+\contentsline {subsection}{\numberline {29.4.3}Coalgebraic Semantics for Temporal Logic}{350}{subsection.29.4.3}%
+\contentsline {subsection}{\numberline {29.4.4}Model Checking for TKS}{351}{subsection.29.4.4}%
+\contentsline {section}{\numberline {29.5}Coalgebras in the Noetic Topos}{351}{section.29.5}%
+\contentsline {subsection}{\numberline {29.5.1}Internal Coalgebras}{351}{subsection.29.5.1}%
+\contentsline {subsection}{\numberline {29.5.2}Internal Bisimulation}{352}{subsection.29.5.2}%
+\contentsline {subsection}{\numberline {29.5.3}Internal Temporal Logic}{352}{subsection.29.5.3}%
+\contentsline {subsection}{\numberline {29.5.4}Temporal Types in NTT}{353}{subsection.29.5.4}%
+\contentsline {section}{\numberline {29.6}Summary and Connections}{353}{section.29.6}%
+\contentsline {chapter}{\numberline {30}Indexed and Fibered Structures}{355}{chapter.30}%
+\contentsline {section}{\numberline {30.1}Fibrations in TKS}{355}{section.30.1}%
+\contentsline {subsection}{\numberline {30.1.1}Grothendieck Fibrations: Definition}{355}{subsection.30.1.1}%
+\contentsline {subsection}{\numberline {30.1.2}The World Fibration}{356}{subsection.30.1.2}%
+\contentsline {subsection}{\numberline {30.1.3}Cartesian Morphisms and Reindexing}{357}{subsection.30.1.3}%
+\contentsline {section}{\numberline {30.2}Base Change}{358}{section.30.2}%
+\contentsline {subsection}{\numberline {30.2.1}Base Change Functors}{358}{subsection.30.2.1}%
+\contentsline {subsection}{\numberline {30.2.2}Beck-Chevalley Condition}{360}{subsection.30.2.2}%
+\contentsline {section}{\numberline {30.3}Indexed Categories}{361}{section.30.3}%
+\contentsline {subsection}{\numberline {30.3.1}Indexed Categories: Definition}{361}{subsection.30.3.1}%
+\contentsline {subsection}{\numberline {30.3.2}Equivalence of Fibrations and Indexed Categories}{361}{subsection.30.3.2}%
+\contentsline {subsection}{\numberline {30.3.3}World-Indexed Families of Ideas}{362}{subsection.30.3.3}%
+\contentsline {section}{\numberline {30.4}Dependent Types via Fibrations}{362}{section.30.4}%
+\contentsline {subsection}{\numberline {30.4.1}Display Maps}{363}{subsection.30.4.1}%
+\contentsline {subsection}{\numberline {30.4.2}Comprehension Categories}{363}{subsection.30.4.2}%
+\contentsline {subsection}{\numberline {30.4.3}Pi and Sigma Types via Adjoints}{363}{subsection.30.4.3}%
+\contentsline {section}{\numberline {30.5}Multi-World Semantics}{364}{section.30.5}%
+\contentsline {subsection}{\numberline {30.5.1}Kripke Structures for TKS}{364}{subsection.30.5.1}%
+\contentsline {subsection}{\numberline {30.5.2}Modal Operators}{364}{subsection.30.5.2}%
+\contentsline {subsection}{\numberline {30.5.3}Sheaf Semantics for Modal Logic}{365}{subsection.30.5.3}%
+\contentsline {subsection}{\numberline {30.5.4}Connection to Fibered Structure}{366}{subsection.30.5.4}%
+\contentsline {section}{\numberline {30.6}Summary and Connections}{367}{section.30.6}%
+\contentsline {chapter}{\numberline {31}Higher Structures and Future Directions}{369}{chapter.31}%
+\contentsline {section}{\numberline {31.1}Towards Infinity-Categories}{369}{section.31.1}%
+\contentsline {subsection}{\numberline {31.1.1}Brief Introduction to $(\infty ,1)$-Categories}{369}{subsection.31.1.1}%
+\contentsline {subsection}{\numberline {31.1.2}TKS as an $\infty $-Category}{370}{subsection.31.1.2}%
+\contentsline {subsection}{\numberline {31.1.3}Quasi-Category Model}{371}{subsection.31.1.3}%
+\contentsline {section}{\numberline {31.2}Homotopy Type Theory Perspective}{371}{section.31.2}%
+\contentsline {subsection}{\numberline {31.2.1}Identity Types as Noetic Paths}{371}{subsection.31.2.1}%
+\contentsline {subsection}{\numberline {31.2.2}Univalence and TKS}{372}{subsection.31.2.2}%
+\contentsline {subsection}{\numberline {31.2.3}Higher Inductive Types for Fractals}{372}{subsection.31.2.3}%
+\contentsline {section}{\numberline {31.3}Directed Type Theory}{373}{section.31.3}%
+\contentsline {subsection}{\numberline {31.3.1}Categories vs. Groupoids}{373}{subsection.31.3.1}%
+\contentsline {subsection}{\numberline {31.3.2}Directed HoTT for TKS}{373}{subsection.31.3.2}%
+\contentsline {section}{\numberline {31.4}Synthetic TKS}{374}{section.31.4}%
+\contentsline {subsection}{\numberline {31.4.1}Axioms for Noetic Spaces}{374}{subsection.31.4.1}%
+\contentsline {subsection}{\numberline {31.4.2}Modalities for World Structure}{375}{subsection.31.4.2}%
+\contentsline {subsection}{\numberline {31.4.3}Cohesive Structure}{375}{subsection.31.4.3}%
+\contentsline {section}{\numberline {31.5}Unification Vision: The TKS Cube}{376}{section.31.5}%
+\contentsline {subsection}{\numberline {31.5.1}The Four Tracks}{376}{subsection.31.5.1}%
+\contentsline {subsection}{\numberline {31.5.2}The TKS Cube}{376}{subsection.31.5.2}%
+\contentsline {subsection}{\numberline {31.5.3}Unification Principles}{377}{subsection.31.5.3}%
+\contentsline {subsection}{\numberline {31.5.4}The Meta Track as Organizing Principle}{377}{subsection.31.5.4}%
+\contentsline {section}{\numberline {31.6}Chapter 7 Summary and v7.3 Meta Track Handoff}{377}{section.31.6}%
+\contentsline {subsection}{\numberline {31.6.1}Chapter 7 Summary}{377}{subsection.31.6.1}%
+\contentsline {subsection}{\numberline {31.6.2}Complete v7.3 Meta Track Summary}{378}{subsection.31.6.2}%
+\contentsline {subsection}{\numberline {31.6.3}Key Structures Reference}{379}{subsection.31.6.3}%
+\contentsline {subsection}{\numberline {31.6.4}Open Problems}{380}{subsection.31.6.4}%
+\contentsline {subsection}{\numberline {31.6.5}Handoff Notes for Continuation}{380}{subsection.31.6.5}%
+\contentsline {section}{\numberline {31.7}MASTER HANDOFF: TKS v7.3 to v7.4}{381}{section.31.7}%
+\contentsline {subsection}{\numberline {31.7.1}v7.3 Accomplishments Across All Tracks}{381}{subsection.31.7.1}%
+\contentsline {subsubsection}{Math Track (v7.3 Math)}{381}{subsubsection*.28}%
+\contentsline {subsubsection}{Compiler Track (v7.3 Compiler)}{381}{subsubsection*.29}%
+\contentsline {subsubsection}{Quantum Track (v7.3 Quantum)}{382}{subsubsection*.30}%
+\contentsline {subsubsection}{Meta Track (v7.3 Meta)}{382}{subsubsection*.31}%
+\contentsline {subsection}{\numberline {31.7.2}What Remains for v7.4}{382}{subsection.31.7.2}%
+\contentsline {subsubsection}{Immediate Priorities}{382}{subsubsection*.32}%
+\contentsline {subsubsection}{Medium-Term Goals}{383}{subsubsection*.33}%
+\contentsline {subsubsection}{Long-Term Vision}{383}{subsubsection*.34}%
+\contentsline {subsection}{\numberline {31.7.3}Recommended Next Steps}{383}{subsection.31.7.3}%
+\contentsline {subsection}{\numberline {31.7.4}File Organization}{383}{subsection.31.7.4}%
+\contentsline {subsection}{\numberline {31.7.5}Version History}{384}{subsection.31.7.5}%
+\contentsline {part}{VI\hspace {1em}Integrated Examples and Applications}{385}{part.6}%
+\contentsline {chapter}{\numberline {32}Cross-Track Examples}{387}{chapter.32}%
+\contentsline {section}{\numberline {32.1}Example: Transfinite Fractal Compilation}{387}{section.32.1}%
+\contentsline {section}{\numberline {32.2}Example: Quantum Noetic Execution}{387}{section.32.2}%
+\contentsline {section}{\numberline {32.3}Example: Topos-Theoretic Semantics of Fractals}{387}{section.32.3}%
+\contentsline {section}{\numberline {32.4}Example: Quantum Channels in the Noetic Topos}{387}{section.32.4}%
+\contentsline {part}{VII\hspace {1em}Appendices}{389}{part.7}%
+\contentsline {chapter}{\numberline {33}Complete Symbol Reference}{391}{chapter.33}%
+\contentsline {section}{\numberline {33.1}v6.1 Symbols}{391}{section.33.1}%
+\contentsline {section}{\numberline {33.2}v7.0 Symbols}{391}{section.33.2}%
+\contentsline {section}{\numberline {33.3}v7.1 Symbols}{391}{section.33.3}%
+\contentsline {section}{\numberline {33.4}v7.2 Symbols}{391}{section.33.4}%
+\contentsline {section}{\numberline {33.5}v7.3 Symbols}{391}{section.33.5}%
+\contentsline {chapter}{\numberline {34}Version History}{393}{chapter.34}%
+\contentsline {section}{\numberline {34.1}Version 6.0}{393}{section.34.1}%
+\contentsline {section}{\numberline {34.2}Version 6.1}{393}{section.34.2}%
+\contentsline {section}{\numberline {34.3}Version 7.0}{393}{section.34.3}%
+\contentsline {section}{\numberline {34.4}Version 7.1}{393}{section.34.4}%
+\contentsline {section}{\numberline {34.5}Version 7.2}{393}{section.34.5}%
+\contentsline {section}{\numberline {34.6}Version 7.3}{393}{section.34.6}%
+\contentsline {chapter}{\numberline {35}Cross-Reference Index}{395}{chapter.35}%
+\contentsline {chapter}{Acknowledgments}{397}{chapter*.35}%

@@ -1,0 +1,480 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% TKS v7.4 SEMANTICS TRACK --- Domain-Theoretic Semantics
+%% Part of TKS v7.4 - December 2025
+%% ADDITIVE to v7.3 canon
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% ============================================================================
+%% CHAPTER 1: SCOTT DOMAINS FOR NOETIC SPACES
+%% ============================================================================
+
+\chapter{Scott Domains for Noetic Spaces}
+\label{ch:scott-domains-noetic}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\vnewfour]
+This chapter develops Scott domains as the semantic foundation for noetic
+computation, establishing that the space of Ideas admits a natural domain structure.
+\end{tcolorbox}
+
+\section{Preliminaries: Domain Theory Review}
+
+\begin{definition}[Directed Set]
+\label{def:directed-set}
+A subset $D \subseteq P$ of a poset $(P, \sqleq)$ is \textbf{directed} if:
+\begin{enumerate}[label=(\roman*)}
+  \item $D \neq \varnothing$ (nonemptiness), and
+  \item For all $x, y \in D$, there exists $z \in D$ with $x \sqleq z$ and $y \sqleq z$.
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[Directed-Complete Partial Order (DCPO)]
+\label{def:dcpo}
+A poset $(D, \sqleq)$ is a \textbf{dcpo} if every directed subset has a supremum.
+\end{definition}
+
+\begin{definition}[Scott Continuity]
+\label{def:scott-continuous}
+A function $f : D \to E$ between dcpos is \textbf{Scott-continuous} if:
+\begin{enumerate}[label=(\roman*)]
+  \item $f$ is monotone: $x \sqleq y \Rightarrow f(x) \sqleq f(y)$, and
+  \item $f$ preserves directed suprema: $f\left(\bigsqcup S\right) = \bigsqcup \{f(s) \mid s \in S\}$
+\end{enumerate}
+\end{definition}
+
+\section{Noetic Domains}
+
+\begin{definition}[Noetic Domain]
+\label{def:noetic-domain}
+The \textbf{noetic domain} $\NoeticDomain$ is a Scott domain constructed as:
+\begin{enumerate}[label=(\roman*)]
+  \item \textbf{Base elements}: The Ideas $\Ideas = \{X_1, \ldots, X_{40}\}$ form maximal elements.
+  \item \textbf{Approximation structure}: Define $\Ideas_\bot = \Ideas \cup \{\bot_\nu\}$.
+  \item \textbf{Order}: The flat domain order with $\bot_\nu$ below all Ideas.
+\end{enumerate}
+\end{definition}
+
+\begin{proposition}[Flat Domain Properties]
+\label{prop:flat-domain-props}
+The noetic domain $\NoeticDomain = \Ideas_\bot$ satisfies:
+\begin{enumerate}[label=(\roman*)]
+  \item $\NoeticDomain$ is a pointed dcpo with bottom $\bot_\nu$.
+  \item Every element except $\bot_\nu$ is maximal.
+  \item Every directed set is either $\{\bot_\nu\}$ or eventually constant.
+  \item $\NoeticDomain$ is algebraic with $K(\NoeticDomain) = \NoeticDomain$.
+\end{enumerate}
+\end{proposition}
+
+\begin{definition}[Extended Noetic Domain]
+\label{def:extended-noetic-domain}
+The \textbf{extended noetic domain} $\NoeticDomain^\infty$ incorporates transfinite
+fractal structure:
+\[
+\NoeticDomain^\infty = \NoeticDomain \times \OrdFrac_\bot
+\]
+with the product order.
+\end{definition}
+
+\begin{theorem}[Extended Noetic Domain is a DCPO]
+\label{thm:extended-noetic-dcpo}
+The extended noetic domain $\NoeticDomain^\infty$ is a pointed dcpo.
+\end{theorem}
+
+\section{Algebraicity and Continuous Domains}
+
+\begin{definition}[Compact Element]
+\label{def:compact-element}
+An element $c \in D$ of a dcpo is \textbf{compact} if for every directed set $S$
+with $c \sqleq \bigsqcup S$, there exists $s \in S$ with $c \sqleq s$.
+\end{definition}
+
+\begin{definition}[Scott Domain]
+\label{def:scott-domain}
+A \textbf{Scott domain} is an algebraic dcpo that is bounded complete and
+$\omega$-algebraic.
+\end{definition}
+
+\begin{theorem}[Noetic Domain is a Scott Domain]
+\label{thm:noetic-scott-domain}
+The noetic domain $\NoeticDomain$ is a Scott domain.
+\end{theorem}
+
+\section{Function Spaces and Exponentials}
+
+\begin{theorem}[Function Space is a DCPO]
+\label{thm:function-space-dcpo}
+If $D$ and $E$ are dcpos, then $[D \to E]$ is a dcpo with pointwise order.
+\end{theorem}
+
+\begin{corollary}[Noetic Function Domain]
+\label{cor:noetic-function-domain}
+The space $[\NoeticDomain \to \NoeticDomain]$ is a pointed dcpo containing
+all noetic operators $\noe{k}$.
+\end{corollary}
+
+%% ============================================================================
+%% CHAPTER 2: CONTINUOUS LATTICES AND WAY-BELOW
+%% ============================================================================
+
+\chapter{Continuous Lattices and Way-Below}
+\label{ch:continuous-lattices}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\vnewfour]
+This chapter introduces the way-below relation $\WayBelow$, capturing finite
+approximation and leading to continuous lattice structure.
+\end{tcolorbox}
+
+\section{The Way-Below Relation}
+
+\begin{definition}[Way-Below Relation]
+\label{def:way-below}
+For elements $x, y$ of a dcpo, we say $x$ is \textbf{way below} $y$, written
+$x \WayBelow y$, if for every directed set $S$ with $y \sqleq \bigsqcup S$,
+there exists $s \in S$ with $x \sqleq s$.
+\end{definition}
+
+\begin{lemma}[Way-Below Properties]
+\label{lem:way-below-props}
+The way-below relation satisfies:
+\begin{enumerate}[label=(\roman*)]
+  \item $x \WayBelow y \Rightarrow x \sqleq y$
+  \item $x' \sqleq x \WayBelow y \sqleq y' \Rightarrow x' \WayBelow y'$
+  \item $\bot \WayBelow y$ for all $y$ (if $D$ is pointed)
+  \item Transitivity with order
+\end{enumerate}
+\end{lemma}
+
+\begin{proposition}[Way-Below in Flat Domains]
+\label{prop:way-below-flat}
+In $\NoeticDomain$:
+\[
+x \WayBelow y \quad \Leftrightarrow \quad x = \bot_\nu \text{ or } x = y
+\]
+\end{proposition}
+
+\section{Continuous Lattices}
+
+\begin{definition}[Continuous DCPO]
+\label{def:continuous-dcpo}
+A dcpo $D$ is \textbf{continuous} if for every $x \in D$:
+\[
+x = \bigsqcup \{y \in D \mid y \WayBelow x\}
+\]
+and this set is directed.
+\end{definition}
+
+\begin{definition}[Continuous Lattice]
+\label{def:continuous-lattice}
+A \textbf{continuous lattice} is a complete lattice that is continuous as a dcpo.
+\end{definition}
+
+\begin{theorem}[Noetic Domain is Continuous]
+\label{thm:noetic-continuous}
+The noetic domain $\NoeticDomain$ is a continuous dcpo.
+\end{theorem}
+
+\section{Interpolation Properties}
+
+\begin{theorem}[Continuous DCPOs Have Interpolation]
+\label{thm:continuous-interpolation}
+Every continuous dcpo has the interpolation property: if $x \WayBelow z$,
+there exists $y$ with $x \WayBelow y \WayBelow z$.
+\end{theorem}
+
+%% ============================================================================
+%% CHAPTER 3: FIXED-POINT SEMANTICS
+%% ============================================================================
+
+\chapter{Fixed-Point Semantics}
+\label{ch:fixed-point-semantics}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\vnewfour]
+This chapter develops fixed-point semantics for recursive noetic operations
+via the Kleene fixed-point theorem.
+\end{tcolorbox}
+
+\section{Kleene Fixed-Point Theorem}
+
+\begin{theorem}[Kleene Fixed-Point Theorem]
+\label{thm:kleene-fixpoint}
+Let $(D, \sqleq, \bot)$ be a pointed dcpo and $f : D \to D$ Scott-continuous.
+Then $f$ has a least fixed point:
+\[
+\KleeneFix(f) = \bigsqcup_{n < \omega} f^n(\bot)
+\]
+\end{theorem}
+
+\begin{proof}
+\textbf{Step 1}: The sequence $\{f^n(\bot)\}$ is ascending by induction.
+
+\textbf{Step 2}: The sequence is directed (ascending implies directed).
+
+\textbf{Step 3}: The supremum $x^* = \bigsqcup_n f^n(\bot)$ exists by dcpo property.
+
+\textbf{Step 4}: $x^*$ is a fixed point by continuity:
+\[
+f(x^*) = f\left(\bigsqcup_n f^n(\bot)\right) = \bigsqcup_n f^{n+1}(\bot) = x^*
+\]
+
+\textbf{Step 5}: $x^*$ is least: any fixed point $y$ satisfies $f^n(\bot) \sqleq y$
+for all $n$, hence $x^* \sqleq y$.
+\end{proof}
+
+\begin{theorem}[Continuity of $\KleeneFix$]
+\label{thm:lfp-continuous}
+The operator $\KleeneFix : [D \to D] \to D$ is Scott-continuous.
+\end{theorem}
+
+\section{Noetic Fixed Points}
+
+\begin{definition}[Noetic Fixed Point]
+\label{def:noetic-fixed-point}
+For a Scott-continuous noetic transformation $F : \NoeticDomain \to \NoeticDomain$:
+\[
+\fix_\nu(F) = \KleeneFix(F) = \bigsqcup_{n < \omega} F^n(\bot_\nu)
+\]
+\end{definition}
+
+\begin{proposition}[Fixed Points in Flat Domains]
+\label{prop:flat-fixed-points}
+In $\NoeticDomain$, the Kleene chain stabilizes in at most two steps:
+\[
+\KleeneFix(F) =
+\begin{cases}
+\bot_\nu & \text{if } F(\bot_\nu) = \bot_\nu \\
+F(\bot_\nu) & \text{otherwise}
+\end{cases}
+\]
+\end{proposition}
+
+\section{Tarski-Knaster Fixed Points}
+
+\begin{theorem}[Tarski-Knaster Fixed Point Theorem]
+\label{thm:tarski-knaster}
+Let $L$ be a complete lattice and $f : L \to L$ monotone. Then:
+\begin{enumerate}[label=(\roman*)]
+  \item The set $\mathrm{Fix}(f)$ of fixed points forms a complete lattice.
+  \item The least fixed point is $\mu f = \bigwedge\{x \mid f(x) \sqleq x\}$.
+  \item The greatest fixed point is $\nu f = \bigvee\{x \mid x \sqleq f(x)\}$.
+\end{enumerate}
+\end{theorem}
+
+\section{Recursive Noetic Definitions}
+
+\begin{definition}[Recursive Noetic Specification]
+\label{def:recursive-spec}
+A \textbf{recursive noetic specification} is an equation $X = F(X)$ where
+$F : \NoeticDomain \to \NoeticDomain$ is Scott-continuous.
+The denotation is $\sem{X = F(X)} = \KleeneFix(F)$.
+\end{definition}
+
+\begin{example}[Infinite Fractal Application]
+\label{ex:infinite-fractal}
+The specification $X = \noe{k}(X)$ asks for an Idea that is a fixed point of $\noe{k}$.
+\end{example}
+
+%% ============================================================================
+%% CHAPTER 4: DOMAIN EQUATIONS FOR NOETIC STRUCTURES
+%% ============================================================================
+
+\chapter{Domain Equations for Noetic Structures}
+\label{ch:domain-equations}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\vnewfour]
+This chapter addresses domain equations $D \DomainEq F(D)$ for modeling
+recursive noetic types.
+\end{tcolorbox}
+
+\section{Recursive Domain Equations}
+
+\begin{definition}[Domain Equation]
+\label{def:domain-equation}
+A \textbf{domain equation} is an isomorphism specification:
+\[
+D \DomainEq F(D)
+\]
+where $F : \ScottDom \to \ScottDom$ is an endofunctor.
+\end{definition}
+
+\begin{example}[Canonical Domain Equations]
+\label{ex:canonical-domain-eq}
+\begin{enumerate}[label=(\alph*)]
+  \item \textbf{Lazy lists}: $L \cong 1 + A \times L$
+  \item \textbf{Binary trees}: $T \cong 1 + T \times T$
+  \item \textbf{Streams}: $S \cong A \times S$
+  \item \textbf{Functions}: $D \cong [D \to D]$
+\end{enumerate}
+\end{example}
+
+\section{Solving Domain Equations}
+
+\begin{theorem}[Existence of Solutions]
+\label{thm:domain-eq-existence}
+Let $F : \ScottDom \to \ScottDom$ be locally continuous and preserve
+embedding-projection pairs. Then $D \cong F(D)$ has a solution, unique up to isomorphism.
+\end{theorem}
+
+\begin{construction}[Bilimit Construction]
+\label{constr:bilimit}
+The solution is constructed via inverse limits:
+\[
+D_\infty = \varprojlim_n D_n
+\]
+where $D_0 = \{\bot\}$ and $D_{n+1} = F(D_n)$.
+\end{construction}
+
+\section{Initial Algebra Semantics}
+
+\begin{definition}[$F$-Algebra]
+\label{def:f-algebra}
+For an endofunctor $F$, an \textbf{$F$-algebra} is a pair $(A, \alpha)$ with
+$\alpha : F(A) \to A$.
+\end{definition}
+
+\begin{theorem}[Lambek's Lemma]
+\label{thm:lambek}
+If $(I, \iota)$ is an initial $F$-algebra, then $\iota : F(I) \to I$ is an isomorphism.
+\end{theorem}
+
+\section{Final Coalgebra Duality}
+
+\begin{definition}[$F$-Coalgebra]
+\label{def:f-coalgebra}
+An \textbf{$F$-coalgebra} is a pair $(C, \gamma)$ with $\gamma : C \to F(C)$.
+\end{definition}
+
+\begin{theorem}[Final Coalgebra is Fixed Point]
+\label{thm:final-coalgebra-fixpoint}
+If $(Z, \zeta)$ is a final $F$-coalgebra, then $\zeta : Z \to F(Z)$ is an isomorphism.
+\end{theorem}
+
+\begin{example}[Noetic Streams as Final Coalgebra]
+\label{ex:noetic-streams}
+For $F(D) = \Ideas \times D$, the final coalgebra is $(\Ideas^\omega, (\mathsf{head}, \mathsf{tail}))$.
+\end{example}
+
+%% ============================================================================
+%% CHAPTER 5: DENOTATIONAL SEMANTICS OF TKS
+%% ============================================================================
+
+\chapter{Denotational Semantics of TKS}
+\label{ch:denotational-semantics}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\vnewfour]
+This chapter synthesizes domain-theoretic foundations into complete
+denotational semantics for TKS.
+\end{tcolorbox}
+
+\section{Semantic Domains for TKS Types}
+
+\begin{definition}[Type Interpretation]
+\label{def:type-interpretation}
+The semantic domain $\sem{\tau}$ for each TKS type:
+\begin{align*}
+\sem{\mathsf{Idea}} &= \NoeticDomain = \Ideas_\bot \\
+\sem{\mathsf{World}} &= \Worlds_\bot \\
+\sem{\tau_1 \times \tau_2} &= \sem{\tau_1} \times \sem{\tau_2} \\
+\sem{\tau_1 + \tau_2} &= \sem{\tau_1} \oplus \sem{\tau_2} \\
+\sem{\tau_1 \to \tau_2} &= [\sem{\tau_1} \to \sem{\tau_2}] \\
+\sem{\mathsf{RPM}[\tau]} &= \mathsf{Env} \to (\sem{\tau} + \mathsf{Error})_\bot
+\end{align*}
+\end{definition}
+
+\begin{proposition}[Type Domains are Scott Domains]
+\label{prop:type-domains-scott}
+For every well-formed TKS type $\tau$, $\sem{\tau}$ is a Scott domain.
+\end{proposition}
+
+\section{Interpretation Function}
+
+\begin{definition}[Denotational Semantics of TKS Expressions]
+\label{def:denotational-semantics}
+The interpretation function $\sem{-}$ is defined inductively:
+
+\textbf{Base cases:}
+\begin{align*}
+\sem{x}_\rho &= \rho(x) \\
+\sem{X_i}_\rho &= X_i
+\end{align*}
+
+\textbf{Noetic operators:}
+\[
+\sem{\noe{k}(e)}_\rho = \noe{k}_\bot(\sem{e}_\rho)
+\]
+
+\textbf{Fractals:}
+\[
+\sem{\langle k_1 : \cdots : k_n \rangle(e)}_\rho = (\noe{k_n}_\bot \circ \cdots \circ \noe{k_1}_\bot)(\sem{e}_\rho)
+\]
+
+\textbf{Functions:}
+\begin{align*}
+\sem{\lambda x.\, e}_\rho &= \lambda d.\, \sem{e}_{\rho[x \mapsto d]} \\
+\sem{e_1\, e_2}_\rho &= \sem{e_1}_\rho(\sem{e_2}_\rho)
+\end{align*}
+
+\textbf{Recursion:}
+\[
+\sem{\mathsf{fix}\, f.\, e}_\rho = \KleeneFix(\lambda d.\, \sem{e}_{\rho[f \mapsto d]})
+\]
+\end{definition}
+
+\begin{theorem}[Well-Definedness of Semantics]
+\label{thm:semantics-well-defined}
+For every well-typed expression $\Gamma \vdash e : \tau$:
+\begin{enumerate}[label=(\roman*)]
+  \item $\sem{e}_\rho$ is defined for all consistent environments.
+  \item $\sem{e}_\rho \in \sem{\tau}$.
+  \item The function $\rho \mapsto \sem{e}_\rho$ is Scott-continuous.
+\end{enumerate}
+\end{theorem}
+
+\section{Adequacy}
+
+\begin{theorem}[Adequacy]
+\label{thm:adequacy}
+For every closed expression $\vdash e : \tau$:
+\[
+e \bigstep v \quad \Rightarrow \quad (v, \sem{e}) \in \mathcal{R}_\tau
+\]
+where $\mathcal{R}_\tau$ is the adequacy relation.
+\end{theorem}
+
+\section{Full Abstraction}
+
+\begin{theorem}[Full Abstraction for First-Order TKS]
+\label{thm:full-abstraction-first-order}
+The denotational semantics is fully abstract for first-order TKS:
+\[
+e_1 \approx_\tau e_2 \quad \Leftrightarrow \quad \sem{e_1} = \sem{e_2}
+\]
+\end{theorem}
+
+\section{Connection to v7.3 Operational Semantics}
+
+\begin{proposition}[Coherence with v7.3]
+\label{prop:coherence-v73}
+The denotational semantics is compatible with v7.3:
+\begin{enumerate}[label=(\roman*)]
+  \item Noetic operators agree with v7.0 definitions.
+  \item Fractals agree with v7.0 fractal application.
+  \item RPM Monad corresponds to v7.0 state transformers.
+  \item Transfinite fractals correspond to domain-theoretic directed suprema.
+\end{enumerate}
+\end{proposition}
+
+\begin{theorem}[Semantic Unification]
+\label{thm:semantic-unification}
+The domain-theoretic semantics of v7.4 provides a unified foundation for
+v7.0--v7.3 semantics. Each previous version embeds faithfully into the
+Scott domain framework.
+\end{theorem}
+
+\begin{tcolorbox}[colback=green!5!white,colframe=green!75!black,title=\textbf{Cross-Track Connections}]
+\textbf{To Part V (Math)}: Domain equations support extended transfinite fractals.
+
+\textbf{To Part VII (Higher Categories)}: Initial algebra/final coalgebra duality
+extends to $(\infty,1)$-categories.
+
+\textbf{To Part VIII (Geometry)}: Continuous lattices carry natural topological
+structure connecting to noetic manifolds.
+\end{tcolorbox}

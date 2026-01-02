@@ -1,0 +1,49 @@
+================================================================================
+QUICK START - MVR v1 TRAINING
+Agent B - MVR RPM Realignment
+================================================================================
+
+EXECUTE THIS COMMAND:
+--------------------
+.\.venv311\Scripts\python.exe train_mvr_v1.py
+
+OR:
+.\.venv311\Scripts\python.exe scripts\quick_train.py --data output\teacher_mvr_converted.jsonl --output-dir output\teacher_model_mvr_v1 --epochs 10 --batch-size 4 --learning-rate 0.001
+
+================================================================================
+
+TRAINING CONFIGURATION:
+-----------------------
+Input Data:         output\teacher_mvr_converted.jsonl (681 samples)
+Output Directory:   output\teacher_model_mvr_v1\
+Epochs:             10
+Batch Size:         4
+Learning Rate:      0.001
+Python Env:         .venv311
+
+EXPECTED TIME:
+--------------
+GPU: ~15-20 minutes
+CPU: ~90-120 minutes
+
+EXPECTED OUTPUTS:
+-----------------
+1. output\teacher_model_mvr_v1\final_model.pt (model checkpoint)
+2. output\teacher_model_mvr_v1\training_metrics.json (training statistics)
+
+VERIFICATION:
+-------------
+After training:
+1. Check files exist: dir output\teacher_model_mvr_v1\
+2. Review metrics: type output\teacher_model_mvr_v1\training_metrics.json
+3. Verify losses decreased from ~1.19 to ~0.88
+
+MVR CANONICAL MAPPING:
+----------------------
+Desire = {ν1, ν4, ν7}  (polarity forces, vibration)
+Wisdom = {ν5, ν6}      (mental forces, gender)
+Power  = {ν8, ν9}      (causal forces, effect)
+
+================================================================================
+FOR MORE INFO: See MVR_TRAINING_INSTRUCTIONS.md and AGENT_B_STATUS_REPORT.md
+================================================================================

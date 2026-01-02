@@ -251,7 +251,7 @@ fn filter_stdlib_modules(resolved: ResolvedProgram, stdlib: &Stdlib) -> Resolved
     let modules = resolved
         .modules
         .into_iter()
-        .filter(|module| !stdlib.module_paths.iter().any(|path| *path == module.path))
+        .filter(|module| !stdlib.module_paths.contains(&module.path))
         .collect();
     ResolvedProgram { modules }
 }

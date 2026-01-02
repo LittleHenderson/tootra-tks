@@ -1,0 +1,126 @@
+\contentsline {chapter}{Master Ethical Notice}{9}{chapter*.2}%
+\contentsline {part}{I\hspace {1em}Psychology: Threat Models for Therapeutic Manipulation}{11}{part.1}%
+\contentsline {chapter}{\numberline {1}Overview: Psychological Profiling Attack Vectors}{13}{chapter.1}%
+\contentsline {chapter}{\numberline {2}Mathematical Definitions}{15}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Psychological Fractal Extraction}{15}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Psychological Attractor Theory}{16}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Vulnerability Analysis via Lacunarity}{16}{section.2.3}%
+\contentsline {section}{\numberline {2.4}D/W/P Chain Analysis}{17}{section.2.4}%
+\contentsline {section}{\numberline {2.5}Attack Vector: Manipulation Fractal Design}{17}{section.2.5}%
+\contentsline {chapter}{\numberline {3}Plain English Explanation}{19}{chapter.3}%
+\contentsline {chapter}{\numberline {4}Real-Life Scenarios}{21}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Scenario 1: Therapeutic Application}{21}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Scenario 2: Marketing Application}{23}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Scenario 3: Political Application}{25}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Scenario 4: Security Application}{27}{section.4.4}%
+\contentsline {chapter}{\numberline {5}Canonical Equations}{29}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Fractal Extraction}{29}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Attractor Computation}{29}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Vulnerability Score}{29}{section.5.3}%
+\contentsline {section}{\numberline {5.4}D/W/P Chain}{29}{section.5.4}%
+\contentsline {section}{\numberline {5.5}Intervention Design}{29}{section.5.5}%
+\contentsline {section}{\numberline {5.6}40-Step Stabilization}{29}{section.5.6}%
+\contentsline {part}{II\hspace {1em}Social Engineering: Threat Models for Population Manipulation}{31}{part.2}%
+\contentsline {chapter}{\numberline {6}Overview: Detecting Mass Influence Operations}{33}{chapter.6}%
+\contentsline {chapter}{\numberline {7}Mathematical Definitions}{35}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Society as Interacting Fractal System}{35}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Tipping Point Mathematics}{36}{section.7.2}%
+\contentsline {section}{\numberline {7.3}Meme Engineering via Viral Fractals}{36}{section.7.3}%
+\contentsline {section}{\numberline {7.4}ACBE Cascade Dynamics}{37}{section.7.4}%
+\contentsline {section}{\numberline {7.5}Feedback Adjustment via Attractor Perturbation}{38}{section.7.5}%
+\contentsline {chapter}{\numberline {8}Plain English Explanation}{39}{chapter.8}%
+\contentsline {chapter}{\numberline {9}Technical Term to Metaphor Mapping}{41}{chapter.9}%
+\contentsline {chapter}{\numberline {10}Real-Life Scenarios}{43}{chapter.10}%
+\contentsline {section}{\numberline {10.1}Scenario 1: Public Health --- Vaccination Campaign}{43}{section.10.1}%
+\contentsline {section}{\numberline {10.2}Scenario 2: Viral Marketing --- Product Launch}{44}{section.10.2}%
+\contentsline {section}{\numberline {10.3}Scenario 3: Political Mobilization --- Voter Turnout}{45}{section.10.3}%
+\contentsline {section}{\numberline {10.4}Scenario 4: Counter-Extremism --- Deradicalization Intervention}{46}{section.10.4}%
+\contentsline {chapter}{\numberline {11}Canonical Equations}{49}{chapter.11}%
+\contentsline {section}{\numberline {11.1}Collective Fractal Dynamics}{49}{section.11.1}%
+\contentsline {section}{\numberline {11.2}Critical Mass Threshold}{49}{section.11.2}%
+\contentsline {section}{\numberline {11.3}Meme Virality}{49}{section.11.3}%
+\contentsline {section}{\numberline {11.4}Campaign Effectiveness}{49}{section.11.4}%
+\contentsline {part}{III\hspace {1em}Overton Window Manipulation: Threat Model for Discourse Boundary Attacks}{51}{part.3}%
+\contentsline {chapter}{\numberline {12}Overton Window Manipulation: Threat Model for Discourse Boundary Attacks}{53}{chapter.12}%
+\contentsline {section}{\numberline {12.1}Mathematical Definitions}{54}{section.12.1}%
+\contentsline {subsection}{\numberline {12.1.1}The Overton Window as Attractor Basin}{54}{subsection.12.1.1}%
+\contentsline {subsection}{\numberline {12.1.2}Measuring the Overton Window: Discourse Fractal Analysis}{55}{subsection.12.1.2}%
+\contentsline {subsection}{\numberline {12.1.3}Window Shifting via Transfinite Sequences}{55}{subsection.12.1.3}%
+\contentsline {subsection}{\numberline {12.1.4}Designing Shift Strategies: Constraint Optimization}{57}{subsection.12.1.4}%
+\contentsline {subsection}{\numberline {12.1.5}Normalization Dynamics: Acceptance Threshold Evolution}{57}{subsection.12.1.5}%
+\contentsline {section}{\numberline {12.2}Canonical Equations}{59}{section.12.2}%
+\contentsline {section}{\numberline {12.3}Plain English Explanation}{59}{section.12.3}%
+\contentsline {section}{\numberline {12.4}Technical Term to Metaphor Mapping}{60}{section.12.4}%
+\contentsline {section}{\numberline {12.5}Real-Life Scenarios}{61}{section.12.5}%
+\contentsline {section}{\numberline {12.6}Overton Window Equation Construction Rules}{64}{section.12.6}%
+\contentsline {section}{\numberline {12.7}Overton Window Shift Classification}{65}{section.12.7}%
+\contentsline {section}{\numberline {12.8}Mathematical Properties of Window Dynamics}{66}{section.12.8}%
+\contentsline {section}{\numberline {12.9}Connection to TKS Canonical Structures}{66}{section.12.9}%
+\contentsline {section}{\numberline {12.10}Chapter Summary}{67}{section.12.10}%
+\contentsline {part}{IV\hspace {1em}Hyperstition Creation: Threat Model for Belief-Reality Feedback Attacks}{69}{part.4}%
+\contentsline {chapter}{\numberline {13}Hyperstition Creation: Threat Model for Belief-Reality Feedback Attacks}{71}{chapter.13}%
+\contentsline {section}{\numberline {13.1}Quantum Superposition of Possible Realities}{72}{section.13.1}%
+\contentsline {section}{\numberline {13.2}Hyperstition Structure and Creation}{73}{section.13.2}%
+\contentsline {section}{\numberline {13.3}Collapse Conditions}{74}{section.13.3}%
+\contentsline {section}{\numberline {13.4}Hyperstition Execution Phases}{75}{section.13.4}%
+\contentsline {subsection}{\numberline {13.4.1}Phase 1: Seed}{75}{subsection.13.4.1}%
+\contentsline {subsection}{\numberline {13.4.2}Phase 2: Synchronicity}{75}{subsection.13.4.2}%
+\contentsline {subsection}{\numberline {13.4.3}Phase 3: Cascade}{76}{subsection.13.4.3}%
+\contentsline {subsection}{\numberline {13.4.4}Phase 4: Apparent Evidence}{76}{subsection.13.4.4}%
+\contentsline {section}{\numberline {13.5}Measurement as Reality Collapse Operator}{77}{section.13.5}%
+\contentsline {section}{\numberline {13.6}D/W/P Engineering for Prerequisite Satisfaction}{77}{section.13.6}%
+\contentsline {section}{\numberline {13.7}Hyperstition Dynamics Equation}{79}{section.13.7}%
+\contentsline {section}{\numberline {13.8}Canonical Equations Summary}{80}{section.13.8}%
+\contentsline {section}{\numberline {13.9}Plain English Explanation}{80}{section.13.9}%
+\contentsline {section}{\numberline {13.10}Technical Term to Metaphor Mapping}{81}{section.13.10}%
+\contentsline {section}{\numberline {13.11}Real-Life Scenarios}{82}{section.13.11}%
+\contentsline {section}{\numberline {13.12}Hyperstition Classification}{84}{section.13.12}%
+\contentsline {part}{V\hspace {1em}TKS Cognitive Warfare Stack: Threat Model for Multi-Level Influence Operations}{87}{part.5}%
+\contentsline {chapter}{\numberline {14}Overview: Adversarial 4-Level Attack Architecture}{89}{chapter.14}%
+\contentsline {chapter}{\numberline {15}The 4-Level Stack}{91}{chapter.15}%
+\contentsline {section}{\numberline {15.1}Level 1: Individual Cognition ($\mathcal {L}_1$)}{91}{section.15.1}%
+\contentsline {section}{\numberline {15.2}Level 2: Social Dynamics ($\mathcal {L}_2$)}{91}{section.15.2}%
+\contentsline {section}{\numberline {15.3}Level 3: Cultural Frame ($\mathcal {L}_3$)}{92}{section.15.3}%
+\contentsline {section}{\numberline {15.4}Level 4: Civilizational Trajectory ($\mathcal {L}_4$)}{92}{section.15.4}%
+\contentsline {chapter}{\numberline {16}Functorial Relationships Between Levels}{93}{chapter.16}%
+\contentsline {chapter}{\numberline {17}Capability Matrix}{95}{chapter.17}%
+\contentsline {section}{\numberline {17.1}Capability Assessment by Level}{95}{section.17.1}%
+\contentsline {section}{\numberline {17.2}Cross-Level Campaign Design}{95}{section.17.2}%
+\contentsline {chapter}{\numberline {18}Canonical Equations}{97}{chapter.18}%
+\contentsline {section}{\numberline {18.1}Stack Composition}{97}{section.18.1}%
+\contentsline {section}{\numberline {18.2}Level Functors}{97}{section.18.2}%
+\contentsline {part}{VI\hspace {1em}TKS vs AI Issues: Mathematical Resolution}{99}{part.6}%
+\contentsline {chapter}{\numberline {19}Overview: TKS as AI Foundation}{101}{chapter.19}%
+\contentsline {chapter}{\numberline {20}The Seven AI Crises and TKS Solutions}{103}{chapter.20}%
+\contentsline {section}{\numberline {20.1}Crisis 1: Alignment $\to $ RPM Monad}{103}{section.20.1}%
+\contentsline {section}{\numberline {20.2}Crisis 2: Interpretability $\to $ Noetic Algebra}{103}{section.20.2}%
+\contentsline {section}{\numberline {20.3}Crisis 3: Catastrophic Forgetting $\to $ Transfinite Fractals}{103}{section.20.3}%
+\contentsline {section}{\numberline {20.4}Crisis 4: Distribution Shift $\to $ Quantum Density Matrix}{104}{section.20.4}%
+\contentsline {section}{\numberline {20.5}Crisis 5: Multi-Agent Emergence $\to $ Collective IFS}{104}{section.20.5}%
+\contentsline {section}{\numberline {20.6}Crisis 6: Value Learning $\to $ Noetic Topos}{104}{section.20.6}%
+\contentsline {section}{\numberline {20.7}Crisis 7: AI Safety $\to $ Coalgebraic Dynamics}{105}{section.20.7}%
+\contentsline {chapter}{\numberline {21}TKS AI Safety Stack}{107}{chapter.21}%
+\contentsline {section}{\numberline {21.1}5-Layer Architecture}{107}{section.21.1}%
+\contentsline {chapter}{\numberline {22}Canonical Equations for AI}{109}{chapter.22}%
+\contentsline {part}{VII\hspace {1em}TKS Predictive Intelligence: Threat Model for Mass Surveillance Systems}{111}{part.7}%
+\contentsline {chapter}{\numberline {23}Overview: Adversarial Behavioral Prediction Capabilities}{113}{chapter.23}%
+\contentsline {chapter}{\numberline {24}The 6-Stage Pipeline}{115}{chapter.24}%
+\contentsline {section}{\numberline {24.1}Stage 1: NLP to Noetic Mapping}{115}{section.24.1}%
+\contentsline {section}{\numberline {24.2}Stage 2: Fractal Construction}{115}{section.24.2}%
+\contentsline {section}{\numberline {24.3}Stage 3: Attractor Computation}{115}{section.24.3}%
+\contentsline {section}{\numberline {24.4}Stage 4: RPM Goal Inference}{115}{section.24.4}%
+\contentsline {section}{\numberline {24.5}Stage 5: Timeline Prediction}{116}{section.24.5}%
+\contentsline {section}{\numberline {24.6}Stage 6: Vulnerability Identification}{116}{section.24.6}%
+\contentsline {chapter}{\numberline {25}Real-Life Prediction Scenarios}{117}{chapter.25}%
+\contentsline {section}{\numberline {25.1}Scenario 1: Purchase Behavior Prediction}{117}{section.25.1}%
+\contentsline {section}{\numberline {25.2}Scenario 2: Mental Health Crisis Prediction}{117}{section.25.2}%
+\contentsline {chapter}{\numberline {26}Surveillance Capability Matrix}{119}{chapter.26}%
+\contentsline {chapter}{\numberline {27}Canonical Equations}{121}{chapter.27}%
+\contentsline {section}{\numberline {27.1}Pipeline Equations}{121}{section.27.1}%
+\contentsline {chapter}{\numberline {A}Master Equation Reference}{123}{appendix.A}%
+\contentsline {section}{\numberline {A.1}Psychology Equations}{123}{section.A.1}%
+\contentsline {section}{\numberline {A.2}Social Engineering Equations}{123}{section.A.2}%
+\contentsline {section}{\numberline {A.3}Cognitive Warfare Equations}{123}{section.A.3}%
+\contentsline {section}{\numberline {A.4}AI Resolution Equations}{124}{section.A.4}%
+\contentsline {section}{\numberline {A.5}Predictive Intelligence Equations}{124}{section.A.5}%
+\contentsline {chapter}{\numberline {B}Symbol Reference}{125}{appendix.B}%

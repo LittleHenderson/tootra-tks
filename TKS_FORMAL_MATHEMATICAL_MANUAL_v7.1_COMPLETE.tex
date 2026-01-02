@@ -1,0 +1,1195 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% TKS FORMAL MATHEMATICAL MANUAL v7.1 — ADVANCED FORMAL SEMANTICS
+%% Continuity Bridge from v7.0
+%% Extended Denotational Semantics with Domain Theory and Topology
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt,twoside,openright]{book}
+
+%% ============================================================================
+%% PACKAGES (Preserved from v7.0 + v7.1 additions)
+%% ============================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm,amsfonts}
+\usepackage{mathtools}
+\usepackage{stmaryrd}           % For semantic brackets
+\usepackage{bm}                 % Bold math
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{cd,arrows,positioning,calc,decorations.pathmorphing}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{theorems,skins,breakable}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{multicol}
+
+%% v7.0 PACKAGE ADDITIONS
+\usepackage{braket}             % For quantum notation
+\usepackage{tikz-cd}            % For commutative diagrams
+\usepackage{bussproofs}         % For proof trees
+
+%% v7.1 PACKAGE ADDITIONS
+\usepackage{mathrsfs}           % For \mathscr (Scott topology)
+
+\geometry{
+  paper=letterpaper,
+  inner=1.2in,
+  outer=1in,
+  top=1in,
+  bottom=1in
+}
+
+%% ============================================================================
+%% THEOREM ENVIRONMENTS (Preserved from v7.0)
+%% ============================================================================
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{axiom}[definition]{Axiom}
+
+\theoremstyle{plain}
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{corollary}[definition]{Corollary}
+
+\theoremstyle{remark}
+\newtheorem{remark}[definition]{Remark}
+\newtheorem{example}[definition]{Example}
+\newtheorem{notation}[definition]{Notation}
+
+%% ============================================================================
+%% CUSTOM COMMANDS (Preserved from v7.0)
+%% ============================================================================
+% Semantic brackets
+\newcommand{\sem}[1]{\llbracket #1 \rrbracket}
+
+% TKS-specific symbols
+\newcommand{\Worlds}{\mathcal{W}}
+\newcommand{\Ideas}{\mathcal{I}}
+\newcommand{\Elements}{\mathcal{E}}
+\newcommand{\Noetics}{\mathcal{N}}
+\newcommand{\Foundations}{\mathcal{F}}
+\newcommand{\Acquisitions}{\mathcal{A}}
+\newcommand{\Noetica}{\mathbf{Noetica}}
+\newcommand{\Acq}{\mathbf{Acq}}
+
+% Noetic operators
+\newcommand{\noe}[1]{\nu_{#1}}
+
+% Tootra operations
+\newcommand{\Tadd}{\oplus_T}
+\newcommand{\Tsub}{\ominus_T}
+\newcommand{\Tmul}{\otimes_T}
+\newcommand{\Tdiv}{\oslash_T}
+
+% World association
+\newcommand{\Wadd}{\oplus_W}
+\newcommand{\Wsub}{\ominus_W}
+
+% Type judgments
+\newcommand{\types}{\vdash}
+\newcommand{\typmark}{:}
+
+% RPM Monad
+\newcommand{\RPM}{\mathfrak{R}}
+\newcommand{\rpmret}{\mathsf{return}}
+\newcommand{\rpmbind}{\mathbin{\gg\!=}}
+\newcommand{\Kleisli}{\mathcal{K}}
+
+% Fractal notation
+\newcommand{\Frac}{\Phi}
+\newcommand{\FracSet}{\mathfrak{F}}
+\newcommand{\bigstep}{\Downarrow}
+\newcommand{\smallstep}{\rightarrow}
+\newcommand{\Failed}{\mathsf{Failed}}
+
+% Quantum notation (v7.0)
+\newcommand{\Hspace}{\mathcal{H}}
+\newcommand{\qket}[1]{|#1\rangle}
+\newcommand{\qbra}[1]{\langle #1|}
+\newcommand{\qbraket}[2]{\langle #1 | #2 \rangle}
+\newcommand{\qop}[1]{\hat{#1}}
+
+%% v7.1 NEW COMMANDS
+% Domain theory
+\newcommand{\Scott}{\mathscr{S}}           % Scott topology
+\newcommand{\Dcpo}{\mathbf{Dcpo}}          % Category of dcpos
+\newcommand{\Cont}{\mathbf{Cont}}          % Continuous functions
+\newcommand{\sqleq}{\sqsubseteq}           % Information ordering
+\newcommand{\bigsqcup}{\bigsqcup}          % Directed supremum
+\newcommand{\fix}{\mathsf{fix}}            % Fixed point operator
+\newcommand{\bot}{\perp}                   % Bottom element
+
+% Natural transformations
+\newcommand{\NatTrans}[2]{\eta_{#1 \to #2}}
+\newcommand{\WorldFunctor}[1]{\mathfrak{W}_{#1}}
+
+% Version markers
+\newcommand{\vnew}{\textbf{v7.0 New}}
+\newcommand{\vexp}{\textbf{v7.0 Expanded}}
+\newcommand{\vnewone}{\textbf{v7.1 New}}
+\newcommand{\vexpone}{\textbf{v7.1 Expanded}}
+
+%% ============================================================================
+%% DOCUMENT METADATA
+%% ============================================================================
+\title{\Huge\textbf{The TKS Formal Mathematical Manual}\\[0.5em]
+       \Large Version 7.1 — Advanced Formal Semantics\\[0.3em]
+       \large Continuity Bridge from v7.0}
+\author{TKS Formalization Project}
+\date{\today}
+
+\begin{document}
+
+\frontmatter
+\maketitle
+
+%% ============================================================================
+%% PREFACE: v7.0 → v7.1 CONTINUITY BRIDGE
+%% ============================================================================
+
+\chapter*{v7.0 $\to$ v7.1 Continuity Bridge}
+\addcontentsline{toc}{chapter}{v7.0 → v7.1 Continuity Bridge}
+
+\begin{tcolorbox}[colback=yellow!10!white,colframe=orange!75!black,title=\textbf{Canonical Inheritance Declaration}]
+This document, TKS v7.1, is a \textbf{strict superset} of TKS v7.0. All definitions, theorems, axioms, and proofs from v7.0 remain valid and unchanged. Version 7.1 introduces \textit{extensions only}---no modifications to existing canon.
+\end{tcolorbox}
+
+\section*{Inheritance from v7.0}
+
+The following components from v7.0 are inherited verbatim:
+
+\begin{enumerate}
+  \item \textbf{Canonical Ontology}: 40 Elements, 4 Worlds, 10 Noetics, 7 Foundations, 28 Sub-Foundations, 22 Acquisitions
+  \item \textbf{Noetic Operator Algebra}: Complete 10×10 composition table and idempotent structure
+  \item \textbf{Tootra Arithmetic}: All four operations with multiset semantics
+  \item \textbf{Category Noetica}: Objects $\{D_1, \ldots, D_7\}$, morphisms as noetic compositions
+  \item \textbf{ACBE Functor}: $\mathrm{ACBE}: \Noetica_{|A} \to \Noetica_{|D}$
+  \item \textbf{RPM Monad Theory}: Complete Kleisli category with effect system
+  \item \textbf{Noetic Fractal Calculus}: Fractal sequences, composition, eigenfractals
+  \item \textbf{Dynamic Semantics}: Evaluation environments, big-step and small-step rules
+  \item \textbf{Type System}: Complete with subtyping and polymorphism
+  \item \textbf{Concurrency Model}: Parallel composition and synchronization primitives
+  \item \textbf{Quantum Noetic Algebra}: Hilbert space representation and measurement
+\end{enumerate}
+
+\section*{v7.1 Extensions}
+
+Version 7.1 introduces the following new developments:
+
+\begin{enumerate}
+  \item \textbf{Natural Transformations Between Worlds} (Chapter~\ref{ch:nat-trans})
+  \begin{itemize}
+    \item Category-theoretic morphisms $\eta_{W \to W'} : \WorldFunctor{W} \Rightarrow \WorldFunctor{W'}$
+    \item Coherence conditions for world transitions
+    \item ACBE as a natural transformation
+  \end{itemize}
+
+  \item \textbf{Domain-Theoretic Semantics} (Chapter~\ref{ch:domain-theory})
+  \begin{itemize}
+    \item TKS domains as directed-complete partial orders (dcpos)
+    \item Scott topology on semantic domains
+    \item Continuous function semantics
+    \item Fixed-point theorems for recursive definitions
+  \end{itemize}
+
+  \item \textbf{Extended Denotational Semantics} (Chapter~\ref{ch:extended-denotational})
+  \begin{itemize}
+    \item Full abstraction theorem
+    \item Logical relations for semantic equivalence
+    \item Metric semantics for convergence properties
+  \end{itemize}
+
+  \item \textbf{Topological Structure of Noetic Space} (Chapter~\ref{ch:noetic-topology})
+  \begin{itemize}
+    \item Noetic manifolds and continuous transformations
+    \item Sheaf-theoretic interpretation of world localization
+    \item Cohomological invariants of fractal structures
+  \end{itemize}
+\end{enumerate}
+
+\section*{Notation Changes}
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Symbol} & \textbf{Meaning} & \textbf{Introduced} \\
+\midrule
+$\Scott$ & Scott topology & v7.1 \\
+$\Dcpo$ & Category of dcpos & v7.1 \\
+$\sqleq$ & Information ordering & v7.1 \\
+$\fix$ & Fixed-point operator & v7.1 \\
+$\NatTrans{W}{W'}$ & Natural transformation & v7.1 \\
+$\WorldFunctor{W}$ & World functor & v7.1 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section*{Backwards Compatibility}
+
+All v7.0 programs and proofs are valid in v7.1. The new extensions provide:
+\begin{itemize}
+  \item Deeper semantic foundations (domain theory)
+  \item Categorical understanding of world transitions
+  \item Topological tools for analyzing noetic structures
+  \item Stronger metatheoretic results (full abstraction)
+\end{itemize}
+
+No existing theorem is invalidated; new theorems extend the theory.
+
+\tableofcontents
+
+\mainmatter
+
+%% ============================================================================
+%% CANONICAL REFERENCE: 28 SUB-FOUNDATIONS (Inherited from v7.0)
+%% ============================================================================
+\part{Canonical Reference}
+
+\chapter{The 28 Sub-Foundations}
+\label{ch:28-subfoundations}
+
+\begin{tcolorbox}[colback=gray!10!white,colframe=gray!75!black,title=\textbf{Canonical Reference (Inherited)}]
+This chapter documents the 28 Sub-Foundations, inherited unchanged from v7.0/v6.1. The sub-foundations are the 7 Foundations projected across the 4 Worlds.
+\end{tcolorbox}
+
+\begin{definition}[Sub-Foundation Space]
+\label{def:v71-subfoundation-space}
+The \textbf{Sub-Foundation space} is the product:
+\[
+\Foundations^* = \Foundations \times \Worlds = \{F_1, \ldots, F_7\} \times \{A, B, C, D\}
+\]
+with $|\Foundations^*| = 7 \times 4 = 28$ sub-foundations.
+\end{definition}
+
+\begin{table}[ht]
+\centering
+\caption{The 28 Sub-Foundations}
+\label{tab:v71-28-subfoundations}
+\begin{tabular}{c|cccc}
+\toprule
+\textbf{Foundation} & \textbf{A (Spiritual)} & \textbf{B (Mental)} & \textbf{C (Emotional)} & \textbf{D (Physical)} \\
+\midrule
+$F_1$ (Unity) & $1_A$ & $1_B$ & $1_C$ & $1_D$ \\
+$F_2$ (Wisdom) & $2_A$ & $2_B$ & $2_C$ & $2_D$ \\
+$F_3$ (Life) & $3_A$ & $3_B$ & $3_C$ & $3_D$ \\
+$F_4$ (Companionship) & $4_A$ & $4_B$ & $4_C$ & $4_D$ \\
+$F_5$ (Power) & $5_A$ & $5_B$ & $5_C$ & $5_D$ \\
+$F_6$ (Material) & $6_A$ & $6_B$ & $6_C$ & $6_D$ \\
+$F_7$ (Lust) & $7_A$ & $7_B$ & $7_C$ & $7_D$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{proposition}[Sub-Foundation Lattice Structure]
+\label{prop:v71-subfoundation-lattice}
+$(\Foundations^*, \sqcup, \sqcap)$ forms a bounded distributive lattice with:
+\begin{enumerate}[label=(\roman*)]
+  \item Product decomposition: $\Foundations^* \cong \prod_{w \in \Worlds} \Foundations_w$
+  \item ACBE-compatible ordering: $i_A \leq i_B \leq i_C \leq i_D$ for each foundation $i$
+  \item World projection: $\pi_w : \Foundations^* \to \Foundations_w$ extracts the $w$-level sub-foundations
+\end{enumerate}
+\end{proposition}
+
+\begin{theorem}[Sub-Foundation Natural Transformation]
+\label{thm:subfoundation-nat-trans}
+The ACBE cascade induces a natural transformation on sub-foundations:
+\[
+\alpha : \Foundations^*_A \Rightarrow \Foundations^*_D
+\]
+with components $\alpha_i : i_A \to i_D$ for each foundation $F_i$, satisfying:
+\[
+\alpha_i = \mathsf{desc}_D \circ \mathsf{desc}_C \circ \mathsf{desc}_B
+\]
+where $\mathsf{desc}_w : \Foundations^*_{w'} \to \Foundations^*_w$ is the world descent morphism.
+\end{theorem}
+
+%% ============================================================================
+%% PART II: NATURAL TRANSFORMATIONS BETWEEN WORLDS
+%% ============================================================================
+\part{Categorical Extensions}
+
+\chapter{Natural Transformations Between Worlds}
+\label{ch:nat-trans}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\vnewone]
+This chapter develops the category-theoretic structure of world transitions, formalizing the ACBE cascade and general inter-world morphisms as natural transformations.
+\end{tcolorbox}
+
+\section{World Functors}
+
+\begin{definition}[World Category]
+\label{def:world-cat}
+Let $\mathbf{World}$ be the category where:
+\begin{itemize}
+  \item Objects: $\{A, B, C, D\}$ (the four worlds)
+  \item Morphisms:
+  \begin{align}
+    \mathrm{Hom}(A, B) &= \{\iota_{AB}\} \quad \text{(descent from Spiritual to Mental)} \\
+    \mathrm{Hom}(B, C) &= \{\iota_{BC}\} \quad \text{(descent from Mental to Astral)} \\
+    \mathrm{Hom}(C, D) &= \{\iota_{CD}\} \quad \text{(descent from Astral to Physical)} \\
+    \mathrm{Hom}(W, W) &= \{\mathrm{id}_W\} \quad \text{(identity)}
+  \end{align}
+  \item Composition: Sequential descent (non-reversible)
+\end{itemize}
+\end{definition}
+
+\begin{remark}
+The category $\mathbf{World}$ is a total order category (poset): $A > B > C > D$ with morphisms representing descent. There are no ascending morphisms—this reflects the hermetic principle that manifestation flows downward from Spirit to Matter.
+\end{remark}
+
+\begin{definition}[World Functor]
+\label{def:world-functor}
+For each world $W \in \{A, B, C, D\}$, define the \textbf{world functor}:
+\[
+\WorldFunctor{W} : \Noetica \to \mathbf{Set}
+\]
+by:
+\begin{align}
+\WorldFunctor{W}(D_j) &= \{Wn \mid n \in \{1, \ldots, 10\}, \mathrm{domain}(Wn) = D_j\} \\
+\WorldFunctor{W}(f: D_i \to D_j) &= f \circ (-) : \WorldFunctor{W}(D_i) \to \WorldFunctor{W}(D_j)
+\end{align}
+\end{definition}
+
+\begin{proposition}[Functor Laws]
+\label{prop:world-functor-laws}
+Each $\WorldFunctor{W}$ satisfies:
+\begin{enumerate}
+  \item $\WorldFunctor{W}(\mathrm{id}_{D_j}) = \mathrm{id}_{\WorldFunctor{W}(D_j)}$
+  \item $\WorldFunctor{W}(g \circ f) = \WorldFunctor{W}(g) \circ \WorldFunctor{W}(f)$
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(1) For any $Wn \in \WorldFunctor{W}(D_j)$:
+\[
+\WorldFunctor{W}(\mathrm{id}_{D_j})(Wn) = \mathrm{id}_{D_j} \circ Wn = Wn = \mathrm{id}(Wn)
+\]
+
+(2) For $f: D_i \to D_j$ and $g: D_j \to D_k$:
+\[
+\WorldFunctor{W}(g \circ f)(Wn) = (g \circ f)(Wn) = g(f(Wn)) = \WorldFunctor{W}(g)(\WorldFunctor{W}(f)(Wn))
+\]
+\end{proof}
+
+\section{Inter-World Natural Transformations}
+
+\begin{definition}[World Descent Transformation]
+\label{def:descent-trans}
+For worlds $W > W'$ (with $W$ above $W'$ in the hierarchy), the \textbf{descent transformation}:
+\[
+\NatTrans{W}{W'} : \WorldFunctor{W} \Rightarrow \WorldFunctor{W'}
+\]
+is defined componentwise for each domain $D_j$:
+\[
+(\NatTrans{W}{W'})_{D_j} : \WorldFunctor{W}(D_j) \to \WorldFunctor{W'}(D_j)
+\]
+\[
+(\NatTrans{W}{W'})_{D_j}(Wn) = W'n
+\]
+\end{definition}
+
+\begin{theorem}[Naturality of Descent]
+\label{thm:descent-naturality}
+The descent transformation $\NatTrans{W}{W'}$ is natural: for any morphism $f: D_i \to D_j$ in $\Noetica$, the following diagram commutes:
+\[
+\begin{tikzcd}
+\WorldFunctor{W}(D_i) \arrow[r, "\WorldFunctor{W}(f)"] \arrow[d, "(\NatTrans{W}{W'})_{D_i}"']
+  & \WorldFunctor{W}(D_j) \arrow[d, "(\NatTrans{W}{W'})_{D_j}"] \\
+\WorldFunctor{W'}(D_i) \arrow[r, "\WorldFunctor{W'}(f)"']
+  & \WorldFunctor{W'}(D_j)
+\end{tikzcd}
+\]
+\end{theorem}
+
+\begin{proof}
+For any $Wn \in \WorldFunctor{W}(D_i)$:
+
+\textbf{Clockwise path:}
+\begin{align}
+(\NatTrans{W}{W'})_{D_j}(\WorldFunctor{W}(f)(Wn)) &= (\NatTrans{W}{W'})_{D_j}(f(Wn)) \\
+&= f(W'n) \quad \text{(applying descent to result)}
+\end{align}
+
+\textbf{Counterclockwise path:}
+\begin{align}
+\WorldFunctor{W'}(f)((\NatTrans{W}{W'})_{D_i}(Wn)) &= \WorldFunctor{W'}(f)(W'n) \\
+&= f(W'n)
+\end{align}
+
+Both paths yield $f(W'n)$, establishing naturality.
+\end{proof}
+
+\section{ACBE as Composite Natural Transformation}
+
+\begin{theorem}[ACBE Naturality]
+\label{thm:acbe-natural}
+The ACBE functor is the composite natural transformation:
+\[
+\mathrm{ACBE} = \NatTrans{C}{D} \circ \NatTrans{B}{C} \circ \NatTrans{A}{B} : \WorldFunctor{A} \Rightarrow \WorldFunctor{D}
+\]
+\end{theorem}
+
+\begin{proof}
+For any $An \in \WorldFunctor{A}(D_j)$:
+\begin{align}
+\mathrm{ACBE}_{D_j}(An) &= ((\NatTrans{C}{D})_{D_j} \circ (\NatTrans{B}{C})_{D_j} \circ (\NatTrans{A}{B})_{D_j})(An) \\
+&= (\NatTrans{C}{D})_{D_j}((\NatTrans{B}{C})_{D_j}(Bn)) \\
+&= (\NatTrans{C}{D})_{D_j}(Cn) \\
+&= Dn
+\end{align}
+
+This matches Definition 6.1 of ACBE from v7.0.
+\end{proof}
+
+\begin{corollary}[ACBE Coherence]
+\label{cor:acbe-coherence}
+For any noetic morphism $\noe{k} : D_i \to D_j$:
+\[
+\mathrm{ACBE}_{D_j} \circ \WorldFunctor{A}(\noe{k}) = \WorldFunctor{D}(\noe{k}) \circ \mathrm{ACBE}_{D_i}
+\]
+\end{corollary}
+
+\section{Vertical Composition and 2-Category Structure}
+
+\begin{definition}[World 2-Category]
+\label{def:world-2-cat}
+Define the 2-category $\mathbf{World}_2$ where:
+\begin{itemize}
+  \item 0-cells: Worlds $\{A, B, C, D\}$
+  \item 1-cells: World functors $\WorldFunctor{W}$
+  \item 2-cells: Natural transformations $\NatTrans{W}{W'}$
+\end{itemize}
+\end{definition}
+
+\begin{proposition}[Vertical Composition]
+\label{prop:vertical-comp}
+Natural transformations compose vertically:
+\[
+\NatTrans{W}{W''} = \NatTrans{W'}{W''} \bullet \NatTrans{W}{W'} \quad \text{for } W > W' > W''
+\]
+\end{proposition}
+
+\begin{theorem}[Strict 2-Functor]
+\label{thm:strict-2-functor}
+The assignment $W \mapsto \WorldFunctor{W}$ extends to a strict 2-functor:
+\[
+\mathfrak{W} : \mathbf{World}_2 \to \mathbf{Cat}
+\]
+preserving vertical and horizontal composition strictly.
+\end{theorem}
+
+%% ============================================================================
+%% PART II: DOMAIN-THEORETIC SEMANTICS
+%% ============================================================================
+\part{Extended Formal Semantics}
+
+\chapter{Domain-Theoretic Foundations}
+\label{ch:domain-theory}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\vnewone]
+This chapter develops the domain-theoretic foundations for TKS semantics, providing a rigorous basis for recursive definitions, fixed points, and semantic continuity.
+\end{tcolorbox}
+
+\section{Directed-Complete Partial Orders}
+
+\begin{definition}[Partial Order on TKS Values]
+\label{def:tks-po}
+Define the \textbf{information ordering} $\sqleq$ on TKS values:
+\begin{enumerate}
+  \item $\bot \sqleq v$ for all values $v$ (bottom is least)
+  \item For elements: $Wn \sqleq Wn$ (reflexive, no proper refinement)
+  \item For RPM values: $\Failed(p) \sqleq \Failed(p)$ and $\rpmret\; v \sqleq \rpmret\; v'$ iff $v \sqleq v'$
+  \item For fractals: $\Frac \sqleq \Frac'$ iff $\Frac$ is a prefix of $\Frac'$
+  \item For functions: $f \sqleq g$ iff $\forall x.\, f(x) \sqleq g(x)$
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[Directed Set]
+\label{def:directed}
+A subset $S \subseteq D$ of a poset $(D, \sqleq)$ is \textbf{directed} if:
+\begin{enumerate}
+  \item $S \neq \varnothing$
+  \item For all $x, y \in S$, there exists $z \in S$ with $x \sqleq z$ and $y \sqleq z$
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[Dcpo]
+\label{def:dcpo}
+A poset $(D, \sqleq)$ is a \textbf{directed-complete partial order (dcpo)} if every directed subset $S \subseteq D$ has a supremum $\bigsqcup S \in D$.
+\end{definition}
+
+\begin{theorem}[TKS Semantic Domains are Dcpos]
+\label{thm:tks-dcpo}
+The following TKS semantic domains are dcpos:
+\begin{enumerate}
+  \item $\sem{\mathsf{Element}}_\bot = \{Wn \mid W \in \Worlds, n \in \{1,\ldots,10\}\} \cup \{\bot\}$
+  \item $\sem{\mathsf{RPM}[\tau]}_\bot$ for any type $\tau$
+  \item $\sem{\tau \to \sigma}$ for dcpo types $\tau, \sigma$
+  \item $\sem{\mathsf{Frac}}_\bot$ (fractals with prefix ordering)
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(1) $\sem{\mathsf{Element}}_\bot$ is a flat domain: all non-$\bot$ elements are incomparable, so every directed set is either $\{\bot\}$ or contains a unique non-$\bot$ element.
+
+(2) $\sem{\mathsf{RPM}[\tau]}_\bot$ inherits dcpo structure from $\tau$: directed sets of successful computations converge to successful computations (or remain at $\bot$ if all fail to terminate).
+
+(3) Function spaces: For directed $\{f_i\}_{i \in I}$, define $(\bigsqcup_i f_i)(x) = \bigsqcup_i f_i(x)$. This is well-defined since each $\{f_i(x)\}$ is directed.
+
+(4) Fractals with prefix ordering form an $\omega$-algebraic domain with compact elements being finite fractals.
+\end{proof}
+
+\section{Scott Topology}
+
+\begin{definition}[Scott Open Sets]
+\label{def:scott-open}
+For a dcpo $(D, \sqleq)$, a subset $U \subseteq D$ is \textbf{Scott open} if:
+\begin{enumerate}
+  \item $U$ is upward closed: $x \in U$ and $x \sqleq y$ implies $y \in U$
+  \item $U$ is inaccessible by directed suprema: for any directed $S$ with $\bigsqcup S \in U$, there exists $s \in S$ with $s \in U$
+\end{enumerate}
+The collection of Scott open sets forms the \textbf{Scott topology} $\Scott(D)$.
+\end{definition}
+
+\begin{proposition}[Scott Topology on TKS Domains]
+\label{prop:scott-tks}
+For the flat domain $\sem{\mathsf{Element}}_\bot$:
+\[
+\Scott(\sem{\mathsf{Element}}_\bot) = \{\varnothing\} \cup \{U \subseteq \sem{\mathsf{Element}}_\bot \mid \bot \notin U\} \cup \{\sem{\mathsf{Element}}_\bot\}
+\]
+The non-trivial open sets are exactly the non-empty upward-closed sets not containing $\bot$.
+\end{proposition}
+
+\begin{definition}[Scott Continuous Function]
+\label{def:scott-continuous}
+A function $f : D \to E$ between dcpos is \textbf{Scott continuous} if:
+\begin{enumerate}
+  \item $f$ is monotone: $x \sqleq y \implies f(x) \sqleq f(y)$
+  \item $f$ preserves directed suprema: $f(\bigsqcup S) = \bigsqcup f(S)$ for directed $S$
+\end{enumerate}
+\end{definition}
+
+\begin{theorem}[Noetic Operators are Scott Continuous]
+\label{thm:noetic-scott}
+Each noetic operator $\mathfrak{n}_k : \sem{\mathsf{Domain}}_\bot \to \sem{\mathsf{Domain}}_\bot$ is Scott continuous.
+\end{theorem}
+
+\begin{proof}
+Monotonicity: Since $\sem{\mathsf{Domain}}_\bot$ is flat, monotonicity reduces to:
+\begin{itemize}
+  \item $\mathfrak{n}_k(\bot) = \bot$ (strictness)
+  \item $\mathfrak{n}_k(D_i) \sqleq \mathfrak{n}_k(D_i)$ (reflexivity)
+\end{itemize}
+
+Directed suprema: For directed $S \subseteq \sem{\mathsf{Domain}}_\bot$:
+\begin{itemize}
+  \item If $S = \{\bot\}$, then $\bigsqcup S = \bot$ and $\mathfrak{n}_k(\bot) = \bot = \bigsqcup \mathfrak{n}_k(S)$
+  \item If $D_i \in S$ for some $i$, then $\bigsqcup S = D_i$ (flatness) and preservation follows
+\end{itemize}
+\end{proof}
+
+\section{Fixed-Point Theorems}
+
+\begin{theorem}[Kleene Fixed-Point Theorem for TKS]
+\label{thm:kleene-tks}
+For any Scott continuous $f : D \to D$ on a pointed dcpo $(D, \bot, \sqleq)$:
+\[
+\fix(f) = \bigsqcup_{n \geq 0} f^n(\bot)
+\]
+exists and is the least fixed point of $f$.
+\end{theorem}
+
+\begin{proof}
+The sequence $\bot \sqleq f(\bot) \sqleq f^2(\bot) \sqleq \cdots$ is an $\omega$-chain (hence directed). By dcpo property, $\bigsqcup_n f^n(\bot)$ exists.
+
+Let $x^* = \bigsqcup_n f^n(\bot)$. Then:
+\begin{align}
+f(x^*) &= f(\bigsqcup_n f^n(\bot)) \\
+&= \bigsqcup_n f^{n+1}(\bot) \quad \text{(continuity)} \\
+&= \bigsqcup_{m \geq 1} f^m(\bot) \\
+&= x^* \quad \text{(since } f^0(\bot) = \bot \text{ is least)}
+\end{align}
+
+For leastness: if $f(y) = y$, then by induction $f^n(\bot) \sqleq y$ for all $n$, so $x^* = \bigsqcup_n f^n(\bot) \sqleq y$.
+\end{proof}
+
+\begin{corollary}[Recursive Fractal Semantics]
+\label{cor:recursive-fractal}
+For a recursive fractal definition $\Frac = \langle k_1 : k_2 : \cdots \rangle(\Frac)$, the semantics is:
+\[
+\sem{\Frac} = \fix(\lambda x. \mathfrak{n}_{k_1}(\mathfrak{n}_{k_2}(\cdots(x))))
+\]
+\end{corollary}
+
+\section{Continuous Lattice Structure}
+
+\begin{definition}[Way-Below Relation]
+\label{def:way-below}
+For elements $x, y$ in a dcpo $D$, we say $x$ is \textbf{way below} $y$, written $x \ll y$, if:
+\[
+\text{For every directed } S \text{ with } y \sqleq \bigsqcup S, \text{ there exists } s \in S \text{ with } x \sqleq s
+\]
+\end{definition}
+
+\begin{definition}[Continuous Dcpo]
+\label{def:continuous-dcpo}
+A dcpo $D$ is \textbf{continuous} if for every $x \in D$:
+\[
+x = \bigsqcup \{y \in D \mid y \ll x\}
+\]
+\end{definition}
+
+\begin{theorem}[TKS Function Domains are Continuous]
+\label{thm:function-continuous}
+For continuous dcpos $D$ and $E$, the function space $[D \to E]$ of Scott continuous functions is a continuous dcpo.
+\end{theorem}
+
+%% ============================================================================
+%% CHAPTER: EXTENDED DENOTATIONAL SEMANTICS
+%% ============================================================================
+
+\chapter{Extended Denotational Semantics}
+\label{ch:extended-denotational}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\vexpone]
+This chapter extends the v7.0 denotational semantics with domain-theoretic foundations, logical relations, and full abstraction results.
+\end{tcolorbox}
+
+\section{Domain-Theoretic Semantic Function}
+
+\begin{definition}[Pointed Semantic Domains]
+\label{def:pointed-domains}
+Extend the v7.0 semantic domains to pointed dcpos:
+
+\textbf{Lifted Base Domains:}
+\begin{align}
+\sem{\mathsf{Int}}_\bot &= \mathbb{Z} \cup \{\bot\} \\
+\sem{\mathsf{Bool}}_\bot &= \mathbb{B} \cup \{\bot\} \\
+\sem{\mathsf{Element}[W]}_\bot &= \{Wn \mid n \in \{1,\ldots,10\}\} \cup \{\bot\}
+\end{align}
+
+\textbf{RPM Domain (refined):}
+\[
+\sem{\mathsf{RPM}[\tau]}_\bot = \mathcal{P}(\Acquisitions) \to (\sem{\tau}_\bot + \mathsf{Failure} + \{\bot\}) \times \mathcal{P}(\Acquisitions)
+\]
+
+\textbf{Continuous Function Domain:}
+\[
+\sem{\tau \to \sigma} = [\sem{\tau}_\bot \to \sem{\sigma}_\bot]_c
+\]
+where $[\cdot \to \cdot]_c$ denotes Scott continuous functions.
+\end{definition}
+
+\begin{definition}[Strict Semantic Function]
+\label{def:strict-sem}
+Define the \textbf{strict} semantic function $\sem{\cdot}^s$ that handles non-termination:
+
+\textbf{Divergence:}
+\[
+\sem{\Omega}_\rho = \bot
+\]
+where $\Omega$ is a diverging term.
+
+\textbf{Recursive Definitions:}
+\[
+\sem{\mathsf{fix}\; f}_\rho = \fix(\sem{f}_\rho)
+\]
+using the Kleene fixed-point.
+
+\textbf{Strict Application:}
+\[
+\sem{e_1\; e_2}_\rho =
+\begin{cases}
+\bot & \text{if } \sem{e_1}_\rho = \bot \text{ or } \sem{e_2}_\rho = \bot \\
+\sem{e_1}_\rho(\sem{e_2}_\rho) & \text{otherwise}
+\end{cases}
+\]
+\end{definition}
+
+\begin{theorem}[Semantic Function is Scott Continuous]
+\label{thm:sem-scott}
+For any well-typed term $\Gamma \types e : \tau$, the function:
+\[
+\sem{e} : \sem{\Gamma} \to \sem{\tau}_\bot
+\]
+is Scott continuous, where $\sem{\Gamma} = \prod_{x:\sigma \in \Gamma} \sem{\sigma}_\bot$.
+\end{theorem}
+
+\begin{proof}
+By structural induction on typing derivations. Key cases:
+
+\textbf{Case $\lambda x:\sigma. e$:} By IH, $\sem{e}$ is continuous in extended environments. Function abstraction preserves continuity.
+
+\textbf{Case $e_1\; e_2$:} Composition of continuous functions is continuous. Application in continuous function spaces is continuous.
+
+\textbf{Case $\mathsf{fix}\; f$:} By Theorem~\ref{thm:kleene-tks}, the fixed-point operator is continuous.
+
+\textbf{Case $\noe{k}(e)$:} By Theorem~\ref{thm:noetic-scott}, noetic operators are continuous.
+\end{proof}
+
+\section{Logical Relations}
+
+\begin{definition}[Logical Relation for TKS]
+\label{def:logical-rel}
+Define a family of relations $\mathcal{R}_\tau \subseteq \sem{\tau} \times \sem{\tau}$ indexed by types:
+
+\textbf{Base Types:}
+\[
+\mathcal{R}_{\mathsf{Int}} = \{(n, n) \mid n \in \mathbb{Z}\} \cup \{(\bot, \bot)\}
+\]
+
+\textbf{Element Types:}
+\[
+\mathcal{R}_{\mathsf{Element}[W]} = \{(Wn, Wn) \mid n \in \{1,\ldots,10\}\} \cup \{(\bot, \bot)\}
+\]
+
+\textbf{Function Types:}
+\[
+(f, g) \in \mathcal{R}_{\tau \to \sigma} \iff \forall (v, v') \in \mathcal{R}_\tau.\, (f(v), g(v')) \in \mathcal{R}_\sigma
+\]
+
+\textbf{RPM Types:}
+\begin{align}
+(m, m') \in \mathcal{R}_{\mathsf{RPM}[\tau]} \iff &\forall \alpha.\, \text{if } m(\alpha) = (\mathsf{Success}(v), \alpha') \\
+&\text{then } m'(\alpha) = (\mathsf{Success}(v'), \alpha') \text{ with } (v, v') \in \mathcal{R}_\tau
+\end{align}
+\end{definition}
+
+\begin{lemma}[Fundamental Lemma]
+\label{lem:fundamental}
+If $\Gamma \types e : \tau$ and $(\rho, \rho') \in \mathcal{R}_\Gamma$ (pointwise), then:
+\[
+(\sem{e}_\rho, \sem{e}_{\rho'}) \in \mathcal{R}_\tau
+\]
+\end{lemma}
+
+\begin{proof}
+By induction on the typing derivation. The key insight is that all TKS operations preserve the logical relation.
+\end{proof}
+
+\section{Full Abstraction}
+
+\begin{definition}[Observational Equivalence]
+\label{def:obs-equiv}
+Terms $e_1$ and $e_2$ are \textbf{observationally equivalent}, written $e_1 \approx_{obs} e_2$, if for all closing contexts $C[\cdot]$:
+\[
+C[e_1] \bigstep v \iff C[e_2] \bigstep v'
+\]
+\end{definition}
+
+\begin{definition}[Denotational Equivalence]
+\label{def:den-equiv}
+Terms $e_1$ and $e_2$ are \textbf{denotationally equivalent}, written $e_1 \approx_{den} e_2$, if:
+\[
+\forall \rho.\, \sem{e_1}_\rho = \sem{e_2}_\rho
+\]
+\end{definition}
+
+\begin{theorem}[Soundness (Adequacy)]
+\label{thm:adequacy-full}
+Denotational equivalence implies observational equivalence:
+\[
+e_1 \approx_{den} e_2 \implies e_1 \approx_{obs} e_2
+\]
+\end{theorem}
+
+\begin{proof}
+By the compositionality of $\sem{\cdot}$. If $\sem{e_1}_\rho = \sem{e_2}_\rho$ for all $\rho$, then in any context $C[\cdot]$:
+\[
+\sem{C[e_1]}_\rho = \sem{C}_{\rho'}[\sem{e_1}_\rho] = \sem{C}_{\rho'}[\sem{e_2}_\rho] = \sem{C[e_2]}_\rho
+\]
+Combined with Theorem~\ref{thm:semantic-soundness} from v7.0, the result follows.
+\end{proof}
+
+\begin{theorem}[Full Abstraction for TKS]
+\label{thm:full-abstraction}
+For the fragment of TKS without general recursion:
+\[
+e_1 \approx_{obs} e_2 \iff e_1 \approx_{den} e_2
+\]
+\end{theorem}
+
+\begin{proof}
+Soundness is Theorem~\ref{thm:adequacy-full}. For completeness, we use the logical relations technique.
+
+Suppose $e_1 \not\approx_{den} e_2$. Then there exists $\rho$ with $\sem{e_1}_\rho \neq \sem{e_2}_\rho$.
+
+Construct a distinguishing context $C[\cdot]$ as follows:
+\begin{itemize}
+  \item If the difference is at a base type, use equality testing
+  \item If the difference is at function type, apply a suitable argument
+  \item If the difference is at RPM type, run in a distinguishing acquisition state
+\end{itemize}
+
+The finite-type property of TKS base domains ensures this construction terminates.
+\end{proof}
+
+\begin{remark}
+Full abstraction fails for TKS with general recursion, as is typical for domain-theoretic semantics. The counterexample involves parallel-or-like constructs that can be distinguished observationally but not denotationally in a sequential semantics.
+\end{remark}
+
+\section{Metric Semantics for Fractal Convergence}
+
+\begin{definition}[Fractal Metric Space]
+\label{def:fractal-metric}
+Define a metric $d$ on fractals:
+\[
+d(\Frac_1, \Frac_2) =
+\begin{cases}
+0 & \text{if } \Frac_1 = \Frac_2 \\
+2^{-n} & \text{where } n = \min\{i \mid \Frac_1[i] \neq \Frac_2[i]\} \\
+1 & \text{if } \Frac_1 = \epsilon \text{ or } \Frac_2 = \epsilon
+\end{cases}
+\]
+This is an ultrametric: $d(\Frac_1, \Frac_3) \leq \max(d(\Frac_1, \Frac_2), d(\Frac_2, \Frac_3))$.
+\end{definition}
+
+\begin{theorem}[Fractal Space Completeness]
+\label{thm:fractal-complete}
+The space $(\FracSet, d)$ is a complete metric space.
+\end{theorem}
+
+\begin{proof}
+Let $(\Frac_n)_{n \in \mathbb{N}}$ be a Cauchy sequence. For each position $i$, the sequence $(\Frac_n[i])$ is eventually constant (by the Cauchy property with $\epsilon = 2^{-i-1}$). Define $\Frac^*[i] = \lim_n \Frac_n[i]$. Then $\Frac^* = \lim_n \Frac_n$.
+\end{proof}
+
+\begin{corollary}[Fractal Iteration Convergence]
+\label{cor:fractal-convergence}
+For a contractive fractal operator $F : \FracSet \to \FracSet$ (with Lipschitz constant $< 1$), the iteration sequence $\{F^n(\Frac_0)\}$ converges to a unique fixed point.
+\end{corollary}
+
+%% ============================================================================
+%% CHAPTER: TOPOLOGICAL STRUCTURE OF NOETIC SPACE
+%% ============================================================================
+
+\chapter{Topological Structure of Noetic Space}
+\label{ch:noetic-topology}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\vnewone]
+This chapter develops the topological and differential structure of noetic space, providing geometric intuition for noetic transformations.
+\end{tcolorbox}
+
+\section{Noetic Space as Topological Space}
+
+\begin{definition}[Noetic Topological Space]
+\label{def:noetic-topo}
+The \textbf{noetic space} $\mathcal{N}$ is the set $\{\noe{0}, \noe{1}, \ldots, \noe{9}\}$ equipped with the discrete topology:
+\[
+\mathcal{O}(\mathcal{N}) = \mathcal{P}(\mathcal{N})
+\]
+\end{definition}
+
+\begin{definition}[Extended Noetic Space]
+\label{def:extended-noetic}
+The \textbf{extended noetic space} $\bar{\mathcal{N}}$ includes limiting behavior:
+\[
+\bar{\mathcal{N}} = \mathcal{N} \cup \{\noe{\infty}\}
+\]
+with topology generated by:
+\begin{itemize}
+  \item All singletons $\{\noe{k}\}$ for $k \in \{0, \ldots, 9\}$
+  \item Complements of finite sets: $\bar{\mathcal{N}} \setminus F$ for finite $F \subset \mathcal{N}$
+\end{itemize}
+This is the one-point compactification of $\mathcal{N}$.
+\end{definition}
+
+\begin{proposition}[Compactness of Extended Noetic Space]
+\label{prop:compact-noetic}
+$\bar{\mathcal{N}}$ is compact Hausdorff.
+\end{proposition}
+
+\section{World Manifold Structure}
+
+\begin{definition}[World Manifold]
+\label{def:world-manifold}
+For each world $W$, define the \textbf{world manifold} $\mathcal{M}_W$ as the discrete 10-point space:
+\[
+\mathcal{M}_W = \{W1, W2, \ldots, W10\}
+\]
+equipped with a weighted graph structure encoding noetic connections.
+\end{definition}
+
+\begin{definition}[Inter-World Bundle]
+\label{def:inter-world-bundle}
+The \textbf{total world space} is the disjoint union:
+\[
+\mathcal{M} = \bigsqcup_{W \in \Worlds} \mathcal{M}_W = \mathcal{M}_A \sqcup \mathcal{M}_B \sqcup \mathcal{M}_C \sqcup \mathcal{M}_D
+\]
+with projection $\pi : \mathcal{M} \to \Worlds$ given by $\pi(Wn) = W$.
+
+This forms a fiber bundle with discrete fibers.
+\end{definition}
+
+\begin{definition}[Descent Connection]
+\label{def:descent-connection}
+The \textbf{descent connection} $\nabla$ on the world bundle assigns to each descent path $\gamma : [0,1] \to \Worlds$ a parallel transport:
+\[
+\nabla_\gamma : \mathcal{M}_{\gamma(0)} \to \mathcal{M}_{\gamma(1)}
+\]
+For the elementary descent $A \to B$:
+\[
+\nabla_{A \to B}(An) = Bn
+\]
+\end{definition}
+
+\begin{theorem}[ACBE as Parallel Transport]
+\label{thm:acbe-transport}
+The ACBE transformation is parallel transport along the canonical descent path $\gamma_{ACBE} : A \to B \to C \to D$:
+\[
+\mathrm{ACBE} = \nabla_{\gamma_{ACBE}} : \mathcal{M}_A \to \mathcal{M}_D
+\]
+\end{theorem}
+
+\section{Sheaf-Theoretic Interpretation}
+
+\begin{definition}[Presheaf of Elements]
+\label{def:presheaf-elements}
+Define the presheaf $\mathcal{E} : \mathbf{World}^{op} \to \mathbf{Set}$:
+\begin{align}
+\mathcal{E}(W) &= \{Wn \mid n \in \{1, \ldots, 10\}\} \\
+\mathcal{E}(\iota_{W \to W'}) &= \text{(restriction is trivial for discrete fibers)}
+\end{align}
+\end{definition}
+
+\begin{theorem}[Sheaf Condition]
+\label{thm:sheaf-condition}
+$\mathcal{E}$ is a sheaf on $\mathbf{World}$ with the natural topology.
+\end{theorem}
+
+\begin{definition}[Noetic Sheaf]
+\label{def:noetic-sheaf}
+The \textbf{noetic sheaf} $\mathcal{N}$ assigns to each world the available noetic operators:
+\[
+\mathcal{N}(W) = \{\noe{k} : \mathcal{E}(W) \to \mathcal{E}(W) \mid k \in \{0, \ldots, 9\}\}
+\]
+\end{definition}
+
+\begin{proposition}[Noetic Sheaf Cohomology]
+\label{prop:noetic-cohomology}
+The first cohomology $H^1(\mathbf{World}, \mathcal{N})$ classifies twisted noetic structures---variants of TKS with non-trivial global monodromy around the descent cycle.
+\end{proposition}
+
+\section{Fractal Dimension Theory}
+
+\begin{definition}[Fractal Dimension]
+\label{def:fractal-dim}
+For a fractal $\Frac = \langle k_1 : k_2 : \cdots \rangle$, define the \textbf{fractal dimension}:
+\[
+\dim(\Frac) = \lim_{n \to \infty} \frac{\log N_n(\Frac)}{\log n}
+\]
+where $N_n(\Frac)$ counts distinct subpaths of length $n$.
+\end{definition}
+
+\begin{theorem}[Eigenfractal Dimension]
+\label{thm:eigenfractal-dim}
+For a pure eigenfractal $\Frac_k = \langle k : k : k : \cdots \rangle$:
+\[
+\dim(\Frac_k) = 0
+\]
+For a maximally entropic fractal (all noetics equally likely):
+\[
+\dim(\Frac_{max}) = \log_{10}(10) = 1
+\]
+\end{theorem}
+
+\begin{corollary}[Dimension Bounds]
+\label{cor:dim-bounds}
+For any fractal $\Frac$:
+\[
+0 \leq \dim(\Frac) \leq 1
+\]
+with equality at 0 iff $\Frac$ is eventually periodic with period 1.
+\end{corollary}
+
+%% ============================================================================
+%% PART III: ADVANCED RPM STRUCTURES (v7.1 EXTENSION)
+%% ============================================================================
+\part{Advanced RPM Theory}
+
+\chapter{Multi-Goal RPM Algebra}
+\label{ch:multi-goal-rpm}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\vnewone]
+This chapter extends RPM to handle multiple simultaneous goals, products, and coproducts of prerequisite structures.
+\end{tcolorbox}
+
+\section{RPM Products}
+
+\begin{definition}[RPM Product]
+\label{def:rpm-product}
+For RPM computations $m_1 : \RPM[\tau_1]$ and $m_2 : \RPM[\tau_2]$, the \textbf{product} is:
+\[
+m_1 \times_\RPM m_2 : \RPM[\tau_1 \times \tau_2]
+\]
+defined by:
+\[
+(m_1 \times_\RPM m_2)(\alpha) =
+\begin{cases}
+(\mathsf{Success}(v_1, v_2), \alpha'') & \text{if } m_1(\alpha) = (\mathsf{Success}(v_1), \alpha') \\
+                                        & \text{and } m_2(\alpha') = (\mathsf{Success}(v_2), \alpha'') \\
+(\mathsf{Failure}(p), \alpha') & \text{if } m_1(\alpha) = (\mathsf{Failure}(p), \alpha') \\
+(\mathsf{Failure}(p), \alpha'') & \text{if } m_1(\alpha) = (\mathsf{Success}(\cdot), \alpha') \\
+                                 & \text{and } m_2(\alpha') = (\mathsf{Failure}(p), \alpha'')
+\end{cases}
+\]
+\end{definition}
+
+\begin{proposition}[Product Associativity]
+\label{prop:product-assoc}
+RPM products are associative up to isomorphism:
+\[
+(m_1 \times_\RPM m_2) \times_\RPM m_3 \cong m_1 \times_\RPM (m_2 \times_\RPM m_3)
+\]
+\end{proposition}
+
+\begin{definition}[Parallel RPM]
+\label{def:parallel-rpm}
+The \textbf{parallel product} runs both computations independently:
+\[
+m_1 \otimes m_2 : \RPM[\tau_1 \times \tau_2]
+\]
+\[
+(m_1 \otimes m_2)(\alpha) =
+\begin{cases}
+(\mathsf{Success}(v_1, v_2), \alpha_1 \cup \alpha_2) & \text{if both succeed} \\
+(\mathsf{Failure}(p_1 \lor p_2), \alpha) & \text{if either fails}
+\end{cases}
+\]
+where $m_i(\alpha) = (\mathsf{Success}(v_i), \alpha_i)$ or $(\mathsf{Failure}(p_i), \_)$.
+\end{definition}
+
+\section{RPM Coproducts}
+
+\begin{definition}[RPM Coproduct]
+\label{def:rpm-coproduct}
+For RPM computations $m_1 : \RPM[\tau]$ and $m_2 : \RPM[\tau]$, the \textbf{coproduct} (choice):
+\[
+m_1 +_\RPM m_2 : \RPM[\tau]
+\]
+defined by:
+\[
+(m_1 +_\RPM m_2)(\alpha) =
+\begin{cases}
+m_1(\alpha) & \text{if } m_1(\alpha) = (\mathsf{Success}(\_), \_) \\
+m_2(\alpha) & \text{otherwise}
+\end{cases}
+\]
+\end{definition}
+
+\begin{theorem}[RPM as Distributive Category]
+\label{thm:rpm-distributive}
+The category of RPM computations with $\times_\RPM$ and $+_\RPM$ forms a distributive category:
+\[
+m \times_\RPM (n_1 +_\RPM n_2) \cong (m \times_\RPM n_1) +_\RPM (m \times_\RPM n_2)
+\]
+\end{theorem}
+
+\section{Multi-Goal Pursuit}
+
+\begin{definition}[Goal Set]
+\label{def:goal-set}
+A \textbf{goal set} is a finite collection $G = \{g_1, \ldots, g_n\}$ where each $g_i : \RPM[\tau_i]$.
+\end{definition}
+
+\begin{definition}[Goal Conjunction]
+\label{def:goal-conj}
+The \textbf{conjunction} of goals:
+\[
+\bigwedge G = g_1 \times_\RPM g_2 \times_\RPM \cdots \times_\RPM g_n : \RPM[\tau_1 \times \cdots \times \tau_n]
+\]
+succeeds only if all goals succeed.
+\end{definition}
+
+\begin{definition}[Goal Disjunction]
+\label{def:goal-disj}
+The \textbf{disjunction} of goals (where all $\tau_i = \tau$):
+\[
+\bigvee G = g_1 +_\RPM g_2 +_\RPM \cdots +_\RPM g_n : \RPM[\tau]
+\]
+succeeds if any goal succeeds.
+\end{definition}
+
+\begin{theorem}[Multi-Goal Soundness]
+\label{thm:multi-goal-sound}
+For goal set $G = \{g_1, \ldots, g_n\}$ and acquisition state $\alpha$:
+\begin{enumerate}
+  \item $(\bigwedge G)(\alpha) = \mathsf{Success}(\bar{v})$ iff $\forall i.\, g_i$ eventually succeeds
+  \item $(\bigvee G)(\alpha) = \mathsf{Success}(v)$ iff $\exists i.\, g_i(\alpha) = \mathsf{Success}(v, \_)$
+\end{enumerate}
+\end{theorem}
+
+%% ============================================================================
+%% VERSION HISTORY
+%% ============================================================================
+
+\chapter{Version History}
+\label{app:versions}
+
+\begin{description}
+\item[v7.1 (Current)] Advanced Formal Semantics Release
+  \begin{itemize}
+  \item Natural transformations between worlds
+  \item Domain-theoretic foundations (dcpos, Scott topology)
+  \item Extended denotational semantics with full abstraction
+  \item Topological structure of noetic space
+  \item Multi-goal RPM algebra (products, coproducts)
+  \end{itemize}
+
+\item[v7.0] Academic Expansion Release
+  \begin{itemize}
+  \item Complete Noetic Fractal Calculus with type theory and eigenfractals
+  \item RPM Kleisli category and effect system
+  \item Complete dynamic semantics for all constructs
+  \item Full Progress and Preservation proofs
+  \item Concurrency model prototype
+  \item Quantum Noetic algebra prototype
+  \item 20+ worked examples
+  \end{itemize}
+
+\item[v6.1] Dynamic Semantics Release
+  \begin{itemize}
+  \item RPM formalized as monad with proofs
+  \item Basic Noetic Fractal Calculus
+  \item Integrated evaluation rules
+  \item Extended examples
+  \end{itemize}
+
+\item[v6.0] Academic Release
+
+\item[v5.0] Mathematical Framework
+
+\item[v3.2.1] Initial Formalization
+\end{description}
+
+%% ============================================================================
+%% BACKMATTER
+%% ============================================================================
+\backmatter
+
+\begin{thebibliography}{99}
+\bibitem{kybalion} Three Initiates. \textit{The Kybalion}. Yogi Publication Society, 1908.
+\bibitem{moggi} E. Moggi. ``Notions of computation and monads.'' \textit{Information and Computation}, 93(1):55--92, 1991.
+\bibitem{wadler} P. Wadler. ``Monads for functional programming.'' \textit{Advanced Functional Programming}, LNCS 925:24--52, 1995.
+\bibitem{pierce} B. C. Pierce. \textit{Types and Programming Languages}. MIT Press, 2002.
+\bibitem{plotkin} G. D. Plotkin. ``A structural approach to operational semantics.'' DAIMI FN-19, 1981.
+\bibitem{mac-lane} S. Mac Lane. \textit{Categories for the Working Mathematician}. Springer, 1971.
+\bibitem{plotkin-power} G. Plotkin and J. Power. ``Algebraic operations and generic effects.'' \textit{Applied Categorical Structures}, 11(1):69--94, 2003.
+\bibitem{nielsen-chuang} M. Nielsen and I. Chuang. \textit{Quantum Computation and Quantum Information}. Cambridge University Press, 2000.
+\bibitem{abramsky-jung} S. Abramsky and A. Jung. ``Domain Theory.'' \textit{Handbook of Logic in Computer Science}, Vol. 3, Oxford, 1994.
+\bibitem{scott} D. S. Scott. ``Data types as lattices.'' \textit{SIAM Journal on Computing}, 5(3):522--587, 1976.
+\bibitem{milner} R. Milner. ``Fully abstract models of typed λ-calculi.'' \textit{TCS}, 4(1):1--22, 1977.
+\end{thebibliography}
+
+\end{document}

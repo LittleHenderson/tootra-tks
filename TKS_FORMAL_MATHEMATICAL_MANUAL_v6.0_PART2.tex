@@ -1,0 +1,690 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% TKS FORMAL MATHEMATICAL MANUAL v6.0 — ACADEMIC RELEASE
+%% Part 2 of 4: Algebraic Structures (Noetic Algebra, Tootra Arithmetic)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% This file continues from Part 1. In the final document, these would be
+%% concatenated into a single LaTeX file.
+
+%% ============================================================================
+%% PART II: ALGEBRAIC STRUCTURES
+%% ============================================================================
+\part{Algebraic Structures}
+
+%% ============================================================================
+%% CHAPTER 3: NOETIC OPERATOR ALGEBRA
+%% ============================================================================
+\chapter{Noetic Operator Algebra}
+\label{ch:noetic-algebra}
+
+This chapter provides a complete specification of the algebraic structure of Noetic operators, including the full 10×10 composition table, structural properties, and eigenmodes.
+
+\section{Composition as Binary Operation}
+
+\begin{definition}[Noetic Composition]
+\label{def:noetic-composition}
+The \textbf{composition operation} on Noetics is:
+\[
+\circ : \Noetics \times \Noetics \to \mathrm{End}(\Ideas)
+\]
+defined by:
+\[
+(\noe{j} \circ \noe{i})(X) = \noe{j}(\noe{i}(X))
+\]
+for all $X \in \Ideas$.
+\end{definition}
+
+\begin{remark}
+The notation $\noe{j} \circ \noe{i}$ means ``apply $\noe{i}$ first, then $\noe{j}$.'' This follows the standard convention for function composition.
+\end{remark}
+
+\section{Fundamental Composition Axioms}
+
+\begin{axiom}[Associativity of Composition]
+\label{ax:assoc-comp}
+For all $\noe{i}, \noe{j}, \noe{k} \in \Noetics$:
+\[
+\noe{k} \circ (\noe{j} \circ \noe{i}) = (\noe{k} \circ \noe{j}) \circ \noe{i}
+\]
+\end{axiom}
+
+\begin{axiom}[Identity Element]
+\label{ax:identity}
+The Noetic $\noe{0}$ (Idea) serves as the identity element:
+\[
+\noe{0} \circ \noe{k} = \noe{k} \circ \noe{0} = \noe{k} \quad \forall k \in \{0,\ldots,9\}
+\]
+\end{axiom}
+
+\begin{theorem}[Monoid Structure]
+\label{thm:monoid}
+The structure $(\Noetics, \circ, \noe{0})$ forms a monoid.
+\end{theorem}
+
+\begin{proof}
+We verify the monoid axioms:
+\begin{enumerate}
+  \item \textbf{Closure}: For any $\noe{i}, \noe{j} \in \Noetics$, the composition $\noe{j} \circ \noe{i}$ is an endofunction on $\Ideas$. By the closure axiom of TKS, compositions of Noetics yield valid operators in the extended closure $\overline{\Noetics}$.
+  \item \textbf{Associativity}: By Axiom~\ref{ax:assoc-comp}.
+  \item \textbf{Identity}: By Axiom~\ref{ax:identity}, $\noe{0}$ is the identity.
+\end{enumerate}
+\end{proof}
+
+\section{The Complete 10×10 Noetic Composition Table}
+
+We now present the \textbf{complete} composition table for all pairs of Noetic operators. The entry at row $\noe{i}$, column $\noe{j}$ gives the result of $\noe{j} \circ \noe{i}$ (apply $\noe{i}$ first).
+
+\begin{definition}[Composition Notation]
+\label{def:comp-notation}
+We use the following notational conventions:
+\begin{itemize}
+  \item $\noe{ij}$ denotes the compound operator $\noe{j} \circ \noe{i}$
+  \item $\noe{i}^2$ denotes the self-composition $\noe{i} \circ \noe{i}$
+  \item $\approx \noe{0}$ indicates approximate neutralization (returns toward identity)
+\end{itemize}
+\end{definition}
+
+\begin{table}[h]
+\centering
+\caption{Complete 10×10 Noetic Composition Table}
+\label{tab:composition}
+\small
+\begin{tabular}{c|cccccccccc}
+$\circ$ & $\noe{0}$ & $\noe{1}$ & $\noe{2}$ & $\noe{3}$ & $\noe{4}$ & $\noe{5}$ & $\noe{6}$ & $\noe{7}$ & $\noe{8}$ & $\noe{9}$ \\
+\hline
+$\noe{0}$ & $\noe{0}$ & $\noe{1}$ & $\noe{2}$ & $\noe{3}$ & $\noe{4}$ & $\noe{5}$ & $\noe{6}$ & $\noe{7}$ & $\noe{8}$ & $\noe{9}$ \\
+$\noe{1}$ & $\noe{1}$ & $\noe{1}^2$ & $\noe{12}$ & $\noe{13}$ & $\noe{14}$ & $\noe{15}$ & $\noe{16}$ & $\noe{17}$ & $\noe{18}$ & $\noe{19}$ \\
+$\noe{2}$ & $\noe{2}$ & $\noe{21}$ & $\noe{2}^2$ & $\approx\noe{0}$ & $\noe{24}$ & $\noe{25}$ & $\noe{26}$ & $\noe{27}$ & $\noe{28}$ & $\noe{29}$ \\
+$\noe{3}$ & $\noe{3}$ & $\noe{31}$ & $\approx\noe{0}$ & $\noe{3}^2$ & $\noe{34}$ & $\noe{35}$ & $\noe{36}$ & $\noe{37}$ & $\noe{38}$ & $\noe{39}$ \\
+$\noe{4}$ & $\noe{4}$ & $\noe{41}$ & $\noe{42}$ & $\noe{43}$ & $\noe{4}^2$ & $\noe{45}$ & $\noe{46}$ & $\noe{47}$ & $\noe{48}$ & $\noe{49}$ \\
+$\noe{5}$ & $\noe{5}$ & $\noe{51}$ & $\noe{52}$ & $\noe{53}$ & $\noe{54}$ & $\noe{5}^2$ & $\approx\noe{0}$ & $\noe{57}$ & $\noe{58}$ & $\noe{59}$ \\
+$\noe{6}$ & $\noe{6}$ & $\noe{61}$ & $\noe{62}$ & $\noe{63}$ & $\noe{64}$ & $\approx\noe{0}$ & $\noe{6}^2$ & $\noe{67}$ & $\noe{68}$ & $\noe{69}$ \\
+$\noe{7}$ & $\noe{7}$ & $\noe{71}$ & $\noe{72}$ & $\noe{73}$ & $\noe{74}$ & $\noe{75}$ & $\noe{76}$ & $\noe{7}^2$ & $\noe{78}$ & $\noe{79}$ \\
+$\noe{8}$ & $\noe{8}$ & $\noe{81}$ & $\noe{82}$ & $\noe{83}$ & $\noe{84}$ & $\noe{85}$ & $\noe{86}$ & $\noe{87}$ & $\noe{8}^2$ & $\approx\noe{0}$ \\
+$\noe{9}$ & $\noe{9}$ & $\noe{91}$ & $\noe{92}$ & $\noe{93}$ & $\noe{94}$ & $\noe{95}$ & $\noe{96}$ & $\noe{97}$ & $\approx\noe{0}$ & $\noe{9}^2$ \\
+\end{tabular}
+\end{table}
+
+\subsection{Semantic Interpretation of Compositions}
+
+\begin{definition}[Composition Semantics]
+\label{def:comp-semantics}
+Each compound operator $\noe{ij}$ has a semantic interpretation:
+\end{definition}
+
+\begin{longtable}{lll}
+\toprule
+\textbf{Composition} & \textbf{Notation} & \textbf{Semantic Meaning} \\
+\midrule
+\endhead
+$\noe{1} \circ \noe{1}$ & $\noe{1}^2$ & Meta-awareness (awareness of awareness) \\
+$\noe{2} \circ \noe{1}$ & $\noe{12}$ & Attraction with awareness \\
+$\noe{3} \circ \noe{1}$ & $\noe{13}$ & Repulsion with awareness \\
+$\noe{4} \circ \noe{1}$ & $\noe{14}$ & Vibration with awareness \\
+$\noe{5} \circ \noe{1}$ & $\noe{15}$ & Reception with awareness \\
+$\noe{6} \circ \noe{1}$ & $\noe{16}$ & Projection with awareness \\
+$\noe{7} \circ \noe{1}$ & $\noe{17}$ & Rhythm with awareness \\
+$\noe{8} \circ \noe{1}$ & $\noe{18}$ & Elevation with awareness \\
+$\noe{9} \circ \noe{1}$ & $\noe{19}$ & Grounding with awareness \\
+\midrule
+$\noe{3} \circ \noe{2}$ & $\approx\noe{0}$ & Negative after Positive $\to$ neutralization \\
+$\noe{2} \circ \noe{3}$ & $\approx\noe{0}$ & Positive after Negative $\to$ neutralization \\
+$\noe{6} \circ \noe{5}$ & $\approx\noe{0}$ & Male after Female $\to$ restructured potential \\
+$\noe{5} \circ \noe{6}$ & $\approx\noe{0}$ & Female after Male $\to$ externalized integration \\
+$\noe{9} \circ \noe{8}$ & $\approx\noe{0}$ & Below after Above $\to$ manifested potential \\
+$\noe{8} \circ \noe{9}$ & $\approx\noe{0}$ & Above after Below $\to$ elevated potential \\
+\midrule
+$\noe{4} \circ \noe{7}$ & $\noe{47}$ & Vibration made rhythmic \\
+$\noe{7} \circ \noe{4}$ & $\noe{74}$ & Rhythm charged with vibration \\
+$\noe{1} \circ \noe{4} \circ \noe{7}$ & MVR & Mind-Vibration-Rhythm (core protocol) \\
+\midrule
+$\noe{2}^2$ & $\noe{2}^2$ & Amplified attraction \\
+$\noe{3}^2$ & $\noe{3}^2$ & Amplified repulsion \\
+$\noe{4}^2$ & $\noe{4}^2$ & Resonance (vibration of vibration) \\
+$\noe{5}^2$ & $\noe{5}^2$ & Deep receptivity \\
+$\noe{6}^2$ & $\noe{6}^2$ & Deep projectivity \\
+$\noe{7}^2$ & $\noe{7}^2$ & Meta-rhythm (pattern of patterns) \\
+$\noe{8}^2$ & $\noe{8}^2$ & Deep elevation (esoteric of esoteric) \\
+$\noe{9}^2$ & $\noe{9}^2$ & Deep grounding (exoteric of exoteric) \\
+\bottomrule
+\end{longtable}
+
+\section{Dualities and Inversions}
+
+\begin{definition}[Dual Noetics]
+\label{def:dual-noetics}
+The three \textbf{fundamental dualities} are:
+\begin{align}
+\text{Duality}_1 &: \noe{2} \leftrightarrow \noe{3} && \text{(Positive } \leftrightarrow \text{ Negative)} \\
+\text{Duality}_2 &: \noe{5} \leftrightarrow \noe{6} && \text{(Female } \leftrightarrow \text{ Male)} \\
+\text{Duality}_3 &: \noe{8} \leftrightarrow \noe{9} && \text{(Above } \leftrightarrow \text{ Below)}
+\end{align}
+\end{definition}
+
+\begin{axiom}[Pseudo-Inverse Relations]
+\label{ax:pseudo-inverse}
+For dual pairs, we define pseudo-inverses:
+\begin{align}
+\noe{2}^{-1} &:= \noe{3} & \noe{3}^{-1} &:= \noe{2} \\
+\noe{5}^{-1} &:= \noe{6} & \noe{6}^{-1} &:= \noe{5} \\
+\noe{8}^{-1} &:= \noe{9} & \noe{9}^{-1} &:= \noe{8}
+\end{align}
+\end{axiom}
+
+\begin{theorem}[Duality Neutralization]
+\label{thm:duality-neutral}
+For dual pairs $(\noe{a}, \noe{b})$:
+\[
+\noe{b} \circ \noe{a} \approx \noe{0}
+\]
+The composition returns toward the neutral/potential state.
+\end{theorem}
+
+\begin{proof}
+We verify for each dual pair:
+\begin{enumerate}
+  \item $\noe{3} \circ \noe{2}$: Attraction followed by repulsion nullifies the directional component, leaving undifferentiated potential.
+  \item $\noe{6} \circ \noe{5}$: Reception followed by projection restructures content back toward potential.
+  \item $\noe{9} \circ \noe{8}$: Elevation followed by grounding returns content toward neutral manifestation level.
+\end{enumerate}
+The approximate equality $\approx$ indicates that while the result may not be exactly $\noe{0}$ in all contexts, it is semantically equivalent to returning toward the identity operation.
+\end{proof}
+
+\section{Commutators and Anti-Commutators}
+
+\begin{definition}[Noetic Commutator]
+\label{def:commutator}
+For Noetics $\noe{i}, \noe{j}$, the \textbf{commutator} is:
+\[
+[\noe{i}, \noe{j}] := \noe{i} \circ \noe{j} - \noe{j} \circ \noe{i}
+\]
+where subtraction is interpreted as the operator difference (the ``residue'' of non-commutativity).
+\end{definition}
+
+\begin{definition}[Noetic Anti-Commutator]
+\label{def:anti-commutator}
+The \textbf{anti-commutator} is:
+\[
+\{\noe{i}, \noe{j}\} := \noe{i} \circ \noe{j} + \noe{j} \circ \noe{i}
+\]
+yielding the symmetric component of composition.
+\end{definition}
+
+\begin{theorem}[Key Commutator Relations]
+\label{thm:commutators}
+The following commutator relations hold:
+\begin{enumerate}
+  \item $[\noe{0}, \noe{k}] = 0$ for all $k$ (identity commutes with everything)
+  \item $[\noe{2}, \noe{3}] \neq 0$ (Positive-Negative order matters)
+  \item $[\noe{5}, \noe{6}] \neq 0$ (Female-Male order matters)
+  \item $[\noe{8}, \noe{9}] \neq 0$ (Above-Below order matters)
+  \item $[\noe{4}, \noe{7}] \approx 0$ (Vibration and Rhythm approximately commute)
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\begin{enumerate}
+  \item By Axiom~\ref{ax:identity}, $\noe{0} \circ \noe{k} = \noe{k} \circ \noe{0} = \noe{k}$, so $[\noe{0}, \noe{k}] = \noe{k} - \noe{k} = 0$.
+
+  \item Consider the semantic interpretation: $\noe{3} \circ \noe{2}$ means ``attract then repel'' while $\noe{2} \circ \noe{3}$ means ``repel then attract.'' These yield different results because the initial state is modified differently. Hence $[\noe{2}, \noe{3}] \neq 0$.
+
+  \item Similarly, $\noe{6} \circ \noe{5}$ (project after receiving) $\neq$ $\noe{5} \circ \noe{6}$ (receive after projecting) because the order of internal/external processing matters.
+
+  \item $\noe{9} \circ \noe{8}$ (ground after elevating) $\neq$ $\noe{8} \circ \noe{9}$ (elevate after grounding) because causal direction matters.
+
+  \item Vibration ($\noe{4}$) and Rhythm ($\noe{7}$) both concern temporal/oscillatory structure and largely commute because charging with intensity and establishing periodicity are independent operations.
+\end{enumerate}
+\end{proof}
+
+\section{Algebraic Properties of the Noetic Monoid}
+
+\begin{theorem}[Closure Under Composition]
+\label{thm:closure}
+The Noetic operator set $\Noetics$ is closed under composition within its extended closure $\overline{\Noetics}$.
+\end{theorem}
+
+\begin{proof}
+For all $\noe{i}, \noe{j} \in \Noetics$, the composition $\noe{j} \circ \noe{i}$ produces either:
+\begin{enumerate}
+  \item A base Noetic $\noe{k} \in \Noetics$ (in the case of identity compositions or duality neutralizations)
+  \item A compound operator $\noe{ij} \in \overline{\Noetics}$ (the closure)
+\end{enumerate}
+The extended closure $\overline{\Noetics} = \Noetics \cup \{\noe{ij} : \noe{i}, \noe{j} \in \Noetics\}$ is finite (at most 100 elements) and closed under composition.
+\end{proof}
+
+\begin{proposition}[No General Inverses]
+\label{prop:no-inverses}
+The monoid $(\Noetics, \circ, \noe{0})$ is not a group---general inverses do not exist.
+\end{proposition}
+
+\begin{proof}
+Consider $\noe{1}$ (Mind). There is no $\noe{k}$ such that $\noe{k} \circ \noe{1} = \noe{0}$ because applying awareness and then any other operation does not return to pure undifferentiated potential. Similarly for $\noe{4}$ (Vibration) and $\noe{7}$ (Rhythm). Only the dual pairs have pseudo-inverses as defined in Axiom~\ref{ax:pseudo-inverse}.
+\end{proof}
+
+\begin{definition}[Idempotent Operators]
+\label{def:idempotent}
+A Noetic $\noe{k}$ is \textbf{idempotent} if $\noe{k}^2 = \noe{k}$.
+\end{definition}
+
+\begin{proposition}[Identity is Idempotent]
+\label{prop:id-idempotent}
+The identity $\noe{0}$ is the only strictly idempotent Noetic: $\noe{0}^2 = \noe{0}$.
+\end{proposition}
+
+\begin{proof}
+By definition, $\noe{0}(X) = X$ for all $X$, so $\noe{0}^2(X) = \noe{0}(\noe{0}(X)) = \noe{0}(X) = X = \noe{0}(X)$. For other Noetics, self-composition generally intensifies the operation (e.g., $\noe{2}^2$ is amplified attraction, not simple attraction).
+\end{proof}
+
+\section{Eigenmodes and Stability}
+
+\begin{definition}[Noetic Eigenstate]
+\label{def:eigenstate}
+An Idea $X \in \Ideas$ is an \textbf{eigenstate} of Noetic $\noe{k}$ with eigenvalue $\lambda \in \mathbb{R}$ (or $\mathbb{C}$) if:
+\[
+\noe{k}(X) = \lambda X
+\]
+\end{definition}
+
+\begin{theorem}[Element-Noetic Correspondence]
+\label{thm:element-noetic}
+Each Element $Xn$ (where $X \in \Worlds$ and $n \in \{1,\ldots,10\}$) is a stable eigenstate of its corresponding Noetic $\noe{n}$:
+\[
+\noe{n}(Xn) = Xn \quad (\lambda = 1)
+\]
+\end{theorem}
+
+\begin{proof}
+We verify by semantic analysis:
+\begin{itemize}
+  \item $\noe{0}(X10) = X10$: Identity preserves pure Idea.
+  \item $\noe{1}(X1) = X1$: Mind applied to Mind is stable (awareness of awareness is still awareness).
+  \item $\noe{2}(X2) = X2$: Positive applied to Positive amplifies but preserves type.
+  \item $\noe{3}(X3) = X3$: Negative applied to Negative deepens but preserves type.
+  \item $\noe{4}(X4) = X4$: Vibration applied to Vibration resonates (eigenvalue 1).
+  \item $\noe{5}(X5) = X5$: Female applied to Female deepens receptivity.
+  \item $\noe{6}(X6) = X6$: Male applied to Male structures further.
+  \item $\noe{7}(X7) = X7$: Rhythm applied to Rhythm maintains pattern.
+  \item $\noe{8}(X8) = X8$: Above applied to Above elevates (stable).
+  \item $\noe{9}(X9) = X9$: Below applied to Below grounds further.
+\end{itemize}
+In each case, the Element type is preserved with eigenvalue $\lambda = 1$.
+\end{proof}
+
+\begin{definition}[Stability Criteria]
+\label{def:stability}
+An eigenstate $X$ with eigenvalue $\lambda$ is:
+\begin{itemize}
+  \item \textbf{Stable} if $|\lambda| \leq 1$
+  \item \textbf{Unstable} if $|\lambda| > 1$ or $\mathrm{Im}(\lambda) \neq 0$
+\end{itemize}
+\end{definition}
+
+\begin{corollary}[All Elements are Stable]
+\label{cor:elements-stable}
+All 40 Elements are stable eigenstates of their corresponding Noetics with $\lambda = 1$.
+\end{corollary}
+
+%% ============================================================================
+%% CHAPTER 4: TOOTRA ARITHMETIC
+%% ============================================================================
+\chapter{Algebraic Structures of Tootra Arithmetic}
+\label{ch:tootra-arithmetic}
+
+This chapter provides a complete formalization of Tootra arithmetic, defining the four operations on a concrete mathematical structure and proving their algebraic properties.
+
+\section{The Idea Space as a Mathematical Structure}
+
+To formalize Tootra arithmetic, we must specify the mathematical structure of the Idea space $\Ideas$.
+
+\begin{definition}[Idea Space Structure]
+\label{def:idea-structure}
+The \textbf{Idea space} $\Ideas$ is defined as a \textbf{graded multiset algebra}:
+\[
+\Ideas = \bigcup_{W \in \Worlds} \mathcal{M}(\mathcal{P}_W)
+\]
+where $\mathcal{M}(\mathcal{P}_W)$ denotes the space of finite multisets over a property space $\mathcal{P}_W$ for world $W$.
+\end{definition}
+
+\begin{remark}
+The multiset structure allows Ideas to contain multiple instances of properties (with multiplicities), which is essential for modeling intensity and repetition.
+\end{remark}
+
+\begin{definition}[Property Space]
+\label{def:property-space}
+For each world $W$, the \textbf{property space} $\mathcal{P}_W$ is a set of atomic properties:
+\[
+\mathcal{P}_W = \{p_{W,i} : i \in I_W\}
+\]
+where $I_W$ is an index set. An Idea in world $W$ is a multiset $X : \mathcal{P}_W \to \mathbb{N}$ assigning a non-negative multiplicity to each property.
+\end{definition}
+
+\section{Tootra-Addition ($\Tadd$)}
+
+\begin{definition}[Tootra-Addition]
+\label{def:tootra-add}
+For Ideas $X, Y \in \Ideas$, the \textbf{Tootra-Addition} is:
+\[
+X \Tadd Y = X \uplus Y
+\]
+where $\uplus$ denotes multiset union (summing multiplicities).
+
+Formally, for each property $p$:
+\[
+(X \Tadd Y)(p) = X(p) + Y(p)
+\]
+\end{definition}
+
+\begin{theorem}[Properties of Tootra-Addition]
+\label{thm:tadd-properties}
+Tootra-Addition satisfies:
+\begin{enumerate}
+  \item \textbf{Commutativity}: $X \Tadd Y = Y \Tadd X$
+  \item \textbf{Associativity}: $(X \Tadd Y) \Tadd Z = X \Tadd (Y \Tadd Z)$
+  \item \textbf{Identity}: $X \Tadd \varnothing = X$ (where $\varnothing$ is the empty multiset)
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\begin{enumerate}
+  \item \textbf{Commutativity}: For all $p$, $(X \Tadd Y)(p) = X(p) + Y(p) = Y(p) + X(p) = (Y \Tadd X)(p)$.
+
+  \item \textbf{Associativity}: $((X \Tadd Y) \Tadd Z)(p) = (X(p) + Y(p)) + Z(p) = X(p) + (Y(p) + Z(p)) = (X \Tadd (Y \Tadd Z))(p)$.
+
+  \item \textbf{Identity}: $(X \Tadd \varnothing)(p) = X(p) + 0 = X(p)$.
+\end{enumerate}
+\end{proof}
+
+\begin{corollary}[Abelian Monoid Structure]
+\label{cor:tadd-monoid}
+The structure $(\Ideas, \Tadd, \varnothing)$ forms an \textbf{abelian monoid}.
+\end{corollary}
+
+\section{Tootra-Subtraction ($\Tsub$)}
+
+\begin{definition}[Tootra-Subtraction]
+\label{def:tootra-sub}
+For Ideas $X, Y \in \Ideas$, the \textbf{Tootra-Subtraction} is:
+\[
+X \Tsub Y = X \setminus_m Y
+\]
+where $\setminus_m$ denotes multiset difference (subtracting multiplicities, floored at 0).
+
+Formally:
+\[
+(X \Tsub Y)(p) = \max(0, X(p) - Y(p))
+\]
+\end{definition}
+
+\begin{theorem}[Properties of Tootra-Subtraction]
+\label{thm:tsub-properties}
+Tootra-Subtraction satisfies:
+\begin{enumerate}
+  \item \textbf{Non-Commutativity}: $X \Tsub Y \neq Y \Tsub X$ in general
+  \item \textbf{Right Identity}: $X \Tsub \varnothing = X$
+  \item \textbf{Nullification}: $X \Tsub X = \varnothing$
+  \item \textbf{Non-Associativity}: $(X \Tsub Y) \Tsub Z \neq X \Tsub (Y \Tsub Z)$ in general
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\begin{enumerate}
+  \item \textbf{Non-Commutativity}: Let $X = \{a, a\}$ and $Y = \{a\}$. Then $X \Tsub Y = \{a\}$ but $Y \Tsub X = \varnothing$.
+
+  \item \textbf{Right Identity}: $(X \Tsub \varnothing)(p) = \max(0, X(p) - 0) = X(p)$.
+
+  \item \textbf{Nullification}: $(X \Tsub X)(p) = \max(0, X(p) - X(p)) = 0$.
+
+  \item \textbf{Non-Associativity}: Let $X = \{a, a, a\}$, $Y = \{a, a\}$, $Z = \{a\}$. Then $(X \Tsub Y) \Tsub Z = \{a\} \Tsub \{a\} = \varnothing$, but $X \Tsub (Y \Tsub Z) = \{a,a,a\} \Tsub \{a\} = \{a, a\}$.
+\end{enumerate}
+\end{proof}
+
+\section{Tootra-Multiplication ($\Tmul$)}
+
+\begin{definition}[Tootra-Multiplication]
+\label{def:tootra-mul}
+For Ideas $X, Y \in \Ideas$, the \textbf{Tootra-Multiplication} is:
+\[
+X \Tmul Y = X \times_T Y
+\]
+defined as the interaction product where each property in $X$ is scaled by the structure of $Y$.
+
+Formally, we define:
+\[
+(X \Tmul Y)(p) = \sum_{q \in \mathcal{P}} X(q) \cdot Y(p) \cdot \kappa(q, p)
+\]
+where $\kappa(q, p) \in [0, 1]$ is an interaction kernel encoding how property $q$ scales property $p$.
+\end{definition}
+
+\begin{remark}
+The interaction kernel $\kappa$ encodes domain-specific semantics. For simplicity, we often use $\kappa(q, p) = \delta_{qp}$ (Kronecker delta), yielding component-wise multiplication.
+\end{remark}
+
+\begin{definition}[Simplified Tootra-Multiplication]
+\label{def:tootra-mul-simple}
+Under the diagonal kernel $\kappa(q,p) = \delta_{qp}$:
+\[
+(X \Tmul Y)(p) = X(p) \cdot Y(p)
+\]
+This is the Hadamard (component-wise) product.
+\end{definition}
+
+\begin{theorem}[Properties of Tootra-Multiplication]
+\label{thm:tmul-properties}
+Under simplified Tootra-Multiplication:
+\begin{enumerate}
+  \item \textbf{Commutativity}: $X \Tmul Y = Y \Tmul X$
+  \item \textbf{Associativity}: $(X \Tmul Y) \Tmul Z = X \Tmul (Y \Tmul Z)$
+  \item \textbf{Identity}: $X \Tmul \mathbf{1} = X$ where $\mathbf{1}(p) = 1$ for all $p$
+  \item \textbf{Annihilation}: $X \Tmul \varnothing = \varnothing$
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+All properties follow from standard properties of multiplication on $\mathbb{N}$.
+\end{proof}
+
+\begin{remark}[Non-Commutative General Case]
+\label{rem:tmul-noncommutative}
+In the general case with non-diagonal $\kappa$, Tootra-Multiplication may be non-commutative. The v5.0 specification states non-commutativity as the general case, which requires a non-symmetric kernel.
+\end{remark}
+
+\section{Tootra-Division ($\Tdiv$)}
+
+\begin{definition}[Tootra-Division]
+\label{def:tootra-div}
+For Ideas $X, Y \in \Ideas$ where $Y \neq \varnothing$, the \textbf{Tootra-Division} is:
+\[
+X \Tdiv Y = X /_T Y
+\]
+defined as pattern extraction/factorization.
+
+Formally:
+\[
+(X \Tdiv Y)(p) = \begin{cases}
+\lfloor X(p) / Y(p) \rfloor & \text{if } Y(p) > 0 \\
+X(p) & \text{if } Y(p) = 0
+\end{cases}
+\]
+\end{definition}
+
+\begin{theorem}[Properties of Tootra-Division]
+\label{thm:tdiv-properties}
+Tootra-Division satisfies:
+\begin{enumerate}
+  \item \textbf{Non-Commutativity}: $X \Tdiv Y \neq Y \Tdiv X$ in general
+  \item \textbf{Self-Annihilation}: $X \Tdiv X = \mathbf{1}$ (or approximately $\varnothing$ in multiplicity interpretation)
+  \item \textbf{Hierarchy Preservation}: If $X \succ Y$ (in world ordering), then $X \Tdiv Y = X$
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\begin{enumerate}
+  \item Let $X = \{a, a, a, a\}$ and $Y = \{a, a\}$. Then $(X \Tdiv Y)(a) = 2$ but $(Y \Tdiv X)(a) = 0$.
+
+  \item $(X \Tdiv X)(p) = \lfloor X(p) / X(p) \rfloor = 1$ for all $p$ where $X(p) > 0$.
+
+  \item By the TKS hierarchy axiom, higher-world Ideas cannot be decomposed by lower-world patterns. This is enforced by setting $\kappa = 0$ for cross-world division where the dividend is higher.
+\end{enumerate}
+\end{proof}
+
+\section{Algebraic Structure Summary}
+
+\begin{theorem}[Tootra Semiring Structure]
+\label{thm:semiring}
+Under simplified operations, $(\Ideas, \Tadd, \Tmul, \varnothing, \mathbf{1})$ forms a \textbf{commutative semiring}.
+\end{theorem}
+
+\begin{proof}
+We verify the semiring axioms:
+\begin{enumerate}
+  \item $(\Ideas, \Tadd, \varnothing)$ is a commutative monoid (Corollary~\ref{cor:tadd-monoid}).
+  \item $(\Ideas, \Tmul, \mathbf{1})$ is a commutative monoid (Theorem~\ref{thm:tmul-properties}).
+  \item \textbf{Left distributivity}: $(X \Tadd Y) \Tmul Z = (X \Tmul Z) \Tadd (Y \Tmul Z)$
+  \item \textbf{Right distributivity}: $Z \Tmul (X \Tadd Y) = (Z \Tmul X) \Tadd (Z \Tmul Y)$
+  \item \textbf{Annihilation}: $X \Tmul \varnothing = \varnothing \Tmul X = \varnothing$
+\end{enumerate}
+Distributivity follows from: $((X \Tadd Y) \Tmul Z)(p) = (X(p) + Y(p)) \cdot Z(p) = X(p) \cdot Z(p) + Y(p) \cdot Z(p)$.
+\end{proof}
+
+\section{World Association Operators}
+
+\begin{definition}[World Association]
+\label{def:world-assoc}
+The \textbf{World Association} operator links an expression to a world:
+\[
+X \oplus W = \text{``Expression } X \text{ acting in World } W\text{''}
+\]
+\end{definition}
+
+\begin{definition}[World Disassociation]
+\label{def:world-disassoc}
+The \textbf{World Disassociation} operator unlinks an expression from a world:
+\[
+X \ominus W = \text{``Expression } X \text{ unlinked from World } W\text{''}
+\]
+\end{definition}
+
+\begin{axiom}[Association Laws]
+\label{ax:assoc-laws}
+\begin{enumerate}
+  \item \textbf{Idempotence}: $(X \oplus W) \oplus W = X \oplus W$
+  \item \textbf{Identity}: $X \oplus \mathrm{World}(X) = X$
+  \item \textbf{Transitivity}: $(X \oplus W_1) \oplus W_2 = X \oplus (W_1 \to W_2)$
+\end{enumerate}
+\end{axiom}
+
+\begin{definition}[World Distance Function]
+\label{def:world-dist}
+The distance between worlds is:
+\[
+d(W_1, W_2) = |\ord(W_1) - \ord(W_2)|
+\]
+\end{definition}
+
+\begin{table}[h]
+\centering
+\caption{World Association Distances}
+\label{tab:world-dist}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Operation} & \textbf{Distance} & \textbf{Type} \\
+\midrule
+$A \oplus A$ & 0 & In-plane \\
+$A \oplus B$ & 1 & One-step descent \\
+$A \oplus C$ & 2 & Two-step descent \\
+$A \oplus D$ & 3 & Maximum descent \\
+$D \oplus A$ & 3 & Maximum ascent \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%% ============================================================================
+%% CHAPTER 5: FOUNDATIONS ALGEBRA
+%% ============================================================================
+\chapter{Foundations and Subfoundations Algebra}
+\label{ch:foundations-algebra}
+
+\section{Foundation as Domain Filter}
+
+\begin{definition}[Foundation Filtering]
+\label{def:foundation-filter}
+Each Foundation $F_m$ induces a \textbf{filter function}:
+\[
+\varphi_m : \Ideas \to \Ideas_m \subseteq \Ideas
+\]
+where:
+\[
+\varphi_m(X) = \text{``part of } X \text{ that lies in domain of Foundation } m\text{''}
+\]
+\end{definition}
+
+\begin{definition}[Sub-Foundation Filtering]
+\label{def:subfound-filter}
+With world modifier $w \in \{a, b, c, d\}$:
+\[
+X_{mw} := \varphi_{m,w}(X)
+\]
+This filters $X$ to Foundation $m$ in world $w$.
+\end{definition}
+
+\begin{theorem}[Filter Properties]
+\label{thm:filter-props}
+Foundation filters satisfy:
+\begin{enumerate}
+  \item \textbf{Idempotence}: $\varphi_m(\varphi_m(X)) = \varphi_m(X)$
+  \item \textbf{Monotonicity}: $X \subseteq Y \Rightarrow \varphi_m(X) \subseteq \varphi_m(Y)$
+  \item \textbf{Compatibility with Addition}: $\varphi_m(X \Tadd Y) = \varphi_m(X) \Tadd \varphi_m(Y)$
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\begin{enumerate}
+  \item Filtering an already-filtered Idea extracts the same domain subset.
+  \item If $X \subseteq Y$, then the Foundation-$m$ part of $X$ is contained in the Foundation-$m$ part of $Y$.
+  \item The Foundation-$m$ part of a union is the union of Foundation-$m$ parts.
+\end{enumerate}
+\end{proof}
+
+\section{Noetic-Foundation Composition}
+
+\begin{definition}[General TKS Expression]
+\label{def:tks-expr}
+A general TKS expression has the form:
+\[
+E = X^k_{mw}
+\]
+where:
+\begin{itemize}
+  \item $X$ is a base Element or Idea
+  \item $k$ is a Noetic index
+  \item $m$ is a Foundation index
+  \item $w$ is a sub-world modifier
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Evaluation Order]
+\label{def:eval-order}
+The evaluation order is:
+\[
+X^k_{mw} := \noe{k}(\varphi_{m,w}(X))
+\]
+That is: Foundation filter applies first, then Noetic operator.
+\end{definition}
+
+\begin{theorem}[Noetic-Foundation Interaction]
+\label{thm:noetic-found}
+For any Noetic $\noe{k}$ and Foundation filter $\varphi_m$:
+\[
+\noe{k} \circ \varphi_m = \varphi_m \circ \noe{k}
+\]
+if and only if $\noe{k}$ preserves Foundation boundaries.
+\end{theorem}
+
+\begin{remark}
+In general, Noetics may cross Foundation boundaries (e.g., $\noe{8}$ may elevate material concerns to spiritual), so commutativity does not always hold.
+\end{remark}
+
+%% End of Part 2
+%% Continue in Part 3 with Category Theory, Denotational Semantics, Type Theory
+
+\end{document}

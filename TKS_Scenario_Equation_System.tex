@@ -1,0 +1,2873 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  TKS_Scenario_Equation_System.tex
+%%  Comprehensive System for Building TKS Equations and Formulas
+%%  Representing Scenarios, Events, and Ideas
+%%
+%%  Part of TKS v7.4 - December 2025
+%%  ADDITIVE to v7.4 canon
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt,twoside]{book}
+
+%% ============================================================================
+%% PACKAGES
+%% ============================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in,inner=1.2in,outer=1in]{geometry}  % Proper margins
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{stmaryrd}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{ltablex}  % Better long tables
+\usepackage{tabularx}  % Auto-adjusting columns
+\usepackage{array}
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable,skins}
+\usepackage{tikz-cd}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{ragged2e}  % Better text alignment
+
+%% ============================================================================
+%% FORMATTING SETTINGS
+%% ============================================================================
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+\renewcommand{\arraystretch}{1.2}  % Table row spacing
+
+%% ============================================================================
+%% CUSTOM COMMANDS (from TKS canonical)
+%% ============================================================================
+\newcommand{\noe}[1]{\nu_{#1}}
+\newcommand{\Ideas}{\mathcal{I}}
+\newcommand{\Worlds}{\mathcal{W}}
+\newcommand{\Elements}{\mathcal{E}}
+\newcommand{\Noetics}{\mathcal{N}}
+\newcommand{\Foundations}{\mathcal{F}}
+\newcommand{\Acquisitions}{\mathcal{A}}
+\newcommand{\Frac}{\Phi}
+\newcommand{\TransFrac}[1]{\Phi^{#1}}
+\newcommand{\MultiFrac}[2]{\Phi^{#1}_{#2}}
+\newcommand{\RPM}{\mathsf{RPM}}
+\newcommand{\ACBE}{\mathsf{ACBE}}
+\newcommand{\HausdorffDim}{\dim_H}
+\newcommand{\FractalSpectrum}{\sigma_\Phi}
+\newcommand{\fix}{\mathrm{fix}}
+\newcommand{\sem}[1]{\llbracket #1 \rrbracket}
+\newcommand{\Tadd}{\oplus_T}
+\newcommand{\Tsub}{\ominus_T}
+\newcommand{\Tmul}{\otimes_T}
+\newcommand{\Tdiv}{\oslash_T}
+\newcommand{\Wadd}{\oplus_W}
+\newcommand{\Wsub}{\ominus_W}
+\newcommand{\Failed}{\mathtt{Failed}}
+
+%% New commands for this document
+\newcommand{\Lacunarity}{\Lambda}
+\newcommand{\PsychAttractor}{\mathcal{A}_\psi}
+\newcommand{\ManipFrac}{\Phi_{\mathrm{manip}}}
+\newcommand{\Hyperstition}{\mathcal{H}}
+\newcommand{\QuantumSuper}{|\psi\rangle}
+\newcommand{\Collapse}{\mathcal{C}}
+\newcommand{\DWP}{\mathcal{DWP}}
+
+%% v7.x World-Typed Domains (canonical ACBE structure)
+\newcommand{\IdeasA}{\Ideas_A}     % World A: Archetypal/Spiritual Ideas
+\newcommand{\IdeasB}{\Ideas_B}     % World B: Intellectual/Mental Ideas
+\newcommand{\IdeasC}{\Ideas_C}     % World C: Conceptual/Emotional Ideas
+\newcommand{\IdeasD}{\Ideas_D}     % World D: Material/Physical Ideas
+\newcommand{\ACBEDescent}{\IdeasA \xrightarrow{\ACBE} \IdeasB \xrightarrow{\ACBE} \IdeasC \xrightarrow{\ACBE} \IdeasD}
+
+%% Theorems
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{proposition}{Proposition}[chapter]
+\newtheorem{lemma}{Lemma}[chapter]
+\newtheorem{corollary}{Corollary}[chapter]
+\newtheorem{example}{Example}[chapter]
+\newtheorem{remark}{Remark}[chapter]
+
+%% ============================================================================
+%% DOCUMENT
+%% ============================================================================
+\begin{document}
+
+\title{\textbf{TKS Scenario Equation System} \\[0.5em]
+\Large A Comprehensive Framework for Building Mathematical Representations \\
+of Scenarios, Events, and Ideas According to TKS Rules}
+\author{TKS v7.4 Formalization Project}
+\date{December 2025}
+\maketitle
+
+\tableofcontents
+
+%% ============================================================================
+%% PART I: FOUNDATIONS OF SCENARIO EQUATION BUILDING
+%% ============================================================================
+\part{Foundations of Scenario Equation Building}
+
+\subsection*{Type and Semantics Summary}
+\begin{itemize}
+    \item \textbf{Maps}: $\Frac = \langle k_1 : \cdots : k_n \rangle : \Ideas \to \Ideas$ (noetic fractals), $\noe{k} : \Ideas \to \Ideas$ (noetic operators), $\Tadd, \Tsub, \Tmul, \Tdiv : \Ideas \times \Ideas \to \Ideas$ (Tootra operations)
+    \item \textbf{Domains/Codomains}: Ideas $\Ideas$, Worlds $\Worlds = \{A, B, C, D\}$, Elements $\Elements$, Foundations $\Foundations_1, \ldots, \Foundations_7$
+    \item \textbf{Time Interpretation}: Discrete (stage-wise scenario equations with indexed steps $t_0 \to t_1 \to \cdots$)
+    \item \textbf{Semantic Layers}: Scenario (applied story-level constructions for psychological, social, and hyperstition modeling)
+\end{itemize}
+
+\chapter{Introduction to Scenario Equations}
+\label{ch:intro-scenario}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\textbf{Purpose},breakable]
+This document establishes a systematic framework for constructing TKS equations and formulas
+that represent scenarios, events, and ideas. The system provides rigorous mathematical
+representations for:
+\begin{enumerate}
+    \item High lacunarity structures
+    \item Psychological attractors (psych\_attractor)
+    \item Manipulation fractals (manipulations\_fractal)
+    \item TKS hyperstitions
+    \item Quantum superposition ideas
+    \item Collapse conditions
+    \item D/W/P (Desire/Wisdom/Power) chains
+\end{enumerate}
+Each scenario type receives detailed mathematical treatment with canonical formulas,
+construction rules, and application guidelines.
+\end{tcolorbox}
+
+This document is an \textbf{Applied Hyperstition / Scenario Layer} built on top of the v7.x TKS core. It does not redefine the core ontology, noetic algebra, or semantics; it applies them to concrete scenarios such as self-prophecy, market hyperstitions, and technological vision.
+
+\subsection*{Mathematical Status}
+Sections covering core scenario equations are fully aligned with the v7.x formalism and inherit its type-theoretic and categorical structure. Sections on exploratory applications should be treated as research hypotheses rather than completed formal theory.
+
+\subsection*{Semantics Note}
+\textbf{Semantics Note.} In this document, stage-wise scenario equations are interpreted in the big-step semantics of TKS, while differential equations such as $\frac{dB}{dt}$ live in the continuous approximation layer. They are related, but not identical.
+
+\section{Core Notation Reference}
+
+Before constructing scenario equations, we establish the canonical TKS notation:
+
+%% ============================================================================
+%% LAYMAN EXPLANATION: FOUNDATIONAL CONCEPTS
+%% ============================================================================
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!65!black,title=\textbf{Plain English: Understanding TKS Building Blocks},breakable]
+
+\textbf{What is TKS?}
+TKS (Tootra Kabbalistic System) is a mathematical language for describing consciousness, ideas, and how they transform. Think of it as algebra for the mind---instead of $x + y = z$, we have equations that describe how thoughts, emotions, and experiences combine and change.
+
+\textbf{The Four Worlds (Where Things Happen):}
+Everything exists in one or more of four ``worlds''---levels of reality from most abstract to most concrete:
+
+\begin{center}
+\footnotesize
+\begin{tabularx}{\textwidth}{c|l|X|X}
+\toprule
+\textbf{World} & \textbf{Name} & \textbf{Plain Meaning} & \textbf{Example} \\
+\midrule
+$A$ & Archetypal & Spiritual, divine, source-level & Pure inspiration, soul-knowing \\
+$B$ & Intellectual & Mental, conceptual, thought-level & Ideas, beliefs, plans \\
+$C$ & Conceptual & Emotional, relational, feeling-level & Feelings, desires, relationships \\
+$D$ & Material & Physical, manifest, action-level & Body, objects, actions, results \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\textbf{Metaphor: The Four Floors of a Building}
+\begin{itemize}
+    \item \textbf{Penthouse (A)}: The architect's original vision---pure, abstract, complete
+    \item \textbf{Office floor (B)}: Where the vision becomes blueprints and plans
+    \item \textbf{Showroom floor (C)}: Where people emotionally respond to models
+    \item \textbf{Ground floor (D)}: The actual physical building you can touch
+\end{itemize}
+
+\textbf{The Ten Noetic Operators (What You Can Do):}
+``Noetic'' means ``of the mind/consciousness.'' These are the ten basic operations you can perform on any idea:
+
+\begin{center}
+\footnotesize
+\begin{tabularx}{\textwidth}{c|l|X|X}
+\toprule
+\textbf{Symbol} & \textbf{Name} & \textbf{Plain Meaning} & \textbf{Real-Life Example} \\
+\midrule
+$\noe{0}$ & Idea & Pure idea, unchanged & The concept itself, no transformation \\
+$\noe{1}$ & Mind & Awareness, consciousness & Noticing something, paying attention \\
+$\noe{2}$ & Positive & Attraction, approach & Liking, wanting, moving toward \\
+$\noe{3}$ & Negative & Repulsion, avoidance & Disliking, rejecting, moving away \\
+$\noe{4}$ & Vibration & Energy, activation & Excitement, charge, intensity \\
+$\noe{5}$ & Female & Reception, absorption & Receiving, integrating, becoming \\
+$\noe{6}$ & Male & Projection, action & Sending out, doing, expressing \\
+$\noe{7}$ & Rhythm & Cycles, patterns & Habits, routines, oscillations \\
+$\noe{8}$ & Above & Cause, trigger, inner & The deeper reason, what started it \\
+$\noe{9}$ & Below & Effect, result, outer & The outcome, what it led to \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\textbf{Metaphor: TV Remote Control}
+Each noetic operator is like a button on a remote that transforms what's on screen:
+\begin{itemize}
+    \item $\noe{0}$: No button pressed---show stays the same
+    \item $\noe{1}$: Focus button---you pay attention to it
+    \item $\noe{2}$: ``Like'' button---you're drawn to it
+    \item $\noe{3}$: ``Dislike'' button---you're repelled by it
+    \item $\noe{4}$: Volume up---intensity increases
+    \item $\noe{5}$: Record---you absorb it into yourself
+    \item $\noe{6}$: Broadcast---you send it out
+    \item $\noe{7}$: Loop---it repeats in a pattern
+    \item $\noe{8}$: Rewind---go to what caused this
+    \item $\noe{9}$: Fast-forward---see what this leads to
+\end{itemize}
+
+\textbf{Fractals (Sequences of Operations):}
+A \textbf{fractal} $\langle k_1 : k_2 : ... : k_n \rangle$ is a sequence of noetic operations applied in order. It's like a recipe or algorithm for transforming consciousness.
+
+\textbf{Example}: $\langle 8 : 1 : 4 : 6 : 9 \rangle$ means:
+\begin{enumerate}
+    \item First, go to the cause ($\noe{8}$)
+    \item Then, become aware of it ($\noe{1}$)
+    \item Then, energize it ($\noe{4}$)
+    \item Then, act on it ($\noe{6}$)
+    \item Finally, see the result ($\noe{9}$)
+\end{enumerate}
+
+\textbf{The Basic Operators (Combining Ideas):}
+\begin{center}
+\footnotesize
+\begin{tabularx}{\textwidth}{c|l|X|X}
+\toprule
+\textbf{Symbol} & \textbf{Name} & \textbf{Plain Meaning} & \textbf{Example} \\
+\midrule
+$\Tadd$ & Tootra Add & Combine ideas together & Joy $\Tadd$ Gratitude = Joyful gratitude \\
+$\Tsub$ & Tootra Subtract & Remove from idea & Confidence $\Tsub$ Fear = Pure confidence \\
+$\Tmul$ & Tootra Multiply & Intensify/compose & Love $\Tmul$ Commitment = Deep love \\
+$\Tdiv$ & Tootra Divide & Separate/contrast & Success $\Tdiv$ Failure = The difference \\
+$\to$ & Transform & Leads to, causes & Desire $\to$ Action $\to$ Result \\
+$\leftrightarrow$ & Feedback & Mutual influence & Fear $\leftrightarrow$ Avoidance (reinforce) \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\end{tcolorbox}
+
+\subsection{Fundamental Operators}
+
+\begin{center}
+\small
+\begin{longtable}{c|p{3cm}|p{5cm}}
+\caption{TKS Core Operators} \\
+\toprule
+\textbf{Symbol} & \textbf{Name} & \textbf{Semantics} \\
+\midrule
+\endfirsthead
+\multicolumn{3}{c}{\textit{Table continued from previous page}} \\
+\toprule
+\textbf{Symbol} & \textbf{Name} & \textbf{Semantics} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+$\Tadd$ & Tootra Addition & Multiset union of Ideas \\
+$\Tsub$ & Tootra Subtraction & Multiset removal of Ideas \\
+$\Tmul$ & Tootra Multiplication & Compositional intensification \\
+$\Tdiv$ & Tootra Division & Opposition/contrast/separation \\
+$\Wadd$ & World Addition & Cross-world linking \\
+$\Wsub$ & World Subtraction & Cross-world unlinking \\
+$\noe{k}$ & Noetic Operator $k$ & Consciousness transformation $(k \in \{0..9\})$ \\
+$\langle k_1:k_2:\ldots:k_n \rangle$ & Fractal & Composed noetic sequence \\
+$\sem{e}$ & Semantic Brackets & Denotational interpretation \\
+$\to$ & Direct Transformation & Causal transition \\
+$\Rightarrow$ & Conditional Transformation & If-then causation \\
+$\leftrightarrow$ & Bidirectional Feedback & Mutual influence loop \\
+$\cap$ & Intersection & Common elements \\
+$\cup$ & Union & Combined elements \\
+$\subset$ & Subset/Containment & Hierarchy relation \\
+$\in$ & Membership & Element belonging \\
+\end{longtable}
+\end{center}
+
+\subsection{Noetic Operators}
+
+\begin{center}
+\small
+\begin{longtable}{c|l|p{5cm}|c}
+\caption{The Ten Noetic Operators} \\
+\toprule
+\textbf{Symbol} & \textbf{Name} & \textbf{Function} & \textbf{Dual} \\
+\midrule
+\endfirsthead
+\multicolumn{4}{c}{\textit{Table continued from previous page}} \\
+\toprule
+\textbf{Symbol} & \textbf{Name} & \textbf{Function} & \textbf{Dual} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+$\noe{0}$ & Idea & Identity operator & --- \\
+$\noe{1}$ & Mind & Awareness/consciousness & $\noe{8}$ \\
+$\noe{2}$ & Positive & Attraction/approach & $\noe{7}$ \\
+$\noe{3}$ & Negative & Repulsion/avoidance & $\noe{6}$ \\
+$\noe{4}$ & Vibration & Energy/activation & $\noe{5}$ \\
+$\noe{5}$ & Female & Receptive/passive & $\noe{4}$ \\
+$\noe{6}$ & Male & Projective/active & $\noe{3}$ \\
+$\noe{7}$ & Rhythm & Periodicity/oscillation & $\noe{2}$ \\
+$\noe{8}$ & Above & Causal/inner/trigger & $\noe{1}$ \\
+$\noe{9}$ & Below & Effect/outer/result & --- \\
+\end{longtable}
+\end{center}
+
+\subsection{World Notation}
+
+\begin{center}
+\begin{tabular}{c|l|l|c}
+\toprule
+\textbf{World} & \textbf{Label} & \textbf{Domain} & \textbf{Subscript} \\
+\midrule
+$A$ & Archetypal & Spiritual/Divine & $a$ \\
+$B$ & Intellectual & Mental/Conceptual & $b$ \\
+$C$ & Conceptual & Emotional/Formative & $c$ \\
+$D$ & Material & Physical/Manifest & $d$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Element Notation}
+
+An element $Wn^k_{mf}$ encodes:
+\begin{itemize}
+    \item $W \in \{A, B, C, D\}$: World
+    \item $n \in \{1, \ldots, 10\}$: Mode within world
+    \item $k \in \{0, \ldots, 9\}$: Applied noetic operator (superscript)
+    \item $mf \in \{1a, \ldots, 7d\}$: Sub-foundation context (subscript)
+\end{itemize}
+
+\textbf{Example}: $B3^{3}_{2b}$ = Mental element 3 (Negative) with rejection ($\noe{3}$) through mental wisdom foundation ($\Foundations_{2b}$).
+
+%% ============================================================================
+%% CHAPTER: HIGH LACUNARITY
+%% ============================================================================
+\chapter{High Lacunarity Equations}
+\label{ch:lacunarity}
+
+\subsection*{Type and Semantics Summary}
+\begin{itemize}
+    \item \textbf{Maps}: $\Lacunarity : \Frac \times \mathbb{R}_{>0} \to \mathbb{R}_{\geq 1}$ (lacunarity score at scale $\varepsilon$)
+    \item \textbf{Domains/Codomains}: Noetic fractals $\to$ Real-valued gap measure
+    \item \textbf{Time Interpretation}: Discrete (assessment at observation time)
+    \item \textbf{Semantic Layers}: Scenario (pattern assessment)
+\end{itemize}
+
+\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=\textbf{Definition: Lacunarity},breakable]
+\textbf{Lacunarity} ($\Lacunarity$) measures the ``gappiness'' or heterogeneity of a fractal
+structure---the distribution of gaps at different scales. In TKS, high lacunarity
+indicates consciousness structures with significant voids, discontinuities, or
+irregular distributions across the noetic manifold.
+\end{tcolorbox}
+
+\section{Mathematical Definition of TKS Lacunarity}
+
+\begin{definition}[TKS Lacunarity Measure]
+\label{def:tks-lacunarity}
+For a noetic fractal $\Frac = \langle k_1 : k_2 : \cdots : k_n \rangle$ and its orbit
+$\mathcal{O}_\Frac(X) = \{X, \Frac(X), \Frac^2(X), \ldots\}$, the \emph{lacunarity}
+$\Lacunarity(\Frac, \varepsilon)$ at scale $\varepsilon$ is:
+\[
+    \Lacunarity(\Frac, \varepsilon) := \frac{\mathrm{Var}[M_\varepsilon]}
+    {\mathbb{E}[M_\varepsilon]^2} + 1
+\]
+where $M_\varepsilon$ is the mass function measuring occupancy of $\varepsilon$-boxes
+covering the fractal attractor.
+\end{definition}
+
+\begin{definition}[High Lacunarity Threshold]
+\label{def:high-lac}
+A fractal $\Frac$ exhibits \emph{high lacunarity} if:
+\[
+    \Lacunarity(\Frac, \varepsilon) > \Lacunarity_{\mathrm{crit}}
+    \quad \text{for all } \varepsilon < \varepsilon_0
+\]
+where $\Lacunarity_{\mathrm{crit}} \approx 1.5$ is the critical threshold and
+$\varepsilon_0$ is the characteristic scale.
+\end{definition}
+
+%% ============================================================================
+%% LAYMAN EXPLANATION: HIGH LACUNARITY
+%% ============================================================================
+\begin{tcolorbox}[colback=green!5!white,colframe=green!65!black,title=\textbf{Plain English: What is Lacunarity?},breakable]
+
+\textbf{The Simple Version:}
+Lacunarity measures how ``holey'' or ``gappy'' something is. Think of it as measuring how unevenly distributed the ``stuff'' is across a space.
+
+\textbf{The Swiss Cheese Metaphor:}
+\begin{itemize}
+    \item \textbf{Low lacunarity} = A solid block of cheddar cheese. The material is evenly spread throughout. If you take a bite from anywhere, you get roughly the same amount of cheese.
+    \item \textbf{High lacunarity} = Swiss cheese with big, irregular holes. Some bites give you lots of cheese, other bites are mostly air. The distribution is uneven and gappy.
+\end{itemize}
+
+\textbf{Technical Term $\leftrightarrow$ Metaphor Mapping:}
+\begin{center}
+\footnotesize
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Technical Term} & \textbf{Metaphor} & \textbf{What It Means} \\
+\midrule
+$\Lacunarity(\Frac, \varepsilon)$ & Hole-count at slice thickness & How gappy things look at a zoom level \\
+$M_\varepsilon$ (mass function) & Amount of cheese in each slice & How much ``stuff'' is in each section \\
+$\mathrm{Var}[M_\varepsilon]$ & How different slice-amounts are & Big variance = some packed, others empty \\
+$\mathbb{E}[M_\varepsilon]$ & Average cheese per slice & The typical amount you'd expect \\
+$\varepsilon$ (scale) & Slice thickness & How finely you're examining things \\
+$\Lacunarity_{\mathrm{crit}} \approx 1.5$ & ``Swiss cheese'' threshold & Point where gaps become significant \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\textbf{Applied to Consciousness:}
+In TKS, lacunarity measures gaps in your awareness, abilities, or manifestation patterns. High lacunarity means you have significant ``holes''---areas of blindness, missing skills, or inconsistent results.
+
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!65!black,title=\textbf{Real-Life Scenarios: High Lacunarity},breakable]
+
+\textbf{Scenario 1: The Inconsistent Sales Rep}
+
+Marcus is a sales representative. Some months he closes deals worth hundreds of thousands. Other months, almost nothing. His manager notices a pattern: Marcus excels with technical clients but completely fails with emotional buyers. He has high lacunarity in his sales ability---big gaps in certain client types.
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $M_\varepsilon$ (mass function) = Sales performance in each client category
+    \item High $\mathrm{Var}[M_\varepsilon]$ = Wild swings between excellent and poor performance
+    \item The ``gaps'' = Client types he cannot connect with
+    \item $\Lacunarity > 1.5$ = His inconsistency is significant enough to be a real problem
+\end{itemize}
+
+\textbf{Scenario 2: The Talented Artist with Blind Spots}
+
+Priya is a graphic designer. Her color work is museum-quality, but her typography is amateur-level. Her portfolio shows stunning images ruined by awkward text placement. She has high lacunarity in her design skills---excellent in some areas, nearly empty in others.
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item Total skill space = All aspects of graphic design
+    \item High-density regions = Color theory, composition
+    \item Gaps (holes) = Typography, layout hierarchy
+    \item High lacunarity = The unevenness is pronounced and noticeable
+\end{itemize}
+
+\textbf{Scenario 3: The Spiritual Seeker with Physical Neglect}
+
+David meditates two hours daily, reads philosophy, and has profound spiritual insights. Meanwhile, he's fifty pounds overweight, hasn't exercised in years, and ignores his declining health. His consciousness development has high lacunarity---deep in spiritual realms, nearly empty in physical self-care.
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item Worlds covered: $A$ (spiritual) = dense, $D$ (physical) = gap
+    \item $\mathbf{1}_{[\mathrm{gap}]}(D) = 1$ (indicator function shows gap in physical world)
+    \item His fractal pattern has uneven distribution across the four worlds
+\end{itemize}
+
+\textbf{Scenario 4: Seasonal Business Owner}
+
+Chen runs a landscaping company. April through September, she's overwhelmed with work and earning well. October through March, income drops to nearly zero. Her business has high temporal lacunarity---periods of intense activity alternating with voids.
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item Time periods $t_i$ = Months of the year
+    \item Activity function = Revenue/work intensity per month
+    \item High temporal lacunarity = The ratio of void-time to total-time exceeds 0.4
+    \item Pattern: Burst $\to$ Void $\to$ Burst matches the formula $(t_0 \to t_1): \mathrm{Active}^{8} \to (t_1 \to t_2): \varnothing^{0}$
+\end{itemize}
+
+\end{tcolorbox}
+
+\section{High Lacunarity Scenario Equations}
+
+\subsection{Type 1: Consciousness Gaps}
+
+\textbf{Scenario}: Incomplete awareness structures with significant blind spots.
+
+\begin{equation}
+\boxed{
+    \mathcal{L}_{\mathrm{gap}} = \left( \noe{1}^{\mathrm{partial}} \Tdiv \noe{0} \right)
+    \times \sum_{W \in \Worlds} \mathbf{1}_{[\mathrm{gap}]}(W)
+}
+\end{equation}
+
+\textit{v7.x Type Annotation:}
+\begin{itemize}
+    \item \textbf{Domain}: $\Ideas \times \Worlds$
+    \item \textbf{Codomain}: $\mathbb{R}_{\geq 0}$ (lacunarity score)
+    \item \textbf{Time}: Discrete (assessment at time $t$)
+    \item \textbf{Layer}: Scenario/Assessment
+\end{itemize}
+
+\textbf{Components}:
+\begin{itemize}
+    \item $\noe{1}^{\mathrm{partial}}$: Partial mind/awareness (incomplete consciousness)
+    \item $\Tdiv \noe{0}$: Divided from pure idea (fragmentation)
+    \item $\mathbf{1}_{[\mathrm{gap}]}(W)$: Indicator function for gaps in world $W$
+\end{itemize}
+
+\textbf{Full Equation}:
+\begin{align}
+    \text{High\_Lacunarity\_Gap} &= \biggl[
+    \underbrace{(A1^1 \Tdiv A10^0)}_{\text{Spiritual gap}}
+    \Tadd \underbrace{(B1^1 \Tdiv B10^0)}_{\text{Mental gap}} \nonumber \\
+    &\quad \Tadd \underbrace{(C1^1 \Tdiv C10^0)}_{\text{Emotional gap}}
+    \Tadd \underbrace{(D1^1 \Tdiv D10^0)}_{\text{Physical gap}}
+    \biggr] \times \Lacunarity^{\mathrm{high}}
+\end{align}
+
+\subsection{Type 2: Irregular Manifestation Distribution}
+
+\textbf{Scenario}: Success patterns with unpredictable gaps---some areas manifest easily,
+others resist consistently.
+
+\begin{equation}
+\boxed{
+    \mathcal{L}_{\mathrm{manif}} = \prod_{m=1}^{7} \left[
+    P_m^{\mathrm{success}} \times (1 - \mathrm{Gap}_{m})^{-1}
+    \right]^{\alpha_m}
+}
+\end{equation}
+
+where:
+\begin{itemize}
+    \item $P_m^{\mathrm{success}}$: Success probability for Foundation $m$
+    \item $\mathrm{Gap}_m$: Gap coefficient for Foundation $m$ (0 = no gap, 1 = complete gap)
+    \item $\alpha_m$: Weighting exponent for Foundation importance
+\end{itemize}
+
+\textbf{Expanded Scenario Formula}:
+\begin{align}
+    &\text{Irregular\_Manifestation} = \nonumber \\
+    &\quad \left\{
+    \begin{array}{ll}
+        \Foundations_1: & (D_1 \to W_1 \to P_1)^{0.9} \quad \text{(low gap)} \\
+        \Foundations_2: & (D_2 \to W_2 \to P_2)^{0.3} \quad \text{(high gap)} \\
+        \Foundations_3: & (D_3 \to W_3 \to P_3)^{0.8} \quad \text{(low gap)} \\
+        \Foundations_4: & (D_4 \to W_4 \to P_4)^{0.2} \quad \text{(very high gap)} \\
+        \Foundations_5: & (D_5 \to W_5 \to P_5)^{0.7} \quad \text{(moderate)} \\
+        \Foundations_6: & (D_6 \to W_6 \to P_6)^{0.4} \quad \text{(high gap)} \\
+        \Foundations_7: & (D_7 \to W_7 \to P_7)^{0.85} \quad \text{(low gap)}
+    \end{array}
+    \right.
+\end{align}
+
+\subsection{Type 3: Temporal Lacunarity}
+
+\textbf{Scenario}: Time-based gaps in consciousness or manifestation---periods of
+high activity alternating with voids.
+
+\begin{equation}
+\boxed{
+    \mathcal{L}_{\mathrm{temp}}(t) = \noe{7}^{\mathrm{irregular}} \circ
+    \left( \sum_{i} \delta(t - t_i) \times \mathrm{Activity}_i \right)
+}
+\end{equation}
+
+\textbf{Scenario Equation}:
+\begin{align}
+    \text{Temporal\_Gaps} &= \left[
+    \underbrace{(t_0 \to t_1): \mathrm{Active}^{8}}_{\text{Burst period}}
+    \to \underbrace{(t_1 \to t_2): \varnothing^{0}}_{\text{Void period}}
+    \to \underbrace{(t_2 \to t_3): \mathrm{Active}^{4}}_{\text{Moderate burst}}
+    \right]^{\noe{7}} \nonumber \\
+    &\quad \text{where } \frac{t_{\mathrm{void}}}{t_{\mathrm{total}}} > 0.4
+\end{align}
+
+\section{High Lacunarity Classification Table}
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.3}
+\begin{longtable}{p{2cm}|p{2.5cm}|p{2.5cm}|p{3.5cm}}
+\caption{High Lacunarity Scenario Classifications} \\
+\toprule
+\textbf{Lacunarity Type} & \textbf{Indicator} & \textbf{Primary Operator} & \textbf{Canonical Equation Form} \\
+\midrule
+\endfirsthead
+\multicolumn{4}{c}{\textit{Table continued from previous page}} \\
+\toprule
+\textbf{Lacunarity Type} & \textbf{Indicator} & \textbf{Primary Operator} & \textbf{Canonical Equation Form} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Consciousness Gap & Blind spots in awareness & $\noe{1} \Tdiv \noe{0}$ & $(W_n^1 \Tdiv W_{10}^0)_{mf}$ \\
+Manifestation Gap & Irregular success & $P_m \times \mathrm{Gap}^{-1}$ & $\prod_m (D_m \to P_m)^{\alpha}$ \\
+Temporal Gap & Periodic voids & $\noe{7}^{\mathrm{irreg}}$ & $(\mathrm{Act} \to \varnothing \to \mathrm{Act})^7$ \\
+World Gap & Missing world coverage & $\mathbf{1}_{\mathrm{gap}}(W)$ & $\sum_W (1 - \mathrm{Coverage}_W)$ \\
+Foundation Gap & Incomplete foundation set & $\Foundations_{\mathrm{partial}}$ & $|\Foundations^* \setminus \Foundations_{\mathrm{active}}|$ \\
+Acquisition Gap & Missing prerequisites & $\sigma^{-1}(\mathtt{false})$ & $|\{A \in \Acquisitions : \sigma(A) = 0\}|$ \\
+Fractal Gap & Non-convergent iteration & $\Frac^n \not\to X^*$ & $\lim_{n \to \infty} d(\Frac^n, \Frac^{n+1}) \neq 0$ \\
+\end{longtable}
+\end{center}
+
+%% ============================================================================
+%% CHAPTER: PSYCHOLOGICAL ATTRACTORS
+%% ============================================================================
+\chapter{Psychological Attractor Equations (psych\_attractor)}
+\label{ch:psych-attractor}
+
+\subsection*{Type and Semantics Summary}
+\begin{itemize}
+    \item \textbf{Maps}: $\PsychAttractor = \fix(\Frac) : \Ideas \to \Ideas$ (IFS fixed-point computation)
+    \item \textbf{Domains/Codomains}: Consciousness state space $\mathcal{S}_\psi \subset \Ideas$
+    \item \textbf{Time Interpretation}: Asymptotic ($n \to \infty$ convergence to attractor)
+    \item \textbf{Semantic Layers}: Scenario (psychological dynamics modeling)
+\end{itemize}
+
+\begin{tcolorbox}[colback=purple!5!white,colframe=purple!75!black,title=\textbf{Definition: Psychological Attractor},breakable]
+A \textbf{psychological attractor} ($\PsychAttractor$) is a stable configuration in
+consciousness state space toward which mental/emotional dynamics tend to evolve.
+Attractors represent habitual thought patterns, emotional set-points, identity structures,
+and behavioral loops that resist perturbation.
+\end{tcolorbox}
+
+\section{Mathematical Definition}
+
+\begin{definition}[Psychological Attractor]
+\label{def:psych-attractor}
+A \emph{psychological attractor} $\PsychAttractor$ is a subset of the consciousness
+state space $\mathcal{S}_\psi \subset \Ideas$ such that:
+\begin{enumerate}[label=(\roman*)]
+    \item \textbf{Invariance}: $\Frac(\PsychAttractor) \subseteq \PsychAttractor$ for
+          the governing consciousness fractal $\Frac$
+    \item \textbf{Attraction}: There exists a neighborhood $U \supset \PsychAttractor$
+          such that $\lim_{n \to \infty} \Frac^n(x) \in \PsychAttractor$ for all $x \in U$
+    \item \textbf{Minimality}: No proper subset of $\PsychAttractor$ satisfies (i) and (ii)
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[Attractor Types]
+\label{def:attractor-types}
+Psychological attractors are classified by their topological dimension:
+\begin{itemize}
+    \item \textbf{Fixed Point} ($\dim = 0$): Single stable state (e.g., depression)
+    \item \textbf{Limit Cycle} ($\dim = 1$): Periodic oscillation (e.g., mood cycles)
+    \item \textbf{Torus} ($\dim = 2$): Quasi-periodic dynamics (e.g., circadian + ultradian)
+    \item \textbf{Strange Attractor} ($\dim = $ fractal): Chaotic but bounded dynamics
+\end{itemize}
+\end{definition}
+
+%% ============================================================================
+%% LAYMAN EXPLANATION: PSYCHOLOGICAL ATTRACTORS
+%% ============================================================================
+\begin{tcolorbox}[colback=green!5!white,colframe=green!65!black,title=\textbf{Plain English: What is a Psychological Attractor?},breakable]
+
+\textbf{The Simple Version:}
+A psychological attractor is a mental/emotional state that you keep returning to, like a ball rolling into a valley. No matter where you start, you tend to end up in the same place. It's the ``default setting'' your mind gravitates toward.
+
+\textbf{The Marble-in-a-Bowl Metaphor:}
+Imagine a marble in a bowl. No matter where you place the marble on the bowl's rim, it always rolls down to the bottom center. That bottom center is the ``attractor''---the stable point everything moves toward.
+
+\begin{itemize}
+    \item \textbf{The bowl} = Your mental/emotional landscape (shaped by habits, beliefs, neural pathways)
+    \item \textbf{The marble} = Your current mental state
+    \item \textbf{The bottom of the bowl} = The attractor (where you always end up)
+    \item \textbf{Pushing the marble up the side} = Trying to change your state
+    \item \textbf{The marble rolling back down} = Returning to your habitual state
+\end{itemize}
+
+\textbf{Technical Term $\leftrightarrow$ Metaphor Mapping:}
+\begin{center}
+\footnotesize
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Technical Term} & \textbf{Metaphor} & \textbf{What It Means} \\
+\midrule
+$\PsychAttractor$ & Bottom of the bowl & State you keep returning to \\
+$\mathcal{S}_\psi$ (state space) & Entire bowl surface & All possible mental states \\
+$\Frac(\PsychAttractor) \subseteq \PsychAttractor$ & Once at bottom, stay & Attractor is self-maintaining \\
+Basin of attraction ($U$) & Bowl's inner surface & Region leading to attractor \\
+$\lim_{n \to \infty} \Frac^n(x)$ & Marble's final position & Where you end up over time \\
+Fixed point ($\dim = 0$) & Single lowest point & One stable state \\
+Limit cycle ($\dim = 1$) & Marble rolls in circle & Oscillating between states \\
+Strange attractor & Chaotic path, never repeating & Unpredictable but bounded \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\textbf{Why This Matters:}
+Your psychological attractor determines your ``emotional home base.'' Positive events push you temporarily up the bowl's side, but without changing the bowl's shape, you roll back to the same place. Lasting change requires reshaping the bowl itself (changing the attractor).
+
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!65!black,title=\textbf{Real-Life Scenarios: Psychological Attractors},breakable]
+
+\textbf{Scenario 1: The Fixed-Point Pessimist (Depression Lock)}
+
+Robert wins the lottery. For two weeks, he's elated. By month three, he's back to his baseline unhappiness, complaining about taxes and ungrateful relatives. His brain has a fixed-point attractor at ``dissatisfied.'' Good events temporarily push him up, but he always rolls back down.
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\PsychAttractor_{\mathrm{fixed}}$ = His chronic dissatisfaction state
+    \item $\Frac = \langle 3:5:3 \rangle$ = Rejection, absorption, rejection (he rejects positivity, absorbs negativity)
+    \item $X^*_{\mathrm{identity}}$ = ``I am an unhappy person'' (fixed point)
+    \item Lottery win = External perturbation pushing marble up bowl
+    \item Return to baseline = $\lim_{n \to \infty} \Frac^n(X_{\mathrm{win}}) = X^*_{\mathrm{unhappy}}$
+\end{itemize}
+
+\textbf{Scenario 2: The Limit Cycle Mood-Swinger}
+
+Angela cycles predictably between two states: enthusiastic optimism (lasting about two weeks) and defeated pessimism (lasting about a week). She oscillates like clockwork. Her coworkers can predict her mood based on the calendar.
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\PsychAttractor_{\mathrm{cycle}} = \{X_{\mathrm{high}}, X_{\mathrm{low}}\}$ = Two-state oscillation
+    \item $\Frac(X_{\mathrm{high}}) = X_{\mathrm{low}}$ and $\Frac(X_{\mathrm{low}}) = X_{\mathrm{high}}$
+    \item Period $T \approx 3$ weeks = Full cycle length
+    \item $\noe{7}$ (Rhythm) = The oscillating operator governing her pattern
+    \item She doesn't have one stable state---she has a stable \textit{cycle}
+\end{itemize}
+
+\textbf{Scenario 3: The Strange Attractor Personality}
+
+James is unpredictable but within a range. He's never completely stable, never completely chaotic. His moods shift in complex patterns that don't repeat exactly, yet he never becomes psychotic or completely at peace. He's bounded chaos.
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\PsychAttractor_{\mathrm{strange}}$ = Fractal attractor with non-integer dimension
+    \item Lyapunov exponent $\lambda > 0$ = Sensitive to small changes (butterfly effect)
+    \item $\HausdorffDim \approx 2.3$ = More complex than a line, less than a surface
+    \item His behavior is deterministic (caused) but unpredictable (chaotic)
+    \item Bounded: He stays within certain limits despite the chaos
+\end{itemize}
+
+\textbf{Scenario 4: The Identity Lock Professional}
+
+Dr. Martinez has been a surgeon for 25 years. Her entire identity is ``surgeon.'' When she retires, she spirals into crisis. Without the role, she doesn't know who she is. Her self-concept was a fixed-point attractor around ``surgeon identity.''
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $B1^5_{2b}$ = Mental self-concept (Mode 1, received/absorbed, wisdom foundation)
+    \item $\Frac_{\mathrm{self}} = \langle 5:1:5 \rangle$ = Receive $\to$ Aware $\to$ Receive (identity reinforcement loop)
+    \item $\Frac_{\mathrm{self}}(X^*) = X^*$ = Fixed point: identity confirms itself
+    \item Retirement = Perturbation that disrupts the attractor
+    \item Crisis = The system searching for a new stable state
+\end{itemize}
+
+\end{tcolorbox}
+
+\section{Psych\_Attractor Scenario Equations}
+
+\subsection{Type 1: Fixed Point Attractor (Identity Lock)}
+
+\textbf{Scenario}: A person's identity has crystallized into a fixed self-concept that
+resists all change---positive or negative experiences are filtered through this lens.
+
+\begin{equation}
+\boxed{
+    \PsychAttractor_{\mathrm{fixed}} = \lim_{n \to \infty} \langle 5 : 5 : 5 \rangle^n (X_0)
+    = X^*_{\mathrm{identity}}
+}
+\end{equation}
+
+\textit{v7.x Type Annotation:}
+\begin{itemize}
+    \item \textbf{Domain}: $\Ideas$ (initial state $X_0$)
+    \item \textbf{Codomain}: $\Ideas$ (fixed point $X^*$)
+    \item \textbf{Time}: $n \to \infty$ (asymptotic convergence)
+    \item \textbf{Layer}: Scenario/Psychological dynamics
+\end{itemize}
+
+\textbf{Full Scenario Equation}:
+\begin{align}
+    \text{Identity\_Lock} &= \biggl\{
+    \underbrace{B1^5_{2b}}_{\text{Mental self-concept}} \times
+    \underbrace{C1^5_{4c}}_{\text{Emotional self-feeling}} \times
+    \underbrace{D1^5_{3d}}_{\text{Physical embodiment}}
+    \biggr\}^{\mathrm{stable}} \nonumber \\
+    &\quad \text{where } \Frac_{\mathrm{self}} = \langle 5 : 1 : 5 \rangle \\
+    &\quad \text{and } \Frac_{\mathrm{self}}(X^*) = X^*
+\end{align}
+
+\textbf{Characteristics}:
+\begin{itemize}
+    \item Noetic signature: Heavy $\noe{5}$ (Female/receptive) creating ``impregnation'' with self-ideas
+    \item Resistance: $R = \|X_{\mathrm{new}} - X^*\|^{-1}$ (closer to identity = less resistance)
+    \item Breaking condition: $(X^5 \Tsub \mathrm{Identity}) \times \mathrm{Crisis}^8 > R_{\mathrm{threshold}}$
+\end{itemize}
+
+\subsection{Type 2: Limit Cycle Attractor (Emotional Oscillation)}
+
+\textbf{Scenario}: Bipolar-type dynamics where consciousness oscillates between two
+opposing states with predictable periodicity.
+
+\begin{equation}
+\boxed{
+    \PsychAttractor_{\mathrm{cycle}} = \{X_{\mathrm{high}}, X_{\mathrm{low}}\}
+    \quad \text{with } \Frac(X_{\mathrm{high}}) = X_{\mathrm{low}}, \;
+    \Frac(X_{\mathrm{low}}) = X_{\mathrm{high}}
+}
+\end{equation}
+
+\textbf{Full Scenario Equation}:
+\begin{align}
+    \text{Emotional\_Cycle} &= \left[
+    \underbrace{C2^2_{4c}}_{\text{Euphoria/attraction}}
+    \xleftrightarrow{\noe{7}}
+    \underbrace{C3^3_{3c}}_{\text{Depression/rejection}}
+    \right]^{\mathrm{periodic}} \\
+    &= (C2^2 \to C3^3 \to C2^2 \to \cdots)^{\noe{7}} \\
+    &\quad \text{Period: } T = 2\pi / \omega_{\mathrm{affect}}
+\end{align}
+
+\textbf{Generalized Cycle Formula}:
+\begin{equation}
+    \PsychAttractor_{\mathrm{cycle}}^{(n)} = \{X_1, X_2, \ldots, X_n\}
+    \quad \text{where } \Frac(X_i) = X_{(i \mod n) + 1}
+\end{equation}
+
+\subsection{Type 3: Strange Attractor (Chaotic Personality)}
+
+\textbf{Scenario}: Consciousness exhibits deterministic chaos---bounded but unpredictable
+dynamics, sensitive to initial conditions.
+
+\begin{equation}
+\boxed{
+    \PsychAttractor_{\mathrm{strange}} = \overline{\mathcal{O}_\Frac(X_0)}
+    \quad \text{with } \HausdorffDim(\PsychAttractor_{\mathrm{strange}}) \notin \mathbb{Z}
+}
+\end{equation}
+
+\textbf{Full Scenario Equation}:
+\begin{align}
+    \text{Chaotic\_Mind} &= \left\{
+    \Frac_{\mathrm{chaos}} = \langle 4 : 7 : 3 : 6 \rangle
+    \right\} \nonumber \\
+    &\quad \text{with Lyapunov exponent } \lambda > 0 \\
+    &\quad \text{and } \HausdorffDim \approx 2.3
+\end{align}
+
+\textbf{Chaotic Attractor Properties}:
+\begin{itemize}
+    \item Sensitive dependence: $||\Frac^n(X) - \Frac^n(X + \epsilon)|| \sim e^{\lambda n}$
+    \item Mixing: Any neighborhood eventually spreads over entire attractor
+    \item Strange fractal structure: Self-similar at all scales
+\end{itemize}
+
+\section{Psych\_Attractor Construction Rules}
+
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!75!black,title=\textbf{Construction Algorithm},breakable]
+To construct a psychological attractor equation for a given scenario:
+
+\textbf{Step 1: Identify Stable States}
+\begin{itemize}
+    \item What mental/emotional configurations does the person return to?
+    \item Map each to World + Mode + Noetic: $W_n^k_{mf}$
+\end{itemize}
+
+\textbf{Step 2: Determine Attractor Topology}
+\begin{itemize}
+    \item Single state $\to$ Fixed point (use $\noe{5}$ or $\noe{0}$)
+    \item Two states $\to$ Period-2 cycle (use $\noe{7}$ oscillation)
+    \item Multiple states with irregular visits $\to$ Strange attractor
+\end{itemize}
+
+\textbf{Step 3: Construct Governing Fractal}
+\begin{itemize}
+    \item Identify the noetic sequence that maps state to state
+    \item $\Frac_{\mathrm{psych}} = \langle k_1 : k_2 : \cdots : k_n \rangle$
+\end{itemize}
+
+\textbf{Step 4: Verify Invariance}
+\begin{itemize}
+    \item Check $\Frac(\PsychAttractor) \subseteq \PsychAttractor$
+    \item Compute fixed point or periodic orbit
+\end{itemize}
+
+\textbf{Step 5: Add Context}
+\begin{itemize}
+    \item Sub-foundation subscripts for life domain
+    \item Acquisition prerequisites for stability
+    \item Resistance coefficients for change difficulty
+\end{itemize}
+\end{tcolorbox}
+
+\section{Psych\_Attractor Classification Table}
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.3}
+\begin{longtable}{p{1.8cm}|p{1.5cm}|p{2cm}|p{1.5cm}|p{3cm}}
+\caption{Psychological Attractor Classifications} \\
+\toprule
+\textbf{Attractor Type} & \textbf{Dimension} & \textbf{Characteristic Fractal} & \textbf{Period} & \textbf{Canonical Form} \\
+\midrule
+\endfirsthead
+\multicolumn{5}{c}{\textit{Table continued from previous page}} \\
+\toprule
+\textbf{Attractor Type} & \textbf{Dimension} & \textbf{Characteristic Fractal} & \textbf{Period} & \textbf{Canonical Form} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Depression Lock & 0 & $\langle 3:5:3 \rangle$ & 1 & $C3^5_{3c} = \fix$ \\
+Euphoria Lock & 0 & $\langle 2:5:2 \rangle$ & 1 & $C2^5_{4c} = \fix$ \\
+Anxiety Cycle & 1 & $\langle 4:3:4 \rangle$ & 2 & $(C4 \leftrightarrow C3)^7$ \\
+Mood Swing & 1 & $\langle 2:7:3:7 \rangle$ & 2 & $(C2 \leftrightarrow C3)^7$ \\
+Seasonal Affect & 1 & $\langle 7:4:7 \rangle$ & 4 & $4$-state cycle \\
+Trauma Loop & 1 & $\langle 8:3:9:3 \rangle$ & 2 & $(C8 \to C3^9)^7$ \\
+Complex PTSD & 2 & $\langle 8:4:3:7 \rangle$ & Quasi & Torus attractor \\
+BPD Pattern & 2+ & $\langle 2:3:5:6 \rangle$ & Fractal & Strange attractor \\
+Dissociation & 0 & $\langle 1:0:1 \rangle$ & 1 & $B1^0 = \fix$ \\
+Flow State & 0 & $\langle 1:4:7 \rangle$ & 1 & MVR stable \\
+\end{longtable}
+\end{center}
+
+%% ============================================================================
+%% CHAPTER: MANIPULATION FRACTALS
+%% ============================================================================
+\chapter{Manipulation Fractal Equations (manipulations\_fractal)}
+\label{ch:manipulation-fractal}
+
+\subsection*{Type and Semantics Summary}
+\begin{itemize}
+    \item \textbf{Maps}: $\ManipFrac : \PsychAttractor_{\mathrm{old}} \to \PsychAttractor_{\mathrm{new}}$ (attractor transformation)
+    \item \textbf{Domains/Codomains}: Psychological attractors, world-specific ideas ($\IdeasB$, $\IdeasC$, $\IdeasD$)
+    \item \textbf{Time Interpretation}: Staged (destabilize $\to$ guide $\to$ stabilize)
+    \item \textbf{Semantic Layers}: Scenario (intervention design)
+\end{itemize}
+
+\begin{tcolorbox}[colback=orange!5!white,colframe=orange!75!black,title=\textbf{Definition: Manipulation Fractal},breakable]
+A \textbf{manipulation fractal} ($\ManipFrac$) is a noetic operator sequence designed
+to alter another consciousness structure---either one's own subconscious patterns or
+(ethically bounded) influence on external systems. These fractals encode
+transformative operations that reshape attractor landscapes.
+\end{tcolorbox}
+
+\section{Mathematical Definition}
+
+\begin{definition}[Manipulation Fractal]
+\label{def:manip-fractal}
+A \emph{manipulation fractal} $\ManipFrac : \PsychAttractor_{\mathrm{old}} \to
+\PsychAttractor_{\mathrm{new}}$ is a noetic operator sequence that:
+\begin{enumerate}[label=(\roman*)]
+    \item Destabilizes the existing attractor structure
+    \item Guides dynamics toward a new configuration
+    \item Stabilizes the new attractor
+\end{enumerate}
+Formally:
+\[
+    \ManipFrac = \Frac_{\mathrm{destab}} \circ \Frac_{\mathrm{guide}} \circ \Frac_{\mathrm{stab}}
+\]
+\end{definition}
+
+%% ============================================================================
+%% LAYMAN EXPLANATION: MANIPULATION FRACTALS
+%% ============================================================================
+\begin{tcolorbox}[colback=green!5!white,colframe=green!65!black,title=\textbf{Plain English: What is a Manipulation Fractal?},breakable]
+
+\textbf{The Simple Version:}
+A manipulation fractal is a deliberate sequence of mental operations designed to change a psychological pattern. It's like a recipe for reshaping your mind---a specific series of steps that, when followed in order, transform one mental state into another.
+
+\textbf{The Thermostat Reprogramming Metaphor:}
+Imagine your mind has a thermostat set to a certain ``temperature'' (your default emotional/mental state). A manipulation fractal is like the instruction sequence to reprogram that thermostat:
+
+\begin{enumerate}
+    \item \textbf{Access the control panel} (get to the root programming)
+    \item \textbf{Override the current setting} (destabilize the old pattern)
+    \item \textbf{Input the new temperature} (establish the new pattern)
+    \item \textbf{Lock in the new setting} (stabilize the change)
+\end{enumerate}
+
+\textbf{Technical Term $\leftrightarrow$ Metaphor Mapping:}
+\begin{center}
+\footnotesize
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Technical Term} & \textbf{Metaphor} & \textbf{What It Means} \\
+\midrule
+$\ManipFrac$ & Reprogramming sequence & Complete set of change-steps \\
+$\PsychAttractor_{\mathrm{old}}$ & Current thermostat setting & Pattern you want to change \\
+$\PsychAttractor_{\mathrm{new}}$ & Desired thermostat setting & Pattern you want to create \\
+$\Frac_{\mathrm{destab}}$ & Override current setting & Making old pattern unstable \\
+$\Frac_{\mathrm{guide}}$ & Input new temperature & Directing toward new pattern \\
+$\Frac_{\mathrm{stab}}$ & Lock in new setting & Making new pattern stable \\
+$\langle k_1 : k_2 : ... \rangle$ & Button sequence & Noetic operations in order \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\textbf{Why Order Matters:}
+Just like you can't lock in a new thermostat setting before you've input it, noetic operations must happen in sequence. Each step prepares for the next. The fractal ``composes'' ($\circ$) these operations---meaning step 1 feeds into step 2, which feeds into step 3.
+
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!65!black,title=\textbf{Real-Life Scenarios: Manipulation Fractals},breakable]
+
+\textbf{Scenario 1: Breaking a Smoking Habit}
+
+Tom has smoked for 20 years. He uses a manipulation fractal sequence:
+\begin{enumerate}
+    \item $\noe{7}$ (Rhythm): Identify the habitual pattern---when, where, triggers
+    \item $\noe{3}$ (Rejection): Consciously reject the next urge instead of automatically following it
+    \item $\noe{7}$ (Rhythm): Create a void where the habit was (the ``gap'' feels uncomfortable)
+    \item $\noe{2}$ (Attraction): Introduce a replacement behavior (deep breathing, mint, walk)
+    \item $\noe{7}$ (Rhythm): Practice until the new pattern becomes automatic
+\end{enumerate}
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\ManipFrac_{\mathrm{habit}} = \langle 7:3:7:2:7 \rangle$ = The complete sequence
+    \item $\mathrm{Habit}_{\mathrm{old}}^{\mathrm{rhythmic}}$ = Smoking (rhythmic/automatic)
+    \item $\mathrm{Habit}_{\mathrm{new}}^{\mathrm{rhythmic}}$ = Deep breathing (new automatic)
+    \item The sequence transforms one stable rhythm into another
+\end{itemize}
+
+\textbf{Scenario 2: Overcoming a Limiting Belief}
+
+Sarah believes ``I'm not smart enough for leadership.'' She applies a belief-change fractal:
+\begin{enumerate}
+    \item $\noe{3}$ (Rejection): Actively reject the old belief when it arises
+    \item $\noe{1}$ (Mind/Awareness): Examine where this belief came from, see it clearly
+    \item $\noe{2}$ (Attraction): Attract evidence of her competence, focus on successes
+    \item $\noe{5}$ (Female/Reception): Absorb the new belief, let it ``impregnate'' her identity
+\end{enumerate}
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\ManipFrac_{\mathrm{belief}} = \langle 3:1:2:5 \rangle : \IdeasB \to \IdeasB$
+    \item $B3^5_{2b,\text{unworthy}} \in \IdeasB$ = Old belief (Mental, rejection-type, absorbed in wisdom)
+    \item $B2^5_{2b,\text{capable}} \in \IdeasB$ = New belief (Mental, attraction-type, absorbed in wisdom)
+    \item The fractal maps one $\IdeasB$-state to another (v7.x typed morphism)
+\end{itemize}
+
+\textbf{Scenario 3: Processing Childhood Trauma}
+
+Michael carries trauma from childhood neglect. His therapist guides him through:
+\begin{enumerate}
+    \item $\noe{8}$ (Above/Cause): Access the original causal event (the memory)
+    \item $\noe{1}$ (Mind): Bring it to conscious awareness, witness it from adult perspective
+    \item $\noe{4}$ (Vibration): Activate the frozen emotional energy (feel what was suppressed)
+    \item $\noe{2}$ (Positive): Introduce safety, compassion, adult resources
+    \item $\noe{5}$ (Female): Receive and integrate the processed experience
+    \item $\noe{9}$ (Below/Effect): Complete the processing, see results in present life
+\end{enumerate}
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\ManipFrac_{\mathrm{trauma}} = \langle 8:1:4:2:5:9 \rangle$
+    \item $\mathrm{Trauma}^{\mathrm{frozen}}$ = Unprocessed memory with locked energy
+    \item $\mathrm{Memory}^{\mathrm{integrated}}$ = Same memory, but processed and neutral
+    \item Each noetic operation transforms the material for the next step
+\end{itemize}
+
+\textbf{Scenario 4: Self-Transformation (Deep Pattern Change)}
+
+Kenji wants to transform his core pattern of people-pleasing into healthy assertiveness:
+\begin{enumerate}
+    \item $\noe{8}$ (Cause): Find the root---when did people-pleasing become survival?
+    \item $\noe{1}$ (Awareness): See how this pattern operates in his current life
+    \item $\noe{4}$ (Energy): Mobilize energy that was frozen in the old pattern
+    \item $\noe{6}$ (Male/Projection): Project/act from the new assertive pattern
+    \item $\noe{9}$ (Effect): Let results manifest in relationships, work, self-image
+\end{enumerate}
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\ManipFrac_{\mathrm{self}} = \langle 8:1:4:6:9 \rangle$ = Full transformation sequence
+    \item This is the most comprehensive fractal---it changes the ``root'' level
+    \item Goes from Above ($\noe{8}$, causal) to Below ($\noe{9}$, effect)---full vertical integration
+\end{itemize}
+
+\end{tcolorbox}
+
+\section{Manipulation\_Fractal Scenario Equations}
+
+\subsection{Type 1: Self-Transformation (Internal)}
+
+\textbf{Scenario}: Deliberately restructuring one's own habitual patterns.
+
+\begin{equation}
+\boxed{
+    \ManipFrac_{\mathrm{self}} = \langle 8 : 1 : 4 : 6 : 9 \rangle
+    : \PsychAttractor_{\mathrm{old}} \to \PsychAttractor_{\mathrm{new}}
+}
+\end{equation}
+
+\textbf{Full Scenario Equation}:
+\begin{align}
+    \text{Self\_Transform} &= \biggl[
+    \underbrace{\noe{8}(X)}_{\scriptscriptstyle\text{cause}}
+    \to \underbrace{\noe{1}(\cdot)}_{\scriptscriptstyle\text{aware}}
+    \to \underbrace{\noe{4}(\cdot)}_{\scriptscriptstyle\text{energy}}
+    \to \underbrace{\noe{6}(\cdot)}_{\scriptscriptstyle\text{project}}
+    \to \underbrace{\noe{9}(\cdot)}_{\scriptscriptstyle\text{manifest}}
+    \biggr]
+\end{align}
+
+\textbf{Application Example}:
+\begin{align}
+    &\text{Break\_Depression\_Attractor} = \nonumber \\
+    &\quad \ManipFrac_{\mathrm{self}}(C3^5_{3c}) = \langle 8:1:4:6:9 \rangle(C3^5_{3c}) \\
+    &= \noe{8}(C3^5) \to \noe{1}(\text{root\_cause}) \to \noe{4}(\text{energy})
+    \to \noe{6}(\text{action}) \to \noe{9}(C2^2_{4c}) \nonumber
+\end{align}
+
+\subsection{Type 2: Belief Restructuring}
+
+\textbf{Scenario}: Changing limiting beliefs through systematic noetic intervention.
+
+\begin{equation}
+\boxed{
+    \ManipFrac_{\mathrm{belief}} = \langle 3 : 1 : 2 : 5 \rangle
+    : \mathrm{Belief}_{\mathrm{limit}} \to \mathrm{Belief}_{\mathrm{expand}}
+}
+\end{equation}
+
+\textbf{Full Scenario Equation}:
+\begin{align}
+    \text{Belief\_Change} &= \biggl[
+    \underbrace{\noe{3}(B_{\mathrm{old}})}_{\scriptscriptstyle\text{reject}}
+    \to \underbrace{\noe{1}(\cdot)}_{\scriptscriptstyle\text{examine}}
+    \to \underbrace{\noe{2}(B_{\mathrm{new}})}_{\scriptscriptstyle\text{attract}}
+    \to \underbrace{\noe{5}(\cdot)}_{\scriptscriptstyle\text{absorb}}
+    \biggr]
+\end{align}
+
+\textbf{Example}:
+\begin{align}
+    &\text{``I\_am\_unworthy''} \to \text{``I\_am\_valuable''} = \nonumber \\
+    &\quad \langle 3:1:2:5 \rangle(B3^5_{2b,\text{unworthy}})
+    = B2^5_{2b,\text{valuable}}
+\end{align}
+
+\subsection{Type 3: Habit Modification}
+
+\textbf{Scenario}: Breaking old habits and establishing new ones.
+
+\begin{equation}
+\boxed{
+    \ManipFrac_{\mathrm{habit}} = \langle 7 : 3 : 7 : 2 : 7 \rangle
+    : \mathrm{Habit}_{\mathrm{old}}^{\mathrm{rhythmic}} \to
+    \mathrm{Habit}_{\mathrm{new}}^{\mathrm{rhythmic}}
+}
+\end{equation}
+
+\textbf{Full Scenario Equation}:
+\begin{align}
+    \text{Habit\_Change} &= \biggl[
+    \underbrace{\noe{7}(H_{\mathrm{old}})}_{\scriptscriptstyle\text{rhythm}}
+    \to \underbrace{\noe{3}(\cdot)}_{\scriptscriptstyle\text{reject}}
+    \to \underbrace{\noe{7}(\varnothing)}_{\scriptscriptstyle\text{void}}
+    \to \underbrace{\noe{2}(H_{\mathrm{new}})}_{\scriptscriptstyle\text{attract}}
+    \to \underbrace{\noe{7}(\cdot)}_{\scriptscriptstyle\text{establish}}
+    \biggr]
+\end{align}
+
+\subsection{Type 4: Trauma Processing}
+
+\textbf{Scenario}: Reprocessing traumatic memory structures.
+
+\begin{equation}
+\boxed{
+    \ManipFrac_{\mathrm{trauma}} = \langle 8 : 1 : 4 : 2 : 5 : 9 \rangle
+    : \mathrm{Trauma}^{\mathrm{frozen}} \to \mathrm{Memory}^{\mathrm{integrated}}
+}
+\end{equation}
+
+\textbf{Full Scenario Equation}:
+\begin{align}
+    \text{Trauma\_Integration} &= \biggl[
+    \underbrace{\noe{8}(T)}_{\scriptscriptstyle\text{cause}}
+    \to \underbrace{\noe{1}(\cdot)}_{\scriptscriptstyle\text{witness}}
+    \to \underbrace{\noe{4}(\cdot)}_{\scriptscriptstyle\text{activate}}
+    \to \underbrace{\noe{2}(\mathrm{safe})}_{\scriptscriptstyle\text{attract}} \nonumber \\
+    &\quad \to \underbrace{\noe{5}(\cdot)}_{\scriptscriptstyle\text{receive}}
+    \to \underbrace{\noe{9}(\cdot)}_{\scriptscriptstyle\text{complete}}
+    \biggr]
+\end{align}
+
+\section{Manipulation Fractal Safety Conditions}
+
+\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=\textbf{Ethical Boundary Conditions},breakable]
+All manipulation fractals must satisfy:
+
+\textbf{Condition 1: Self-Application Primacy}
+\[
+    \ManipFrac : \mathrm{Self} \to \mathrm{Self} \quad \text{(primary use)}
+\]
+
+\textbf{Condition 2: Consent Requirement}
+\[
+    \ManipFrac : \mathrm{Other} \to \mathrm{Other} \Rightarrow \mathrm{Consent} = \mathtt{true}
+\]
+
+\textbf{Condition 3: Harm Prevention}
+\[
+    \forall \ManipFrac : V_{\mathrm{ethical}}(\ManipFrac) < \infty
+\]
+where $V_{\mathrm{ethical}}$ is the ethical potential (finite = permitted).
+
+\textbf{Condition 4: Reversibility}
+\[
+    \exists \ManipFrac^{-1} : \ManipFrac \circ \ManipFrac^{-1} \approx \mathrm{id}
+\]
+Operations should be reversible in principle.
+\end{tcolorbox}
+
+\section{Manipulation Fractal Classification Table}
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.3}
+\begin{longtable}{p{1.8cm}|p{2.2cm}|p{1.5cm}|p{4cm}}
+\caption{Manipulation Fractal Classifications} \\
+\toprule
+\textbf{Manipulation Type} & \textbf{Fractal Signature} & \textbf{Target} & \textbf{Scenario Application} \\
+\midrule
+\endfirsthead
+\multicolumn{4}{c}{\textit{Table continued from previous page}} \\
+\toprule
+\textbf{Manipulation Type} & \textbf{Fractal Signature} & \textbf{Target} & \textbf{Scenario Application} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Self-Transform & $\langle 8:1:4:6:9 \rangle : \PsychAttractor \to \PsychAttractor$ & Self & Deep pattern change \\
+Belief Change & $\langle 3:1:2:5 \rangle : \IdeasB \to \IdeasB$ & $\IdeasB$ & Limiting belief restructure \\
+Habit Change & $\langle 7:3:7:2:7 \rangle : \IdeasD \to \IdeasD$ & $\IdeasD$ & Behavioral pattern shift \\
+Trauma Process & $\langle 8:1:4:2:5:9 \rangle : \IdeasC \to \IdeasC$ & $\IdeasC$ & Memory integration \\
+Shadow Work & $\langle 3:5:2:6 \rangle : \PsychAttractor \to \PsychAttractor$ & Self & Rejected aspect integration \\
+Identity Expand & $\langle 5:6:5:2 \rangle : \PsychAttractor \to \PsychAttractor$ & Self & Self-concept expansion \\
+Fear Release & $\langle 3:4:3:2 \rangle : \IdeasC \to \IdeasC$ & $\IdeasC$ & Anxiety pattern dissolution \\
+Confidence Build & $\langle 2:6:4:5 \rangle : \PsychAttractor \to \PsychAttractor$ & Self & Positive trait installation \\
+\end{longtable}
+\end{center}
+
+%% ============================================================================
+%% CHAPTER: HYPERSTITIONS
+%% ============================================================================
+\chapter{TKS Hyperstition Equations (tks\_hyperstitions)}
+\label{ch:hyperstitions}
+
+\subsection*{Type and Semantics Summary}
+\begin{itemize}
+    \item \textbf{Maps}: $\Hyperstition : \mathcal{B} \to \mathcal{M} \to \mathcal{B}^+$ (belief-manifestation feedback loop)
+    \item \textbf{Domains/Codomains}: Population belief space $[0,1]$, manifestation probability $[0,1]$
+    \item \textbf{Time Interpretation}: Continuous ODE ($d\mathcal{B}/dt$) or discrete stages (Seed $\to$ Cascade $\to$ Collapse)
+    \item \textbf{Semantic Layers}: Continuous approximation (ODEs), Scenario (phase descriptions)
+\end{itemize}
+
+\begin{tcolorbox}[colback=cyan!5!white,colframe=cyan!75!black,title=\textbf{Definition: TKS Hyperstition},breakable]
+A \textbf{TKS hyperstition} ($\Hyperstition$) is a self-fulfilling idea structure---a
+concept that makes itself true through its own propagation and belief. Hyperstitions
+bootstrap their own reality by altering the probability field through collective
+acceptance, creating feedback loops between belief and manifestation.
+\end{tcolorbox}
+
+\section{Mathematical Definition}
+
+\begin{definition}[Hyperstition]
+\label{def:hyperstition}
+A \emph{hyperstition} $\Hyperstition$ is a tuple $(\mathcal{I}, \mathcal{B}, \mathcal{M}, \Frac_H)$ where:
+\begin{enumerate}[label=(\roman*)]
+    \item $\mathcal{I} \in \Ideas$: The idea content (what is believed)
+    \item $\mathcal{B}: \mathrm{Population} \to [0,1]$: Belief distribution function
+    \item $\mathcal{M}: [0,1] \to [0,1]$: Manifestation probability as function of belief
+    \item $\Frac_H$: The hyperstition fractal governing dynamics
+\end{enumerate}
+satisfying the \emph{self-fulfillment condition}:
+\[
+    \mathcal{M}(\mathcal{B}) > \mathcal{M}(\mathcal{B}_0) \quad \Rightarrow \quad
+    \mathcal{B}_{t+1} > \mathcal{B}_t
+\]
+(manifestation increases belief, which increases manifestation)
+\end{definition}
+
+\begin{definition}[Hyperstition Dynamics]
+\label{def:hyper-dynamics}
+The hyperstition evolves according to:
+\[
+    \frac{d\mathcal{B}}{dt} = \alpha \cdot \mathcal{M}(\mathcal{B}) - \beta \cdot \mathcal{B}
+    + \gamma \cdot \mathrm{Propagation}(\mathcal{I})
+\]
+where:
+\begin{itemize}
+    \item $\alpha$: Manifestation-to-belief conversion rate
+    \item $\beta$: Natural belief decay
+    \item $\gamma$: Memetic propagation coefficient
+\end{itemize}
+
+\textit{v7.x Type Annotation:}
+\begin{itemize}
+    \item \textbf{Domain}: $[0,1]$ (belief level)
+    \item \textbf{Codomain}: $\mathbb{R}$ (rate of change)
+    \item \textbf{Time}: Continuous (ODE in $t$)
+    \item \textbf{Layer}: Continuous approximation (relates to big-step via $\Delta t \to 0$)
+\end{itemize}
+\end{definition}
+
+%% ============================================================================
+%% LAYMAN EXPLANATION: HYPERSTITIONS
+%% ============================================================================
+\begin{tcolorbox}[colback=green!5!white,colframe=green!65!black,title=\textbf{Plain English: What is a Hyperstition?},breakable]
+
+\textbf{The Simple Version:}
+A hyperstition is an idea that makes itself come true \textit{because} people believe it. It's a self-fulfilling prophecy that bootstraps itself into reality. The more it's believed, the more it manifests, which makes it believed more, which makes it manifest more---a feedback loop from fiction to fact.
+
+\textbf{The Rumor-That-Becomes-True Metaphor:}
+Imagine someone starts a rumor that a bank is failing. At first, it's false. But because people believe it, they rush to withdraw their money. Because everyone withdraws, the bank actually fails. The rumor made itself true.
+
+\begin{itemize}
+    \item \textbf{The rumor} = The hyperstition (idea content $\mathcal{I}$)
+    \item \textbf{People believing it} = Belief distribution ($\mathcal{B}$)
+    \item \textbf{Behavior changes} = Actions based on belief
+    \item \textbf{Bank actually failing} = Manifestation ($\mathcal{M}$)
+    \item \textbf{``See, I told you!''} = Feedback that increases belief
+\end{itemize}
+
+\textbf{Technical Term $\leftrightarrow$ Metaphor Mapping:}
+\begin{center}
+\footnotesize
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Technical Term} & \textbf{Metaphor} & \textbf{What It Means} \\
+\midrule
+$\Hyperstition$ & Self-fulfilling rumor & Idea that makes itself true \\
+$\mathcal{I}$ (idea content) & What the rumor claims & Specific belief content \\
+$\mathcal{B}$ (belief distribution) & How many believe it & Percentage convinced \\
+$\mathcal{M}(\mathcal{B})$ (manifestation) & Real-world effects & Outcomes caused by belief \\
+$\mathcal{M}(\mathcal{B}^+) > \mathcal{M}(\mathcal{B})$ & Success breeds success & More belief = more results \\
+$\alpha$ (manifest-to-belief rate) & How convincing results are & Evidence converting skeptics \\
+$\beta$ (belief decay) & Forgetting/doubt rate & Natural skepticism returning \\
+$\gamma$ (propagation coeff.) & How viral the rumor is & Spread rate through population \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\textbf{Key Insight:}
+Hyperstitions blur the line between ``true'' and ``false''---they are ideas that \textit{become} true through their own acceptance. They're not lies that stay lies; they're fictions that become facts.
+
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!65!black,title=\textbf{Real-Life Scenarios: Hyperstitions},breakable]
+
+\textbf{Scenario 1: The Confident Job Candidate}
+
+Maria walks into an interview believing ``I am the best candidate.'' This belief affects her posture, tone, and answers. The interviewers sense her confidence and treat her as top-tier. Their positive responses reinforce her confidence. She performs better because she believes she will, and she's hired because she performed better.
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\mathcal{I}$ = ``I am the best candidate'' (idea content)
+    \item $\mathcal{B}$ = Maria's internal belief strength (starts high)
+    \item $\mathcal{M}(\mathcal{B})$ = Interview performance, interviewer perception
+    \item Feedback loop: Performance $\to$ Positive response $\to$ Stronger belief $\to$ Better performance
+    \item $\Hyperstition_{\mathrm{self}} = (B^5 \to D^6 \to C^9 \to B^{5+})^{\mathrm{cycle}}$
+\end{itemize}
+
+\textbf{Scenario 2: The Stock Market Bubble}
+
+Traders start believing ``Tech stocks will keep rising.'' They buy. Prices rise. The rising prices prove the belief was ``right.'' More traders believe. More buying. Higher prices. The belief creates the reality it describes---until it doesn't (the crash).
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\sum_i \mathcal{B}_i$ = Collective belief across traders
+    \item $\theta_{\mathrm{crit}}$ = Threshold belief level for market movement
+    \item When $\sum_i B^2_{\mathrm{bullish}} > \theta_{\mathrm{crit}}$, buying behavior triggers
+    \item $D^9_{\mathrm{price rise}}$ = Actual price increase (manifestation)
+    \item Feedback: Price rise $\to$ More believers $\to$ More buying $\to$ More price rise
+    \item This is $\Hyperstition_{\mathrm{market}}$---collective belief shapes collective reality
+\end{itemize}
+
+\textbf{Scenario 3: The Tech Visionary}
+
+In 2007, Steve Jobs announces the iPhone with absolute certainty that it will ``revolutionize the phone industry.'' Engineers build it because they believe. Early adopters buy because they believe. Developers create apps because they believe users will come. Users come because apps exist. The vision bootstrapped itself into reality.
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $B^5_{\mathrm{vision}}$ = Jobs's belief in the idea (absorbed, certain)
+    \item $D^6_{\mathrm{build}}$ = Engineering effort (projecting vision into matter)
+    \item $D^9_{\mathrm{adoption}}$ = Actual market adoption (result)
+    \item Each success increases belief in the next success
+    \item The iPhone didn't just ``become'' successful---it made itself successful through belief-action loops
+\end{itemize}
+
+\textbf{Scenario 4: The Placebo Effect}
+
+A patient takes a sugar pill believing it's powerful medicine. Their belief triggers real physiological changes. They feel better. The improvement reinforces belief in the ``medicine.'' Belief literally created biological reality.
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\mathcal{I}$ = ``This pill heals me'' (idea content)
+    \item $\mathcal{B}$ = Patient's belief strength
+    \item $\mathcal{M}(\mathcal{B})$ = Actual physiological improvement
+    \item The sugar pill is inert; the hyperstition (belief structure) creates the effect
+    \item This shows hyperstitions work even at the body level, not just social reality
+\end{itemize}
+
+\textbf{Scenario 5: Currency Value}
+
+Why is a \$100 bill worth \$100? Because everyone believes it is, and acts accordingly. If belief collapsed, the paper would be worthless. Money is a hyperstition---its value exists because we collectively make it exist through belief and behavior.
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\mathcal{I}$ = ``This paper has value'' (idea content)
+    \item $\mathcal{B}$ = Universal societal belief (near 100\%)
+    \item $\mathcal{M}(\mathcal{B})$ = Money actually functioning as currency
+    \item $\gamma$ (propagation) = Extremely high---everyone teaches their children
+    \item This is a ``mature'' hyperstition---so successful it appears as objective fact
+\end{itemize}
+
+\end{tcolorbox}
+
+\section{Hyperstition Scenario Equations}
+
+\subsection{Type 1: Self-Fulfilling Prophecy (Personal)}
+
+\textbf{Scenario}: A person's belief about themselves becomes true through its
+influence on behavior and perception.
+
+\begin{equation}
+\boxed{
+    \Hyperstition_{\mathrm{self}} = (B_{\mathrm{belief}}^5 \to D_{\mathrm{behavior}}^6
+    \to C_{\mathrm{result}}^9 \to B_{\mathrm{belief}}^{5+})^{\mathrm{cycle}}
+}
+\end{equation}
+
+\textbf{Full Scenario Equation}:
+\begin{align}
+    \text{Self\_Prophecy} &= \left\{
+    \begin{array}{l}
+        t_0: B5^5_{2b}(\text{``I am confident''}) \\
+        t_1: B5^5 \to D6^6_{5d}(\text{confident behavior}) \\
+        t_2: D6^6 \to C9^9_{4c}(\text{positive social response}) \\
+        t_3: C9^9 \to B5^{5+}_{2b}(\text{strengthened belief})
+    \end{array}
+    \right\}^{\noe{7}}
+\end{align}
+
+\textbf{Convergence Condition}:
+\[
+    \lim_{n \to \infty} \mathcal{B}^{(n)} = 1 \quad \text{(full self-realization)}
+\]
+
+\subsection{Type 2: Market Hyperstition (Collective)}
+
+\textbf{Scenario}: A financial prediction becomes true because enough people believe it.
+
+\begin{equation}
+\boxed{
+    \Hyperstition_{\mathrm{market}} = \sum_{i=1}^{N} \mathcal{B}_i(\text{``price will rise''})
+    \to \text{Buying} \to \text{Price Rise} \to \mathcal{B}^+
+}
+\end{equation}
+
+\textbf{Full Scenario Equation}:
+\begin{align}
+    \text{Market\_Prophecy} &= \left\{
+    \begin{array}{l}
+        \text{Collective}: \sum_i B2^2_{6d,i}(\text{``bullish''}) > \theta_{\mathrm{crit}} \\
+        \text{Action}: \sum_i D6^6_{6d,i}(\text{buy orders}) \\
+        \text{Effect}: D9^9_{6d}(\text{price increase}) \\
+        \text{Feedback}: D9^9 \to B2^{2+}(\text{belief strengthens})
+    \end{array}
+    \right\}
+\end{align}
+
+\subsection{Type 3: Reality Bootstrap (Metaphysical)}
+
+\textbf{Scenario}: A concept bootstraps itself into existence through TKS operations.
+
+\begin{equation}
+\boxed{
+    \Hyperstition_{\mathrm{bootstrap}} = \varnothing \xrightarrow{\text{Idea}} A10^0
+    \xrightarrow{\ACBE} D_{\mathrm{manifest}}
+    \xrightarrow{\text{Evidence}} \mathcal{B}^+ \to \mathcal{M}^+
+}
+\end{equation}
+
+\textbf{Full Scenario Equation}:
+\begin{align}
+    \text{Reality\_Bootstrap} &= \left\{
+    \begin{array}{l}
+        \text{Stage 0}: \varnothing^0 \to A10^0_{1a}(\text{pure potential}) \\
+        \text{Stage 1}: \ACBE(A10^0) = B \to C \to D(\text{descent}) \\
+        \text{Stage 2}: D_{\mathrm{manifest}} \to \mathrm{Evidence} \\
+        \text{Stage 3}: \mathrm{Evidence} \to \mathcal{B}(\mathrm{collective}) \\
+        \text{Stage 4}: \mathcal{B} \to \mathcal{M}^+(\text{easier manifestation})
+    \end{array}
+    \right\}
+\end{align}
+
+\section{Hyperstition Classification Table}
+
+Each hyperstition type corresponds to a typed morphism in the TKS categorical framework.
+We introduce formal type signatures that specify the domain and codomain of the
+self-fulfilling feedback loop, using $\Ideas$ for the Idea space and $\RPM[\cdot]$
+for the Reality Probability Monad over the indicated state space.
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.3}
+\begin{longtable}{p{1.6cm}|p{1.6cm}|p{1.8cm}|p{3.2cm}|p{3.8cm}}
+\caption{TKS Hyperstition Classifications (Table 5.2)} \label{tab:hyperstition-class} \\
+\toprule
+\textbf{Type} & \textbf{Belief Source} & \textbf{Feedback} & \textbf{Formal Type} & \textbf{Canonical Equation / Signature} \\
+\midrule
+\endfirsthead
+\multicolumn{5}{c}{\textit{Table continued from previous page}} \\
+\toprule
+\textbf{Type} & \textbf{Belief Source} & \textbf{Feedback} & \textbf{Formal Type} & \textbf{Canonical Equation / Signature} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Self-Prophecy & Individual & Behavior $\to$ Result &
+$L_1 : \Ideas \to \RPM[\mathrm{Belief}]$ &
+$(B^5 \to D^6 \to C^9 \to B^{5+})^7$ \\
+& & & & \textit{Signature: Belief $\to$ Action $\to$ Feedback $\to$ Updated Belief} \\
+\midrule
+Social Prophecy & Group & Consensus $\to$ Action &
+$L_2 : \prod_i \Ideas_i \to \RPM[\mathrm{Collective}]$ &
+$\sum_i B_i \to \sum_i D_i \to C_{\mathrm{collective}}$ \\
+& & & & \textit{Signature: Group Belief $\to$ Group Action $\to$ Collective Outcome} \\
+\midrule
+Market Prophecy & Traders & Buying $\to$ Price &
+$L_3 : \mathrm{Pop} \to \RPM[\mathrm{Price}]$ &
+$\sum B^2_{\mathrm{bull}} \to D^6_{\mathrm{buy}} \to D^9_{\mathrm{rise}}$ \\
+& & & & \textit{Signature: Population State $\to$ Price Dynamics} \\
+\midrule
+Tech Prophecy & Engineers & Building $\to$ Adoption &
+$L_4 : \Ideas_{\mathrm{vision}} \to \RPM[\mathrm{Tech}]$ &
+$B^5_{\mathrm{vision}} \to D^6_{\mathrm{build}} \to D^9_{\mathrm{use}}$ \\
+& & & & \textit{Signature: Vision $\to$ Construction $\to$ Adoption} \\
+\midrule
+Morphic Seed & Practitioners & Success $\to$ Field &
+$L_5 : \mathrm{Practice} \to \RPM[\mathrm{Field}]$ &
+$\mathcal{M}_{\mathrm{success}} \to \Hyperstition_{\mathrm{morphic}}^+$ \\
+& & & & \textit{Signature: Success Instance $\to$ Field Reinforcement} \\
+\midrule
+Reality Bootstrap & TKS System & Manifest $\to$ Evidence &
+$L_6 : \ACBE(\Ideas) \to \RPM[\mathrm{Manifest}]$ &
+$\ACBE \to D \to \mathcal{B}^+ \to \mathcal{M}^+$ \\
+& & & & \textit{Signature: ACBE Descent $\to$ Evidence $\to$ Enhanced Manifestation} \\
+\end{longtable}
+\end{center}
+
+\begin{remark}[Morphism Semantics]
+This table lists canonical morphism shapes for hyperstition dynamics. Each typed morphism
+$L_k$ maps from a source category (Idea space, population state, or ACBE descent) into
+the Reality Probability Monad $\RPM[\cdot]$ over the appropriate outcome space. The
+signature annotations describe the induced morphism pattern on the underlying state
+transformations (Belief $\to$ Action $\to$ Feedback $\to$ Updated Belief, etc.).
+Full denotational semantics for these morphisms are given by the corresponding
+scenario equations in the main TKS manual (v7.x).
+\end{remark}
+
+%% ============================================================================
+%% CHAPTER: QUANTUM SUPERPOSITION IDEAS
+%% ============================================================================
+\chapter{Quantum Superposition Idea Equations (tks\_quantum\_superposition\_ideas)}
+\label{ch:quantum-superposition}
+
+\subsection*{Type and Semantics Summary}
+\begin{itemize}
+    \item \textbf{Maps}: $|\psi\rangle : \mathcal{H}_{\Ideas} \to \mathcal{H}_{\Ideas}$ (unitary evolution), $\mathrm{Measure} : \mathcal{H}_{\Ideas} \to \Ideas$ (collapse)
+    \item \textbf{Domains/Codomains}: Hilbert space $\mathcal{H}_{\Ideas}$ of idea superpositions
+    \item \textbf{Time Interpretation}: Unitary (reversible evolution), projection (measurement collapse)
+    \item \textbf{Semantic Layers}: Quantum (TKS v7.3 track extension)
+\end{itemize}
+
+\begin{tcolorbox}[colback=green!5!white,colframe=green!75!black,title=\textbf{Definition: Quantum Superposition of Ideas},breakable]
+A \textbf{quantum superposition of ideas} represents a consciousness state where
+multiple mutually exclusive possibilities coexist simultaneously with complex
+amplitudes, enabling interference effects and non-classical probability distributions.
+\end{tcolorbox}
+
+\section{Mathematical Definition}
+
+\begin{definition}[Quantum Idea State]
+\label{def:quantum-idea}
+A \emph{quantum idea state} is a vector in the Hilbert space $\mathcal{H}_{\Ideas}$:
+\[
+    |\psi\rangle = \sum_{I \in \Ideas} c_I |I\rangle
+    \quad \text{where } \sum_I |c_I|^2 = 1, \; c_I \in \mathbb{C}
+\]
+The complex amplitudes $c_I$ enable quantum interference---distinct from classical
+probability mixtures.
+\end{definition}
+
+\begin{definition}[TKS Hilbert Space]
+\label{def:tks-hilbert}
+The canonical TKS Hilbert space is:
+\[
+    \mathcal{H}_{\Ideas} = \ell^2(\Elements) \cong \mathbb{C}^{40}
+\]
+decomposing as:
+\[
+    \mathcal{H}_{\Ideas} = \mathcal{H}_A \oplus \mathcal{H}_B \oplus \mathcal{H}_C \oplus \mathcal{H}_D
+\]
+where each world subspace $\mathcal{H}_W = \mathrm{span}\{|Wn\rangle : n = 1, \ldots, 10\}$.
+\end{definition}
+
+%% ============================================================================
+%% LAYMAN EXPLANATION: QUANTUM SUPERPOSITION
+%% ============================================================================
+\begin{tcolorbox}[colback=green!5!white,colframe=green!65!black,title=\textbf{Plain English: What is Quantum Superposition of Ideas?},breakable]
+
+\textbf{The Simple Version:}
+Quantum superposition means holding multiple contradictory possibilities as \textit{simultaneously real}---not ``one or the other'' but ``both at once.'' It's not indecision (not knowing which). It's genuinely being in multiple states until something forces you into just one.
+
+\textbf{The Unshuffled Deck Metaphor:}
+Imagine you're about to draw a card from a deck. Before you look, which card ``is it''? Normal thinking says ``it's already the 7 of hearts, I just don't know yet.'' Quantum thinking says ``it's genuinely ALL cards simultaneously until observation collapses it into one.''
+
+\begin{itemize}
+    \item \textbf{The deck} = Space of possibilities ($\mathcal{H}_{\Ideas}$)
+    \item \textbf{Each possible card} = A basis state ($|I\rangle$)
+    \item \textbf{Being all cards at once} = Superposition ($|\psi\rangle = \sum c_I|I\rangle$)
+    \item \textbf{The amplitude $c_I$} = How ``present'' each possibility is
+    \item \textbf{Looking at the card} = Measurement/collapse
+    \item \textbf{Card becomes definite} = Superposition reduces to one outcome
+\end{itemize}
+
+\textbf{Technical Term $\leftrightarrow$ Metaphor Mapping:}
+\begin{center}
+\footnotesize
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Technical Term} & \textbf{Metaphor} & \textbf{What It Means} \\
+\midrule
+$|\psi\rangle$ (quantum state) & The unobserved deck & State of superposition \\
+$|I\rangle$ (basis state) & One specific card & Single definite possibility \\
+$c_I$ (amplitude) & Card's ``presence weight'' & How much each option contributes \\
+$|c_I|^2$ (probability) & Chance of drawing card & Likelihood of that outcome \\
+$\sum_I |c_I|^2 = 1$ & Total probability = 100\% & Something must happen \\
+$\mathcal{H}_{\Ideas}$ (Hilbert space) & The complete deck & Space of all possibilities \\
+$e^{i\phi}$ (phase) & Hidden timing relationship & Creates interference effects \\
+Interference & Cards help/block each other & Possibilities affect each other \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\textbf{Why This Is Different From Normal Uncertainty:}
+Normal uncertainty: ``The coin has already landed, I just don't know if it's heads or tails.''
+Quantum superposition: ``The coin is genuinely heads AND tails until you look, and the two possibilities can interfere with each other.''
+
+The key is \textbf{interference}---possibilities don't just add up like probabilities. They can amplify or cancel each other based on their phase relationship, creating results impossible in classical probability.
+
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!65!black,title=\textbf{Real-Life Scenarios: Quantum Superposition},breakable]
+
+\textbf{Scenario 1: The Genuine Career Undecided}
+
+Layla has two job offers. She's not just ``undecided''---she's genuinely inhabiting both futures simultaneously. When she imagines herself as a doctor, that future feels real. When she imagines herself as an artist, that future feels equally real. She's not flip-flopping; she's in superposition.
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $|\psi_{\mathrm{undecided}}\rangle = \alpha|\text{doctor}\rangle + \beta e^{i\phi}|\text{artist}\rangle$
+    \item $|\alpha|^2$ = How ``present'' the doctor-future feels
+    \item $|\beta|^2$ = How ``present'' the artist-future feels
+    \item $\phi$ = The ``hesitation angle''---her internal conflict
+    \item She's not ignorant of her preference; she genuinely IS both until she chooses
+\end{itemize}
+
+\textbf{Scenario 2: Bittersweet Emotion}
+
+At his daughter's wedding, Marcus feels joy and sadness \textit{simultaneously}---not alternating, not mixed, but superposed. This isn't ``50\% happy, 50\% sad.'' It's a genuine quantum state where both emotions exist together with interference effects.
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $|\psi_{\mathrm{bittersweet}}\rangle = \frac{1}{\sqrt{2}}(|C2^2_{\text{joy}}\rangle + |C3^3_{\text{sadness}}\rangle)$
+    \item This is NOT a classical mixture (like being happy then sad)
+    \item The interference term creates a unique emotional quality
+    \item ``Bittersweet'' is a \textit{superposition state}, not a mixture of two separate feelings
+\end{itemize}
+
+\textbf{Scenario 3: The Multi-Role Identity}
+
+Sofia is simultaneously a mother, an executive, and a painter. She doesn't ``switch'' between identities---all three exist at once. In any moment, different ``amplitudes'' of each identity are active, and they interfere with each other (sometimes the executive enhances the mother; sometimes they conflict).
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $|\psi_{\mathrm{identity}}\rangle = \alpha|\text{mother}\rangle + \beta|\text{executive}\rangle + \gamma|\text{painter}\rangle$
+    \item $|\alpha|^2 + |\beta|^2 + |\gamma|^2 = 1$ (total identity = 100\%)
+    \item Different contexts ``measure'' different aspects (work = executive collapses)
+    \item The roles interfere: executive-discipline can enhance painter-discipline
+\end{itemize}
+
+\textbf{Scenario 4: Schr\"{o}dinger's Relationship}
+
+Alex and Jordan have been dating for months. Are they ``in a relationship'' or ``just dating''? They haven't had ``the talk.'' The relationship exists in superposition---it's genuinely BOTH until one of them observes/defines it.
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $|\psi_{\mathrm{relationship}}\rangle = \alpha|\text{committed}\rangle + \beta|\text{casual}\rangle$
+    \item Neither state is ``true''---both are simultaneously real
+    \item ``The talk'' = Measurement that forces collapse
+    \item Before the talk, asking ``what ARE we?'' has no classical answer
+\end{itemize}
+
+\textbf{Scenario 5: Multiple Possible Futures}
+
+An entrepreneur sees three possible company trajectories: massive success, modest success, and failure. Before market launch, all three futures are ``real'' with different amplitudes. Market response will collapse the superposition into one actual future.
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $|\psi_{\mathrm{future}}\rangle = \alpha|\tau_{\text{huge}}\rangle + \beta|\tau_{\text{modest}}\rangle + \gamma|\tau_{\text{fail}}\rangle$
+    \item Each timeline $|\tau\rangle$ is a complete possible future
+    \item $|\alpha|^2, |\beta|^2, |\gamma|^2$ = Probabilities of each future
+    \item Business decisions can change the amplitudes (preparation increases $|\alpha|^2$)
+    \item Market reality eventually collapses to one timeline
+\end{itemize}
+
+\end{tcolorbox}
+
+\section{Quantum Superposition Scenario Equations}
+
+\subsection{Type 1: Undecided State (Schr\"{o}dinger Decision)}
+
+\textbf{Scenario}: A person genuinely holds multiple contradictory possibilities
+simultaneously before decision collapses them.
+
+\begin{equation}
+\boxed{
+    |\psi_{\mathrm{undecided}}\rangle = \frac{1}{\sqrt{2}}
+    \left( |B_{\mathrm{choice\_A}}\rangle + e^{i\phi} |B_{\mathrm{choice\_B}}\rangle \right)
+}
+\end{equation}
+
+\textbf{Full Scenario Equation}:
+\begin{align}
+    \text{Career\_Decision} &= \left\{
+    |\psi\rangle = \alpha |B5^5_{5b,\text{stay}}\rangle
+    + \beta e^{i\phi} |B5^5_{5b,\text{leave}}\rangle
+    \right\} \\
+    &\text{where } |\alpha|^2 + |\beta|^2 = 1 \\
+    &\text{and } \phi = \text{relative phase (hesitation angle)}
+\end{align}
+
+\textbf{Interference Effect}:
+\[
+    P(\text{hybrid outcome}) = |\alpha + \beta e^{i\phi}|^2
+    = |\alpha|^2 + |\beta|^2 + 2|\alpha||\beta|\cos\phi
+\]
+The $\cos\phi$ term creates constructive/destructive interference impossible in classical choice.
+
+\subsection{Type 2: Emotional Superposition}
+
+\textbf{Scenario}: Experiencing multiple contradictory emotions simultaneously
+(not alternating, but genuinely superposed).
+
+\begin{equation}
+\boxed{
+    |\psi_{\mathrm{emotion}}\rangle = \sum_{k=2}^{9} c_k |C_k\rangle
+    \quad \text{(emotional mode superposition)}
+}
+\end{equation}
+
+\textbf{Full Scenario Equation}:
+\begin{align}
+    \text{Bittersweet} &= \frac{1}{\sqrt{2}}
+    \left( |C2^2_{4c,\text{joy}}\rangle + |C3^3_{3c,\text{sadness}}\rangle \right) \\
+    &\neq \text{50\% joy + 50\% sadness (classical mixture)}
+\end{align}
+
+\textbf{Interference Signature}:
+\[
+    \langle\psi|\hat{O}_{\mathrm{affect}}|\psi\rangle
+    = \text{cross-terms present} \neq \text{classical expectation}
+\]
+
+\subsection{Type 3: Identity Superposition}
+
+\textbf{Scenario}: Multiple self-concepts held in superposition (identity fluidity).
+
+\begin{equation}
+\boxed{
+    |\psi_{\mathrm{identity}}\rangle = \sum_j c_j |\mathrm{Self}_j^5\rangle
+}
+\end{equation}
+
+\textbf{Full Scenario Equation}:
+\begin{align}
+    \text{Fluid\_Identity} &= \alpha |B1^5_{2b,\text{professional}}\rangle
+    + \beta |B1^5_{4b,\text{parent}}\rangle
+    + \gamma |B1^5_{1b,\text{seeker}}\rangle \\
+    &\text{with interference between roles}
+\end{align}
+
+\subsection{Type 4: Timeline Superposition}
+
+\textbf{Scenario}: Multiple potential futures coexisting until observation collapses.
+
+\begin{equation}
+\boxed{
+    |\psi_{\mathrm{future}}\rangle = \sum_{\tau \in \mathrm{Timelines}} c_\tau |\tau\rangle
+}
+\end{equation}
+
+\textbf{Full Scenario Equation}:
+\begin{align}
+    \text{Quantum\_Futures} &= \int d\tau \, \psi(\tau) |\mathrm{Timeline}_\tau\rangle \\
+    &\text{where each } |\tau\rangle \text{ is a complete future history} \\
+    &\text{TKS operation: selects/amplifies preferred } \tau
+\end{align}
+
+\section{Quantum Superposition Classification Table}
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.3}
+\begin{longtable}{p{2cm}|p{2cm}|p{2cm}|p{3.5cm}}
+\caption{Quantum Superposition Classifications} \\
+\toprule
+\textbf{Superposition Type} & \textbf{Basis States} & \textbf{Key Feature} & \textbf{Canonical Form} \\
+\midrule
+\endfirsthead
+\multicolumn{4}{c}{\textit{Table continued from previous page}} \\
+\toprule
+\textbf{Superposition Type} & \textbf{Basis States} & \textbf{Key Feature} & \textbf{Canonical Form} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Decision & $|A\rangle, |B\rangle$ & Choice interference & $\alpha|A\rangle + \beta e^{i\phi}|B\rangle$ \\
+Emotional & $|C_k\rangle$ & Affect mixing & $\sum_k c_k|C_k\rangle$ \\
+Identity & $|\mathrm{Self}_j\rangle$ & Role superposition & $\sum_j c_j|\mathrm{Self}_j^5\rangle$ \\
+World & $|W\rangle$ & Cross-world coherence & $\sum_{W} c_W|W\rangle$ \\
+Timeline & $|\tau\rangle$ & Future superposition & $\int d\tau \psi(\tau)|\tau\rangle$ \\
+Foundation & $|\Foundations_m\rangle$ & Multi-goal state & $\sum_m c_m|\Foundations_m\rangle$ \\
+Element & $|Wn\rangle$ & Full 40-dim state & $\sum_{W,n} c_{Wn}|Wn\rangle$ \\
+\end{longtable}
+\end{center}
+
+%% ============================================================================
+%% CHAPTER: COLLAPSE CONDITIONS
+%% ============================================================================
+\chapter{Collapse Condition Equations (tks\_collapse\_condition\_ideas)}
+\label{ch:collapse}
+
+\subsection*{Type and Semantics Summary}
+\begin{itemize}
+    \item \textbf{Maps}: $\Collapse_O : \mathcal{H}_{\Ideas} \to \Ideas$ (projection to eigenstate)
+    \item \textbf{Domains/Codomains}: Hilbert space superposition $\to$ definite classical state
+    \item \textbf{Time Interpretation}: Instantaneous (measurement event)
+    \item \textbf{Semantic Layers}: Quantum (collapse dynamics)
+\end{itemize}
+
+\begin{tcolorbox}[colback=magenta!5!white,colframe=magenta!75!black,title=\textbf{Definition: Collapse Condition},breakable]
+A \textbf{collapse condition} ($\Collapse$) specifies when a quantum superposition
+of ideas reduces to a definite classical state---the mechanism by which possibility
+becomes actuality, potentiality becomes manifestation.
+\end{tcolorbox}
+
+\section{Mathematical Definition}
+
+\begin{definition}[Collapse Operator]
+\label{def:collapse-op}
+A \emph{collapse operator} $\Collapse_O$ associated with observable $\hat{O}$ is
+the projection:
+\[
+    \Collapse_O : |\psi\rangle \mapsto \frac{P_\lambda |\psi\rangle}
+    {\|P_\lambda |\psi\rangle\|}
+\]
+where $P_\lambda$ projects onto the eigenspace of eigenvalue $\lambda$, and outcome
+$\lambda$ occurs with probability $\|P_\lambda |\psi\rangle\|^2$.
+\end{definition}
+
+\begin{definition}[TKS Collapse Types]
+\label{def:collapse-types}
+TKS recognizes several collapse mechanisms:
+\begin{enumerate}[label=(\roman*)]
+    \item \textbf{Observation Collapse}: External measurement forces definite outcome
+    \item \textbf{Decision Collapse}: Conscious choice collapses superposition
+    \item \textbf{Environmental Decoherence}: Interaction with environment destroys coherence
+    \item \textbf{RPM Failure Collapse}: Unmet prerequisites force failure state
+    \item \textbf{Dual Cancellation}: Complementary noetics collapse to identity
+\end{enumerate}
+\end{definition}
+
+%% ============================================================================
+%% LAYMAN EXPLANATION: COLLAPSE CONDITIONS
+%% ============================================================================
+\begin{tcolorbox}[colback=green!5!white,colframe=green!65!black,title=\textbf{Plain English: What is a Collapse Condition?},breakable]
+
+\textbf{The Simple Version:}
+A collapse condition is what forces a superposition (multiple possibilities existing at once) to become a single definite outcome. It's the mechanism that turns ``all options open'' into ``this one happened.'' Something triggers the collapse---observation, decision, deadline, or incompatibility.
+
+\textbf{The Crossroads Metaphor:}
+Imagine standing at a crossroads where all paths are ``real'' simultaneously. A collapse condition is what forces you to walk down ONE path:
+
+\begin{itemize}
+    \item \textbf{Someone watches you} (Observation collapse) = Their expectation forces you to pick
+    \item \textbf{You decide} (Decision collapse) = Your will selects a path
+    \item \textbf{A flood blocks all but one} (Environmental collapse) = External conditions force the outcome
+    \item \textbf{The paths merge behind you} (Decoherence) = Options disappear as you move
+    \item \textbf{A deadline passes} (Time collapse) = You're on whatever path you happen to be nearest
+\end{itemize}
+
+\textbf{Technical Term $\leftrightarrow$ Metaphor Mapping:}
+\begin{center}
+\footnotesize
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Technical Term} & \textbf{Metaphor} & \textbf{What It Means} \\
+\midrule
+$\Collapse$ (collapse operator) & The ``forcing event'' & Makes possibilities become one \\
+$|\psi\rangle \to |k\rangle$ & Multiple paths $\to$ One & Superposition becomes definite \\
+$|c_k|^2$ (probability) & Closeness to path $k$ & Likelihood of that outcome \\
+$\Collapse_{\mathrm{obs}}$ & Someone watching & External observation forces it \\
+$\Collapse_{\mathrm{decide}}$ & You choose & Conscious decision forces it \\
+$\Collapse_{\mathrm{decoh}}$ & Paths merge behind you & Environment destroys coherence \\
+$\Collapse_{\mathrm{RPM}}$ & Path blocked & Missing prereqs force failure \\
+$\Collapse_{\mathrm{dual}}$ & Opposites cancel & Complementary ops neutralize \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\textbf{Key Insight:}
+Before collapse, all possibilities are ``real.'' After collapse, only one is. The collapse condition determines WHEN this happens and WHICH outcome occurs. Different triggers produce different collapse types.
+
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!65!black,title=\textbf{Real-Life Scenarios: Collapse Conditions},breakable]
+
+\textbf{Scenario 1: The Job Interview (Observation Collapse)}
+
+Derek is in superposition between ``hired'' and ``not hired.'' The interviewer, by observing and evaluating him, forces a collapse. Before the interview decision, both outcomes were quantum-real. The observation (evaluation) collapsed the superposition into a definite outcome.
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $|\psi_{\mathrm{before}}\rangle = \alpha|\text{hired}\rangle + \beta|\text{rejected}\rangle$
+    \item $\Collapse_{\mathrm{obs}}$ = Interviewer makes decision
+    \item $|\psi_{\mathrm{after}}\rangle = |\text{hired}\rangle$ (with probability $|\alpha|^2$)
+    \item The observer (interviewer) forced the system out of superposition
+\end{itemize}
+
+\textbf{Scenario 2: Making a Choice (Decision Collapse)}
+
+Anna has been considering two apartments. She could analyze forever, staying in superposition. But she decides: ``I'm taking Apartment B.'' Her conscious choice---combining awareness ($\noe{1}$) and will ($\noe{6}$)---collapses the superposition.
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $|\psi\rangle = \alpha|\text{Apt A}\rangle + \beta|\text{Apt B}\rangle$
+    \item $\Collapse_{\mathrm{decide}} = \noe{1} \circ \noe{6}$ (awareness + will)
+    \item The collapse isn't random---it's chosen (she picks B)
+    \item This is different from observation---it's self-determined
+\end{itemize}
+
+\textbf{Scenario 3: Missing Prerequisites (RPM Failure Collapse)}
+
+Carlos wants to start a restaurant. He has desire ($D_6$) but no wisdom ($W_6$)---he doesn't understand business, cooking, or management. When he attempts the operation, the system checks prerequisites and finds them unsatisfied. Collapse to failure is forced.
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\RPM(\Foundations_6)$ = Attempt wealth operation
+    \item $\sigma(W_6) = \mathtt{false}$ = Wisdom not acquired
+    \item $\Collapse_{\mathrm{RPM}} \to \Failed$ = Forced failure
+    \item He didn't fail because of bad luck---he failed because structure was incomplete
+\end{itemize}
+
+\textbf{Scenario 4: The Deadline (Time-Forced Collapse)}
+
+A grant application is due at midnight. Maya has been in superposition between ``apply'' and ``don't apply,'' doing neither fully. At 11:59 PM, time forces collapse---whatever state she's in at that moment becomes the definite outcome. She hadn't decided, but reality decided for her.
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $t > t_{\max}$ = Deadline passes
+    \item Superposition forcibly collapses to nearest state
+    \item This isn't a choice---it's environmental forcing
+    \item Time pressure is a collapse mechanism
+\end{itemize}
+
+\textbf{Scenario 5: Opposite Forces Canceling (Dual Collapse)}
+
+A company applies both aggressive expansion ($\noe{6}$, projecting outward) and aggressive contraction ($\noe{3}$, rejecting/retreating) simultaneously. These complementary operations cancel: $\noe{6} \circ \noe{3} \approx \noe{0}$ (identity). The net effect is nothing changes---the system collapses back to its starting state.
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\noe{6}$ + $\noe{3}$ = Complementary pair (6 + 3 = 9)
+    \item $\Collapse_{\mathrm{dual}}: \noe{6} \circ \noe{3}(X) \to X$
+    \item Pushing and pulling equally returns you to start
+    \item Dual operators cancel to identity
+\end{itemize}
+
+\textbf{Scenario 6: Reality Consensus (Decoherence)}
+
+Tanya has an unconventional idea---a new business model that exists in superposition between ``viable'' and ``crazy.'' But every time she explains it to someone, their skepticism ``measures'' her state. Each interaction degrades the coherence. After enough social contact, her quantum possibility-space has decohered into classical ``probably won't work.''
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\rho_{\mathrm{pure}}$ = Her original superposition (possibility-rich)
+    \item Environmental interaction = Social feedback
+    \item $\rho_{\mathrm{mixed}}$ = Decohered state (classical probabilities only)
+    \item Off-diagonal terms (interference/possibility) $\to 0$
+    \item The environment destroyed her quantum coherence
+\end{itemize}
+
+\end{tcolorbox}
+
+\section{Collapse Condition Scenario Equations}
+
+\subsection{Type 1: Observation-Induced Collapse}
+
+\textbf{Scenario}: Someone else observing/measuring your state forces it to become definite.
+
+\begin{equation}
+\boxed{
+    \Collapse_{\mathrm{obs}} : |\psi\rangle = \sum_i c_i |i\rangle
+    \xrightarrow{\text{observe}} |k\rangle \quad \text{with prob } |c_k|^2
+}
+\end{equation}
+
+\textbf{Full Scenario Equation}:
+\begin{align}
+    \text{Job\_Interview\_Collapse} &= \left\{
+    |\psi_{\mathrm{before}}\rangle = \alpha|\text{hired}\rangle + \beta|\text{rejected}\rangle
+    \right\} \\
+    &\xrightarrow{\text{interviewer observes}} |\text{hired}\rangle
+    \quad \text{(probability } |\alpha|^2 \text{)}
+\end{align}
+
+\subsection{Type 2: Decision Collapse}
+
+\textbf{Scenario}: Conscious choice collapses the superposition of possibilities.
+
+\begin{equation}
+\boxed{
+    \Collapse_{\mathrm{decide}} : |\psi\rangle
+    \xrightarrow{\noe{1} \circ \noe{6}} |k_{\mathrm{chosen}}\rangle
+}
+\end{equation}
+
+\textbf{Full Scenario Equation}:
+\begin{align}
+    \text{Conscious\_Choice} &= \left\{
+    |\psi\rangle = \sum_j c_j |\mathrm{Option}_j\rangle
+    \right\} \\
+    &\xrightarrow{\noe{1}(\text{awareness}) \circ \noe{6}(\text{will})}
+    |\mathrm{Option}_{k^*}\rangle
+\end{align}
+
+\textbf{Mechanism}: Decision involves:
+\begin{enumerate}
+    \item $\noe{1}$: Bringing options to conscious awareness
+    \item $\noe{6}$: Projecting will onto selected option
+    \item Collapse: Superposition reduces to chosen state
+\end{enumerate}
+
+\subsection{Type 3: RPM Failure Collapse}
+
+\textbf{Scenario}: Attempting operation without satisfied prerequisites collapses to failure.
+
+\begin{equation}
+\boxed{
+    \Collapse_{\mathrm{RPM}} : \RPM(X) \xrightarrow{\sigma(A) = \mathtt{false}}
+    (\mathrm{inr}\; \Failed, \sigma')
+}
+\end{equation}
+
+\textbf{Full Scenario Equation}:
+\begin{align}
+    \text{Prerequisite\_Failure} &= \left\{
+    \begin{array}{l}
+        \text{Attempt}: \RPM(\Foundations_6) \quad \text{(wealth operation)} \\
+        \text{Check}: \sigma(W_6) = \mathtt{false} \quad \text{(no wisdom)} \\
+        \text{Result}: \Collapse_{\mathrm{RPM}} \to \Failed
+    \end{array}
+    \right\}
+\end{align}
+
+\subsection{Type 4: Dual Pair Collapse}
+
+\textbf{Scenario}: Applying complementary noetics collapses to identity.
+
+\begin{equation}
+\boxed{
+    \Collapse_{\mathrm{dual}} : \noe{j} \circ \noe{i}(X) \to \noe{0}(X) = X
+    \quad \text{when } i + j = 9
+}
+\end{equation}
+
+\textbf{Full Scenario Equation}:
+\begin{align}
+    \text{Dual\_Cancellation} &= \left\{
+    \noe{7} \circ \noe{2}(X) \approx X \quad (\text{rhythm} \circ \text{positive}) \\
+    \noe{6} \circ \noe{3}(X) \approx X \quad (\text{male} \circ \text{negative}) \\
+    \noe{5} \circ \noe{4}(X) \approx X \quad (\text{female} \circ \text{vibration})
+    \right\}
+\end{align}
+
+\subsection{Type 5: Environmental Decoherence}
+
+\textbf{Scenario}: Interaction with external systems destroys quantum coherence.
+
+\begin{equation}
+\boxed{
+    \Collapse_{\mathrm{decoh}} : \rho_{\mathrm{pure}} \to \rho_{\mathrm{mixed}}
+    \quad \text{(off-diagonal terms } \to 0 \text{)}
+}
+\end{equation}
+
+\textbf{Full Scenario Equation}:
+\begin{align}
+    \text{Reality\_Consensus} &= \left\{
+    |\psi\rangle\langle\psi| \xrightarrow{\mathrm{Environment}}
+    \sum_i |c_i|^2 |i\rangle\langle i|
+    \right\} \\
+    &\text{Coherence time: } \tau_{\mathrm{decoh}} \propto \gamma_{\mathrm{eff}}^{-1}
+\end{align}
+
+\section{Collapse Condition Classification Table}
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.3}
+\begin{longtable}{p{2cm}|p{2cm}|p{2cm}|p{3.5cm}}
+\caption{Collapse Condition Classifications} \\
+\toprule
+\textbf{Collapse Type} & \textbf{Trigger} & \textbf{Result} & \textbf{Canonical Form} \\
+\midrule
+\endfirsthead
+\multicolumn{4}{c}{\textit{Table continued from previous page}} \\
+\toprule
+\textbf{Collapse Type} & \textbf{Trigger} & \textbf{Result} & \textbf{Canonical Form} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Observation & External measure & Definite eigenstate & $|\psi\rangle \to |k\rangle$ \\
+Decision & Conscious choice & Selected option & $\noe{1} \circ \noe{6} \to |k^*\rangle$ \\
+RPM Failure & Missing prereq & Failure state & $\sigma(A)=0 \to \Failed$ \\
+Dual Cancel & Complementary $\noe{}$ & Identity & $\noe{j}\circ\noe{i} \to \noe{0}$ \\
+Decoherence & Environment & Mixed state & $\rho \to \sum|c_i|^2|i\rangle\langle i|$ \\
+Time Limit & Deadline & Forced outcome & $t > t_{\max} \to \Collapse$ \\
+Threshold & Critical mass & Phase transition & $\mathcal{B} > \theta \to \Collapse$ \\
+Conflict & Incompatible ops & Resolution & $A \cap \neg A \to \Collapse$ \\
+\end{longtable}
+\end{center}
+
+%% ============================================================================
+%% CHAPTER: D/W/P EQUATIONS
+%% ============================================================================
+\chapter{D/W/P Chain Equations (Desire/Wisdom/Power)}
+\label{ch:dwp}
+
+\subsection*{Type and Semantics Summary}
+\begin{itemize}
+    \item \textbf{Maps}: $\DWP_m : D_m \to W_m \to P_m$ (prerequisite chain), $\RPM : \DWP \to \RPM[\Foundations_m]$ (monad lift)
+    \item \textbf{Domains/Codomains}: Acquisitions space $\Acquisitions$, Foundations $\Foundations_m$
+    \item \textbf{Time Interpretation}: Sequential (D before W before P), ACBE descent (A $\to$ D)
+    \item \textbf{Semantic Layers}: Scenario (goal-achievement dynamics), Noetica (RPM monad structure)
+\end{itemize}
+
+\begin{tcolorbox}[colback=brown!5!white,colframe=brown!75!black,title=\textbf{Definition: D/W/P Chains},breakable]
+The \textbf{D/W/P chain} (Desire $\to$ Wisdom $\to$ Power) is the fundamental
+acquisition sequence in TKS: one must first desire something ($D_m$), then gain
+wisdom about it ($W_m$), then acquire power to achieve it ($P_m$). This chain
+governs prerequisite satisfaction and manifestation success.
+\end{tcolorbox}
+
+\section{Mathematical Definition}
+
+\begin{definition}[D/W/P Chain]
+\label{def:dwp-chain}
+For each Foundation $\Foundations_m$ ($m = 1, \ldots, 7$), the \emph{D/W/P chain} is:
+\[
+    \DWP_m := D_m \to W_m \to P_m
+\]
+where:
+\begin{itemize}
+    \item $D_m \in \Acquisitions$: Desire for Foundation $m$
+    \item $W_m \in \Acquisitions$: Wisdom about Foundation $m$
+    \item $P_m \in \Acquisitions$: Power to achieve Foundation $m$
+\end{itemize}
+The chain satisfies the \emph{strict ordering constraint}:
+\[
+    \sigma(W_m) = \mathtt{true} \Rightarrow \sigma(D_m) = \mathtt{true}
+\]
+\[
+    \sigma(P_m) = \mathtt{true} \Rightarrow \sigma(W_m) = \mathtt{true}
+\]
+\end{definition}
+
+\begin{definition}[Acquisition State]
+\label{def:acq-state}
+An \emph{acquisition state} $\sigma : \Acquisitions \to \{\mathtt{true}, \mathtt{false}\}$
+is a function assigning satisfaction values to each acquisition:
+\[
+    \mathrm{AcqState} = 2^{\Acquisitions} = 2^{22}
+\]
+The \emph{chain satisfaction level} for Foundation $m$ is:
+\[
+    \mathrm{Level}_m(\sigma) =
+    \begin{cases}
+        0 & \text{if } \neg\sigma(D_m) \\
+        1 & \text{if } \sigma(D_m) \land \neg\sigma(W_m) \\
+        2 & \text{if } \sigma(W_m) \land \neg\sigma(P_m) \\
+        3 & \text{if } \sigma(P_m)
+    \end{cases}
+\]
+\end{definition}
+
+%% ============================================================================
+%% LAYMAN EXPLANATION: D/W/P CHAINS
+%% ============================================================================
+\begin{tcolorbox}[colback=green!5!white,colframe=green!65!black,title=\textbf{Plain English: What is a D/W/P Chain?},breakable]
+
+\textbf{The Simple Version:}
+D/W/P stands for Desire $\to$ Wisdom $\to$ Power. It's the mandatory sequence for achieving anything: First you must \textit{want} it (Desire), then you must \textit{understand} it (Wisdom), then you must have the \textit{capacity} to get it (Power). Skip a step and you fail. The order is non-negotiable.
+
+\textbf{The Cooking Metaphor:}
+To make a gourmet meal:
+\begin{enumerate}
+    \item \textbf{Desire} = You want to cook the meal (motivation, craving)
+    \item \textbf{Wisdom} = You have the recipe and understand techniques
+    \item \textbf{Power} = You have ingredients, equipment, and skill to execute
+\end{enumerate}
+
+Without desire, you won't start. Without wisdom, you'll ruin ingredients. Without power, you can't execute even if you want to and know how.
+
+\textbf{Technical Term $\leftrightarrow$ Metaphor Mapping:}
+\begin{center}
+\footnotesize
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Technical Term} & \textbf{Metaphor} & \textbf{What It Means} \\
+\midrule
+$D_m$ (Desire) & Hunger for the meal & Wanting the goal \\
+$W_m$ (Wisdom) & Having the recipe & Understanding how to achieve it \\
+$P_m$ (Power) & Ingredients + skill & Capacity to execute \\
+$\DWP_m$ (full chain) & Complete cooking system & All prerequisites satisfied \\
+$\sigma(D_m) = \mathtt{true}$ & You're hungry & Desire is present \\
+$\sigma(W_m) = \mathtt{true}$ & You know the recipe & Wisdom is acquired \\
+$\sigma(P_m) = \mathtt{true}$ & Kitchen is stocked & Power is available \\
+$\mathrm{Level}_m = 0$ & Not even hungry & No desire yet \\
+$\mathrm{Level}_m = 1$ & Hungry, no recipe & Desire without wisdom \\
+$\mathrm{Level}_m = 2$ & Recipe, no ingredients & Wisdom without power \\
+$\mathrm{Level}_m = 3$ & Full kitchen, ready & Complete chain \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\textbf{The Seven Foundations:}
+Each of the seven life areas (Foundations) has its own D/W/P chain:
+\begin{center}
+\footnotesize
+\begin{tabularx}{\textwidth}{c|l|X|X|X}
+\toprule
+\textbf{\#} & \textbf{Foundation} & \textbf{$D_m$} & \textbf{$W_m$} & \textbf{$P_m$} \\
+\midrule
+1 & Unity & Want connection to source & Understand spiritual path & Can practice/attain \\
+2 & Wisdom & Want to learn & Understand how to learn & Can acquire knowledge \\
+3 & Life & Want vitality & Understand health & Can maintain body \\
+4 & Companion & Want connection & Understand relating & Can form bonds \\
+5 & Power & Want influence & Understand power dynamics & Can wield authority \\
+6 & Wealth & Want resources & Understand money/value & Can generate wealth \\
+7 & Generation & Want to create & Understand creation & Can produce \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\textbf{Why Order Is Non-Negotiable:}
+You cannot have Wisdom about something you don't Desire (why would you learn about it?). You cannot have Power over something you don't understand (you'd misuse it). The chain enforces:
+\[
+    \sigma(P_m) \Rightarrow \sigma(W_m) \Rightarrow \sigma(D_m)
+\]
+If you have Power, you must have Wisdom. If you have Wisdom, you must have Desire. Backwards is impossible.
+
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!65!black,title=\textbf{Real-Life Scenarios: D/W/P Chains},breakable]
+
+\textbf{Scenario 1: Complete Chain Success (Building Wealth)}
+
+Amira wants financial freedom ($D_6 = \mathtt{true}$). She studies investing, business, and economics for years ($W_6 = \mathtt{true}$). She develops skills, saves capital, builds networks ($P_6 = \mathtt{true}$). With the complete chain, her wealth operations succeed.
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\DWP_6^{\mathrm{complete}} = D_6 \to W_6 \to P_6$
+    \item $\mathrm{Level}_6(\sigma) = 3$ (full chain)
+    \item $\ACBE(\DWP_6) \to \Foundations_6^{\mathrm{manifest}}$
+    \item All prerequisites satisfied $\to$ Operation permitted $\to$ Success possible
+\end{itemize}
+
+\textbf{Scenario 2: Desire Failure (No Motivation)}
+
+Kevin says he ``should'' exercise, but doesn't actually want to ($D_3 = \mathtt{false}$). He knows how to work out ($W_3$ could be true). He has a gym membership ($P_3$ could be true). But without genuine desire, he never starts. The chain is broken at step zero.
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\sigma(D_3) = \mathtt{false}$ = No real desire for health
+    \item $\mathrm{Level}_3(\sigma) = 0$
+    \item Chain doesn't even begin---no $W_3$ or $P_3$ develops
+    \item ``Should'' isn't desire; it's external pressure (doesn't count)
+\end{itemize}
+
+\textbf{Scenario 3: Wisdom Failure (Blind Ambition)}
+
+Marcus desperately wants power and influence ($D_5 = \mathtt{true}$). But he's never studied leadership, psychology, or organizational dynamics ($W_5 = \mathtt{false}$). He manipulates, alienates allies, makes political blunders. His desire without wisdom leads to backfire.
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\sigma(D_5) = \mathtt{true}$, $\sigma(W_5) = \mathtt{false}$
+    \item $\mathrm{Level}_5(\sigma) = 1$ (desire only)
+    \item Attempting $P_5$ without $W_5$ $\to$ Manipulation, abuse, failure
+    \item ``Blind ambition'' = Desire without Wisdom
+\end{itemize}
+
+\textbf{Scenario 4: Power Failure (Impotent Knowledge)}
+
+Dr. Chen understands nutrition perfectly ($D_3 = \mathtt{true}$, $W_3 = \mathtt{true}$). She knows exactly what her patients need. But she's burned out, has no energy to counsel, and her clinic lacks resources ($P_3 = \mathtt{false}$). Knowledge without power to implement is frustration.
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\sigma(D_3) = \mathtt{true}$, $\sigma(W_3) = \mathtt{true}$, $\sigma(P_3) = \mathtt{false}$
+    \item $\mathrm{Level}_3(\sigma) = 2$ (desire + wisdom, no power)
+    \item ``I know what to do but can't do it'' = Power failure
+    \item Needs: resources, energy, opportunity, capability
+\end{itemize}
+
+\textbf{Scenario 5: Cross-Foundation Dependency}
+
+Rosa wants wealth ($\Foundations_6$) but realizes her D/W/P chain for Power ($\Foundations_5$) is incomplete. She can't build business power without understanding power dynamics. Her wealth chain depends on her power chain:
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\DWP_6 \otimes \DWP_5$ = Wealth chain depends on Power chain
+    \item $\sigma(P_6) \Rightarrow \sigma(W_5)$ = Wealth-power requires power-wisdom
+    \item She must complete $\DWP_5$ to unlock $P_6$
+    \item Foundations interact---they're not independent silos
+\end{itemize}
+
+\textbf{Scenario 6: Parallel Multi-Foundation Life}
+
+Balanced Patricia pursues four Foundations simultaneously:
+\begin{itemize}
+    \item $\Foundations_1$: Daily meditation (spiritual practice)
+    \item $\Foundations_3$: Regular exercise (health)
+    \item $\Foundations_4$: Investing in friendships (companionship)
+    \item $\Foundations_6$: Career development (wealth)
+\end{itemize}
+
+Each has its own D/W/P chain. She doesn't wait to complete one before starting another---they develop in parallel.
+
+\textit{Technical mapping:}
+\begin{itemize}
+    \item $\bigotimes_{m \in \{1,3,4,6\}} \DWP_m$ = Parallel chain development
+    \item Each Foundation has $\mathrm{Level}_m$ progressing independently
+    \item Cross-benefits: Health ($\Foundations_3$) supports all others
+    \item Balanced life = Multiple chains at high levels simultaneously
+\end{itemize}
+
+\end{tcolorbox}
+
+\section{D/W/P Scenario Equations}
+
+\subsection{Type 1: Complete D/W/P Chain (Success Path)}
+
+\textbf{Scenario}: Full acquisition chain for wealth manifestation.
+
+\begin{equation}
+\boxed{
+    \DWP_6^{\mathrm{complete}} = D_6 \xrightarrow{t_1} W_6 \xrightarrow{t_2} P_6
+    \xrightarrow{\ACBE} \Foundations_6^{\mathrm{manifest}}
+}
+\end{equation}
+
+\textbf{Full Scenario Equation}:
+\begin{align}
+    \text{Wealth\_Manifestation} &= \left\{
+    \begin{array}{ll}
+        D_6: & A_0 \to D_6^{\mathrm{true}} \quad \text{(desire for wealth)} \\
+        & \text{Noetic: } \noe{2}(\Foundations_6) \quad \text{(attraction to wealth)} \\
+        W_6: & D_6 \to W_6^{\mathrm{true}} \quad \text{(wisdom about wealth)} \\
+        & \text{Noetic: } \noe{1}(\Foundations_6) \quad \text{(understanding wealth)} \\
+        P_6: & W_6 \to P_6^{\mathrm{true}} \quad \text{(power to achieve)} \\
+        & \text{Noetic: } \noe{6}(\Foundations_6) \quad \text{(capacity to act)}
+    \end{array}
+    \right\}
+\end{align}
+
+\textbf{ACBE Descent}:
+\begin{align}
+    \ACBE(\DWP_6) &= \noe{8}(\DWP_6) \xrightarrow{A \to B}
+    \noe{1}(\cdot) \xrightarrow{B \to C}
+    \noe{4}(\cdot) \xrightarrow{C \to D}
+    \noe{9}(\cdot)
+\end{align}
+
+\subsection{Type 2: Incomplete Chain (Failure Modes)}
+
+\textbf{Scenario}: Various failure modes from incomplete D/W/P chains.
+
+\begin{equation}
+\boxed{
+    \DWP_m^{\mathrm{fail}} =
+    \begin{cases}
+        \neg D_m & \text{No motivation (desire failure)} \\
+        D_m \land \neg W_m & \text{Blind desire (wisdom failure)} \\
+        W_m \land \neg P_m & \text{Impotent knowing (power failure)}
+    \end{cases}
+}
+\end{equation}
+
+\textbf{Full Scenario Equations}:
+
+\textbf{(a) Desire Failure}:
+\begin{align}
+    \text{No\_Motivation} &= \left\{
+    \sigma(D_4) = \mathtt{false}
+    \right\} \\
+    &\Rightarrow \text{Companionship operations impossible}
+\end{align}
+
+\textbf{(b) Wisdom Failure}:
+\begin{align}
+    \text{Blind\_Desire} &= \left\{
+    \sigma(D_5) = \mathtt{true}, \;
+    \sigma(W_5) = \mathtt{false}
+    \right\} \\
+    &\Rightarrow \text{Wants power but doesn't understand it} \\
+    &\Rightarrow \text{Likely: manipulation, abuse, backfire}
+\end{align}
+
+\textbf{(c) Power Failure}:
+\begin{align}
+    \text{Impotent\_Knowing} &= \left\{
+    \sigma(W_3) = \mathtt{true}, \;
+    \sigma(P_3) = \mathtt{false}
+    \right\} \\
+    &\Rightarrow \text{Understands health but can't implement} \\
+    &\Rightarrow \text{Needs: resources, discipline, opportunity}
+\end{align}
+
+\subsection{Type 3: Cross-Foundation Interactions}
+
+\textbf{Scenario}: One Foundation's D/W/P affects another's.
+
+\begin{equation}
+\boxed{
+    \DWP_m \times \DWP_n = \text{Tensor interaction effects}
+}
+\end{equation}
+
+\textbf{Full Scenario Equation}:
+\begin{align}
+    \text{Wealth-Power} &= \DWP_6 \otimes \DWP_5 \\
+    &\text{where } P_6 \text{ requires } W_5 \nonumber \\
+    &\text{Cross-dependency: } \sigma(P_6) \Rightarrow \sigma(W_5) \nonumber
+\end{align}
+
+\subsection{Type 4: Simultaneous Multi-Foundation}
+
+\textbf{Scenario}: Pursuing multiple Foundations simultaneously.
+
+\begin{equation}
+\boxed{
+    \bigotimes_{m \in S} \DWP_m \quad \text{where } S \subseteq \{1, \ldots, 7\}
+}
+\end{equation}
+
+\textbf{Full Scenario Equation}:
+\begin{align}
+    \text{Balanced\_Life} &= \DWP_1 \otimes \DWP_3 \otimes \DWP_4 \otimes \DWP_6 \\
+    &= \left\{
+    \begin{array}{l}
+        \text{Unity (spiritual practice)} \\
+        \text{Life (health maintenance)} \\
+        \text{Companionship (relationships)} \\
+        \text{Wealth (financial stability)}
+    \end{array}
+    \right\}^{\text{parallel}}
+\end{align}
+
+\section{D/W/P Classification Table}
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.3}
+\begin{longtable}{p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{3.5cm}}
+\caption{D/W/P Chain Classifications by Foundation} \\
+\toprule
+\textbf{Foundation} & \textbf{$D_m$} & \textbf{$W_m$} & \textbf{$P_m$} & \textbf{Scenario Application} \\
+\midrule
+\endfirsthead
+\multicolumn{5}{c}{\textit{Table continued from previous page}} \\
+\toprule
+\textbf{Foundation} & \textbf{$D_m$} & \textbf{$W_m$} & \textbf{$P_m$} & \textbf{Scenario Application} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+$\Foundations_1$ Unity & Want unity & Understand unity & Can achieve unity & Spiritual practice, meditation \\
+$\Foundations_2$ Wisdom & Want knowledge & Understand learning & Can acquire knowledge & Education, skill development \\
+$\Foundations_3$ Life & Want vitality & Understand health & Can maintain health & Exercise, nutrition, recovery \\
+$\Foundations_4$ Companion & Want connection & Understand relating & Can form bonds & Relationships, friendships \\
+$\Foundations_5$ Power & Want influence & Understand power & Can wield power & Leadership, authority \\
+$\Foundations_6$ Wealth & Want resources & Understand money & Can generate wealth & Career, business, investment \\
+$\Foundations_7$ Generate & Want creation & Understand generation & Can create/continue & Creativity, reproduction \\
+\end{longtable}
+\end{center}
+
+%% ============================================================================
+%% PART II: SCENARIO CLASSIFICATION SYSTEM
+%% ============================================================================
+\part{Scenario Classification System}
+
+\chapter{Master Scenario Type Classification}
+\label{ch:scenario-classification}
+
+\begin{tcolorbox}[colback=gray!5!white,colframe=gray!75!black,title=\textbf{Scenario Classification Purpose},breakable]
+This chapter provides a comprehensive classification system that tells which types
+of scenarios, events, and ideas require which equation forms. Given a situation,
+circumstance, or condition, this system specifies the appropriate TKS mathematical
+representation.
+\end{tcolorbox}
+
+\section{Primary Scenario Categories}
+
+\subsection{Category A: State Scenarios}
+
+\textbf{Definition}: Scenarios describing static conditions or configurations.
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.3}
+\begin{longtable}{p{2.5cm}|p{3cm}|p{4cm}}
+\caption{State Scenario Classifications} \\
+\toprule
+\textbf{Scenario Type} & \textbf{Indicator} & \textbf{Equation Form} \\
+\midrule
+\endfirsthead
+\multicolumn{3}{c}{\textit{Table continued from previous page}} \\
+\toprule
+\textbf{Scenario Type} & \textbf{Indicator} & \textbf{Equation Form} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Current emotional state & ``I feel...'' & $C_n^k_{mf}$ \\
+Current mental state & ``I think...'' & $B_n^k_{mf}$ \\
+Current physical state & ``My body is...'' & $D_n^k_{mf}$ \\
+Current spiritual state & ``My soul feels...'' & $A_n^k_{mf}$ \\
+Identity configuration & ``I am...'' & $\sum_W W_n^5_{mf}$ \\
+Belief structure & ``I believe...'' & $B_n^5_{2b}$ \\
+Habit pattern & ``I always...'' & $(D_n^7)^{\mathrm{stable}}$ \\
+Relationship status & ``We are...'' & $C_4^k \otimes C_4^k$ (mutual) \\
+Financial status & ``I have...'' & $D_n^k_{6d}$ \\
+Health status & ``My health is...'' & $D_n^k_{3d}$ \\
+\end{longtable}
+\end{center}
+
+\subsection{Category B: Process Scenarios}
+
+\textbf{Definition}: Scenarios describing transformations or changes over time.
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.3}
+\begin{longtable}{p{2.5cm}|p{3cm}|p{4cm}}
+\caption{Process Scenario Classifications} \\
+\toprule
+\textbf{Scenario Type} & \textbf{Indicator} & \textbf{Equation Form} \\
+\midrule
+\endfirsthead
+\multicolumn{3}{c}{\textit{Table continued from previous page}} \\
+\toprule
+\textbf{Scenario Type} & \textbf{Indicator} & \textbf{Equation Form} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Emotional change & ``I'm becoming...'' & $C_n^k \to C_m^j$ \\
+Learning process & ``I'm understanding...'' & $D_2 \to W_2 \to P_2$ \\
+Healing process & ``I'm recovering...'' & $\ManipFrac_{\mathrm{heal}}(X)$ \\
+Growth process & ``I'm developing...'' & $\Frac^n(X) \to X^*$ \\
+Manifestation & ``I'm creating...'' & $\ACBE(D_m \to W_m \to P_m)$ \\
+Relationship forming & ``We're bonding...'' & $C_4^2 \leftrightarrow C_4^2$ \\
+Career advancement & ``I'm progressing...'' & $\DWP_5 \otimes \DWP_6$ \\
+Spiritual awakening & ``I'm awakening...'' & $A_1^1 \to A_1^2 \to A_1^5$ \\
+Habit change & ``I'm changing...'' & $\ManipFrac_{\mathrm{habit}}$ \\
+Crisis transition & ``I'm going through...'' & $X \to \varnothing \to X'$ \\
+\end{longtable}
+\end{center}
+
+\subsection{Category C: Dynamic Scenarios}
+
+\textbf{Definition}: Scenarios describing ongoing patterns or cycles.
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.3}
+\begin{longtable}{p{2.5cm}|p{3cm}|p{4cm}}
+\caption{Dynamic Scenario Classifications} \\
+\toprule
+\textbf{Scenario Type} & \textbf{Indicator} & \textbf{Equation Form} \\
+\midrule
+\endfirsthead
+\multicolumn{3}{c}{\textit{Table continued from previous page}} \\
+\toprule
+\textbf{Scenario Type} & \textbf{Indicator} & \textbf{Equation Form} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Mood cycle & ``I oscillate between...'' & $(C_2 \leftrightarrow C_3)^{\noe{7}}$ \\
+Recurring pattern & ``This keeps happening...'' & $\PsychAttractor_{\mathrm{cycle}}$ \\
+Feedback loop & ``The more X, the more Y...'' & $X \leftrightarrow Y$ \\
+Self-fulfilling & ``It becomes true because...'' & $\Hyperstition$ \\
+Stuck pattern & ``I can't escape...'' & $\PsychAttractor_{\mathrm{fixed}}$ \\
+Chaotic dynamics & ``Unpredictable but bounded...'' & $\PsychAttractor_{\mathrm{strange}}$ \\
+Resonance & ``We amplify each other...'' & $\Tmul$ feedback \\
+Interference & ``They cancel out...'' & Quantum interference \\
+Superposition & ``Both are true...'' & $|\psi\rangle = \alpha|A\rangle + \beta|B\rangle$ \\
+Collapse event & ``It suddenly became definite...'' & $\Collapse$ \\
+\end{longtable}
+\end{center}
+
+\section{Scenario-to-Equation Decision Tree}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\textbf{Decision Algorithm},breakable]
+\textbf{Step 1: Identify Scenario Category}
+\begin{enumerate}
+    \item Is it a \textbf{state} (static condition)? $\to$ Category A
+    \item Is it a \textbf{process} (transformation)? $\to$ Category B
+    \item Is it a \textbf{dynamic} (ongoing pattern)? $\to$ Category C
+\end{enumerate}
+
+\textbf{Step 2: Identify World(s) Involved}
+\begin{enumerate}
+    \item Spiritual/meaning $\to$ World $A$
+    \item Mental/conceptual $\to$ World $B$
+    \item Emotional/relational $\to$ World $C$
+    \item Physical/material $\to$ World $D$
+    \item Multiple worlds $\to$ Cross-world operators
+\end{enumerate}
+
+\textbf{Step 3: Identify Key Noetic(s)}
+\begin{enumerate}
+    \item Awareness/consciousness $\to \noe{1}$
+    \item Attraction/approach $\to \noe{2}$
+    \item Rejection/avoidance $\to \noe{3}$
+    \item Energy/activation $\to \noe{4}$
+    \item Reception/absorption $\to \noe{5}$
+    \item Projection/action $\to \noe{6}$
+    \item Rhythm/cycle $\to \noe{7}$
+    \item Cause/trigger $\to \noe{8}$
+    \item Effect/result $\to \noe{9}$
+\end{enumerate}
+
+\textbf{Step 4: Identify Special Structures}
+\begin{enumerate}
+    \item Gaps/discontinuities? $\to$ High Lacunarity
+    \item Stable configuration? $\to$ Psych Attractor
+    \item Deliberate change? $\to$ Manipulation Fractal
+    \item Self-fulfilling? $\to$ Hyperstition
+    \item Multiple possibilities? $\to$ Quantum Superposition
+    \item Decision point? $\to$ Collapse Condition
+    \item Goal pursuit? $\to$ D/W/P Chain
+\end{enumerate}
+
+\textbf{Step 5: Construct Equation}
+\begin{enumerate}
+    \item Start with base element(s): $W_n^k_{mf}$
+    \item Add operators: $\Tadd, \Tsub, \Tmul, \Tdiv$
+    \item Add dynamics: $\to$, $\leftrightarrow$, $\Rightarrow$
+    \item Add structure: $\Frac$, $\RPM$, $\ACBE$
+    \item Add context: subscripts, conditions, bounds
+\end{enumerate}
+\end{tcolorbox}
+
+\section{Complete Scenario Type Master Table}
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.25}
+\begin{longtable}{p{2cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{3cm}}
+\caption{Complete Scenario Type Master Classification} \\
+\toprule
+\textbf{Scenario} & \textbf{Category} & \textbf{Primary World} & \textbf{Key Noetic} & \textbf{Canonical Form} \\
+\midrule
+\endfirsthead
+\multicolumn{5}{c}{\textit{Table continued from previous page}} \\
+\toprule
+\textbf{Scenario} & \textbf{Category} & \textbf{Primary World} & \textbf{Key Noetic} & \textbf{Canonical Form} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+Meditation & State & A & $\noe{1}$ & $A_1^1_{1a}$ \\
+Anxiety & State & C & $\noe{4}$ & $C_4^4_{3c}$ \\
+Depression & State & C & $\noe{3}$ & $C_3^5_{3c}$ \\
+Confidence & State & B & $\noe{5}$ & $B_2^5_{5b}$ \\
+Health & State & D & varies & $D_n^k_{3d}$ \\
+Learning & Process & B & $\noe{1}$ & $\DWP_2$ \\
+Healing & Process & D & $\noe{4}$ & $\ManipFrac_{\mathrm{heal}}$ \\
+Manifestation & Process & All & ACBE & $\ACBE(\DWP_m)$ \\
+Awakening & Process & A & $\noe{1,2}$ & $A_1^1 \to A_1^2$ \\
+Mood cycle & Dynamic & C & $\noe{7}$ & $(C_2 \leftrightarrow C_3)^7$ \\
+Addiction & Dynamic & D & $\noe{7,5}$ & $(D^7_{6d})^{\mathrm{stable}}$ \\
+Prophecy & Dynamic & Multi & Hyper & $\Hyperstition$ \\
+Decision & Dynamic & B & $\noe{6}$ & $\Collapse_{\mathrm{decide}}$ \\
+Trauma & State/Dyn & C & $\noe{8,3}$ & $C_8^3 \to \PsychAttractor$ \\
+Creativity & Process & B/D & $\noe{6}$ & $B \to D$ via $\noe{6}$ \\
+Relationship & State/Dyn & C & $\noe{4,5}$ & $C_4 \otimes C_4$ \\
+Success & Process & Multi & ACBE & $\ACBE \circ \DWP$ \\
+Failure & State & varies & $\noe{3}$ & $\RPM \to \Failed$ \\
+Growth & Process & varies & $\Frac$ & $\Frac^n \to X^*$ \\
+Stagnation & State & varies & $\noe{5}$ & $\Frac(X) = X$ \\
+\end{longtable}
+\end{center}
+
+%% ============================================================================
+%% APPENDICES
+%% ============================================================================
+\appendix
+
+\chapter{Quick Reference Formulas}
+\label{app:quick-ref}
+
+\section{High Lacunarity Quick Reference}
+\begin{align}
+    \Lacunarity_{\mathrm{gap}} &= (\noe{1}^{\mathrm{partial}} \Tdiv \noe{0}) \times \sum_W \mathbf{1}_{\mathrm{gap}}(W) \\
+    \Lacunarity_{\mathrm{manif}} &= \prod_m [P_m \times (1 - \mathrm{Gap}_m)^{-1}]^{\alpha_m} \\
+    \Lacunarity_{\mathrm{temp}} &= \noe{7}^{\mathrm{irreg}} \circ (\sum_i \delta(t-t_i) \times A_i)
+\end{align}
+
+\section{Psych\_Attractor Quick Reference}
+\begin{align}
+    \PsychAttractor_{\mathrm{fixed}} &= \lim_{n \to \infty} \Frac^n(X) = X^* \\
+    \PsychAttractor_{\mathrm{cycle}} &= \{X_1, \ldots, X_n\} : \Frac(X_i) = X_{i+1 \mod n} \\
+    \PsychAttractor_{\mathrm{strange}} &= \overline{\mathcal{O}_\Frac(X)} : \HausdorffDim \notin \mathbb{Z}
+\end{align}
+
+\section{Manipulation\_Fractal Quick Reference}
+\begin{align}
+    \ManipFrac_{\mathrm{self}} &= \langle 8:1:4:6:9 \rangle \\
+    \ManipFrac_{\mathrm{belief}} &= \langle 3:1:2:5 \rangle \\
+    \ManipFrac_{\mathrm{habit}} &= \langle 7:3:7:2:7 \rangle \\
+    \ManipFrac_{\mathrm{trauma}} &= \langle 8:1:4:2:5:9 \rangle
+\end{align}
+
+\section{Hyperstition Quick Reference}
+\begin{align}
+    \Hyperstition &= (\mathcal{I}, \mathcal{B}, \mathcal{M}, \Frac_H) : \mathcal{M}(\mathcal{B}^+) > \mathcal{M}(\mathcal{B}) \\
+    \frac{d\mathcal{B}}{dt} &= \alpha \mathcal{M} - \beta \mathcal{B} + \gamma \cdot \mathrm{Prop}(\mathcal{I})
+\end{align}
+
+\section{Quantum Superposition Quick Reference}
+\begin{align}
+    |\psi\rangle &= \sum_I c_I |I\rangle : \sum_I |c_I|^2 = 1 \\
+    |\psi_{\mathrm{decision}}\rangle &= \alpha|A\rangle + \beta e^{i\phi}|B\rangle \\
+    P_{\mathrm{interference}} &= |\alpha + \beta e^{i\phi}|^2 = |\alpha|^2 + |\beta|^2 + 2|\alpha\beta|\cos\phi
+\end{align}
+
+\section{Collapse Condition Quick Reference}
+\begin{align}
+    \Collapse_{\mathrm{obs}} &: |\psi\rangle \to |k\rangle \text{ with prob } |c_k|^2 \\
+    \Collapse_{\mathrm{decide}} &: \noe{1} \circ \noe{6} \to |k^*\rangle \\
+    \Collapse_{\mathrm{RPM}} &: \sigma(A) = \mathtt{false} \to \Failed \\
+    \Collapse_{\mathrm{dual}} &: \noe{j} \circ \noe{i} \to \noe{0} \text{ when } i+j=9
+\end{align}
+
+\section{D/W/P Quick Reference}
+\begin{align}
+    \DWP_m &= D_m \to W_m \to P_m \\
+    \mathrm{Level}_m &= \{0, 1, 2, 3\} \text{ based on chain completion} \\
+    \ACBE(\DWP_m) &= \noe{8} \to \noe{1} \to \noe{4} \to \noe{9}(\Foundations_m)
+\end{align}
+
+\chapter{Symbol Glossary}
+\label{app:glossary}
+
+\begin{center}
+\small
+\begin{longtable}{c|l}
+\caption{Complete TKS Symbol Glossary} \\
+\toprule
+\textbf{Symbol} & \textbf{Meaning} \\
+\midrule
+\endfirsthead
+\multicolumn{2}{c}{\textit{Table continued from previous page}} \\
+\toprule
+\textbf{Symbol} & \textbf{Meaning} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{2}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+$\Ideas$ & Idea space \\
+$\Worlds$ & World set $\{A, B, C, D\}$ \\
+$\Elements$ & Element space (40 elements) \\
+$\Noetics$ & Noetic operators $\{\noe{0}, \ldots, \noe{9}\}$ \\
+$\Foundations$ & Foundation space $\{\Foundations_1, \ldots, \Foundations_7\}$ \\
+$\Acquisitions$ & Acquisition space (22 acquisitions) \\
+$\noe{k}$ & Noetic operator $k$ \\
+$\Frac$ & Noetic fractal \\
+$\TransFrac{\alpha}$ & Transfinite fractal indexed by $\alpha$ \\
+$\RPM$ & RPM monad \\
+$\ACBE$ & ACBE functor \\
+$\Tadd$ & Tootra addition \\
+$\Tsub$ & Tootra subtraction \\
+$\Tmul$ & Tootra multiplication \\
+$\Tdiv$ & Tootra division \\
+$\Wadd$ & World addition \\
+$\Wsub$ & World subtraction \\
+$\sem{\cdot}$ & Semantic brackets \\
+$\fix$ & Fixed point operator \\
+$\Lacunarity$ & Lacunarity measure \\
+$\PsychAttractor$ & Psychological attractor \\
+$\ManipFrac$ & Manipulation fractal \\
+$\Hyperstition$ & Hyperstition structure \\
+$\Collapse$ & Collapse operator \\
+$\DWP$ & Desire/Wisdom/Power chain \\
+$D_m$ & Desire for Foundation $m$ \\
+$W_m$ & Wisdom about Foundation $m$ \\
+$P_m$ & Power to achieve Foundation $m$ \\
+$\sigma$ & Acquisition state \\
+$\Failed$ & Failure token \\
+$\HausdorffDim$ & Hausdorff dimension \\
+$\FractalSpectrum$ & Fractal spectrum \\
+\end{longtable}
+\end{center}
+
+%% ============================================================================
+%% END DOCUMENT
+%% ============================================================================
+
+\end{document}

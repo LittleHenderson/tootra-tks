@@ -1,0 +1,719 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% TKS FORMAL MATHEMATICAL MANUAL v7.3 — MASTER FILE
+%%
+%% CANONICAL INHERITANCE:
+%%   v6.1 -> v7.0 -> v7.1 -> v7.2 -> v7.3
+%%
+%% v7.3 MAJOR EXPANSIONS:
+%%   - MATH TRACK: Transfinite Noetic Fractals (full treatment)
+%%   - COMPILER TRACK: Extended Language, VM, Effect System
+%%   - QUANTUM TRACK: Quantum Noetics with Measurement Theory
+%%   - META TRACK: 2-Category / Topos / Coalgebra Unification
+%%
+%% This master file uses \input{...} to include modular track files.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt,twoside,openright]{book}
+
+%% ============================================================================
+%% PACKAGES (Inherited from v7.2 + v7.3 additions)
+%% ============================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm,amsfonts}
+\usepackage{mathtools}
+\usepackage{stmaryrd}           % For semantic brackets
+\usepackage{bm}                 % Bold math
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{cd,arrows,positioning,calc,decorations.pathmorphing,shapes}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{theorems,skins,breakable}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{multicol}
+
+%% v7.0 PACKAGE ADDITIONS
+\usepackage{braket}             % For quantum notation
+\usepackage{tikz-cd}            % For commutative diagrams
+\usepackage{bussproofs}         % For proof trees
+
+%% v7.1 PACKAGE ADDITIONS
+\usepackage{mathrsfs}           % For \mathscr (Scott topology)
+
+%% v7.2 PACKAGE ADDITIONS
+\usepackage{wasysym}            % Additional symbols
+\usepackage{extarrows}          % Extended arrows
+\usepackage{proof}              % Proof derivations
+
+%% v7.3 PACKAGE ADDITIONS (if any)
+% None required beyond v7.2
+
+\geometry{
+  paper=letterpaper,
+  inner=1.2in,
+  outer=1in,
+  top=1in,
+  bottom=1in
+}
+
+%% ============================================================================
+%% THEOREM ENVIRONMENTS (Inherited from v7.2)
+%% ============================================================================
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{axiom}[definition]{Axiom}
+
+\theoremstyle{plain}
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{corollary}[definition]{Corollary}
+
+\theoremstyle{remark}
+\newtheorem{remark}[definition]{Remark}
+\newtheorem{example}[definition]{Example}
+\newtheorem{notation}[definition]{Notation}
+\newtheorem{construction}[definition]{Construction}
+
+%% ============================================================================
+%% CUSTOM COMMANDS (Inherited from v7.2)
+%% ============================================================================
+% Semantic brackets
+\newcommand{\sem}[1]{\llbracket #1 \rrbracket}
+
+% TKS-specific symbols
+\newcommand{\Worlds}{\mathcal{W}}
+\newcommand{\Ideas}{\mathcal{I}}
+\newcommand{\Elements}{\mathcal{E}}
+\newcommand{\Noetics}{\mathcal{N}}
+\newcommand{\Foundations}{\mathcal{F}}
+\newcommand{\Acquisitions}{\mathcal{A}}
+\newcommand{\Noetica}{\mathbf{Noetica}}
+\newcommand{\Acq}{\mathbf{Acq}}
+
+% Noetic operators
+\newcommand{\noe}[1]{\nu_{#1}}
+
+% Tootra operations
+\newcommand{\Tadd}{\oplus_T}
+\newcommand{\Tsub}{\ominus_T}
+\newcommand{\Tmul}{\otimes_T}
+\newcommand{\Tdiv}{\oslash_T}
+
+% World association
+\newcommand{\Wadd}{\oplus_W}
+\newcommand{\Wsub}{\ominus_W}
+
+% Type judgments
+\newcommand{\types}{\vdash}
+\newcommand{\typmark}{:}
+
+% RPM Monad
+\newcommand{\RPM}{\mathfrak{R}}
+\newcommand{\rpmret}{\mathsf{return}}
+\newcommand{\rpmbind}{\mathbin{\gg\!=}}
+\newcommand{\Kleisli}{\mathcal{K}}
+
+% Fractal notation
+\newcommand{\Frac}{\Phi}
+\newcommand{\FracSet}{\mathfrak{F}}
+\newcommand{\bigstep}{\Downarrow}
+\newcommand{\smallstep}{\rightarrow}
+\newcommand{\Failed}{\mathsf{Failed}}
+
+% Quantum notation (v7.0)
+\newcommand{\Hspace}{\mathcal{H}}
+\newcommand{\qket}[1]{|#1\rangle}
+\newcommand{\qbra}[1]{\langle #1|}
+\newcommand{\qbraket}[2]{\langle #1 | #2 \rangle}
+\newcommand{\qop}[1]{\hat{#1}}
+
+% v7.1 COMMANDS - Domain theory
+\newcommand{\Scott}{\mathscr{S}}
+\newcommand{\Dcpo}{\mathbf{Dcpo}}
+\newcommand{\Cont}{\mathbf{Cont}}
+\newcommand{\sqleq}{\sqsubseteq}
+\newcommand{\fix}{\mathsf{fix}}
+
+% Natural transformations
+\newcommand{\NatTrans}[2]{\eta_{#1 \to #2}}
+\newcommand{\WorldFunctor}[1]{\mathfrak{W}_{#1}}
+
+%% ============================================================================
+%% v7.2 COMMANDS (Inherited)
+%% ============================================================================
+
+% Transfinite fractals
+\newcommand{\Ord}{\mathbf{Ord}}              % Class of ordinals
+\newcommand{\TransFrac}[1]{\Phi^{#1}}        % Transfinite fractal indexed by ordinal
+\newcommand{\limfrac}{\varinjlim}            % Limit of fractals
+\newcommand{\colfrac}{\varprojlim}           % Colimit of fractals
+\newcommand{\omegalim}{\omega\text{-}\lim}   % Omega-limit
+
+% Measure theory
+\newcommand{\SigAlg}{\Sigma}                 % Sigma-algebra
+\newcommand{\Meas}{\mathbf{Meas}}            % Category of measurable spaces
+\newcommand{\Prob}{\mathbf{Prob}}            % Probability measures
+\newcommand{\Bor}{\mathcal{B}}               % Borel sigma-algebra
+\newcommand{\Leb}{\lambda}                   % Lebesgue measure
+\newcommand{\intI}{\int_{\Ideas}}            % Integration over Idea space
+
+% Polish spaces
+\newcommand{\Polish}{\mathbf{Polish}}        % Category of Polish spaces
+\newcommand{\Stone}{\mathbf{Stone}}          % Stone spaces
+\newcommand{\Spec}{\mathrm{Spec}}            % Spectrum
+
+% Type inference (Algorithm W)
+\newcommand{\TypeScheme}{\sigma}             % Type scheme
+\newcommand{\TypeVar}{\alpha}                % Type variable
+\newcommand{\Subst}{\theta}                  % Substitution
+\newcommand{\Unify}{\mathsf{unify}}          % Unification
+\newcommand{\Inst}{\mathsf{inst}}            % Instantiation
+\newcommand{\Gen}{\mathsf{gen}}              % Generalization
+\newcommand{\FTV}{\mathsf{FTV}}              % Free type variables
+\newcommand{\AlgW}{\mathcal{W}}              % Algorithm W
+
+% Compiler infrastructure
+\newcommand{\AST}{\mathsf{AST}}              % Abstract syntax tree
+\newcommand{\IR}{\mathsf{IR}}                % Intermediate representation
+\newcommand{\BC}{\mathsf{BC}}                % Bytecode
+\newcommand{\VM}{\mathsf{VM}}                % Virtual machine
+
+% Quantum extensions
+\newcommand{\BoundedOp}{\mathcal{B}}         % Bounded operators
+\newcommand{\Unitary}{\mathcal{U}}           % Unitary operators
+\newcommand{\Projector}{\mathcal{P}}         % Projectors
+\newcommand{\Spectrum}{\sigma}               % Spectrum of operator
+\newcommand{\Trace}{\mathrm{Tr}}             % Trace
+
+% Topos and coalgebra
+\newcommand{\Topos}{\mathbf{Topos}}          % Topos
+\newcommand{\Sh}{\mathbf{Sh}}                % Sheaves
+\newcommand{\Coalg}{\mathbf{Coalg}}          % Coalgebras
+\newcommand{\Terminal}{\mathbf{1}}           % Terminal object
+\newcommand{\Initial}{\mathbf{0}}            % Initial object
+
+% Bisimulation
+\newcommand{\bisim}{\sim}
+
+%% ============================================================================
+%% v7.3 NEW COMMANDS
+%% ============================================================================
+
+% Transfinite Noetic Fractal Extensions
+\newcommand{\OrdFrac}{\mathfrak{F}_{\Ord}}           % Ordinal fractal category
+\newcommand{\HausdorffDim}{\dim_H}                   % Hausdorff dimension
+\newcommand{\FractalMeasure}{\mu_\Phi}               % Fractal measure
+\newcommand{\SelfSimilar}{\mathcal{S}}               % Self-similarity operator
+\newcommand{\FractalAttractor}{\mathcal{A}_\Phi}     % Fractal attractor
+
+% Extended Compiler / VM
+\newcommand{\TKSLang}{\mathcal{L}_{\mathrm{TKS}}}    % TKS Language
+\newcommand{\EffHandler}{\mathsf{handle}}            % Effect handler
+\newcommand{\Resume}{\mathsf{resume}}                % Continuation resume
+\newcommand{\OpCall}{\mathsf{op}}                    % Operation call
+
+% Quantum Noetics Extensions
+\newcommand{\NoeticOp}[1]{\hat{\nu}_{#1}}            % Noetic operator (quantum)
+\newcommand{\DensityMat}{\rho}                       % Density matrix
+\newcommand{\Entangle}{\mathcal{E}}                  % Entanglement measure
+\newcommand{\QuantumChannel}{\mathcal{C}}            % Quantum channel
+\newcommand{\Kraus}{\mathcal{K}}                     % Kraus operators
+
+% Meta-System Extensions
+\newcommand{\TwoCat}{\mathbf{2Cat}}                  % 2-Category
+\newcommand{\Bicategory}{\mathbf{Bicat}}             % Bicategory
+\newcommand{\LaxFunctor}{\mathsf{Lax}}               % Lax functor
+\newcommand{\Pseudofunctor}{\mathsf{Pseudo}}         % Pseudofunctor
+\newcommand{\NoeticTopos}{\mathbf{Noe}}              % Noetic topos
+
+% Version markers
+\newcommand{\vnew}{\textbf{v7.0 New}}
+\newcommand{\vexp}{\textbf{v7.0 Expanded}}
+\newcommand{\vnewone}{\textbf{v7.1 New}}
+\newcommand{\vexpone}{\textbf{v7.1 Expanded}}
+\newcommand{\vnewtwo}{\textbf{v7.2 New}}
+\newcommand{\vexptwo}{\textbf{v7.2 Expanded}}
+\newcommand{\vnewthree}{\textbf{v7.3 New}}
+\newcommand{\vexpthree}{\textbf{v7.3 Expanded}}
+
+%% ============================================================================
+%% DOCUMENT METADATA
+%% ============================================================================
+\title{\Huge\textbf{The TKS Formal Mathematical Manual}\\[0.5em]
+       \Large Version 7.3 --- Integrated Release\\[0.3em]
+       \large Transfinite Fractals $\cdot$ Extended Compiler $\cdot$ Quantum Noetics $\cdot$ Meta-Topos}
+\author{TKS Formalization Project}
+\date{\today}
+
+\begin{document}
+
+\frontmatter
+\maketitle
+
+%% ============================================================================
+%% v7.2 -> v7.3 CONTINUITY BRIDGE
+%% ============================================================================
+
+\chapter*{v7.2 $\to$ v7.3 Continuity Bridge}
+\addcontentsline{toc}{chapter}{v7.2 -> v7.3 Continuity Bridge}
+
+\begin{tcolorbox}[colback=yellow!10!white,colframe=orange!75!black,title=\textbf{Canonical Inheritance Declaration}]
+This document, TKS v7.3, is a \textbf{strict superset} of TKS v7.2, which itself preserves all of v7.1, v7.0, and v6.1. All definitions, theorems, axioms, and proofs from previous versions remain valid and unchanged. Version 7.3 introduces \textit{four major track expansions}---no modifications to existing canon.
+\end{tcolorbox}
+
+\section*{Inheritance Chain}
+
+\begin{itemize}
+  \item \textbf{v6.1 Canon}: Complete ontology (4 Worlds, 40 Elements, 10 Noetics, 7 Foundations, 22 Acquisitions), noetic algebra, Tootra arithmetic, Category $\Noetica$, ACBE functor
+  \item \textbf{v7.0 Canon}: RPM Monad, Noetic Fractal Calculus, Dynamic Semantics, Type System, Concurrency, Quantum Algebra foundations
+  \item \textbf{v7.1 Canon}: Natural transformations, Domain theory (dcpos, Scott topology), Extended denotational semantics, Topological noetic space, Multi-goal RPM
+  \item \textbf{v7.2 Canon}: Transfinite fractals (preliminary), Measure theory, Polish spaces, Algorithm W, Compiler architecture, Noetic Hilbert spaces, Spectral theory, Monoidal 2-categories, Topos foundations, Coalgebraic dynamics
+\end{itemize}
+
+\section*{v7.3 Major Track Expansions}
+
+\begin{enumerate}
+  \item \textbf{MATH Track} (Agent: \texttt{tks-math})
+  \begin{itemize}
+    \item Full Transfinite Noetic Fractal theory
+    \item Fractal dimension and measure theory
+    \item Iterated function systems on Idea space
+    \item Fractal attractors and self-similarity
+  \end{itemize}
+
+  \item \textbf{COMPILER Track} (Agent: \texttt{tks-compiler})
+  \begin{itemize}
+    \item Extended TKS language specification
+    \item Full effect handler system
+    \item Virtual machine with RPM-aware execution
+    \item Module system and foreign function interface
+  \end{itemize}
+
+  \item \textbf{QUANTUM Track} (Agent: \texttt{tks-quantum})
+  \begin{itemize}
+    \item Complete quantum noetic operators
+    \item Density matrix formalism
+    \item Quantum channels and Kraus representation
+    \item Noetic entanglement entropy
+  \end{itemize}
+
+  \item \textbf{META Track} (Agent: \texttt{tks-meta})
+  \begin{itemize}
+    \item 2-categorical and bicategorical structures
+    \item Noetic topos construction
+    \item Lax and pseudo-functors between worlds
+    \item Internal language of the Noetic topos
+  \end{itemize}
+\end{enumerate}
+
+\section*{New Notation in v7.3}
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Symbol} & \textbf{Meaning} & \textbf{Track} \\
+\midrule
+$\OrdFrac$ & Ordinal fractal category & Math \\
+$\HausdorffDim$ & Hausdorff dimension & Math \\
+$\FractalAttractor$ & Fractal attractor & Math \\
+$\EffHandler$ & Effect handler & Compiler \\
+$\Resume$ & Continuation resume & Compiler \\
+$\NoeticOp{k}$ & Quantum noetic operator & Quantum \\
+$\DensityMat$ & Density matrix & Quantum \\
+$\QuantumChannel$ & Quantum channel & Quantum \\
+$\TwoCat$ & 2-Category & Meta \\
+$\NoeticTopos$ & Noetic topos & Meta \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\tableofcontents
+
+%% ============================================================================
+%% GUIDE TO THIS MANUAL
+%% ============================================================================
+
+\chapter*{Guide to This Manual}
+\addcontentsline{toc}{chapter}{Guide to This Manual}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\textbf{Prerequisites}]
+\textbf{Readers new to TKS should start with TKS v6.1 \S\S1--4} (ontology + basic noetic calculus), which this document presupposes. The v6.1 foundation defines the 4 Worlds, 40 Elements, 10 Noetics, 7 Foundations, 28 Sub-Foundations, and 22 Acquisitions---all assumed throughout this manual.
+\end{tcolorbox}
+
+\section*{Reading Paths by Background}
+
+This manual serves four distinct audiences. Choose the path that matches your expertise:
+
+\begin{description}[style=nextline,leftmargin=2cm]
+
+\item[\textbf{PL / Compiler Researchers}]
+Start with \textbf{Part II} (Extended Language and VM), especially:
+\begin{itemize}
+  \item Chapters 8--10: Language specification, type system, effect handlers
+  \item Chapters 11--12: Compiler pipeline and virtual machine
+  \item Then read Part I Chapter 7 (RPM Integration) for the foundational semantics
+\end{itemize}
+
+\item[\textbf{Category Theorists / Algebraists}]
+Start with \textbf{Part IV} (2-Categories and Topoi), then:
+\begin{itemize}
+  \item Chapters 23--25: 2-categorical framework and lax functors
+  \item Chapters 26--27: Noetic topos and internal type theory
+  \item Then read Part I Chapters 1--4 for the fractal structures these abstract
+\end{itemize}
+
+\item[\textbf{Quantum Information / Physics}]
+Start with \textbf{Part III} (Quantum Noetics):
+\begin{itemize}
+  \item Chapters 16--17: Hilbert space formalism and C*-algebra
+  \item Chapters 18--20: Density matrices, channels, entanglement
+  \item Chapter 22: Quantum fractals (bridges to Part I)
+\end{itemize}
+
+\item[\textbf{Metaphysics / TKS Practitioners}]
+Start with \textbf{Part 0} (Canonical Foundation), then:
+\begin{itemize}
+  \item Part I Chapter 7: RPM-Fractal Integration (the ``why'' of recursive prerequisites)
+  \item Part II Chapters 8--9: Concrete language for expressing noetic computations
+  \item Return to Part I Chapters 5--6 for convergence and calculus once comfortable
+\end{itemize}
+
+\end{description}
+
+\section*{Cross-Track Dependencies}
+
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm, auto]
+  \node (canon) [draw, rectangle, rounded corners, fill=gray!20] {Part 0: Canonical Foundation};
+  \node (math) [draw, rectangle, rounded corners, fill=red!20, below left=1.5cm and 1cm of canon] {Part I: Math Track};
+  \node (compiler) [draw, rectangle, rounded corners, fill=green!20, below right=1.5cm and 1cm of canon] {Part II: Compiler Track};
+  \node (quantum) [draw, rectangle, rounded corners, fill=blue!20, below=3cm of canon] {Part III: Quantum Track};
+  \node (meta) [draw, rectangle, rounded corners, fill=purple!20, below=4.5cm of canon] {Part IV: Meta Track};
+
+  \draw[->,thick] (canon) -- (math);
+  \draw[->,thick] (canon) -- (compiler);
+  \draw[->,thick] (canon) -- (quantum);
+  \draw[->,thick] (math) -- (meta);
+  \draw[->,thick] (quantum) -- (meta);
+  \draw[->,thick,dashed] (math) -- (compiler) node[midway,above,sloped,font=\scriptsize] {optional};
+  \draw[->,thick,dashed] (compiler) -- (quantum) node[midway,above,sloped,font=\scriptsize] {optional};
+\end{tikzpicture}
+\end{center}
+
+\section*{Candidate Extracts for Publication}
+
+The following self-contained portions of this manual are suitable for extraction as standalone papers:
+
+\begin{enumerate}
+  \item \textbf{``The Category of Ordinal Fractals and Noetic IFS''} --- Part I, Chapters 2--4\\
+  \textit{Focus:} Ordinal-indexed fractal spaces, Iterated Function Systems on Idea manifolds, self-similarity operators.
+
+  \item \textbf{``A Typed Effectful Language and VM for Metaphysical Calculus''} --- Part II, Chapters 9--14\\
+  \textit{Focus:} Algebraic effects for noetic operations, continuation-based handlers, bytecode compilation targeting a stack-based VM.
+
+  \item \textbf{``Quantum Noetics: A Hilbert Space Semantics for Ideas''} --- Part III, Chapters 16--21\\
+  \textit{Focus:} C*-algebraic foundations, density matrix formalism for mixed noetic states, entanglement measures, quantum channels.
+
+  \item \textbf{``The Noetic Topos: Internal Logic of Consciousness''} --- Part IV, Chapters 25--27\\
+  \textit{Focus:} Topos-theoretic semantics, internal type theory, subobject classifier for noetic truth values.
+\end{enumerate}
+
+\mainmatter
+
+%% ============================================================================
+%% PART 0: CANONICAL FOUNDATION (From v6.1 - Reference Only)
+%% ============================================================================
+\part{Canonical Foundation (v6.1 Reference)}
+
+\chapter{Ontological Foundations}
+\label{ch:foundations-reference}
+
+\begin{tcolorbox}[colback=gray!10!white,colframe=gray!75!black,title=\textbf{Reference Chapter}]
+This chapter provides a condensed reference to the canonical v6.1 foundations. For complete details, see TKS\_FORMAL\_MATHEMATICAL\_MANUAL\_v6.1\_COMPLETE.tex.
+\end{tcolorbox}
+
+% This section summarizes: 4 Worlds, 40 Elements, 10 Noetics, 7 Foundations (28 Sub-Foundations), 22 Acquisitions
+
+\section{The Four Worlds}
+\label{sec:four-worlds}
+
+The Four Worlds represent the levels through which Ideas manifest:
+
+\begin{center}
+\begin{tabular}{clll}
+\toprule
+\textbf{World} & \textbf{Name} & \textbf{Level} & \textbf{Domain} \\
+\midrule
+A & Atziluth & Spiritual & Archetypal, divine, purpose \\
+B & Briah & Mental & Thoughts, beliefs, concepts \\
+C & Yetzirah & Emotional & Feelings, intuition, desires \\
+D & Assiah & Physical & Body, matter, actions \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{ACBE Cascade:} $A \to B \to C \to D$ (spiritual principles manifest through mental, emotional, then physical).
+
+\section{The Forty Elements}
+\label{sec:forty-elements}
+
+The 40 Elements arise from 10 Noetics $\times$ 4 Worlds. Notation: \textbf{[World][Noetic]}, e.g., A1, B5, C3, D10.
+
+\begin{center}
+\begin{tabular}{c|cccc}
+\toprule
+\textbf{Noetic} & \textbf{A (Spiritual)} & \textbf{B (Mental)} & \textbf{C (Emotional)} & \textbf{D (Physical)} \\
+\midrule
+0 (Idea) & A0 & B0 & C0 & D0 \\
+1 (Mind) & A1 & B1 & C1 & D1 \\
+2 (Positive) & A2 & B2 & C2 & D2 \\
+3 (Negative) & A3 & B3 & C3 & D3 \\
+4 (Vibration) & A4 & B4 & C4 & D4 \\
+5 (Female) & A5 & B5 & C5 & D5 \\
+6 (Male) & A6 & B6 & C6 & D6 \\
+7 (Rhythm) & A7 & B7 & C7 & D7 \\
+8 (Above/Cause) & A8 & B8 & C8 & D8 \\
+9 (Below/Effect) & A9 & B9 & C9 & D9 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{The Ten Noetics}
+\label{sec:ten-noetics}
+
+The Noetics are the ten fundamental operations of consciousness:
+
+\begin{center}
+\begin{tabular}{cll}
+\toprule
+\textbf{Index} & \textbf{Name} & \textbf{Core Meaning} \\
+\midrule
+$\noe{0}$ & Idea & Content, the thing itself \\
+$\noe{1}$ & Mind & Awareness, processor \\
+$\noe{2}$ & Positive & Attraction, affinity \\
+$\noe{3}$ & Negative & Aversion, repulsion \\
+$\noe{4}$ & Vibration & Resonance, impression \\
+$\noe{5}$ & Female & Receptivity, Mind composition \\
+$\noe{6}$ & Male & Structure, Idea composition \\
+$\noe{7}$ & Rhythm & Timing, repetition \\
+$\noe{8}$ & Above/Cause & Trigger, stimulus \\
+$\noe{9}$ & Below/Effect & Response, result \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{The 7 Foundations and 28 Sub-Foundations}
+\label{sec:foundations}
+
+The \textbf{7 Foundations} are the fundamental drives governing human striving. When expressed across the 4 Worlds, they become the \textbf{28 Sub-Foundations} ($7 \times 4 = 28$).
+
+\subsection{The 7 Core Foundations}
+
+\begin{center}
+\begin{tabular}{cll}
+\toprule
+\textbf{\#} & \textbf{Foundation} & \textbf{Core Principle} \\
+\midrule
+F1 & Association & All ideas linked through connection and resonance \\
+F2 & Wisdom & All ideas potentially knowable by Mind \\
+F3 & Life & All ideas require energy to exist \\
+F4 & Companionship & All ideas seek connection with resonant ideas \\
+F5 & Power & All ideas can cause effects in other ideas \\
+F6 & Wealth & All ideas require structure and resources \\
+F7 & Continuation & The drive to extend life and pattern beyond self \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{The 28 Sub-Foundations}
+
+Notation: \textbf{[Foundation\#][World letter]}, e.g., 1a, 3d, 7b.
+
+\begin{center}
+\begin{tabular}{c|cccc}
+\toprule
+\textbf{Foundation} & \textbf{a (Spiritual)} & \textbf{b (Mental)} & \textbf{c (Emotional)} & \textbf{d (Physical)} \\
+\midrule
+F1 (Association) & 1a & 1b & 1c & 1d \\
+F2 (Wisdom) & 2a & 2b & 2c & 2d \\
+F3 (Life) & 3a & 3b & 3c & 3d \\
+F4 (Companionship) & 4a & 4b & 4c & 4d \\
+F5 (Power) & 5a & 5b & 5c & 5d \\
+F6 (Wealth) & 6a & 6b & 6c & 6d \\
+F7 (Continuation) & 7a & 7b & 7c & 7d \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Examples:}
+\begin{itemize}
+  \item \textbf{3d} (Physical Life/Vitality): biological energy, health, stamina
+  \item \textbf{5b} (Mental Power): influence through ideas, persuasion, intellectual authority
+  \item \textbf{7c} (Emotional Continuation): desire, attraction, bonding that pulls toward merging
+\end{itemize}
+
+\section{The Twenty-Two Acquisitions}
+\label{sec:acquisitions}
+
+The \textbf{22 Acquisitions} are the pathways for manifestation, organized by the D/W/P triad:
+
+\begin{itemize}
+  \item \textbf{D1--D7}: Desire acquisitions (the ``want to'')
+  \item \textbf{W1--W7}: Wisdom acquisitions (the ``know how to'')
+  \item \textbf{P1--P7}: Power acquisitions (the ``can do'')
+  \item \textbf{A22}: Meta-Desire (``desire for desire'')
+\end{itemize}
+
+\begin{center}
+\begin{tabular}{c|ccc}
+\toprule
+\textbf{Foundation} & \textbf{Desire (D)} & \textbf{Wisdom (W)} & \textbf{Power (P)} \\
+\midrule
+F1 & D1 & W1 & P1 \\
+F2 & D2 & W2 & P2 \\
+F3 & D3 & W3 & P3 \\
+F4 & D4 & W4 & P4 \\
+F5 & D5 & W5 & P5 \\
+F6 & D6 & W6 & P6 \\
+F7 & D7 & W7 & P7 \\
+\midrule
+\multicolumn{4}{c}{A22: Global Meta-Desire (cross-foundational)} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{RPM Principle:} For stable manifestation in any Foundation, all three (D/W/P) must be sufficiently developed.
+
+%% ============================================================================
+%% PART I: MATH TRACK - Transfinite Noetic Fractals
+%% ============================================================================
+\part{Transfinite Noetic Fractals}
+\label{part:math-track}
+
+% Include the Math track file
+\input{TKS_v7.3_Math}
+
+%% ============================================================================
+%% PART II: COMPILER TRACK - Extended Language and VM
+%% ============================================================================
+\part{Extended TKS Language and Virtual Machine}
+\label{part:compiler-track}
+
+% Include the Compiler track file
+\input{TKS_v7.3_Compiler}
+
+%% ============================================================================
+%% PART III: QUANTUM TRACK - Quantum Noetics
+%% ============================================================================
+\part{Quantum Noetics}
+\label{part:quantum-track}
+
+% Include the Quantum track file
+\input{TKS_v7.3_Quantum}
+
+%% ============================================================================
+%% PART IV: META TRACK - 2-Category and Topos Theory
+%% ============================================================================
+\part{Noetic Meta-System: 2-Categories and Topoi}
+\label{part:meta-track}
+
+% Include the Meta track file
+\input{TKS_v7.3_Meta}
+
+%% ============================================================================
+%% PART V: INTEGRATED EXAMPLES AND APPLICATIONS
+%% ============================================================================
+\part{Integrated Examples and Applications}
+\label{part:integrated}
+
+\chapter{Cross-Track Examples}
+\label{ch:cross-track-examples}
+
+\begin{tcolorbox}[colback=green!5!white,colframe=green!75!black,title=\textbf{Integration Chapter}]
+This chapter demonstrates how the four v7.3 tracks interact, providing worked examples that combine transfinite fractals, compiler execution, quantum states, and categorical structures.
+\end{tcolorbox}
+
+% Placeholder for integrated examples
+
+\section{Example: Transfinite Fractal Compilation}
+% Math + Compiler integration
+
+\section{Example: Quantum Noetic Execution}
+% Quantum + Compiler integration
+
+\section{Example: Topos-Theoretic Semantics of Fractals}
+% Math + Meta integration
+
+\section{Example: Quantum Channels in the Noetic Topos}
+% Quantum + Meta integration
+
+%% ============================================================================
+%% PART VI: APPENDICES
+%% ============================================================================
+\part{Appendices}
+\label{part:appendices}
+
+\chapter{Complete Symbol Reference}
+\label{ch:symbol-reference}
+
+\section{v6.1 Symbols}
+% Inherited symbols
+
+\section{v7.0 Symbols}
+% Inherited symbols
+
+\section{v7.1 Symbols}
+% Inherited symbols
+
+\section{v7.2 Symbols}
+% Inherited symbols
+
+\section{v7.3 Symbols}
+% New symbols
+
+\chapter{Version History}
+\label{ch:version-history}
+
+\section{Version 6.0}
+Initial formalization.
+
+\section{Version 6.1}
+Canonical stabilization.
+
+\section{Version 7.0}
+RPM Monad, Fractals, Type System, Quantum foundations.
+
+\section{Version 7.1}
+Domain theory, Natural transformations, Extended semantics.
+
+\section{Version 7.2}
+Transfinite fractals (preliminary), Algorithm W, Compiler architecture, Spectral theory, Topos foundations.
+
+\section{Version 7.3}
+Four-track expansion: Transfinite Fractals (full), Extended Compiler/VM, Quantum Noetics, Meta-Topos.
+
+\chapter{Cross-Reference Index}
+\label{ch:cross-reference}
+
+% Index of definitions, theorems, cross-track references
+
+\backmatter
+
+\chapter*{Acknowledgments}
+\addcontentsline{toc}{chapter}{Acknowledgments}
+
+The TKS Formalization Project thanks all contributors to the mathematical, computational, quantum, and categorical development of this system.
+
+\end{document}

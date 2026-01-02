@@ -1,0 +1,285 @@
+<svg id="ncd-stencil" viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <style>
+                    .wire { stroke: var(--stroke); stroke-width: 3; fill: none; stroke-linecap: round; }
+                    .shape { stroke: var(--stroke); stroke-width: 2.5; fill: none; }
+                    .arrow { fill: var(--stroke); stroke: var(--stroke); stroke-width: 2; }
+                    .title { fill: var(--cyan); font: 700 24px ui-monospace, Consolas, monospace; }
+                    .section-title { fill: var(--cyan); font: 700 16px ui-monospace, Consolas, monospace; }
+                    .label { fill: var(--text); font: 12px ui-monospace, Consolas, monospace; }
+                    .badge { fill: var(--bg); stroke: var(--badge-blue); stroke-width: 2; rx: 5; }
+                    .badge-text { fill: var(--cyan); font: 12px ui-monospace, Consolas, monospace; text-anchor: middle; dominant-baseline: middle; }
+                    .box { fill: none; stroke: var(--stroke); stroke-width: 1; stroke-dasharray: 6,6; }
+                    .feedback { stroke: var(--magenta); stroke-width: 2; fill: none; stroke-dasharray: 5,3; }
+                </style>
+            </defs>
+            
+            <!-- Background -->
+            <rect width="1600" height="900" fill="var(--bg)"/>
+            
+            <!-- 1) Header -->
+            <text x="800" y="35" text-anchor="middle" class="title">NCD Stencil — Gates, Tokens, Noetic Badges &amp; NJT Primitives (Print)</text>
+            
+            <!-- 2) Row 1: Basic Gates -->
+            <g transform="translate(60, 70)">
+                <rect x="0" y="0" width="1480" height="120" class="box"/>
+                <text x="10" y="-5" class="section-title">Row 1: Basic Gates</text>
+                
+                <!-- AND -->
+                <g transform="translate(80, 30)">
+                    <path d="M0,0 L0,60 L30,60 Q60,60 60,30 Q60,0 30,0 Z" class="shape"/>
+                    <line x1="-30" y1="15" x2="0" y2="15" class="wire"/>
+                    <line x1="-30" y1="45" x2="0" y2="45" class="wire"/>
+                    <line x1="60" y1="30" x2="90" y2="30" class="wire"/>
+                    <text x="30" y="80" class="label" text-anchor="middle">AND</text>
+                </g>
+                
+                <!-- OR -->
+                <g transform="translate(250, 30)">
+                    <path d="M0,0 Q30,0 45,0 Q90,0 90,60 Q30,60 0,60 Q30,30 0,0" class="shape"/>
+                    <line x1="-30" y1="15" x2="0" y2="15" class="wire"/>
+                    <line x1="-30" y1="45" x2="0" y2="45" class="wire"/>
+                    <line x1="90" y1="30" x2="120" y2="30" class="wire"/>
+                    <text x="45" y="80" class="label" text-anchor="middle">OR</text>
+                </g>
+                
+                <!-- XOR -->
+                <g transform="translate(450, 30)">
+                    <path d="M10,0 Q40,0 55,0 Q100,0 100,60 Q40,60 10,60 Q40,30 10,0" class="shape"/>
+                    <path d="M0,0 Q30,30 0,60" class="shape"/>
+                    <line x1="-30" y1="15" x2="0" y2="15" class="wire"/>
+                    <line x1="-30" y1="45" x2="0" y2="45" class="wire"/>
+                    <line x1="100" y1="30" x2="130" y2="30" class="wire"/>
+                    <text x="50" y="80" class="label" text-anchor="middle">XOR</text>
+                </g>
+                
+                <!-- NOT -->
+                <g transform="translate(650, 30)">
+                    <path d="M0,0 L0,60 L60,30 Z" class="shape"/>
+                    <circle cx="66" cy="30" r="6" class="shape"/>
+                    <line x1="-30" y1="30" x2="0" y2="30" class="wire"/>
+                    <line x1="72" y1="30" x2="102" y2="30" class="wire"/>
+                    <text x="36" y="80" class="label" text-anchor="middle">NOT</text>
+                </g>
+            </g>
+            
+            <!-- Row 2: Derived Gates -->
+            <g transform="translate(60, 210)">
+                <rect x="0" y="0" width="1480" height="120" class="box"/>
+                <text x="10" y="-5" class="section-title">Row 2: Derived Gates</text>
+                
+                <!-- NAND -->
+                <g transform="translate(80, 30)">
+                    <path d="M0,0 L0,60 L30,60 Q60,60 60,30 Q60,0 30,0 Z" class="shape"/>
+                    <circle cx="66" cy="30" r="6" class="shape"/>
+                    <line x1="-30" y1="15" x2="0" y2="15" class="wire"/>
+                    <line x1="-30" y1="45" x2="0" y2="45" class="wire"/>
+                    <line x1="72" y1="30" x2="102" y2="30" class="wire"/>
+                    <text x="36" y="80" class="label" text-anchor="middle">NAND</text>
+                </g>
+                
+                <!-- NOR -->
+                <g transform="translate(250, 30)">
+                    <path d="M0,0 Q30,0 45,0 Q90,0 90,60 Q30,60 0,60 Q30,30 0,0" class="shape"/>
+                    <circle cx="96" cy="30" r="6" class="shape"/>
+                    <line x1="-30" y1="15" x2="0" y2="15" class="wire"/>
+                    <line x1="-30" y1="45" x2="0" y2="45" class="wire"/>
+                    <line x1="102" y1="30" x2="132" y2="30" class="wire"/>
+                    <text x="45" y="80" class="label" text-anchor="middle">NOR</text>
+                </g>
+                
+                <!-- Buffer -->
+                <g transform="translate(450, 30)">
+                    <path d="M0,0 L0,60 L60,30 Z" class="shape"/>
+                    <line x1="-30" y1="30" x2="0" y2="30" class="wire"/>
+                    <line x1="60" y1="30" x2="90" y2="30" class="wire"/>
+                    <text x="30" y="80" class="label" text-anchor="middle">Buffer</text>
+                </g>
+            </g>
+            
+            <!-- Row 3: World Router (MUX) and D→W→P -->
+            <g transform="translate(60, 350)">
+                <rect x="0" y="0" width="1480" height="140" class="box"/>
+                <text x="10" y="-5" class="section-title">Row 3: World Router (MUX) and D→W→P triplet</text>
+                
+                <!-- 4:1 MUX -->
+                <g transform="translate(80, 30)">
+                    <path d="M0,0 L0,80 L80,60 L80,20 Z" class="shape"/>
+                    <line x1="-40" y1="10" x2="0" y2="10" class="wire"/>
+                    <line x1="-40" y1="30" x2="0" y2="30" class="wire"/>
+                    <line x1="-40" y1="50" x2="0" y2="50" class="wire"/>
+                    <line x1="-40" y1="70" x2="0" y2="70" class="wire"/>
+                    <line x1="80" y1="40" x2="120" y2="40" class="wire"/>
+                    <text x="-45" y="15" class="label" text-anchor="end">A</text>
+                    <text x="-45" y="35" class="label" text-anchor="end">B</text>
+                    <text x="-45" y="55" class="label" text-anchor="end">C</text>
+                    <text x="-45" y="75" class="label" text-anchor="end">D</text>
+                    <text x="40" y="100" class="label" text-anchor="middle">4→1 MUX</text>
+                </g>
+                
+                <!-- D→W→P -->
+                <g transform="translate(320, 30)">
+                    <rect x="0" y="0" width="56" height="40" class="shape"/>
+                    <rect x="70" y="0" width="56" height="40" class="shape"/>
+                    <rect x="140" y="0" width="56" height="40" class="shape"/>
+                    <line x1="-40" y1="20" x2="0" y2="20" class="wire"/>
+                    <line x1="56" y1="20" x2="70" y2="20" class="wire"/>
+                    <line x1="126" y1="20" x2="140" y2="20" class="wire"/>
+                    <line x1="196" y1="20" x2="236" y2="20" class="wire"/>
+                    <text x="28" y="-8" class="label" text-anchor="middle">D</text>
+                    <text x="98" y="-8" class="label" text-anchor="middle">W</text>
+                    <text x="168" y="-8" class="label" text-anchor="middle">P</text>
+                    <text x="28" y="55" class="label" text-anchor="middle">τ_D=0.3</text>
+                    <text x="98" y="55" class="label" text-anchor="middle">τ_W=0.5</text>
+                    <text x="168" y="55" class="label" text-anchor="middle">τ_P=0.7</text>
+                    <text x="98" y="100" class="label" text-anchor="middle">D→W→P Cascade</text>
+                </g>
+                
+                <!-- Clamp box -->
+                <g transform="translate(640, 30)">
+                    <rect x="0" y="0" width="100" height="36" class="shape"/>
+                    <text x="50" y="22" class="label" text-anchor="middle">clamp[0,1]</text>
+                    <line x1="-40" y1="18" x2="0" y2="18" class="wire"/>
+                    <line x1="100" y1="18" x2="140" y2="18" class="wire"/>
+                    <text x="150" y="22" class="label">→ Manifestation</text>
+                </g>
+            </g>
+            
+            <!-- Row 4: Tokens & Badges -->
+            <g transform="translate(60, 510)">
+                <rect x="0" y="0" width="1480" height="120" class="box"/>
+                <text x="10" y="-5" class="section-title">Row 4: Tokens &amp; Badges</text>
+                
+                <!-- Acquisition circle -->
+                <g transform="translate(80, 40)">
+                    <circle cx="0" cy="0" r="18" class="shape"/>
+                    <text x="0" y="5" class="label" text-anchor="middle">A#</text>
+                    <text x="0" y="40" class="label" text-anchor="middle">Acquisition</text>
+                </g>
+                
+                <!-- Wire with badge placeholder -->
+                <g transform="translate(200, 25)">
+                    <line x1="0" y1="0" x2="150" y2="0" class="wire"/>
+                    <rect x="50" y="-12" width="50" height="24" class="badge"/>
+                    <text x="75" y="0" class="badge-text">badge</text>
+                    <text x="75" y="40" class="label" text-anchor="middle">Wire segment</text>
+                </g>
+                
+                <!-- Feedback arc -->
+                <g transform="translate(400, 25)">
+                    <path d="M 0 30 C 100 -30 200 -30 300 30" class="feedback"/>
+                    <polygon points="300,30 295,25 295,35" fill="var(--magenta)"/>
+                    <text x="150" y="55" class="label" text-anchor="middle">Feedback arc: Add N7 / ×N4 / −N3</text>
+                    <text x="150" y="70" class="label" text-anchor="middle">Clamp or β limit to prevent runaway</text>
+                </g>
+                
+                <!-- Badge legend -->
+                <g transform="translate(750, 0)">
+                    <text x="0" y="0" class="label">Base badges:</text>
+                    <rect x="0" y="5" width="44" height="20" class="badge"/>
+                    <text x="22" y="15" class="badge-text">+N2</text>
+                    <rect x="50" y="5" width="44" height="20" class="badge"/>
+                    <text x="72" y="15" class="badge-text">−N3</text>
+                    <rect x="100" y="5" width="44" height="20" class="badge"/>
+                    <text x="122" y="15" class="badge-text">N5</text>
+                    <rect x="150" y="5" width="44" height="20" class="badge"/>
+                    <text x="172" y="15" class="badge-text">N7</text>
+                    <rect x="200" y="5" width="80" height="20" class="badge"/>
+                    <text x="240" y="15" class="badge-text">N8→N9</text>
+                    
+                    <text x="0" y="40" class="label" font-size="11">+N2 ↓threshold, −N3 ↑threshold; N5 adds τ↑/τ↓ (hysteresis)</text>
+                    
+                    <text x="0" y="60" class="label">Body badges:</text>
+                    <rect x="0" y="65" width="44" height="20" class="badge"/>
+                    <text x="22" y="75" class="badge-text">×N4</text>
+                    <rect x="50" y="65" width="44" height="20" class="badge"/>
+                    <text x="72" y="75" class="badge-text">N6</text>
+                    <text x="100" y="75" class="label">(on E wire)</text>
+                </g>
+            </g>
+            
+            <!-- Row 5: NJT Primitives (elongated) -->
+            <g transform="translate(60, 650)">
+                <rect x="0" y="0" width="1480" height="240" class="box"/>
+                <text x="10" y="-5" class="section-title">Row 5: NJT Primitives</text>
+                
+                <!-- Polarity clarification -->
+                <text x="325" y="25" class="label" text-anchor="middle">Arrow is polarity mark only; does not reverse C→E flow</text>
+                
+                <!-- NJT+ -->
+                <g transform="translate(200, 100)">
+                    <text x="0" y="-50" class="label" text-anchor="middle">NJT⁺ (promote)</text>
+                    
+                    <circle cx="0" cy="0" r="40" class="shape"/>
+                    <line x1="-20" y1="-25" x2="-20" y2="25" stroke="var(--stroke)" stroke-width="2"/>
+                    <path d="M -5 -10 L 12 -10" class="arrow" stroke-width="3"/>
+                    <polygon points="12,-10 7,-15 7,-5" class="arrow"/>
+                    
+                    <!-- Pins -->
+                    <line x1="-60" y1="0" x2="-40" y2="0" class="wire"/>
+                    <line x1="40" y1="0" x2="60" y2="0" class="wire"/>
+                    <line x1="0" y1="40" x2="0" y2="80" class="wire"/>
+                    
+                    <text x="-65" y="5" class="label" text-anchor="end">C</text>
+                    <text x="65" y="5" class="label">E</text>
+                    <text x="0" y="95" class="label" text-anchor="middle">B</text>
+                    
+                    <text x="0" y="115" class="label" text-anchor="middle">β=×N4·w</text>
+                    <text x="0" y="130" class="label" text-anchor="middle">τ_B=___</text>
+                </g>
+                
+                <!-- NJT- -->
+                <g transform="translate(450, 100)">
+                    <text x="0" y="-50" class="label" text-anchor="middle">NJT⁻ (inhibit)</text>
+                    
+                    <circle cx="0" cy="0" r="40" class="shape"/>
+                    <line x1="-20" y1="-25" x2="-20" y2="25" stroke="var(--stroke)" stroke-width="2"/>
+                    <path d="M 12 10 L -5 10" class="arrow" stroke-width="3"/>
+                    <polygon points="-5,10 0,5 0,15" class="arrow"/>
+                    
+                    <!-- Pins -->
+                    <line x1="-60" y1="0" x2="-40" y2="0" class="wire"/>
+                    <line x1="40" y1="0" x2="60" y2="0" class="wire"/>
+                    <line x1="0" y1="40" x2="0" y2="80" class="wire"/>
+                    
+                    <text x="-65" y="5" class="label" text-anchor="end">C</text>
+                    <text x="65" y="5" class="label">E</text>
+                    <text x="0" y="95" class="label" text-anchor="middle">B</text>
+                    
+                    <text x="0" y="115" class="label" text-anchor="middle">β=×N4·w</text>
+                    <text x="0" y="130" class="label" text-anchor="middle">τ_B=___</text>
+                </g>
+                
+                <!-- Parameter template -->
+                <g transform="translate(700, 50)">
+                    <text x="0" y="0" class="section-title">NJT Parameters:</text>
+                    <text x="0" y="25" class="label">• β (gain): base × N4 × world_weight</text>
+                    <text x="0" y="45" class="label">• τ_B (threshold): 0.0 to 1.0</text>
+                    <text x="0" y="65" class="label">• k (slope): typically 10-20</text>
+                    <text x="0" y="85" class="label">• N5 enables hysteresis (τ↑/τ↓ or blend λ)</text>
+                    <text x="0" y="105" class="label">• World routing handled by MUX, not NJT</text>
+                    <text x="0" y="125" class="label">• Gate: g(B) = σ(k( p̃_B − τ_B )), p∈[0,1]</text>
+                    <text x="0" y="145" class="label">• Flow always C→E (never reversed)</text>
+                </g>
+                
+                <!-- Mini N6 example -->
+                <g transform="translate(1100, 100)">
+                    <text x="0" y="-50" class="label">N6 Example:</text>
+                    <text x="0" y="-35" class="label">Commit/forward after amplification</text>
+                    
+                    <!-- Simple NJT -->
+                    <circle cx="0" cy="0" r="25" class="shape"/>
+                    <text x="0" y="5" class="label" text-anchor="middle">NJT</text>
+                    <line x1="-40" y1="0" x2="-25" y2="0" class="wire"/>
+                    <line x1="25" y1="0" x2="50" y2="0" class="wire"/>
+                    
+                    <!-- N6 badge on E wire -->
+                    <rect x="55" y="-10" width="44" height="20" class="badge"/>
+                    <text x="77" y="0" class="badge-text">N6</text>
+                    
+                    <!-- Arrow to MUX -->
+                    <line x1="99" y1="0" x2="120" y2="0" class="wire"/>
+                    <text x="125" y="5" class="label">→ MUX</text>
+                </g>
+            </g>
+        </svg>

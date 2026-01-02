@@ -1,0 +1,230 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1700">
+  <style> text { fill:#e8f0ff } </style>
+
+  <rect width="100%" height="100%" fill="#0a0e1e"/>
+  <style>
+    .box { fill:none; stroke:#e8f0ff; stroke-width:1.5; stroke-dasharray:6,6 }
+    .shape { fill:none; stroke:#e8f0ff; stroke-width:2.5 }
+    .thin { stroke-width:1.5 }
+    .title { font:700 18px ui-monospace,Consolas,monospace; }
+    .label { font: 12px ui-monospace,Consolas,monospace; }
+  </style>
+
+  <text x="500" y="40" text-anchor="middle" class="title">NCD Stencil — Gates, Nodes, Noetic Badges & NJT Primitives (Print)</text>
+
+  <!-- Row 1: Basic gates -->
+  <g transform="translate(60,80)">
+    <rect x="0" y="0" width="880" height="220" class="box"/>
+    <text x="10" y="-10" class="label">Basic Logic Gates</text>
+
+    <!-- AND -->
+    <g transform="translate(40,30)">
+      <path d="M0,0 L0,80 L40,80 Q80,80 80,40 Q80,0 40,0 Z" class="shape"/>
+      <line x1="-40" y1="20" x2="0" y2="20" class="thin shape"/>
+      <line x1="-40" y1="60" x2="0" y2="60" class="thin shape"/>
+      <line x1="80" y1="40" x2="120" y2="40" class="thin shape"/>
+      <text x="0" y="105" class="label">AND</text>
+    </g>
+
+    <!-- OR -->
+    <g transform="translate(220,30)">
+      <path d="M0,0 Q36,0 52,0 Q124,0 124,80 Q36,80 0,80 Q36,40 0,0" class="shape"/>
+      <line x1="-40" y1="20" x2="0" y2="20" class="thin shape"/>
+      <line x1="-40" y1="60" x2="0" y2="60" class="thin shape"/>
+      <line x1="124" y1="40" x2="164" y2="40" class="thin shape"/>
+      <text x="0" y="105" class="label">OR</text>
+    </g>
+
+    <!-- XOR -->
+    <g transform="translate(420,30)">
+      <path d="M14,0 Q50,0 66,0 Q138,0 138,80 Q50,80 14,80 Q50,40 14,0" class="shape"/>
+      <path d="M0,0 Q36,40 0,80" class="shape"/>
+      <line x1="-40" y1="20" x2="0" y2="20" class="thin shape"/>
+      <line x1="-40" y1="60" x2="0" y2="60" class="thin shape"/>
+      <line x1="138" y1="40" x2="178" y2="40" class="thin shape"/>
+      <text x="0" y="105" class="label">XOR</text>
+    </g>
+
+    <!-- NOT -->
+    <g transform="translate(640,30)">
+      <path d="M0,0 L0,80 L90,40 Z" class="shape"/>
+      <circle cx="102" cy="40" r="8" class="shape"/>
+      <line x1="-40" y1="40" x2="0" y2="40" class="thin shape"/>
+      <line x1="110" y1="40" x2="150" y2="40" class="thin shape"/>
+      <text x="0" y="105" class="label">NOT</text>
+    </g>
+  </g>
+
+  <!-- Row 2: Derived gates -->
+  <g transform="translate(60,330)">
+    <rect x="0" y="0" width="880" height="220" class="box"/>
+    <text x="10" y="-10" class="label">Derived Gates</text>
+
+    <!-- NAND -->
+    <g transform="translate(60,30)">
+      <path d="M0,0 L0,80 L40,80 Q80,80 80,40 Q80,0 40,0 Z" class="shape"/>
+      <circle cx="92" cy="40" r="8" class="shape"/>
+      <line x1="-40" y1="20" x2="0" y2="20" class="thin shape"/>
+      <line x1="-40" y1="60" x2="0" y2="60" class="thin shape"/>
+      <line x1="100" y1="40" x2="140" y2="40" class="thin shape"/>
+      <text x="0" y="105" class="label">NAND</text>
+    </g>
+
+    <!-- NOR -->
+    <g transform="translate(280,30)">
+      <path d="M0,0 Q36,0 52,0 Q124,0 124,80 Q36,80 0,80 Q36,40 0,0" class="shape"/>
+      <circle cx="136" cy="40" r="8" class="shape"/>
+      <line x1="-40" y1="20" x2="0" y2="20" class="thin shape"/>
+      <line x1="-40" y1="60" x2="0" y2="60" class="thin shape"/>
+      <line x1="144" y1="40" x2="184" y2="40" class="thin shape"/>
+      <text x="0" y="105" class="label">NOR</text>
+    </g>
+
+    <!-- Buffer / Amplifier -->
+    <g transform="translate(520,30)">
+      <path d="M0,0 L0,80 L90,40 Z" class="shape"/>
+      <line x1="-40" y1="40" x2="0" y2="40" class="thin shape"/>
+      <line x1="90" y1="40" x2="140" y2="40" class="thin shape"/>
+      <text x="0" y="105" class="label">BUFFER</text>
+    </g>
+  </g>
+
+  <!-- Row 3: World Router & DWP -->
+  <g transform="translate(60,580)">
+    <rect x="0" y="0" width="880" height="240" class="box"/>
+    <text x="10" y="-10" class="label">World Router (MUX) & D→W→P Latches</text>
+
+    <!-- 4:1 MUX -->
+    <g transform="translate(40,40)">
+      <path d="M0,0 L0,120 L120,90 L120,30 Z" class="shape"/>
+      <line x1="-60" y1="20" x2="0" y2="20" class="thin shape"/>
+      <line x1="-60" y1="50" x2="0" y2="50" class="thin shape"/>
+      <line x1="-60" y1="80" x2="0" y2="80" class="thin shape"/>
+      <line x1="-60" y1="110" x2="0" y2="110" class="thin shape"/>
+      <line x1="120" y1="60" x2="170" y2="60" class="thin shape"/>
+      <text x="-68" y="24" class="label">A</text>
+      <text x="-68" y="54" class="label">B</text>
+      <text x="-68" y="84" class="label">C</text>
+      <text x="-68" y="114" class="label">D</text>
+      <text x="0" y="-10" class="label">4→1 MUX</text>
+    </g>
+
+    <!-- DWP boxes -->
+    <g transform="translate(320,40)">
+      <rect x="0" y="0" width="56" height="40" class="shape"/>
+      <rect x="70" y="0" width="56" height="40" class="shape"/>
+      <rect x="140" y="0" width="56" height="40" class="shape"/>
+      <line x1="-60" y1="20" x2="0" y2="20" class="thin shape"/>
+      <line x1="56" y1="20" x2="70" y2="20" class="thin shape"/>
+      <line x1="126" y1="20" x2="140" y2="20" class="thin shape"/>
+      <line x1="196" y1="20" x2="250" y2="20" class="thin shape"/>
+      <text x="20" y="-8" class="label">D</text>
+      <text x="90" y="-8" class="label">W</text>
+      <text x="160" y="-8" class="label">P</text>
+      <text x="20" y="58" class="label">τ_D</text>
+      <text x="90" y="58" class="label">τ_W</text>
+      <text x="160" y="58" class="label">τ_P</text>
+    </g>
+  </g>
+
+  <!-- Row 4: Tokens (Acquisition, Noetic badges, feedback) -->
+  <g transform="translate(60,860)">
+    <rect x="0" y="0" width="880" height="320" class="box"/>
+    <text x="10" y="-10" class="label">Tokens & Badges</text>
+
+    <!-- Acquisition -->
+    <g transform="translate(60,40)">
+      <circle cx="0" cy="0" r="20" class="shape"/>
+      <text x="-16" y="46" class="label">Acquisition (A#)</text>
+    </g>
+
+    <!-- Noetic badges -->
+    <g transform="translate(240,20)">
+      <rect x="0" y="0" width="90" height="26" rx="5" class="shape"/>
+      <text x="8" y="-6" class="label">Badge (wire)</text>
+      <text x="6" y="18" class="label">+N2   N3   ×N4</text>
+      <text x="6" y="36" class="label">N5   N6   N7</text>
+      <text x="6" y="54" class="label">N8→N9</text>
+    </g>
+
+    <!-- Wire segment with badge placeholder -->
+    <g transform="translate(60,120)">
+      <line x1="0" y1="0" x2="220" y2="0" class="thin shape"/>
+      <rect x="80" y="-13" width="60" height="26" rx="5" class="shape"/>
+      <text x="90" y="-18" class="label">place badge</text>
+    </g>
+
+    <!-- Feedback arc -->
+    <g transform="translate(60,180)">
+      <path d="M 0 60 C 200 -40 440 -40 640 60" class="shape"/>
+      <polygon points="640,60 625,52 628,66" fill="#000"/>
+      <text x="0" y="-6" class="label">Feedback loop (add N7, ×N4, −N3)</text>
+    </g>
+  </g>
+
+  <!-- Row 5: NJT primitives -->
+  <g transform="translate(60,1210)">
+    <rect x="0" y="0" width="880" height="420" class="box"/>
+    <text x="10" y="-10" class="label">NJT — Noetic Junction Transistor (Tootra/NCD)</text>
+
+    <!-- NJT+ (excitatory) -->
+    <g transform="translate(80,40)">
+      <circle cx="60" cy="60" r="60" class="shape"/>
+      <!-- base -->
+      <line x1="0" y1="60" x2="60" y2="60" class="thin shape"/>
+      <!-- collector (Cause) -->
+      <line x1="120" y1="-30" x2="120" y2="0" class="thin shape"/>
+      <!-- emitter (Effect) -->
+      <line x1="120" y1="120" x2="120" y2="150" class="thin shape"/>
+      <!-- internal arrow to E -->
+      <line x1="80" y1="90" x2="110" y2="120" class="thin shape"/>
+      <polygon points="110,120 103,106 96,113" fill="#000"/>
+      <!-- internal base-collector bar -->
+      <line x1="80" y1="30" x2="80" y2="90" class="shape"/>
+      <text x="-20" y="64" class="label">B (Bias)</text>
+      <text x="132" y="-30" class="label">C (Cause)</text>
+      <text x="132" y="160" class="label">E (Effect)</text>
+      <text x="60" y="140" text-anchor="middle" class="label">NJT⁺ (promote)</text>
+      <text x="60" y="158" text-anchor="middle" class="label">β=×N4·w,  τ_B=__</text>
+    </g>
+
+    <!-- NJT− (inhibitory) -->
+    <g transform="translate(360,40)">
+      <circle cx="60" cy="60" r="60" class="shape"/>
+      <!-- base -->
+      <line x1="0" y1="60" x2="60" y2="60" class="thin shape"/>
+      <!-- collector -->
+      <line x1="120" y1="-30" x2="120" y2="0" class="thin shape"/>
+      <!-- emitter -->
+      <line x1="120" y1="120" x2="120" y2="150" class="thin shape"/>
+      <!-- internal arrow to C (inhibit) -->
+      <line x1="110" y1="30" x2="80" y2="0" class="thin shape"/>
+      <polygon points="80,0 87,14 94,7" fill="#000"/>
+      <!-- internal bar -->
+      <line x1="80" y1="30" x2="80" y2="90" class="shape"/>
+      <text x="-20" y="64" class="label">B (Bias)</text>
+      <text x="132" y="-30" class="label">C (Cause)</text>
+      <text x="132" y="160" class="label">E (Effect)</text>
+      <text x="60" y="140" text-anchor="middle" class="label">NJT⁻ (inhibit)</text>
+      <text x="60" y="158" text-anchor="middle" class="label">β=×N4·w,  τ_B=__</text>
+    </g>
+
+    <!-- Base badges guide -->
+    <g transform="translate(650,40)">
+      <rect x="0" y="0" width="200" height="120" class="shape"/>
+      <text x="10" y="18" class="label">Base badges</text>
+      <text x="10" y="40" class="label">+N2  (boost)</text>
+      <text x="10" y="58" class="label">−N3  (brake)</text>
+      <text x="10" y="76" class="label">N7   (schedule)</text>
+      <text x="10" y="94" class="label">N5   (memory)</text>
+    </g>
+
+    <!-- Body badge -->
+    <g transform="translate(650,180)">
+      <rect x="0" y="0" width="200" height="80" class="shape"/>
+      <text x="10" y="18" class="label">Body badge</text>
+      <text x="10" y="40" class="label">×N4 (gain)</text>
+    </g>
+  </g>
+</svg>

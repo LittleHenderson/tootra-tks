@@ -358,8 +358,8 @@ impl Parser {
         self.expect(&TokenKind::LParen, "expected '(' after method name")?;
         let self_param = self.parse_method_self_param()?;
         let mut params = Vec::new();
-        if self.match_kind(&TokenKind::Comma) {
-            if !self.check(&TokenKind::RParen) {
+        if self.match_kind(&TokenKind::Comma)
+            && !self.check(&TokenKind::RParen) {
                 loop {
                     params.push(self.parse_method_param()?);
                     if !self.match_kind(&TokenKind::Comma) {
@@ -367,7 +367,6 @@ impl Parser {
                     }
                 }
             }
-        }
         self.expect(&TokenKind::RParen, "expected ')' after method params")?;
         self.expect(&TokenKind::Colon, "expected ':' after method params")?;
         let return_type = self.parse_type()?;

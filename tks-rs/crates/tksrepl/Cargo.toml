@@ -1,0 +1,23 @@
+[package]
+name = "tksrepl"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "tks-console"
+path = "src/main.rs"
+
+[dependencies]
+# TKS crates
+tkscore = { path = "../tkscore" }
+tkstypes = { path = "../tkstypes" }
+tksir = { path = "../tksir" }
+tksbytecode = { path = "../tksbytecode" }
+tksvm = { path = "../tksvm" }
+
+# TUI dependencies
+ratatui = "0.28"
+crossterm = "0.28"
+
+# Utilities
+unicode-width = "0.2"
