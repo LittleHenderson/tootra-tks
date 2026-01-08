@@ -37,3 +37,9 @@ dist/
 
 # Auto Claude data directory
 .auto-claude/
+
+# Rust build artifacts
+tks-rs/target2/
+tks-rs/target/
+*.pdb
+*.rlib
