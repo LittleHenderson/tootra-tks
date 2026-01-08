@@ -43,9 +43,9 @@ Usage:
     )
 """
 
-from .inversion_integration import TKSInversionIntegration
+from .inversion_integration import invert_analysis, get_all_inversions, quick_invert, InvertedAnalysisResult
 from .dual_compare import DualProviderComparison
-from .conversation_memory import TKSConversationMemory
+from .conversation_memory import TKSConversation, ConversationTurn
 from .session_logger import TKSSessionLogger
 from .scenario_generator import TKSScenarioGenerator
 from .provider_fallback import TKSProviderFallback, TKSFallbackWrapper
@@ -83,9 +83,13 @@ from .noetic_basis import (
 )
 
 __all__ = [
-    "TKSInversionIntegration",
+    "invert_analysis",
+    "get_all_inversions",
+    "quick_invert",
+    "InvertedAnalysisResult",
     "DualProviderComparison",
-    "TKSConversationMemory",
+    "TKSConversation",
+    "ConversationTurn",
     "TKSSessionLogger",
     "TKSScenarioGenerator",
     "TKSProviderFallback",

@@ -1,0 +1,104 @@
+# TKS LLM v5 Recommended Configuration
+#
+# This is the recommended starting configuration for v5 general-capable models.
+# It balances stability, learning efficiency, and TKS canonical compliance.
+#
+# Key Features:
+# - Stable routing ENABLED (prevents router collapse)
+# - Attractor + RPM ENABLED (canonical TKS computation)
+# - DPS/Governance DISABLED by default (until data pipelines ready)
+#
+# Usage:
+#   from configs.v5_recommended import get_v5_config
+#   config = get_v5_config()
+#   model = TKSGeneralLM(config)
+
+# Model Architecture
+model:
+  # Core dimensions
+  vocab_size: 16384          # BPE tokenizer vocab size
+  hidden_dim: 384            # Main model width
+  num_layers: 12             # Transformer depth
+  num_scales: 4              # Fractal attention scales
+  dropout: 0.1               # Regularization
+
+  # Canonical TKS Components (RECOMMENDED)
+  use_attractor: true        # Attractor computation layer
+  contraction_factor: 0.5    # Attractor contraction
+  max_attractor_iter: 15     # Max attractor iterations
+  use_rpm: true              # RPM gating mechanism
+
+  # Operator Core (OPTIONAL - requires equation corpus)
+  use_operator_core: false   # Disabled: requires data/equation_embeddings/
+  operator_equation_dim: 384
+
+  # Stable Routing (CRITICAL for learning stability)
+  use_stable_routing: true   # RECOMMENDED: prevents router collapse
+  routing_initial_temp: 2.0  # Start soft, gradually sharpen
+  routing_final_temp: 0.1    # Final temperature
+  routing_warmup_steps: 1000 # Steps at initial temp
+  routing_anneal_steps: 10000 # Steps to anneal
+  routing_noise_type: "gumbel" # Exploration noise
+  routing_initial_noise: 0.5
+  routing_final_noise: 0.0
+  routing_balance_weight: 0.01 # Load balancing auxiliary loss
+
+# DPS (Depth Permission System) - OPTIONAL
+dps:
+  enabled: false             # Enable after training DPS layer
+  count_threshold: 0.45      # NW threshold for COUNT
+  heavy_threshold: 0.70      # NW threshold for HEAVY
+  cooldown_k: 10             # Episodes after unlock
+  max_depth: 5               # Hard cap on p_max
+  initial_p_max: 2           # Starting depth
+
+# Governance Rails - OPTIONAL
+governance:
+  enabled: false             # Rule-based safety gates
+  enforce_safety: true       # Raise exception on BLOCK
+  hs_threshold: 0.45         # High-Stakes threshold
+  critical_threshold: 0.70   # Critical threshold
+  rpm_depth_cap_normal: 3
+  rpm_depth_cap_high_stakes: 2
+  rpm_breadth_cap: 5
+  tool_call_cap_normal: 12
+  tool_call_cap_high_stakes: 8
+
+# Training Hyperparameters
+training:
+  # Optimizer
+  learning_rate: 1.0e-4
+  weight_decay: 0.01
+  betas: [0.9, 0.999]
+  eps: 1.0e-8
+
+  # Schedule
+  warmup_steps: 1000
+  max_steps: 100000
+  lr_schedule: "cosine"
+
+  # Batch settings
+  batch_size: 32
+  gradient_accumulation: 1
+  max_grad_norm: 1.0
+
+  # Mixed precision
+  fp16: false
+  bf16: true                 # Recommended for modern GPUs
+
+  # Logging
+  logging_steps: 100
+  eval_steps: 1000
+  save_steps: 5000
+
+# Data Configuration
+data:
+  tokenizer_path: "tokenizer_v5.json"
+  max_seq_len: 1024
+
+# Notes:
+# 1. Start with this config for initial training
+# 2. Enable DPS after training the DPS layer separately
+# 3. Enable Governance for production deployments
+# 4. Increase hidden_dim to 512 or 768 for larger models
+# 5. Monitor routing_metrics for collapse detection
