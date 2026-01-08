@@ -94,10 +94,14 @@ class V5Dataset(Dataset):
                             text = item['text']
                         elif 'prompt' in item and 'target' in item:
                             text = f"{item['prompt']} <SEP> {item['target']}"
+                        elif 'story' in item:
+                            text = item['story']
+                        elif 'input' in item:
+                            text = item['input']
                             
                         if text:
                             self.data.append(text)
-                            if len(self.data) >= 1000: break # Increased limit for longer runs
+                            # Load ALL samples for better generalization (no limit)
                     except:
                         pass
         print(f"Loaded {len(self.data)} samples")
@@ -121,8 +125,8 @@ def train():
     parser.add_argument("--epochs", type=int, default=None, help="Number of epochs to train")
     args = parser.parse_args()
     
-    # Data
-    data_path = "output/rebalanced_mix_v5.jsonl"
+    # Data - use larger dataset for better generalization
+    data_path = "output/train_full_5k.jsonl"
     tokenizer_path = "tokenizer_v5.json"
     
     # Fallback if data missing
