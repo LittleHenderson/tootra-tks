@@ -51,7 +51,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Dict, List, Set, Any, Optional
+from typing import Dict, List, Set, Any, Optional, Tuple
 from dataclasses import dataclass, field, asdict
 from datetime import datetime
 
