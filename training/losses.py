@@ -639,16 +639,27 @@ class TKSLoss(nn.Module):
 
         # 3. Attractor Loss
         if 'trace' in pipeline_output and pipeline_output['trace'] is not None:
+            trace = pipeline_output['trace']
+            # Support both old schema (trace['attractor'] is tensor) and new schema (trace['attractor_state'])
+            attractor_tensor = trace.get('attractor_state') or trace.get('attractor')
+            # Handle case where attractor is a dict (new schema)
+            if isinstance(attractor_tensor, dict):
+                attractor_tensor = attractor_tensor.get('state')
+
             attractor_out = {
-                'attractor': pipeline_output['trace'].get('attractor'),
+                'attractor': attractor_tensor,
                 'converged': pipeline_output.get('attractor_converged', False),
-                'iterations': pipeline_output['trace'].get('attractor_iterations', 10),
+                'iterations': trace.get('attractor_iterations', 10),
             }
 
-            if attractor_out['attractor'] is not None:
+            if attractor_out['attractor'] is not None and isinstance(attractor_out['attractor'], torch.Tensor):
                 # Use attended state as input if not provided
+                attended = trace.get('attended')
+                # Handle case where attended might be a dict
+                if isinstance(attended, dict):
+                    attended = None
                 inp = input_state if input_state is not None else \
-                      pipeline_output['trace'].get('attended', attractor_out['attractor'])
+                      (attended if attended is not None else attractor_out['attractor'])
 
                 if inp is not None:
                     attr_losses = self.attractor_loss(
@@ -926,12 +937,27 @@ if __name__ == "__main__":
 
 class WorldClassificationLoss(TaskLoss):
     """Alias for TaskLoss - classifies world from embeddings."""
-    pass
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Canonical world slices for A, B, C, D
+        self.world_slices = [
+            slice(0, 10),   # World A: Spiritual
+            slice(10, 20),  # World B: Mental
+            slice(20, 30),  # World C: Emotional
+            slice(30, 40),  # World D: Physical
+        ]
 
 
 class RPMDifferentiationLoss(RPMLoss):
     """Alias for RPMLoss - differentiates D/W/P scores."""
-    pass
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Canonical MVR noetics
+        self.desire_noetics = [1, 4, 7]   # Mind, Vibration, Rhythm
+        self.wisdom_noetics = [5, 6]       # Female, Male
+        self.power_noetics = [8, 9]        # Cause, Effect
 
 
 class WorldRPMSupervisedLoss(TKSLoss):
