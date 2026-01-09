@@ -284,14 +284,19 @@ class AttractorLoss(nn.Module):
 
         # 2. Fixed-point residual loss
         # Apply Hutchinson operator one more time and check residual
-        with torch.no_grad():
-            next_iter = attractor_layer._apply_hutchinson_operator(attractor)
-        residual = (next_iter - attractor).abs().mean()
+        # Some attractor implementations (StableAttractorLayer) don't have this method
+        if hasattr(attractor_layer, '_apply_hutchinson_operator'):
+            with torch.no_grad():
+                next_iter = attractor_layer._apply_hutchinson_operator(attractor)
+            residual = (next_iter - attractor).abs().mean()
+        else:
+            # Fallback: use convergence status as proxy for residual
+            residual = torch.tensor(0.0 if attractor_output.get('converged', False) else 0.1, device=device)
         losses['residual'] = residual
 
         # 3. Convergence speed bonus (negative loss for fast convergence)
-        max_iter = attractor_layer.max_iterations
-        iterations_used = attractor_output['iterations']
+        max_iter = getattr(attractor_layer, 'max_iterations', 10)  # Default to 10 if not available
+        iterations_used = attractor_output.get('iterations', max_iter)
         # Normalized iteration count (0 = converged immediately, 1 = max iterations)
         iter_ratio = iterations_used / max_iter
         losses['convergence'] = self.convergence_bonus * iter_ratio
