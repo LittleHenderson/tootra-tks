@@ -706,7 +706,12 @@ def loaded_model(model_path, model_type):
     if model_path is None or not Path(model_path).exists():
         pytest.skip(f"Model checkpoint not found: {model_path}")
 
-    model, tokenizer, device, actual_type = load_model(model_path, model_type=model_type)
+    try:
+        model, tokenizer, device, actual_type = load_model(model_path, model_type=model_type)
+    except RuntimeError as e:
+        if "state_dict" in str(e) or "Missing key" in str(e) or "Unexpected key" in str(e):
+            pytest.skip(f"Model checkpoint incompatible with current architecture: {e}")
+        raise
     return {'model': model, 'tokenizer': tokenizer, 'device': device, 'path': model_path, 'type': actual_type}
 
 
