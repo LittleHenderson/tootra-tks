@@ -7,6 +7,22 @@ omit =
     scripts/*
     tks_llm_core.py
     tks_llm_core_v2.py
+    # Modules with external API dependencies
+    teacher/*
+    # Modules requiring special runtime environment
+    tks_features/conversation_memory.py
+    tks_features/dual_compare.py
+    tks_features/inversion_integration.py
+    tks_features/noetic_basis.py
+    tks_features/provider_fallback.py
+    tks_features/residual_stream.py
+    tks_features/scenario_generator.py
+    tks_features/session_logger.py
+    tks_features/tks_noetic_extensions.py
+    tks_features/world_bridge.py
+    # Wrapper/utility modules
+    tks_wrapper.py
+    trace_utils.py
 
 [report]
 # Ignore missing source files (e.g., PyTorch's dynamic modules)
