@@ -43,3 +43,6 @@ tks-rs/target2/
 tks-rs/target/
 *.pdb
 *.rlib
+
+# Git worktrees (should not be tracked)
+.worktrees/
