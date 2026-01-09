@@ -38,6 +38,16 @@ from scripts.quick_train import SimpleTokenizer, TKSDataset, SimpleTransformer
 ALLOWED_OPS = {'+', '-', '+T', '-T', '->', '<-', '*T', '/T', 'o'}
 WORLD_CODES = {'A', 'B', 'C', 'D'}
 NOETIC_INDICES = set(range(1, 11))
+SENSE_VALUES = set(range(1, 10))  # 1-9
+FOUNDATION_VALUES = set(range(1, 8))  # 1-7
+
+import re
+
+# Extended notation pattern: World + Noetic + optional sense (^1-9) + optional foundation (_d1-7)
+# Examples: A1, B10, A1^3, B10_d5, C5^2_d4
+EXTENDED_ELEMENT_PATTERN = re.compile(
+    r'^([ABCDabcd])(\d{1,2})(?:\^([1-9]))?(?:_[dD]([1-7]))?$'
+)
 
 
 class CanonicalValidator:
@@ -47,18 +57,37 @@ class CanonicalValidator:
         self.allowed_worlds = WORLD_CODES
         self.allowed_noetics = NOETIC_INDICES
         self.allowed_ops = ALLOWED_OPS
+        self.allowed_sense = SENSE_VALUES
+        self.allowed_foundations = FOUNDATION_VALUES
 
     def validate_element(self, element: str) -> bool:
-        """Validate a single TKS element (e.g., 'A5', 'D10')."""
+        """
+        Validate a single TKS element with extended notation support.
+
+        Supports:
+            - Base elements: A1, B10, C5, D7
+            - With sense: A1^3, B10^5 (sense 1-9)
+            - With foundation: A1_d5, B10_d7 (foundation 1-7)
+            - Full extended: A1^3_d5, B10^5_d7
+        """
         if not element or len(element) < 2:
             return False
 
-        world = element[0]
-        noetic_str = element[1:]
+        # Use regex to parse extended notation
+        match = EXTENDED_ELEMENT_PATTERN.match(element)
+        if not match:
+            return False
 
+        world = match.group(1).upper()
+        noetic_str = match.group(2)
+        sense_str = match.group(3)  # Optional
+        foundation_str = match.group(4)  # Optional
+
+        # Validate world
         if world not in self.allowed_worlds:
             return False
 
+        # Validate noetic
         try:
             noetic = int(noetic_str)
             if noetic not in self.allowed_noetics:
@@ -66,7 +95,46 @@ class CanonicalValidator:
         except ValueError:
             return False
 
+        # Validate sense if present
+        if sense_str is not None:
+            try:
+                sense = int(sense_str)
+                if sense not in self.allowed_sense:
+                    return False
+            except ValueError:
+                return False
+
+        # Validate foundation if present
+        if foundation_str is not None:
+            try:
+                foundation = int(foundation_str)
+                if foundation not in self.allowed_foundations:
+                    return False
+            except ValueError:
+                return False
+
         return True
+
+    def extract_base_element(self, element: str) -> Optional[str]:
+        """
+        Extract base element from extended notation.
+
+        Examples:
+            A1 -> A1
+            A1^3 -> A1
+            B10_d5 -> B10
+            C5^2_d4 -> C5
+        """
+        if not element or len(element) < 2:
+            return None
+
+        match = EXTENDED_ELEMENT_PATTERN.match(element)
+        if not match:
+            return None
+
+        world = match.group(1).upper()
+        noetic = match.group(2)
+        return f"{world}{noetic}"
 
     def validate_operator(self, op: str) -> bool:
         """Validate a TKS operator."""
