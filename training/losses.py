@@ -641,7 +641,9 @@ class TKSLoss(nn.Module):
         if 'trace' in pipeline_output and pipeline_output['trace'] is not None:
             trace = pipeline_output['trace']
             # Support both old schema (trace['attractor'] is tensor) and new schema (trace['attractor_state'])
-            attractor_tensor = trace.get('attractor_state') or trace.get('attractor')
+            attractor_tensor = trace.get('attractor_state')
+            if attractor_tensor is None:
+                attractor_tensor = trace.get('attractor')
             # Handle case where attractor is a dict (new schema)
             if isinstance(attractor_tensor, dict):
                 attractor_tensor = attractor_tensor.get('state')
@@ -658,8 +660,12 @@ class TKSLoss(nn.Module):
                 # Handle case where attended might be a dict
                 if isinstance(attended, dict):
                     attended = None
-                inp = input_state if input_state is not None else \
-                      (attended if attended is not None else attractor_out['attractor'])
+                if input_state is not None:
+                    inp = input_state
+                elif attended is not None and isinstance(attended, torch.Tensor):
+                    inp = attended
+                else:
+                    inp = attractor_out['attractor']
 
                 if inp is not None:
                     attr_losses = self.attractor_loss(
