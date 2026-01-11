@@ -99,27 +99,28 @@ class TestClassification:
         assert nw.classify(config) == NoveltyClass.HEAVY
 
     def test_count_classification(self, config):
-        """0.45 <= NW < 0.70 -> COUNT"""
-        validity = ValidityScore(confidence=0.8, consistency=0.8, evidence_ok=0.8)
-        impact = ImpactScore(delta_reward=0.7, delta_uncertainty=0.7, delta_coverage=0.7, delta_cost=0.7)
+        """COUNT_THRESHOLD <= NW < HEAVY_THRESHOLD -> COUNT"""
+        # With new thresholds: COUNT >= 0.20, HEAVY >= 0.35
+        validity = ValidityScore(confidence=0.7, consistency=0.7, evidence_ok=0.7)
+        impact = ImpactScore(delta_reward=0.6, delta_uncertainty=0.6, delta_coverage=0.6, delta_cost=0.6)
         similarity = SimilarityScore(s_embed=0.3, s_ast=0.2)
 
         nw = NoveltyWeight(validity=validity, impact=impact, similarity=similarity)
-        # V = 0.512, I ~ 0.7, S = 0.3
-        # NW = 0.512 * 0.7 * 0.7 = 0.25 (this is actually NOCOUNT, let's adjust)
+        # V = 0.343, I ~ 0.6, S = 0.3
+        # NW = 0.343 * 0.6 * 0.7 ~ 0.144 (NOCOUNT with new thresholds)
 
-        # Try different values for COUNT range
-        validity2 = ValidityScore(confidence=0.9, consistency=0.9, evidence_ok=0.9)
-        impact2 = ImpactScore(delta_reward=0.8, delta_uncertainty=0.8, delta_coverage=0.8, delta_cost=0.8)
-        similarity2 = SimilarityScore(s_embed=0.25, s_ast=0.0)
+        # Try different values for COUNT range (0.20 <= NW < 0.35)
+        validity2 = ValidityScore(confidence=0.8, consistency=0.8, evidence_ok=0.8)
+        impact2 = ImpactScore(delta_reward=0.7, delta_uncertainty=0.7, delta_coverage=0.7, delta_cost=0.7)
+        similarity2 = SimilarityScore(s_embed=0.3, s_ast=0.0)
 
         nw2 = NoveltyWeight(validity=validity2, impact=impact2, similarity=similarity2)
-        # V = 0.729, I ~ 0.8, S = 0.25
-        # NW = 0.729 * 0.8 * 0.75 ~ 0.437 (close to COUNT)
+        # V = 0.512, I ~ 0.7, S = 0.3
+        # NW = 0.512 * 0.7 * 0.7 ~ 0.25 (COUNT with new thresholds)
 
-        # Verify classification logic at boundaries
-        assert config.count_threshold == 0.45
-        assert config.heavy_threshold == 0.70
+        # Verify classification logic at boundaries (updated for lower thresholds)
+        assert config.count_threshold == 0.20
+        assert config.heavy_threshold == 0.35
 
     def test_nocount_classification(self, config):
         """NW < 0.45 -> NOCOUNT"""
@@ -165,34 +166,37 @@ class TestStateUpdate:
 
     def test_count_accumulation(self, dps_layer, config):
         """COUNT: tokens += 1"""
-        state = DPSState(p_max=3, tokens=2, cooldown=0)
+        # Start with 1 token (threshold is now 3, so 1+1=2 won't trigger unlock)
+        state = DPSState(p_max=3, tokens=1, cooldown=0)
 
-        # Create medium novelty that classifies as COUNT
-        validity = ValidityScore(confidence=0.8, consistency=0.8, evidence_ok=0.9)
-        impact = ImpactScore(delta_reward=0.8, delta_uncertainty=0.8, delta_coverage=0.8, delta_cost=0.8)
-        similarity = SimilarityScore(s_embed=0.3, s_ast=0.1)
+        # Create medium novelty that classifies as COUNT (0.20 <= NW < 0.35)
+        validity = ValidityScore(confidence=0.75, consistency=0.75, evidence_ok=0.8)
+        impact = ImpactScore(delta_reward=0.7, delta_uncertainty=0.7, delta_coverage=0.7, delta_cost=0.7)
+        similarity = SimilarityScore(s_embed=0.35, s_ast=0.1)
         novelty = NoveltyWeight(validity=validity, impact=impact, similarity=similarity)
+        # V = 0.45, I ~ 0.7, S = 0.35 -> NW ~ 0.45 * 0.7 * 0.65 ~ 0.20 (COUNT)
 
         # If this classifies as COUNT
         if novelty.classify(config) == NoveltyClass.COUNT:
             new_state, unlock_occurred = dps_layer.update_state(state, novelty, "test_episode")
-            assert new_state.tokens == 3  # 2 + 1
+            assert new_state.tokens == 2  # 1 + 1
             assert unlock_occurred == False
 
     def test_count_unlock_at_threshold(self, dps_layer, config):
-        """COUNT with tokens=4: unlock on 5th token"""
-        state = DPSState(p_max=3, tokens=4, cooldown=0)
+        """COUNT with tokens=2: unlock on 3rd token (threshold is now 3)"""
+        state = DPSState(p_max=3, tokens=2, cooldown=0)
 
-        # Create COUNT novelty
-        validity = ValidityScore(confidence=0.85, consistency=0.85, evidence_ok=0.9)
-        impact = ImpactScore(delta_reward=0.75, delta_uncertainty=0.75, delta_coverage=0.75, delta_cost=0.75)
-        similarity = SimilarityScore(s_embed=0.25, s_ast=0.0)
+        # Create COUNT novelty (0.20 <= NW < 0.35)
+        validity = ValidityScore(confidence=0.75, consistency=0.75, evidence_ok=0.8)
+        impact = ImpactScore(delta_reward=0.7, delta_uncertainty=0.7, delta_coverage=0.7, delta_cost=0.7)
+        similarity = SimilarityScore(s_embed=0.35, s_ast=0.1)
         novelty = NoveltyWeight(validity=validity, impact=impact, similarity=similarity)
+        # V ~ 0.45, I ~ 0.7, S = 0.35 -> NW ~ 0.20 (COUNT)
 
         # Check if this is COUNT and would trigger unlock
         if novelty.classify(config) == NoveltyClass.COUNT:
             new_state, unlock_occurred = dps_layer.update_state(state, novelty, "test_episode")
-            # tokens goes to 5, which triggers unlock
+            # tokens goes to 3, which triggers unlock
             assert unlock_occurred == True
             assert new_state.p_max == 4
             assert new_state.tokens == 0
@@ -410,12 +414,13 @@ class TestDPSConfig:
     """Test DPSConfig defaults and validation."""
 
     def test_default_thresholds(self):
-        """Test default threshold values."""
+        """Test default threshold values (lowered for untrained networks)."""
         config = DPSConfig()
 
-        assert config.heavy_threshold == DEFAULT_HEAVY_THRESHOLD == 0.70
-        assert config.count_threshold == DEFAULT_COUNT_THRESHOLD == 0.45
-        assert config.n_tokens_threshold == DEFAULT_TOKENS_FOR_UNLOCK == 5
+        # Thresholds lowered from original spec (0.70/0.45/5) to work with untrained V/I/S
+        assert config.heavy_threshold == DEFAULT_HEAVY_THRESHOLD == 0.35
+        assert config.count_threshold == DEFAULT_COUNT_THRESHOLD == 0.20
+        assert config.n_tokens_threshold == DEFAULT_TOKENS_FOR_UNLOCK == 3
         assert config.cooldown_k == DEFAULT_COOLDOWN_EPISODES == 10
         assert config.max_depth == DEFAULT_MAX_DEPTH == 5
         assert config.initial_p_max == DEFAULT_INITIAL_P_MAX == 2
