@@ -202,13 +202,14 @@ def train():
             attention_mask = attention_mask.to(device)
             labels = input_ids.clone()
 
-            # Forward with DPS tracking
+            # Forward with DPS tracking (trace only every 100 steps to reduce overhead)
             episode_id = f"ep{epoch}_step{global_step}"
+            should_trace = (global_step % 100 == 0)
             output = model(
                 input_ids,
                 attention_mask=attention_mask,
                 step=global_step,
-                return_full_trace=True,
+                return_full_trace=should_trace,
                 episode_id=episode_id
             )
             logits = output["logits"]

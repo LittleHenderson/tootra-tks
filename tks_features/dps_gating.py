@@ -48,10 +48,13 @@ import torch.nn as nn
 # CONSTANTS
 # =============================================================================
 
-# Classification thresholds (from strg-llm-stk spec)
-DEFAULT_HEAVY_THRESHOLD = 0.70
-DEFAULT_COUNT_THRESHOLD = 0.45
-DEFAULT_TOKENS_FOR_UNLOCK = 5
+# Classification thresholds (adjusted for untrained networks)
+# Original spec: HEAVY=0.70, COUNT=0.45
+# With untrained V/I/S networks outputting ~0.5, NW ≈ 0.25
+# Lower thresholds to allow depth unlocking during initial training
+DEFAULT_HEAVY_THRESHOLD = 0.35  # Was 0.70
+DEFAULT_COUNT_THRESHOLD = 0.20  # Was 0.45
+DEFAULT_TOKENS_FOR_UNLOCK = 3   # Was 5 (faster accumulation)
 DEFAULT_COOLDOWN_EPISODES = 10
 DEFAULT_MAX_DEPTH = 5
 DEFAULT_INITIAL_P_MAX = 2

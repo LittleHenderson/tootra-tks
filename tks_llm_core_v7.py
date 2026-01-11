@@ -64,6 +64,18 @@ from tks_features.njt_v6_recurrent import (
     PREREQUISITE_NAMES
 )
 
+# Regulator integration (FM, ACBE, MVR)
+try:
+    from tks_features.regulator_integration import (
+        IntegratedRegulatorLayer,
+        RegulatorConfig,
+    )
+    REGULATOR_AVAILABLE = True
+except ImportError:
+    REGULATOR_AVAILABLE = False
+    IntegratedRegulatorLayer = None
+    RegulatorConfig = None
+
 
 @dataclass
 class TKSGeneralConfigV7(TKSGeneralConfigV6):
@@ -82,6 +94,11 @@ class TKSGeneralConfigV7(TKSGeneralConfigV6):
     # v7 specific
     earned_depth_mode: bool = True  # Enable earned depth
     novelty_boost_on_heavy: bool = True  # Depth burst on HEAVY novelty
+
+    # Regulator integration (FM/ACBE/MVR)
+    use_regulators: bool = True  # Enable prerequisite regulators
+    regulator_gap_threshold: float = 0.3  # Below this, trigger regulator
+    regulator_on_every_block: bool = False  # Apply on every block or just specific ones
 
 
 class DPSIntegratedRecursionController:
@@ -159,6 +176,24 @@ class GeneralNoeticBlockv7(nn.Module):
         else:
             self.dps_layer = None
 
+        # Regulator integration (FM/ACBE/MVR for D/W/P gaps)
+        self.has_regulator = (
+            config.use_regulators and
+            REGULATOR_AVAILABLE and
+            (config.regulator_on_every_block or block_idx % 2 == 0)
+        )
+        if self.has_regulator:
+            reg_config = RegulatorConfig(
+                gap_threshold=config.regulator_gap_threshold,
+                hidden_dim=config.dps_hidden_dim,
+            )
+            self.regulator = IntegratedRegulatorLayer(
+                noetic_dim=min(config.hidden_dim, 40),  # Regulators work on 40-dim noetic space
+                config=reg_config,
+            )
+        else:
+            self.regulator = None
+
     def forward(
         self,
         x: torch.Tensor,
@@ -219,13 +254,46 @@ class GeneralNoeticBlockv7(nn.Module):
                 if self.config.novelty_boost_on_heavy:
                     depth_controller.activate_depth_burst(duration=1)
 
-        # 3. Build combined trace
+        # 3. Apply regulators (FM/ACBE/MVR) for D/W/P gaps
+        regulator_trace = None
+        if self.has_regulator and self.regulator is not None:
+            # Project to noetic space if needed (regulators work on 40-dim)
+            noetic_dim = min(out.shape[-1], 40)
+            out_noetic = out[..., :noetic_dim]  # Take first 40 dims
+
+            # Apply regulators
+            out_regulated, gap_info = self.regulator(out_noetic, return_gap_info=return_trace)
+
+            # Merge back (replace first 40 dims with regulated output)
+            out = out.clone()
+            out[..., :noetic_dim] = out_regulated
+
+            # Add regulator loss to aux_loss
+            if gap_info is not None:
+                reg_loss = self.regulator.compute_regulator_loss(gap_info)
+                if isinstance(aux_loss, torch.Tensor):
+                    aux_loss = aux_loss + reg_loss * 0.1
+                else:
+                    aux_loss = reg_loss * 0.1
+
+            if return_trace and gap_info is not None:
+                regulator_trace = {
+                    "desire_score": gap_info['desire_score'].mean().item(),
+                    "wisdom_score": gap_info['wisdom_score'].mean().item(),
+                    "power_score": gap_info['power_score'].mean().item(),
+                    "desire_gap": gap_info['desire_gap'].mean().item(),
+                    "wisdom_gap": gap_info['wisdom_gap'].mean().item(),
+                    "power_gap": gap_info['power_gap'].mean().item(),
+                }
+
+        # 4. Build combined trace
         trace = None
         if return_trace:
             trace = {
                 "block_idx": self.block_idx,
                 "njt": njt_trace,
                 "dps": dps_trace,
+                "regulator": regulator_trace,
                 "router": router_metrics,
                 "allowed_depth": depth_controller.allowed_depth if depth_controller else None,
             }
