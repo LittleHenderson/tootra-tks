@@ -439,6 +439,21 @@ class RTTACanonical:
                     return 0.9
                 return 0.4
 
+            elif problem_type == "animal_linear":
+                if "animal" in e.derived and e.derived["animal"].get("animals"):
+                    return 0.9
+                return 0.4
+
+            elif problem_type == "ratio_linear":
+                if "ratio_linear" in e.derived and e.derived["ratio_linear"].get("multiplier"):
+                    return 0.9
+                return 0.4
+
+            elif problem_type == "parts_ratio":
+                if "parts_ratio" in e.derived and e.derived["parts_ratio"].get("parts1"):
+                    return 0.9
+                return 0.4
+
             return 0.2
 
         elif prereq.prereq_type == PrereqType.POWER:
@@ -456,7 +471,8 @@ class RTTACanonical:
                                   "geometry_area", "geometry_angles", "coord_geometry",
                                   "modular", "conditional_chain", "base_convert",
                                   "unit_convert", "sets", "combinatorics", "inequality",
-                                  "logic_xor", "rate", "age"]:
+                                  "logic_xor", "rate", "age", "animal_linear",
+                                  "ratio_linear", "parts_ratio"]:
                 return 0.5
             else:
                 return 0.2
@@ -665,6 +681,20 @@ class RTTACanonical:
         if any(coin in text_lower for coin in ["nickel", "dime", "quarter", "penny", "coins"]):
             return "linear_system"
 
+        # Animal counting problems: "chickens and cows", "X animals with Y legs"
+        if any(animal in text_lower for animal in ["chicken", "cow", "pig", "horse", "animal", "legs"]):
+            if "legs" in text_lower or "total" in text_lower:
+                return "animal_linear"
+
+        # Ratio with variables: "X has twice as many as Y", "together they have N"
+        if "twice as many" in text_lower or "three times as many" in text_lower:
+            if "together" in text_lower:
+                return "ratio_linear"
+
+        # Parts-based ratio: "3 parts X to 2 parts Y"
+        if "parts" in text_lower and re.search(r'\d+\s+parts', text_lower):
+            return "parts_ratio"
+
         # Age problems: "X is Y years older than Z"
         if "years older" in text_lower or "years younger" in text_lower:
             if "sum of" in text_lower or "ages" in text_lower:
@@ -814,6 +844,18 @@ class RTTACanonical:
         # Age problems
         elif problem_type == "age":
             evidence.derived["age"] = self._extract_age(text)
+
+        # Animal linear system: chickens/cows with total animals and legs
+        elif problem_type == "animal_linear":
+            evidence.derived["animal"] = self._extract_animal_linear(text)
+
+        # Ratio linear: "X has twice as many as Y, together N"
+        elif problem_type == "ratio_linear":
+            evidence.derived["ratio_linear"] = self._extract_ratio_linear(text)
+
+        # Parts ratio: "3 parts X to 2 parts Y"
+        elif problem_type == "parts_ratio":
+            evidence.derived["parts_ratio"] = self._extract_parts_ratio(text)
 
         state.trace.append({
             "action": "WISDOM_BAND",
@@ -980,6 +1022,24 @@ class RTTACanonical:
         # Age problems
         elif problem_type == "age":
             result = self._solve_age(evidence.derived.get("age", {}))
+            if result is not None:
+                evidence.derived["answer"] = str(result)
+
+        # Animal linear system
+        elif problem_type == "animal_linear":
+            result = self._solve_animal_linear(evidence.derived.get("animal", {}))
+            if result is not None:
+                evidence.derived["answer"] = result
+
+        # Ratio linear
+        elif problem_type == "ratio_linear":
+            result = self._solve_ratio_linear(evidence.derived.get("ratio_linear", {}))
+            if result is not None:
+                evidence.derived["answer"] = str(result)
+
+        # Parts ratio
+        elif problem_type == "parts_ratio":
+            result = self._solve_parts_ratio(evidence.derived.get("parts_ratio", {}))
             if result is not None:
                 evidence.derived["answer"] = str(result)
 
@@ -1402,6 +1462,12 @@ class RTTACanonical:
         if self._is_factorial_sequence(seq):
             return {"type": "factorial", "n": len(seq)}
 
+        # Check Fibonacci-like: each term = sum of previous two
+        if len(seq) >= 3:
+            is_fib = all(seq[i] == seq[i-1] + seq[i-2] for i in range(2, len(seq)))
+            if is_fib:
+                return {"type": "fibonacci", "a": seq[-2], "b": seq[-1]}
+
         # Check interleaved sequence: two separate arithmetic patterns
         if len(seq) >= 4:
             interleaved = self._check_interleaved(seq)
@@ -1512,6 +1578,8 @@ class RTTACanonical:
                 return pattern["last_even"] + pattern["even_diff"]
             else:
                 return pattern["last_odd"] + pattern["odd_diff"]
+        elif pattern["type"] == "fibonacci":
+            return pattern["a"] + pattern["b"]
         return 0
 
     # --------------------------------------------------------
@@ -1553,14 +1621,36 @@ class RTTACanonical:
         fact = cond.get("fact", "")
         question = cond.get("question", "")
 
+        # Check for negation in fact
+        fact_is_negation = any(neg in fact for neg in ["not ", "dry", "isn't", "is not", "doesn't", "did not"])
+
+        # Modus Tollens: If A then B, NOT B, therefore NOT A
+        # Example: "If rain, ground wet. Ground is dry. Did it rain?" -> No
+        if question == "antecedent" and fact_is_negation:
+            # Check if the negated fact relates to consequent
+            cons_keywords = consequent.split()
+            for kw in cons_keywords:
+                if len(kw) > 3:  # Skip short words
+                    # "wet" vs "dry" - opposite states
+                    if kw in ["wet"] and "dry" in fact:
+                        return "No"
+                    if kw in fact or f"not {kw}" in fact or f"isn't {kw}" in fact:
+                        return "No"
+            # Generic negation of consequent
+            return "No"
+
         # Modus Ponens: If A then B, A is true, therefore B is true
         if question == "consequent" and antecedent in fact:
             return "Yes"
 
         # Affirming the consequent (fallacy): If A then B, B is true, A is ???
         # This is logically invalid - we can't conclude A from B
-        if question == "antecedent" and consequent in fact:
-            return "Cannot be determined (affirming the consequent)"
+        if question == "antecedent" and not fact_is_negation:
+            # Check if fact affirms consequent
+            cons_keywords = [w for w in consequent.split() if len(w) > 3]
+            for kw in cons_keywords:
+                if kw in fact:
+                    return "Cannot be determined (affirming the consequent)"
 
         # Check for modus ponens with keyword matching
         if "divisible" in antecedent and "divisible" in fact:
@@ -2399,6 +2489,216 @@ class RTTACanonical:
             return p2_age
         else:
             return younger_age  # Default to younger
+
+    # --------------------------------------------------------
+    # OP-ANIMAL: ANIMAL COUNTING (chickens/cows with legs)
+    # --------------------------------------------------------
+
+    def _extract_animal_linear(self, text: str) -> Dict:
+        """Extract animal counting problem parameters."""
+        result = {"animals": [], "total_count": None, "total_legs": None, "target": None}
+        text_lower = text.lower()
+
+        # Common animals and their leg counts
+        animal_legs = {
+            "chicken": 2, "chickens": 2, "hen": 2, "hens": 2,
+            "duck": 2, "ducks": 2, "bird": 2, "birds": 2,
+            "cow": 4, "cows": 4, "pig": 4, "pigs": 4,
+            "horse": 4, "horses": 4, "dog": 4, "dogs": 4,
+            "sheep": 4, "goat": 4, "goats": 4,
+        }
+
+        # Find which animals are mentioned
+        for animal, legs in animal_legs.items():
+            if animal in text_lower:
+                # Normalize to singular
+                singular = animal.rstrip('s') if animal.endswith('s') else animal
+                if not any(a["name"] == singular for a in result["animals"]):
+                    result["animals"].append({"name": singular, "legs": legs})
+
+        # Pattern: "total N animals" or "N animals"
+        if match := re.search(r'(?:total\s+)?(\d+)\s+animals', text_lower):
+            result["total_count"] = int(match.group(1))
+
+        # Pattern: "N legs" or "with N legs"
+        if match := re.search(r'(?:with\s+)?(\d+)\s+legs', text_lower):
+            result["total_legs"] = int(match.group(1))
+
+        # Pattern: "How many chickens?"
+        if match := re.search(r'how many\s+(\w+)', text_lower):
+            target = match.group(1).rstrip('s')
+            result["target"] = target
+
+        return result
+
+    def _solve_animal_linear(self, animal: Dict) -> Optional[str]:
+        """Solve animal counting: a + b = total, 2a + 4b = legs."""
+        if not animal or len(animal.get("animals", [])) < 2:
+            return None
+
+        total_count = animal.get("total_count")
+        total_legs = animal.get("total_legs")
+        animals = animal.get("animals", [])
+        target = animal.get("target")
+
+        if total_count is None or total_legs is None:
+            return None
+
+        # Let x = count of first animal, y = count of second
+        # x + y = total_count
+        # legs1*x + legs2*y = total_legs
+        a1, a2 = animals[0], animals[1]
+        legs1, legs2 = a1["legs"], a2["legs"]
+
+        # Solve: x = (total_legs - legs2*total_count) / (legs1 - legs2)
+        if legs1 == legs2:
+            return None
+
+        x = (total_legs - legs2 * total_count) / (legs1 - legs2)
+        y = total_count - x
+
+        if x != int(x) or y != int(y) or x < 0 or y < 0:
+            return None
+
+        x, y = int(x), int(y)
+
+        # Return based on target
+        if target:
+            if target == a1["name"]:
+                return f"{x} {a1['name']}s"
+            elif target == a2["name"]:
+                return f"{y} {a2['name']}s"
+
+        # Default: return first animal count
+        return f"{x} {a1['name']}s"
+
+    # --------------------------------------------------------
+    # OP-RATIO-LINEAR: "X has twice as many as Y, together N"
+    # --------------------------------------------------------
+
+    def _extract_ratio_linear(self, text: str) -> Dict:
+        """Extract ratio-based linear problem."""
+        result = {"person1": None, "person2": None, "multiplier": None, "total": None, "target": None}
+        text_lower = text.lower()
+
+        # Pattern: "John has twice as many as Tom"
+        if match := re.search(r'(\w+)\s+has\s+twice\s+as\s+many\s+(?:\w+\s+)?as\s+(\w+)', text_lower):
+            result["person1"] = match.group(1).capitalize()
+            result["person2"] = match.group(2).capitalize()
+            result["multiplier"] = 2
+
+        # Pattern: "X has three times as many as Y"
+        if match := re.search(r'(\w+)\s+has\s+three\s+times\s+as\s+many\s+(?:\w+\s+)?as\s+(\w+)', text_lower):
+            result["person1"] = match.group(1).capitalize()
+            result["person2"] = match.group(2).capitalize()
+            result["multiplier"] = 3
+
+        # Pattern: "together they have N"
+        if match := re.search(r'together\s+they\s+have\s+(\d+)', text_lower):
+            result["total"] = int(match.group(1))
+
+        # Pattern: "How many does John have?"
+        if match := re.search(r'how many\s+(?:does\s+)?(\w+)\s+have', text_lower):
+            result["target"] = match.group(1).capitalize()
+
+        return result
+
+    def _solve_ratio_linear(self, ratio: Dict) -> Optional[int]:
+        """Solve ratio linear: p1 = m*p2, p1 + p2 = total."""
+        if not ratio or ratio.get("multiplier") is None or ratio.get("total") is None:
+            return None
+
+        m = ratio["multiplier"]
+        total = ratio["total"]
+        target = ratio.get("target")
+        person1 = ratio.get("person1")
+        person2 = ratio.get("person2")
+
+        # p1 = m * p2
+        # p1 + p2 = total
+        # m*p2 + p2 = total
+        # p2 = total / (m + 1)
+        p2 = total / (m + 1)
+        p1 = m * p2
+
+        if p2 != int(p2):
+            return None
+
+        p1, p2 = int(p1), int(p2)
+
+        if target == person1:
+            return p1
+        elif target == person2:
+            return p2
+        else:
+            return p1  # Default to person with more
+
+    # --------------------------------------------------------
+    # OP-PARTS-RATIO: "3 parts X to 2 parts Y"
+    # --------------------------------------------------------
+
+    def _extract_parts_ratio(self, text: str) -> Dict:
+        """Extract parts-based ratio."""
+        result = {"parts1": None, "parts2": None, "given_value": None, "given_which": None, "find_which": None}
+        text_lower = text.lower()
+
+        # Pattern: "3 parts red with 2 parts blue" or "3 parts X to 2 parts Y"
+        if match := re.search(r'(\d+)\s+parts?\s+(\w+)\s+(?:with|to|and)\s+(\d+)\s+parts?\s+(\w+)', text_lower):
+            result["parts1"] = int(match.group(1))
+            result["item1"] = match.group(2)
+            result["parts2"] = int(match.group(3))
+            result["item2"] = match.group(4)
+
+        # Pattern: "If you use N parts X" or "N parts X"
+        if match := re.search(r'(?:use|using)\s+(\d+)\s+parts?\s+(\w+)', text_lower):
+            result["given_value"] = int(match.group(1))
+            result["given_which"] = match.group(2)
+        elif match := re.search(r'(\d+)\s+parts?\s+(\w+)', text_lower):
+            # Take the last match as the given value (after the ratio definition)
+            for m in re.finditer(r'(\d+)\s+parts?\s+(\w+)', text_lower):
+                if int(m.group(1)) != result.get("parts1") and int(m.group(1)) != result.get("parts2"):
+                    result["given_value"] = int(m.group(1))
+                    result["given_which"] = m.group(2)
+
+        # Pattern: "how much/many Y" or "how many parts Y"
+        if match := re.search(r'how (?:much|many)\s+(?:parts?\s+)?(\w+)', text_lower):
+            result["find_which"] = match.group(1)
+
+        return result
+
+    def _solve_parts_ratio(self, parts: Dict) -> Optional[int]:
+        """Solve parts ratio problem."""
+        if not parts:
+            return None
+
+        parts1 = parts.get("parts1")
+        parts2 = parts.get("parts2")
+        given_value = parts.get("given_value")
+        given_which = parts.get("given_which")
+        find_which = parts.get("find_which")
+        item1 = parts.get("item1")
+        item2 = parts.get("item2")
+
+        if parts1 is None or parts2 is None or given_value is None:
+            return None
+
+        # Determine which is given and which to find
+        if given_which == item1 or (given_which and item1 and given_which in item1):
+            # Given item1, find item2
+            # parts1 : parts2 = given_value : x
+            # x = given_value * parts2 / parts1
+            result = given_value * parts2 / parts1
+        elif given_which == item2 or (given_which and item2 and given_which in item2):
+            # Given item2, find item1
+            result = given_value * parts1 / parts2
+        else:
+            # Default: assume given is item1
+            result = given_value * parts2 / parts1
+
+        if result != int(result):
+            return None
+
+        return int(result)
 
 
 # ============================================================

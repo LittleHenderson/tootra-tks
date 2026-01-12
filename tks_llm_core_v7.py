@@ -53,6 +53,7 @@ from tks_features.dps_gating import (
     DPSState,
     DPSGatingLayer,
     NoveltyClass,
+    MemoryBank,
     DEFAULT_INITIAL_P_MAX,
     DEFAULT_MAX_DEPTH
 )
@@ -94,6 +95,13 @@ class TKSGeneralConfigV7(TKSGeneralConfigV6):
     # v7 specific
     earned_depth_mode: bool = True  # Enable earned depth
     novelty_boost_on_heavy: bool = True  # Depth burst on HEAVY novelty
+    use_impact_only_nw: bool = False # Enable I-based novelty (default False)
+
+    # Memory bank for TRUE earned depth
+    use_memory_bank: bool = True  # Enable memory-based novelty detection
+    memory_bank_size: int = 1000  # Max stored thought embeddings
+    memory_use_decay: bool = True  # Older memories decay
+    memory_decay_factor: float = 0.995  # Decay rate per new memory
 
     # Regulator integration (FM/ACBE/MVR)
     use_regulators: bool = True  # Enable prerequisite regulators
@@ -171,6 +179,7 @@ class GeneralNoeticBlockv7(nn.Module):
                 max_depth=config.dps_max_depth,
                 initial_p_max=config.dps_initial_p_max,
                 hidden_dim=config.dps_hidden_dim,
+                use_impact_only_nw=config.use_impact_only_nw,
             )
             self.dps_layer = DPSGatingLayer(dps_config, noetic_dim=config.hidden_dim)
         else:
@@ -203,6 +212,7 @@ class GeneralNoeticBlockv7(nn.Module):
         depth_controller: Optional[DPSIntegratedRecursionController] = None,
         return_trace: bool = False,
         episode_id: str = "unknown",
+        memory_embeddings: Optional[torch.Tensor] = None,
     ) -> Tuple[torch.Tensor, torch.Tensor, Optional[Dict], Optional[DPSState]]:
         """
         Forward pass with DPS-controlled depth.
@@ -215,6 +225,7 @@ class GeneralNoeticBlockv7(nn.Module):
             depth_controller: Controller managing recursion depth
             return_trace: Whether to return detailed trace
             episode_id: Episode ID for DPS audit
+            memory_embeddings: Stored thought embeddings for novelty detection
 
         Returns:
             output: Processed tensor
@@ -245,7 +256,7 @@ class GeneralNoeticBlockv7(nn.Module):
             out, new_dps_state, dps_trace = self.dps_layer(
                 out,
                 dps_state,
-                memory_embeddings=None,  # Could add memory bank here
+                memory_embeddings=memory_embeddings,  # From memory bank for TRUE novelty
                 episode_id=episode_id,
             )
 
@@ -339,6 +350,14 @@ class TKSGeneralLMv7(nn.Module):
             cooldown=0,
         )
 
+        # Memory bank for TRUE earned depth (tracks what model has "thought about")
+        self._memory_bank = None
+        if config.use_memory_bank:
+            self._memory_bank = MemoryBank(
+                capacity=config.memory_bank_size,
+                dim=config.hidden_dim,
+            )
+
         # Initialize
         self._init_weights()
 
@@ -404,6 +423,11 @@ class TKSGeneralLMv7(nn.Module):
             hard_cap=self.config.dps_max_depth
         )
 
+        # Get memory embeddings for novelty computation
+        memory_embeddings = None
+        if self._memory_bank is not None:
+            memory_embeddings = self._memory_bank.get_memory()  # [num_memories, dim] or None
+
         # Embeddings
         positions = torch.arange(seq_len, device=device).unsqueeze(0).expand(batch_size, -1)
         x = self.token_emb(input_ids) + self.pos_emb(positions)
@@ -421,6 +445,7 @@ class TKSGeneralLMv7(nn.Module):
                 depth_controller=depth_controller,
                 return_trace=return_full_trace,
                 episode_id=episode_id,
+                memory_embeddings=memory_embeddings,
             )
             # Ensure aux_loss is scalar before accumulating
             if aux_loss is not None:
@@ -440,15 +465,30 @@ class TKSGeneralLMv7(nn.Module):
         x = self.norm(x)
         logits = self.lm_head(x)
 
+        # Add thought embedding to memory bank (pooled representation)
+        # This enables TRUE earned depth - similar thoughts won't earn more depth
+        if self._memory_bank is not None and self.training:
+            # Pool across sequence to get thought embedding [batch, dim]
+            thought_embedding = x.mean(dim=1).detach()
+            self._memory_bank.add(thought_embedding)
+
         # Update internal state
         self._dps_state = dps_state
 
         # Build output
+        memory_stats = None
+        if self._memory_bank is not None:
+            memory_stats = {
+                "size": self._memory_bank.size,
+                "fill_ratio": self._memory_bank.size / self._memory_bank.capacity,
+            }
+
         output = {
             "logits": logits,
             "routing_aux_loss": total_aux_loss,
             "dps_state": dps_state,
             "allowed_depth": depth_controller.allowed_depth,
+            "memory_stats": memory_stats,
         }
 
         if return_full_trace:
@@ -460,6 +500,7 @@ class TKSGeneralLMv7(nn.Module):
                     "cooldown": dps_state.cooldown,
                     "total_unlocks": dps_state.total_unlocks,
                 },
+                "memory": memory_stats,
                 "schema_version": TRACE_SCHEMA_VERSION,
             }
 
@@ -503,8 +544,14 @@ def create_v7_from_v6(
 
     # Infer config from checkpoint if not provided
     if config is None:
-        # Get vocab size from embedding
-        vocab_size = v6_state.get("token_emb.weight", v6_state.get("lm_head.weight")).shape[0]
+        # Get vocab size from embedding - try various key formats
+        vocab_size = None
+        for emb_key in ["embedding.embedding.weight", "token_emb.weight", "head.weight", "lm_head.weight"]:
+            if emb_key in v6_state:
+                vocab_size = v6_state[emb_key].shape[0]
+                break
+        if vocab_size is None:
+            raise ValueError("Could not infer vocab_size from checkpoint - no embedding weights found")
         config = TKSGeneralConfigV7(vocab_size=vocab_size)
 
     # Create v7 model
@@ -514,10 +561,24 @@ def create_v7_from_v6(
     # The v7 model wraps v6 blocks, so we need to remap keys
     v7_state = model.state_dict()
 
+    # Key mapping from v6 checkpoint to v7 model
+    key_remap = {
+        "embedding.embedding.weight": "token_emb.weight",
+        "head.weight": "lm_head.weight",
+        "pos_emb": "pos_emb.weight",
+    }
+
     migrated = 0
     for key, value in v6_state.items():
         # Skip stack buffers (they're reset each forward)
         if "stack_memory" in key or "stack_ptr" in key:
+            continue
+
+        # Check remapped keys first
+        remap_key = key_remap.get(key)
+        if remap_key and remap_key in v7_state and v7_state[remap_key].shape == value.shape:
+            v7_state[remap_key] = value
+            migrated += 1
             continue
 
         # Direct match
