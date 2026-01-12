@@ -36,16 +36,22 @@ REGRESSION_TESTS = [
     ("R04", "syllogism", "All cats are mammals. All mammals are animals. Are cats animals?", "Yes"),
     ("R05", "conditional", "If a number is divisible by 6, then it is divisible by 3. 18 is divisible by 6. Is 18 divisible by 3?", "Yes"),
     ("R06", "sequence", "What comes next in the sequence: 2, 4, 6, 8, ?", "10"),
-
-    # Expected to fail (tests rumination logging)
     ("R07", "sequence", "What comes next in the sequence: 1, 1, 2, 3, 5, 8, ?", "13"),
     ("R08", "logic_grid", "Ann does not have a cat. Ben does not have a dog. Cal has a fish. Who has the dog?", "Ann"),
     ("R09", "probability", "You flip two coins. What is the probability of getting exactly one head?", "1/2"),
 ]
 
+# Harder tests expected to fail (for rumination logging tests)
+EXPECTED_FAILURE_TESTS = [
+    # Complex multi-step reasoning not yet supported
+    ("F01", "complex", "A train leaves station A at 9am traveling 60mph. Another train leaves station B at 10am traveling 80mph. If A and B are 200 miles apart, when do they meet?", "10:30am"),
+    ("F02", "cryptarithmetic", "If SEND + MORE = MONEY, what digit does M represent?", "1"),
+    ("F03", "river_crossing", "A farmer needs to cross a river with a wolf, goat, and cabbage. The boat holds only the farmer and one item. How many trips?", "7"),
+]
+
 # Thresholds
-BASELINE_ACCURACY = 0.55  # Must pass at least 55% (5/9 = 55.6% is expected)
-PASS_THRESHOLD = 5  # At least 5 must pass
+BASELINE_ACCURACY = 0.75  # Must pass at least 75% (updated for improved coverage)
+PASS_THRESHOLD = 7  # At least 7 must pass
 
 
 # ============================================================
@@ -175,11 +181,12 @@ class TestRuminationRecovery:
 
     def test_failures_logged_to_ledger(self, rtta, rumination):
         """Failed tests should be logged to the failure ledger."""
-        # Run tests and log failures
-        for test_id, test_type, question, expected in REGRESSION_TESTS:
+        # Use EXPECTED_FAILURE_TESTS which are designed to fail
+        for test_id, test_type, question, expected in EXPECTED_FAILURE_TESTS:
             result = rtta.reason(question, verbose=False)
             answer = str(result['answer'])
 
+            # These are expected to fail, so log them
             if expected.lower() not in answer.lower():
                 rumination.log_failure(test_id, question, expected, answer, result)
 
@@ -358,7 +365,12 @@ class TestIntegration:
 
             if expected.lower() in answer.lower():
                 passed += 1
-            else:
+
+        # Log expected failures for rumination testing
+        for test_id, test_type, question, expected in EXPECTED_FAILURE_TESTS:
+            result = rtta.reason(question, verbose=False)
+            answer = str(result['answer'])
+            if expected.lower() not in answer.lower():
                 rum.log_failure(test_id, question, expected, answer, result)
 
         # Run rumination
