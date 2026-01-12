@@ -1,0 +1,91 @@
+{
+  "version": "1.0",
+  "threshold": 0.6,
+  "created_at": "2026-01-12T00:00:00.000000+00:00",
+  "updated_at": "2026-01-12T00:00:00.000000+00:00",
+  "records": {
+    "SAMPLE-01": {
+      "id": "SAMPLE-01",
+      "question_text": "Pattern: 1, 1, 2, 3, 5, 8, ?",
+      "expected": "13",
+      "model_answer": "Unable to determine",
+      "status": "unsolved",
+      "first_unmet_slot": "6P",
+      "impact_score": 0.65,
+      "desire_level": 0.5,
+      "error_severity": 0.7,
+      "novelty_gap": 0.5,
+      "recency": 1.0,
+      "gist": {
+        "type": "sequence",
+        "signature": "sequence: 1,1,2,3,5 -> ?",
+        "slot_block": "6P",
+        "missing_operator": "OP-SEQ-FIBONACCI",
+        "pattern_hint": "fibonacci_like"
+      },
+      "attempt_count": 1,
+      "rumination_cycles": 0,
+      "last_seen_at": "2026-01-12T00:00:00.000000+00:00",
+      "operator_missing": "OP-SEQ-FIBONACCI"
+    },
+    "SAMPLE-02": {
+      "id": "SAMPLE-02",
+      "question_text": "Every bird can fly. Sparrows are birds. Can sparrows fly?",
+      "expected": "Yes",
+      "model_answer": "Cannot determine",
+      "status": "unsolved",
+      "first_unmet_slot": "4D",
+      "impact_score": 0.88,
+      "desire_level": 0.5,
+      "error_severity": 0.7,
+      "novelty_gap": 1.0,
+      "recency": 1.0,
+      "gist": {
+        "type": "syllogism",
+        "signature": "syllogism: All A are B, C is A -> C is B?",
+        "slot_block": "4D",
+        "missing_operator": "OP-SYLL-BARBARA"
+      },
+      "attempt_count": 1,
+      "rumination_cycles": 5,
+      "last_seen_at": "2026-01-12T00:00:00.000000+00:00",
+      "operator_missing": "OP-SYLL-BARBARA",
+      "last_ruminated_at": "2026-01-12T00:01:00.000000+00:00",
+      "hypotheses": [
+        {"label": "OP-SYLL-BARBARA", "status": "proposed"},
+        {"label": "OP-TYPE-UNKNOWN", "status": "rejected"}
+      ]
+    },
+    "SAMPLE-03": {
+      "id": "SAMPLE-03",
+      "question_text": "What is 2 + 2?",
+      "expected": "4",
+      "model_answer": "4",
+      "status": "solved",
+      "first_unmet_slot": "5W",
+      "impact_score": 0.1,
+      "desire_level": 0.05,
+      "error_severity": 0.0,
+      "novelty_gap": 0.0,
+      "recency": 0.5,
+      "gist": {
+        "type": "arithmetic",
+        "signature": "arithmetic: 2+2 -> ?",
+        "slot_block": "5W",
+        "missing_operator": null
+      },
+      "attempt_count": 1,
+      "rumination_cycles": 1,
+      "last_seen_at": "2026-01-11T00:00:00.000000+00:00",
+      "resolved_at": "2026-01-11T00:00:01.000000+00:00",
+      "hypotheses": [
+        {"label": "OP-ARITH-ADD", "status": "validated"}
+      ]
+    }
+  },
+  "index": {
+    "unsolved": ["SAMPLE-01", "SAMPLE-02"],
+    "solved": ["SAMPLE-03"],
+    "retired": []
+  }
+}

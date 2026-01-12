@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:tks:rumination-state",
+  "title": "TKS Rumination State",
+  "description": "Schema for RTTA-R rumination engine state",
+  "type": "object",
+  "required": ["enabled", "mode", "wake_event", "tick_ms", "idle_backoff_ms", "desire_alpha", "impact_weights", "slot_weights"],
+  "properties": {
+    "enabled": {
+      "type": "boolean",
+      "description": "Whether rumination is enabled",
+      "default": false
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["idle", "ruminating", "awake"],
+      "description": "Current rumination mode",
+      "default": "idle"
+    },
+    "current_failure_id": {
+      "type": "string",
+      "description": "ID of failure currently being ruminated on"
+    },
+    "wake_event": {
+      "$ref": "#/$defs/WakeEvent"
+    },
+    "tick_ms": {
+      "type": "integer",
+      "minimum": 10,
+      "maximum": 10000,
+      "description": "Milliseconds between rumination cycles",
+      "default": 100
+    },
+    "idle_backoff_ms": {
+      "type": "integer",
+      "minimum": 100,
+      "maximum": 60000,
+      "description": "Backoff when no failures to ruminate",
+      "default": 500
+    },
+    "desire_alpha": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Learning rate for desire updates",
+      "default": 0.15
+    },
+    "impact_weights": {
+      "type": "object",
+      "description": "Weights for impact score computation",
+      "required": ["error_severity", "novelty_gap", "slot_block", "recency"],
+      "properties": {
+        "error_severity": {
+          "type": "number",
+          "default": 0.4
+        },
+        "novelty_gap": {
+          "type": "number",
+          "default": 0.3
+        },
+        "slot_block": {
+          "type": "number",
+          "default": 0.2
+        },
+        "recency": {
+          "type": "number",
+          "default": 0.1
+        }
+      }
+    },
+    "slot_weights": {
+      "type": "object",
+      "description": "Weights for slot priority (4D highest)",
+      "properties": {
+        "4D": {
+          "type": "number",
+          "default": 1.0
+        },
+        "5W": {
+          "type": "number",
+          "default": 0.8
+        },
+        "6P": {
+          "type": "number",
+          "default": 0.6
+        }
+      }
+    },
+    "last_cycle_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of last rumination cycle"
+    }
+  },
+  "$defs": {
+    "WakeEvent": {
+      "type": "object",
+      "required": ["pending", "reason"],
+      "properties": {
+        "pending": {
+          "type": "boolean",
+          "description": "Whether a wake signal is pending",
+          "default": false
+        },
+        "reason": {
+          "type": "string",
+          "enum": ["user_prompt", "task_assigned", "manual_wake", "shutdown", "unknown"],
+          "description": "Reason for wake signal",
+          "default": "unknown"
+        },
+        "source": {
+          "type": "string",
+          "description": "Source of wake signal (cli, task_id, system)"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When wake signal was set"
+        }
+      }
+    }
+  }
+}
