@@ -26,7 +26,7 @@ import argparse
 import time
 import logging
 from pathlib import Path
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 
 import torch
 import torch.nn as nn
@@ -45,6 +45,12 @@ logger = logging.getLogger(__name__)
 # Add parent to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+from src.tks.core.gpu_utils import get_target_device, setup_cuda_optimizations
+
+# Import GPU Utils
+from src.tks.core.gpu_utils import get_target_device, setup_cuda_optimizations
+from src.tks.core.tokenizer import TKSTokenizer
+
 # Import TKS LLM Core Pipeline (v2 - 92k params)
 try:
     from tks_llm_core_v2 import (
@@ -61,11 +67,16 @@ except ImportError:
 
 # Import TKS Noetic LM v4 (136k params) - Full decoder-only noetic model
 try:
-    from tks_llm_core_v4 import TKSNoeticLM, TKSNoeticLMConfig
+    from src.tks.core.tks_llm_core_v4 import TKSNoeticLM, TKSNoeticLMConfig
     TKS_NOETIC_V4_AVAILABLE = True
 except ImportError:
-    TKS_NOETIC_V4_AVAILABLE = False
-    logger.warning("TKSNoeticLM v4 not available.")
+    # Fallback to root import if src package fails
+    try:
+        from tks_llm_core_v4 import TKSNoeticLM, TKSNoeticLMConfig
+        TKS_NOETIC_V4_AVAILABLE = True
+    except ImportError:
+        TKS_NOETIC_V4_AVAILABLE = False
+        logger.warning("TKSNoeticLM v4 not available.")
 
 # Import World/RPM auxiliary losses
 try:
@@ -80,7 +91,6 @@ try:
 except ImportError:
     AUXILIARY_LOSSES_AVAILABLE = False
     logger.warning("Auxiliary losses not available. World/RPM supervision disabled.")
-
 
 def check_cuda_setup() -> Dict[str, Any]:
     """Check CUDA setup and return device info."""
@@ -105,12 +115,18 @@ def check_cuda_setup() -> Dict[str, Any]:
                 "multi_processor_count": props.multi_processor_count
             })
 
-            # Check for BF16 support (Ampere+, compute >= 8.0)
             if props.major >= 8:
                 info["bf16_supported"] = True
                 info["tf32_supported"] = True
 
     return info
+
+
+def compute_tokenizer_hash(tokenizer_path: str) -> str:
+    """Compute SHA256 hash of tokenizer file for integrity verification."""
+    import hashlib
+    with open(tokenizer_path, 'rb') as f:
+        return hashlib.sha256(f.read()).hexdigest()
 
 
 # NaN/Inf guard utilities for training stability
@@ -204,142 +220,21 @@ class NaNGuard:
             if self.dump_path:
                 logger.info(f"Problematic batches dumped to: {self.dump_path}")
 
-
-def run_per_epoch_eval(
-    model_path: str,
-    output_dir: str,
-    epoch: int,
-    test_script: str = 'tests/test_noetic_regression.py'
-) -> Dict[str, Any]:
-    """
-    Run equation + NL evaluation and return metrics.
-
-    Returns dict with:
-        - epoch: int
-        - equation_metrics: dict with world_separation, rpm_variance, attractor_convergence, noetic_consistency
-        - nl_metrics: dict with same keys
-    """
-    import subprocess
-
-    metrics_dir = os.path.join(output_dir, 'per_epoch_metrics')
-    os.makedirs(metrics_dir, exist_ok=True)
-
-    result = {'epoch': epoch, 'equation_metrics': {}, 'nl_metrics': {}}
-
-    for test_style in ['equation', 'nl']:
-        metrics_path = os.path.join(metrics_dir, f'epoch_{epoch:03d}_{test_style}.json')
-
-        cmd = [
-            'python3', test_script,
-            '--model', model_path,
-            '--test-style', test_style,
-            '--output', metrics_path
-        ]
-
-        try:
-            # Run evaluation subprocess with timeout
-            proc = subprocess.run(
-                cmd,
-                capture_output=True,
-                text=True,
-                timeout=120,
-                cwd=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-            )
-
-            if os.path.exists(metrics_path):
-                with open(metrics_path) as f:
-                    data = json.load(f)
-                    metrics = data.get('metrics', {})
-
-                    extracted = {
-                        'world_separation': metrics.get('world_separation', {}).get('correct_rate'),
-                        'rpm_variance': metrics.get('rpm_differentiation', {}).get('variance'),
-                        'attractor_convergence': metrics.get('attractor_convergence', {}).get('convergence_rate'),
-                        'noetic_consistency': metrics.get('noetic_consistency', {}).get('separation'),
-                    }
-                    result[f'{test_style}_metrics'] = extracted
-            else:
-                logger.warning(f"Eval metrics not saved: {metrics_path}")
-
-        except subprocess.TimeoutExpired:
-            logger.warning(f"Eval timeout for test_style={test_style}")
-        except Exception as e:
-            logger.warning(f"Eval error for test_style={test_style}: {e}")
-
-    # Append to epoch history JSONL
-    history_path = os.path.join(output_dir, 'epoch_eval_history.jsonl')
-    with open(history_path, 'a') as f:
-        f.write(json.dumps(result) + '\n')
-
-    return result
-
-
-def log_epoch_eval_metrics(metrics: Dict[str, Any]):
-    """Log per-epoch eval metrics in a compact format."""
-    epoch = metrics.get('epoch', 0)
-    eq = metrics.get('equation_metrics', {})
-    nl = metrics.get('nl_metrics', {})
-
-    def fmt(val):
-        return f"{val:.4f}" if val is not None else "N/A"
-
-    logger.info(f"  Per-Epoch Eval (epoch {epoch}):")
-    logger.info(f"    Equation: world_sep={fmt(eq.get('world_separation'))} | "
-                f"rpm_var={fmt(eq.get('rpm_variance'))} | "
-                f"attr_conv={fmt(eq.get('attractor_convergence'))} | "
-                f"noetic={fmt(eq.get('noetic_consistency'))}")
-    logger.info(f"    NL:       world_sep={fmt(nl.get('world_separation'))} | "
-                f"rpm_var={fmt(nl.get('rpm_variance'))} | "
-                f"attr_conv={fmt(nl.get('attractor_convergence'))} | "
-                f"noetic={fmt(nl.get('noetic_consistency'))}")
-
-
-class SimpleTokenizer:
-    """Simple tokenizer for TKS data."""
-
-    def __init__(self, vocab_size=1000, max_length=256):
-        self.vocab_size = vocab_size
-        self.max_length = max_length
-        self.token_to_id = {'<PAD>': 0, '<UNK>': 1, '<BOS>': 2, '<EOS>': 3}
-
-        next_id = 4
-        # TKS elements
-        for world in ['A', 'B', 'C', 'D']:
-            for noetic in range(1, 11):
-                self.token_to_id[f"{world}{noetic}"] = next_id
-                next_id += 1
-
-        # Operators
-        for op in ['+', '-', '+T', '-T', '->', '<-', '*T', '/T', 'o']:
-            self.token_to_id[op] = next_id
-            next_id += 1
-
-        # Characters (including *, /, <, > for TKS operators, and common text chars)
-        for c in ' .,!?;:\'"()-abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789^_*/<>=':
-            if c not in self.token_to_id:
-                self.token_to_id[c] = next_id
-                next_id += 1
-
-        self.actual_vocab_size = next_id
-
-    def tokenize(self, text: str) -> list:
-        tokens = [2]  # BOS
-        for c in text[:self.max_length - 2]:
-            tokens.append(self.token_to_id.get(c, 1))
-        tokens.append(3)  # EOS
-        while len(tokens) < self.max_length:
-            tokens.append(0)
-        return tokens[:self.max_length]
-
-
 class TKSDataset(Dataset):
-    """TKS training dataset supporting both LM and seq2seq formats."""
+    """TKS training dataset supporting both LM and seq2seq formats.
 
-    def __init__(self, data_path: str, tokenizer: SimpleTokenizer, seq2seq: bool = False):
+    Returns UNPADDED sequences. Use tks_collate_fn for proper batching.
+    """
+
+    def __init__(self, data_path: str, tokenizer: TKSTokenizer, seq2seq: bool = False):
         self.tokenizer = tokenizer
         self.entries = []
         self.seq2seq = seq2seq
         self.sep_token = " => "  # Separator between input and target
+        self.pad_id = tokenizer.vocab["<PAD>"]
+        self.bos_id = tokenizer.vocab["<BOS>"]
+        self.eos_id = tokenizer.vocab["<EOS>"]
+        self.unk_id = tokenizer.vocab["<UNK>"]
 
         with open(data_path, 'r', encoding='utf-8') as f:
             for line in f:
@@ -350,9 +245,18 @@ class TKSDataset(Dataset):
         # Auto-detect seq2seq format if not explicitly set
         if self.entries and not seq2seq:
             first = self.entries[0]
-            if 'input' in first and 'target' in first:
+            # Check for 'target' or 'output' field alongside 'input'
+            if 'input' in first and ('target' in first or 'output' in first):
                 self.seq2seq = True
                 print(f"  Auto-detected seq2seq format in {data_path}")
+
+    def _tokenize_unpadded(self, text: str, max_len: int = 512) -> List[int]:
+        """Tokenize without padding - collate_fn handles padding per-batch."""
+        ids = [self.bos_id]
+        for char in text[:max_len - 2]:
+            ids.append(self.tokenizer.vocab.get(char, self.unk_id))
+        ids.append(self.eos_id)
+        return ids
 
     def __len__(self):
         return len(self.entries)
@@ -363,59 +267,97 @@ class TKSDataset(Dataset):
         if self.seq2seq:
             # Seq2seq format: input => target
             inp = entry.get('input', '')
-            tgt = entry.get('target', '')
+            tgt = entry.get('target', entry.get('output', ''))
+
             # Concatenate: input => target
             full_text = inp + self.sep_token + tgt
-            input_ids = self.tokenizer.tokenize(full_text)
+            input_ids = self._tokenize_unpadded(full_text)
 
-            # Target is next-token prediction
-            targets = input_ids[1:] + [0]
+            # Labels: -100 for prompt tokens (ignored in loss), actual IDs for target tokens
+            # input_ids = [BOS, prompt_chars..., sep_chars..., target_chars..., EOS]
+            # labels[i] = next token at position i+1
 
-            # Find where target tokens start by counting actual characters
-            # (before padding is applied by tokenizer)
-            inp_char_len = len(inp) + len(self.sep_token)
+            # Find where target starts (after BOS + prompt + separator)
+            prompt_with_sep = inp + self.sep_token
+            prompt_len = 1 + len(prompt_with_sep)  # BOS + prompt + separator chars
 
-            # Create loss mask: 0 for input+sep tokens, 1 for target tokens
-            # targets[i] corresponds to string character i (after BOS offset)
-            # inp+sep spans characters 0 to inp_char_len-1, target starts at inp_char_len
-            loss_mask = []
-            for i in range(len(targets)):
-                # We want loss only for predicting target characters (index >= inp_char_len)
-                if i >= inp_char_len:
-                    loss_mask.append(1.0)
+            labels = []
+            for i in range(len(input_ids)):
+                if i < prompt_len - 1:
+                    # Positions predicting prompt/separator tokens -> ignore
+                    labels.append(-100)
                 else:
-                    loss_mask.append(0.0)
-
-            # Ensure mask matches targets length
-            while len(loss_mask) < len(targets):
-                loss_mask.append(0.0)
-            loss_mask = loss_mask[:len(targets)]
+                    # Positions predicting target tokens (including EOS)
+                    next_token = input_ids[i + 1] if i + 1 < len(input_ids) else self.eos_id
+                    labels.append(next_token)
 
             result = {
-                'input_ids': torch.tensor(input_ids, dtype=torch.long),
-                'targets': torch.tensor(targets, dtype=torch.long),
-                'loss_mask': torch.tensor(loss_mask, dtype=torch.float),
+                'input_ids': input_ids,  # List[int], NOT padded
+                'labels': labels,        # List[int] with -100 for prompt
             }
 
             # Include world/RPM labels if present in data
             if 'world_label' in entry:
                 world_map = {'A': 0, 'B': 1, 'C': 2, 'D': 3}
-                result['world_label'] = torch.tensor(world_map.get(entry['world_label'], 0), dtype=torch.long)
+                result['world_label'] = world_map.get(entry['world_label'], 0)
             if 'rpm_label' in entry:
                 rpm_map = {'desire': 0, 'wisdom': 1, 'power': 2}
-                result['rpm_label'] = torch.tensor(rpm_map.get(entry['rpm_label'], 0), dtype=torch.long)
+                result['rpm_label'] = rpm_map.get(entry['rpm_label'], 0)
 
             return result
         else:
-            # LM format: story only (next-token prediction)
+            # LM format: story only (next-token prediction on all tokens)
             story = entry.get('story', entry.get('text', ''))
-            input_ids = self.tokenizer.tokenize(story)
-            targets = input_ids[1:] + [0]
+            input_ids = self._tokenize_unpadded(story)
+            labels = input_ids[1:] + [self.eos_id]
 
             return {
-                'input_ids': torch.tensor(input_ids, dtype=torch.long),
-                'targets': torch.tensor(targets, dtype=torch.long),
+                'input_ids': input_ids,
+                'labels': labels,
             }
+
+
+def tks_collate_fn(batch, pad_id: int = 0):
+    """Collate function that pads to batch max length (not global max).
+
+    Creates attention_mask where 1=real token, 0=PAD.
+    Labels are padded with -100 (ignored in CrossEntropyLoss).
+    """
+    max_len = max(len(x['input_ids']) for x in batch)
+
+    input_ids_batch = []
+    labels_batch = []
+    attention_mask_batch = []
+    world_labels = []
+    rpm_labels = []
+
+    for x in batch:
+        ids = x['input_ids']
+        labs = x['labels']
+        seq_len = len(ids)
+        pad_n = max_len - seq_len
+
+        input_ids_batch.append(ids + [pad_id] * pad_n)
+        labels_batch.append(labs + [-100] * pad_n)  # -100 = ignored in loss
+        attention_mask_batch.append([1] * seq_len + [0] * pad_n)
+
+        if 'world_label' in x:
+            world_labels.append(x['world_label'])
+        if 'rpm_label' in x:
+            rpm_labels.append(x['rpm_label'])
+
+    result = {
+        'input_ids': torch.tensor(input_ids_batch, dtype=torch.long),
+        'labels': torch.tensor(labels_batch, dtype=torch.long),
+        'attention_mask': torch.tensor(attention_mask_batch, dtype=torch.long),
+    }
+
+    if world_labels:
+        result['world_label'] = torch.tensor(world_labels, dtype=torch.long)
+    if rpm_labels:
+        result['rpm_label'] = torch.tensor(rpm_labels, dtype=torch.long)
+
+    return result
 
 
 class TransformerModel(nn.Module):
@@ -502,9 +444,11 @@ class CUDATrainer:
         model: nn.Module,
         train_loader: DataLoader,
         eval_loader: Optional[DataLoader],
-        config: Dict[str, Any]
+        config: Dict[str, Any],
+        tokenizer_path: Optional[str] = None
     ):
         self.config = config
+        self.tokenizer_path = tokenizer_path
         self.device = self._setup_device()
 
         # Move model to device
@@ -542,7 +486,7 @@ class CUDATrainer:
         )
 
         # Loss function
-        self.loss_fn = nn.CrossEntropyLoss(ignore_index=0)
+        self.loss_fn = nn.CrossEntropyLoss(ignore_index=-100)  # -100 = prompt tokens to ignore
 
         # Mixed precision
         self.use_amp = config.get('mixed_precision', True) and torch.cuda.is_available()
@@ -607,8 +551,8 @@ class CUDATrainer:
                            f"usage_weight={config.get('usage_reg_weight', 0.5)}, "
                            f"learned_head={config.get('use_learned_world_head', False)}")
             else:
-                # Original world loss
-                self.world_loss_fn = WorldClassificationLoss(margin=0.5, temperature=1.0)
+                # Original world loss (TaskLoss alias, no margin/temp args)
+                self.world_loss_fn = WorldClassificationLoss()
 
             # RPM differentiation loss
             self.use_rpm_loss_v2 = config.get('use_rpm_loss_v2', False)
@@ -623,11 +567,8 @@ class CUDATrainer:
                            f"spread_var={config.get('rpm_spread_variance', 0.15)}, "
                            f"orth_weight={config.get('rpm_orthogonality_weight', 0.3)}")
             else:
-                self.rpm_loss_fn = RPMDifferentiationLoss(
-                    entropy_weight=0.1,
-                    contrastive_margin=0.2,
-                    calibration_weight=0.5
-                )
+                # Original RPM loss (RPMLoss alias, only takes margin)
+                self.rpm_loss_fn = RPMDifferentiationLoss(margin=0.1)
             logger.info(f"Auxiliary losses enabled: world_weight={self.world_loss_weight}, rpm_weight={self.rpm_loss_weight}")
         else:
             self.world_loss_fn = None
@@ -713,23 +654,10 @@ class CUDATrainer:
 
     def _setup_device(self) -> torch.device:
         """Setup compute device with optimizations."""
-        if torch.cuda.is_available():
-            device = torch.device('cuda')
-
-            # Enable TF32 for Ampere GPUs (faster, minimal precision loss)
-            if torch.cuda.get_device_capability()[0] >= 8:
-                torch.backends.cuda.matmul.allow_tf32 = True
-                torch.backends.cudnn.allow_tf32 = True
-                logger.info("Enabled TF32 for matmul operations")
-
-            # Optimize cuDNN
-            torch.backends.cudnn.benchmark = True
-            logger.info("Enabled cuDNN benchmark mode")
-
-            return device
-        else:
-            logger.warning("CUDA not available, using CPU")
-            return torch.device('cpu')
+        device = get_target_device(force_gpu=self.config.get('force_gpu', True))
+        if device.type == 'cuda':
+            setup_cuda_optimizations()
+        return device
 
     def _setup_distributed(self):
         """Setup distributed training."""
@@ -781,7 +709,10 @@ class CUDATrainer:
 
         for batch_idx, batch in enumerate(self.train_loader):
             input_ids = batch['input_ids'].to(self.device, non_blocking=True)
-            targets = batch['targets'].to(self.device, non_blocking=True)
+            labels = batch['labels'].to(self.device, non_blocking=True)
+            attention_mask = batch.get('attention_mask')
+            if attention_mask is not None:
+                attention_mask = attention_mask.to(self.device, non_blocking=True)
 
             self.optimizer.zero_grad(set_to_none=True)
 
@@ -798,16 +729,17 @@ class CUDATrainer:
                     is_v4_model = hasattr(self.model, 'config') and hasattr(self.model.config, 'vocab_size')
                     if is_v4_model:
                         # TKSNoeticLM v4 - only supports return_full_trace
-                        output = self.model(input_ids, return_full_trace=True)
+                        output = self.model(input_ids, attention_mask=attention_mask, return_full_trace=True)
                     else:
                         # TKSLLMCorePipeline v2 - supports both
                         output = self.model(
                             input_ids,
+                            attention_mask=attention_mask,
                             return_full_trace=True,
                             return_tensor_deltas=True
                         )
                 else:
-                    output = self.model(input_ids)
+                    output = self.model(input_ids, attention_mask=attention_mask)
                 logits = self._get_logits(output)
 
                 # Track attractor convergence metrics if available
@@ -820,23 +752,13 @@ class CUDATrainer:
                         if trace and 'attractor_iterations' in trace:
                             epoch_total_iterations += trace['attractor_iterations']
 
-                # Apply loss mask if present (seq2seq: only predict target tokens)
-                if 'loss_mask' in batch:
-                    loss_mask = batch['loss_mask'].to(self.device, non_blocking=True)
-                    # Per-token loss without reduction
-                    per_token_loss = F.cross_entropy(
-                        logits.view(-1, logits.size(-1)),
-                        targets.view(-1),
-                        reduction='none'
-                    )
-                    # Apply mask and compute mean over masked tokens
-                    masked_loss = per_token_loss * loss_mask.view(-1)
-                    main_loss = masked_loss.sum() / (loss_mask.sum() + 1e-8)
-                else:
-                    main_loss = self.loss_fn(
-                        logits.view(-1, logits.size(-1)),
-                        targets.view(-1)
-                    )
+                # Loss with ignore_index=-100 (prompt tokens are masked automatically)
+                main_loss = self.loss_fn(
+                    logits.view(-1, logits.size(-1)),
+                    labels.view(-1)
+                )
+                # Count supervised tokens (labels != -100)
+                tokens_in_loss = int((labels.view(-1) != -100).sum().item())
 
                 # Compute auxiliary losses if enabled and model outputs dict
                 world_loss_val = 0.0
@@ -1091,7 +1013,15 @@ class CUDATrainer:
             # Log progress
             if batch_idx % 20 == 0:
                 lr = self.scheduler.get_last_lr()[0]
-                mem_used = torch.cuda.memory_allocated() / 1e9 if torch.cuda.is_available() else 0
+                # Get CUDA memory stats (both allocated and reserved)
+                if torch.cuda.is_available():
+                    torch.cuda.synchronize()
+                    cuda_alloc = torch.cuda.memory_allocated() / 1e9
+                    cuda_resv = torch.cuda.memory_reserved() / 1e9
+                else:
+                    cuda_alloc = cuda_resv = 0.0
+                # Compute mean supervised tokens per sample in batch
+                tgt_len_mean = tokens_in_loss / max(input_ids.shape[0], 1)
                 aux_info = ""
                 if self.use_auxiliary_losses and num_aux_batches > 0:
                     aux_info = f" | World: {world_loss_val:.4f} | RPM: {rpm_loss_val:.4f}"
@@ -1103,7 +1033,9 @@ class CUDATrainer:
                     aux_info += f" | Attr: {attractor_loss_val:.4f}"
                 logger.info(
                     f"Epoch {epoch+1} | Step {batch_idx}/{len(self.train_loader)} | "
-                    f"Loss: {loss.item():.4f}{aux_info} | LR: {lr:.2e} | GPU Mem: {mem_used:.2f}GB"
+                    f"Loss: {loss.item():.4f} | LR: {lr:.2e} | "
+                    f"sup_toks: {tokens_in_loss} | tgt_len_mean: {tgt_len_mean:.1f}{aux_info} | "
+                    f"cuda_alloc: {cuda_alloc:.2f}GB cuda_resv: {cuda_resv:.2f}GB"
                 )
 
         # Store auxiliary loss metrics
@@ -1188,27 +1120,20 @@ class CUDATrainer:
 
         for batch in self.eval_loader:
             input_ids = batch['input_ids'].to(self.device, non_blocking=True)
-            targets = batch['targets'].to(self.device, non_blocking=True)
+            labels = batch['labels'].to(self.device, non_blocking=True)
+            attention_mask = batch.get('attention_mask')
+            if attention_mask is not None:
+                attention_mask = attention_mask.to(self.device, non_blocking=True)
 
             with torch.cuda.amp.autocast(enabled=self.use_amp, dtype=self.amp_dtype):
-                output = self.model(input_ids)
+                output = self.model(input_ids, attention_mask=attention_mask)
                 logits = self._get_logits(output)
 
-                # Apply loss mask if present (seq2seq)
-                if 'loss_mask' in batch:
-                    loss_mask = batch['loss_mask'].to(self.device, non_blocking=True)
-                    per_token_loss = F.cross_entropy(
-                        logits.view(-1, logits.size(-1)),
-                        targets.view(-1),
-                        reduction='none'
-                    )
-                    masked_loss = per_token_loss * loss_mask.view(-1)
-                    loss = masked_loss.sum() / (loss_mask.sum() + 1e-8)
-                else:
-                    loss = self.loss_fn(
-                        logits.view(-1, logits.size(-1)),
-                        targets.view(-1)
-                    )
+                # Loss with ignore_index=-100 (prompt tokens masked automatically)
+                loss = self.loss_fn(
+                    logits.view(-1, logits.size(-1)),
+                    labels.view(-1)
+                )
 
             total_loss += loss.item()
             num_batches += 1
@@ -1349,12 +1274,40 @@ class CUDATrainer:
         logger.info(f"Throughput: {self.metrics['samples_per_second']:.1f} samples/sec")
         logger.info("=" * 70)
 
+        # Print tokenizer hash verification info
+        logger.info("")
+        logger.info("=" * 70)
+        logger.info("ARTIFACT INTEGRITY CHECK")
+        logger.info("=" * 70)
+        final_checkpoint_path = output_path / "final_model.pt"
+        logger.info(f"checkpoint_path: {final_checkpoint_path}")
+        logger.info(f"tokenizer_path:  {self.tokenizer_path}")
+        if self.tokenizer_path and os.path.exists(self.tokenizer_path):
+            tok_hash = compute_tokenizer_hash(self.tokenizer_path)
+            logger.info(f"tokenizer_sha256: {tok_hash}")
+            # Verify embedded hash matches
+            ckpt = torch.load(final_checkpoint_path, map_location='cpu', weights_only=False)
+            embedded_hash = ckpt.get('tokenizer_hash', 'NOT_EMBEDDED')
+            logger.info(f"checkpoint_embedded_tokenizer_sha256: {embedded_hash}")
+            if tok_hash == embedded_hash:
+                logger.info("[OK] Tokenizer hash MATCH - integrity verified")
+            else:
+                logger.warning("[WARN] Tokenizer hash MISMATCH - possible drift!")
+        else:
+            logger.warning("tokenizer_sha256: NOT_FOUND")
+        logger.info("=" * 70)
+
         return self.metrics
 
     def _save_checkpoint(self, path: Path, epoch: int):
-        """Save model checkpoint."""
+        """Save model checkpoint with tokenizer hash for integrity verification."""
         model_state = self.model.module.state_dict() \
             if hasattr(self.model, 'module') else self.model.state_dict()
+
+        # Compute tokenizer hash if available
+        tokenizer_hash = None
+        if self.tokenizer_path and os.path.exists(self.tokenizer_path):
+            tokenizer_hash = compute_tokenizer_hash(self.tokenizer_path)
 
         torch.save({
             'epoch': epoch,
@@ -1362,7 +1315,9 @@ class CUDATrainer:
             'optimizer_state_dict': self.optimizer.state_dict(),
             'scheduler_state_dict': self.scheduler.state_dict(),
             'metrics': self.metrics,
-            'config': self.config
+            'config': self.config,
+            'tokenizer_path': self.tokenizer_path,
+            'tokenizer_hash': tokenizer_hash,
         }, path)
 
 
@@ -1390,6 +1345,10 @@ def main():
                         help='Stop training if eval loss does not improve for N epochs (0=disabled)')
     parser.add_argument('--dropout', type=float, default=0.1, help='Dropout rate')
     parser.add_argument('--weight-decay', type=float, default=0.01, help='Weight decay for regularization')
+    parser.add_argument('--force-gpu', action='store_true', default=True, 
+                        help='Strictly require GPU for training (default: True)')
+    parser.add_argument('--no-force-gpu', action='store_false', dest='force_gpu',
+                        help='Allow fallback to CPU (NOT RECOMMENDED)')
 
     # World/RPM auxiliary loss arguments
     parser.add_argument('--world-loss-weight', type=float, default=0.1,
@@ -1600,7 +1559,29 @@ def main():
         logger.info(f"  BF16 Supported: {cuda_info['bf16_supported']}")
 
     # Load data
-    tokenizer = SimpleTokenizer(max_length=256)
+    logger.info("Building Tokenizer from Corpus...")
+    # Pre-scan dataset to build vocab
+    corpus_texts = []
+    with open(args.data, 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.strip():
+                entry = json.loads(line)
+                # Collect text from all relevant fields
+                if 'story' in entry: corpus_texts.append(entry['story'])
+                if 'text' in entry: corpus_texts.append(entry['text'])
+                if 'input' in entry: corpus_texts.append(entry['input'])
+                if 'target' in entry: corpus_texts.append(entry['target'])
+                if 'output' in entry: corpus_texts.append(entry['output'])
+
+    tokenizer = TKSTokenizer(max_length=256)
+    # tokenizer.build_from_corpus(corpus_texts) # Using static TKS vocab
+    
+    # Save Tokenizer to output dir
+    os.makedirs(args.output_dir, exist_ok=True)
+    tok_path = os.path.join(args.output_dir, "tokenizer.json")
+    tokenizer.save(tok_path)
+    logger.info(f"Tokenizer saved to {tok_path} (Vocab: {tokenizer.actual_vocab_size})")
+
     dataset = TKSDataset(args.data, tokenizer)
 
     # Split
@@ -1610,7 +1591,23 @@ def main():
 
     logger.info(f"Dataset: {len(dataset)} total, {train_size} train, {eval_size} eval")
 
-    # DataLoaders
+    # Compute target length stats from raw data (output/target field)
+    target_lengths = []
+    for entry in dataset.entries:
+        tgt = entry.get('output', entry.get('target', ''))
+        if tgt:
+            target_lengths.append(len(tgt))
+
+    if target_lengths:
+        import statistics
+        logger.info(f"Target lengths (chars): min={min(target_lengths)}, mean={statistics.mean(target_lengths):.1f}, max={max(target_lengths)}")
+    else:
+        logger.warning("No non-empty targets found in dataset!")
+
+    # DataLoaders with variable-length batching
+    pad_id = tokenizer.vocab["<PAD>"]
+    collate_fn = lambda batch: tks_collate_fn(batch, pad_id=pad_id)
+
     train_loader = DataLoader(
         train_dataset,
         batch_size=args.batch_size,
@@ -1618,7 +1615,8 @@ def main():
         num_workers=args.num_workers,
         pin_memory=torch.cuda.is_available(),
         drop_last=True,
-        persistent_workers=args.num_workers > 0
+        persistent_workers=args.num_workers > 0,
+        collate_fn=collate_fn,
     )
 
     eval_loader = DataLoader(
@@ -1626,7 +1624,8 @@ def main():
         batch_size=args.batch_size,
         shuffle=False,
         num_workers=args.num_workers,
-        pin_memory=torch.cuda.is_available()
+        pin_memory=torch.cuda.is_available(),
+        collate_fn=collate_fn,
     )
 
     # Model creation based on type
@@ -1715,6 +1714,7 @@ def main():
         'early_stopping_patience': args.early_stopping,
         'dropout': args.dropout,
         'weight_decay': args.weight_decay,
+        'force_gpu': args.force_gpu,
         # World/RPM auxiliary loss config
         'world_loss_weight': args.world_loss_weight,
         'rpm_loss_weight': args.rpm_loss_weight,
@@ -1750,7 +1750,7 @@ def main():
     }
 
     # Train
-    trainer = CUDATrainer(model, train_loader, eval_loader, config)
+    trainer = CUDATrainer(model, train_loader, eval_loader, config, tokenizer_path=tok_path)
     metrics = trainer.train(
         args.epochs,
         args.output_dir,

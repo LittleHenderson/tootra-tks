@@ -1,0 +1,51 @@
+{
+  "version": "1.0",
+  "created_by": "agent-data",
+  "source": "strg-llm-stk/tks_rpm_fm_acbe_mvr_training_pack_800.jsonl",
+  "noetic_categories": {
+    "desire_noetics": [1, 4, 7],
+    "wisdom_noetics": [5, 6],
+    "power_noetics": [8, 9]
+  },
+  "regulators": {
+    "FM_female": {
+      "noetic": 5,
+      "purpose": "reservoir/authority/expert/embodiment",
+      "description": "Query for authoritative sources, reservoirs of knowledge, domain experts",
+      "query_pattern": "Given subject X, identify 3 candidates for authority/expert/embodiment",
+      "output_format": "Candidates: (1) vetted reference source, (2) domain institution/standard, (3) experienced practitioner exemplar"
+    },
+    "FM_male": {
+      "noetic": 6,
+      "purpose": "expansion/larger set/related ideas",
+      "description": "Expand from a seed concept to related ideas and broader context",
+      "query_pattern": "Given seed X, expand to related concepts in the larger semantic space",
+      "output_format": "Expansion set with relationship types"
+    },
+    "ACBE": {
+      "noetics": [8, 9],
+      "purpose": "cause-effect chains/antecedent-consequent reasoning",
+      "description": "Build causal reasoning chains linking antecedents to consequents",
+      "query_pattern": "Given situation X, trace cause-effect chains",
+      "output_format": "Antecedent -> Mechanism -> Consequent chains"
+    },
+    "MVR": {
+      "noetics": [1, 4, 7],
+      "purpose": "activation plan/desire execution/motivation vector",
+      "description": "Generate activation plans to achieve desired outcomes",
+      "query_pattern": "Given goal X, generate activation/execution plan",
+      "output_format": "Step-wise activation plan with motivation vectors"
+    }
+  },
+  "foundation_stack_format": {
+    "notation": "F1:F5:F2",
+    "description": "Colon-separated stack of foundation noetics",
+    "usage": "Determines which regulator(s) to activate based on context"
+  },
+  "regulator_triggers": {
+    "FM_female_triggers": ["authority needed", "expert required", "source validation", "domain expertise"],
+    "FM_male_triggers": ["expansion needed", "related concepts", "broader context", "semantic space"],
+    "ACBE_triggers": ["cause analysis", "effect prediction", "chain reasoning", "consequence tracing"],
+    "MVR_triggers": ["goal pursuit", "action planning", "motivation", "execution steps"]
+  }
+}

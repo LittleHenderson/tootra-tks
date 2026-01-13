@@ -95,7 +95,7 @@ class EpisodeRunner:
 
         try:
             from .router import Router
-            self.router = Router(self.config.router)
+            self.router = Router()
         except ImportError:
             logger.warning("Router module not available")
 
@@ -241,6 +241,101 @@ class EpisodeRunner:
             return self.rumination.get_stats()
         return None
 
+    def _to_router_mode(self, mode: OperationalMode):
+        try:
+            from .router import OperationalMode as RouterMode
+        except ImportError:
+            return None
+        if isinstance(mode, RouterMode):
+            return mode
+        try:
+            return RouterMode[mode.name]
+        except Exception:
+            return RouterMode.NORMAL
+
+    def _build_routing_context(
+        self,
+        episode_id: str,
+        input: EpisodeInput,
+        mode: OperationalMode,
+    ):
+        try:
+            from .router import RoutingContext
+        except ImportError:
+            return None
+        router_mode = self._to_router_mode(mode)
+        if router_mode is None:
+            return None
+        allowed_tools = input.context.get("allowed_tools")
+        allowed_paths = input.context.get("allowed_paths")
+        return RoutingContext(
+            episode_id=episode_id,
+            current_mode=router_mode,
+            tool_calls_made=0,
+            current_depth=0,
+            current_breadth=0,
+            uncertainty=float(input.context.get("uncertainty", 0.0)),
+            stakes=float(input.context.get("stakes", 0.0)),
+            alignment=float(input.context.get("alignment", 1.0)),
+            has_evidence=bool(input.evidence_ids),
+            clearance_tokens=list(input.context.get("clearance_tokens", [])),
+            allowed_tools=set(allowed_tools) if allowed_tools else None,
+            allowed_paths=set(allowed_paths) if allowed_paths else None,
+            network_enabled=bool(input.context.get("network_enabled", False)),
+            sandbox_enabled=bool(input.context.get("sandbox_enabled", True)),
+        )
+
+    def _coerce_prerequisite(self, prereq: Any):
+        try:
+            from .router import Prerequisite, PrerequisiteType
+        except ImportError:
+            return None
+        if isinstance(prereq, Prerequisite):
+            return prereq
+        if not isinstance(prereq, dict):
+            return None
+        type_value = prereq.get("type") or prereq.get("prereq_type") or "knowledge"
+        type_map = {
+            "information": PrerequisiteType.KNOWLEDGE,
+            "knowledge": PrerequisiteType.KNOWLEDGE,
+            "compute": PrerequisiteType.COMPUTATION,
+            "computation": PrerequisiteType.COMPUTATION,
+            "state_update": PrerequisiteType.STATE_UPDATE,
+            "verification": PrerequisiteType.VERIFICATION,
+            "verify": PrerequisiteType.VERIFICATION,
+            "synthesis": PrerequisiteType.SYNTHESIS,
+            "external": PrerequisiteType.EXTERNAL_ACTION,
+        }
+        prereq_type = type_map.get(str(type_value), PrerequisiteType.KNOWLEDGE)
+        return Prerequisite(
+            prereq_id=prereq.get("id") or f"prereq_{uuid.uuid4().hex[:8]}",
+            prereq_type=prereq_type,
+            description=prereq.get("description", ""),
+            required_inputs=prereq.get("required_inputs", {}),
+            constraints=prereq.get("constraints", {}),
+            priority=prereq.get("priority", 1),
+            parent_node_id=prereq.get("parent_node_id"),
+            depth=prereq.get("depth", 0),
+            evidence_required=prereq.get("evidence_required", False),
+            estimated_complexity=prereq.get("estimated_complexity", 0.5),
+        )
+
+    def _decision_to_dict(self, decision: Any) -> Dict[str, Any]:
+        if hasattr(decision, "to_dict"):
+            return decision.to_dict()
+        if isinstance(decision, dict):
+            return decision
+        return {"decision": str(decision)}
+
+    def _extract_tool_name(self, tool_call: Any) -> Optional[str]:
+        if isinstance(tool_call, str):
+            return tool_call
+        if hasattr(tool_call, "tool_name"):
+            return tool_call.tool_name
+        if isinstance(tool_call, dict):
+            return tool_call.get("tool_name")
+        return None
+
     def run_episode(self, input: EpisodeInput) -> EpisodeResult:
         """
         Run a complete episode.
@@ -309,27 +404,46 @@ class EpisodeRunner:
 
         # 5. Route to tools
         tool_calls = []
+        routing_context = None
         if self.router:
+            routing_context = self._build_routing_context(episode_id, input, mode)
             for prereq in rpm_plan.get("prerequisites", []):
-                decision = self.router.route(prereq, input.context, mode)
+                prereq_obj = self._coerce_prerequisite(prereq)
+                if prereq_obj is None or routing_context is None:
+                    continue
+                routing_context.current_depth = prereq_obj.depth
+                decision = self.router.route(prereq_obj, routing_context)
                 tool_calls.append(decision)
-                trace["stages"].append({"stage": "ROUTER_DECISION", "decision": decision})
-                self._log_event("ROUTER_DECISION", episode_id, decision)
+                decision_payload = self._decision_to_dict(decision)
+                trace["stages"].append({"stage": "ROUTER_DECISION", "decision": decision_payload})
+                self._log_event("ROUTER_DECISION", episode_id, decision_payload)
+                if hasattr(decision, "is_allowed") and decision.is_allowed:
+                    routing_context.tool_calls_made += 1
 
         # 6. Execute tools
         tool_results = []
         for call in tool_calls:
+            tool_name = self._extract_tool_name(call)
+            if not tool_name or tool_name == "none":
+                violations.append("TOOL_BLOCKED:none")
+                continue
+
+            if hasattr(call, "is_allowed") and not call.is_allowed:
+                violations.append(f"TOOL_BLOCKED:{tool_name}")
+                continue
+
             # Governance check before each tool
             if self.governance and self._is_risky_tool(call):
                 gov_check = self._check_governance_tool(call, mode)
                 if gov_check.get("decision") != "ALLOW":
-                    violations.append(f"TOOL_BLOCKED:{call.get('tool_name')}")
+                    violations.append(f"TOOL_BLOCKED:{tool_name}")
                     continue
 
             if self.executor and not self.config.dry_run:
+                params = call.action_params if hasattr(call, "action_params") else call.get("params", {})
                 result = self.executor.execute(
-                    call.get("tool_name"),
-                    call.get("params", {}),
+                    tool_name,
+                    params,
                     input.context
                 )
                 tool_results.append(result)
@@ -358,8 +472,9 @@ class EpisodeRunner:
 
         # 9. Write to memory
         if self.memory_store and verification.get("status") == "PASS":
-            self.memory_store.store(episode_id, tks_packet, evidence_ids)
-            self._log_event("MEMORY_WRITE", episode_id, {"packet": tks_packet})
+            packet_id = self.memory_store.store(episode_id, tks_packet, evidence_ids)
+            trace["stages"].append({"stage": "MEMORY_WRITE", "packet_id": packet_id})
+            self._log_event("MEMORY_WRITE", episode_id, {"packet": tks_packet, "packet_id": packet_id})
 
         # 10. Compute reward
         reward = None
@@ -445,16 +560,17 @@ class EpisodeRunner:
         )
         return result.to_dict() if hasattr(result, 'to_dict') else {"decision": "ALLOW"}
 
-    def _check_governance_tool(self, tool_call: Dict, mode: OperationalMode) -> Dict:
+    def _check_governance_tool(self, tool_call: Any, mode: OperationalMode) -> Dict:
         """Check governance before tool execution."""
         if not self.governance:
             return {"decision": "ALLOW"}
         return {"decision": "ALLOW"}  # Simplified for now
 
-    def _is_risky_tool(self, tool_call: Dict) -> bool:
+    def _is_risky_tool(self, tool_call: Any) -> bool:
         """Check if tool is risky (irreversible, code exec, etc.)."""
         risky_tools = {"file_delete", "code_execute", "security_change", "money_transfer"}
-        return tool_call.get("tool_name") in risky_tools
+        tool_name = self._extract_tool_name(tool_call)
+        return tool_name in risky_tools
 
     def _generate_rpm_plan(self, input: EpisodeInput, mode: OperationalMode) -> Dict:
         """Generate RPM prerequisite plan."""
@@ -463,17 +579,36 @@ class EpisodeRunner:
             "goal": input.goal,
             "mode": mode.value,
             "prerequisites": [
-                {"id": "prereq_1", "type": "information", "description": f"Gather info for: {input.goal}"},
+                {
+                    "id": "prereq_1",
+                    "type": "information",
+                    "description": f"Gather info for: {input.goal}",
+                    "required_inputs": {"question": input.goal},
+                },
             ],
             "depth": 1,
         }
 
     def _generate_output(self, input: EpisodeInput, tool_results: List, verification: Dict) -> Any:
         """Generate episode output from tool results."""
+        answer = None
+        for result in tool_results:
+            if not isinstance(result, dict):
+                continue
+            output = result.get("output")
+            if isinstance(output, dict):
+                candidate = output.get("answer") or output.get("result") or output.get("value")
+                if candidate is not None and candidate != "":
+                    answer = candidate
+                    break
+            elif isinstance(output, str) and output.strip():
+                answer = output.strip()
+                break
         return {
             "goal": input.goal,
             "tool_count": len(tool_results),
             "verification_status": verification.get("status"),
+            "answer": answer,
         }
 
     def _generate_tks_packet(self, input: EpisodeInput, output: Any, evidence_ids: List[str]) -> str:

@@ -16,19 +16,14 @@
       "Edit(C:\\Users\\wakil\\Downloads\\Everthing-Tootra-TKS/**)",
       "Glob(C:\\Users\\wakil\\Downloads\\Everthing-Tootra-TKS/**)",
       "Grep(C:\\Users\\wakil\\Downloads\\Everthing-Tootra-TKS/**)",
-      "Read(C:\\Users\\wakil\\Downloads\\Everthing-Tootra-TKS\\.auto-claude\\roadmap/**)",
-      "Write(C:\\Users\\wakil\\Downloads\\Everthing-Tootra-TKS\\.auto-claude\\roadmap/**)",
-      "Edit(C:\\Users\\wakil\\Downloads\\Everthing-Tootra-TKS\\.auto-claude\\roadmap/**)",
+      "Read(C:\\Users\\wakil\\Downloads\\Everthing-Tootra-TKS\\.auto-claude\\specs\\007-pending/**)",
+      "Write(C:\\Users\\wakil\\Downloads\\Everthing-Tootra-TKS\\.auto-claude\\specs\\007-pending/**)",
+      "Edit(C:\\Users\\wakil\\Downloads\\Everthing-Tootra-TKS\\.auto-claude\\specs\\007-pending/**)",
       "Bash(*)",
       "WebFetch(*)",
       "WebSearch(*)",
       "mcp__context7__resolve-library-id(*)",
-      "mcp__context7__get-library-docs(*)",
-      "mcp__graphiti-memory__search_nodes(*)",
-      "mcp__graphiti-memory__search_facts(*)",
-      "mcp__graphiti-memory__add_episode(*)",
-      "mcp__graphiti-memory__get_episodes(*)",
-      "mcp__graphiti-memory__get_entity_edge(*)"
+      "mcp__context7__get-library-docs(*)"
     ]
   }
 }

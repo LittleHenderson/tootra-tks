@@ -85,6 +85,7 @@ python scripts/train_cuda.py ^
     --epochs %EPOCHS% ^
     --batch-size %BATCH_SIZE% ^
     --learning-rate %LEARNING_RATE% ^
+    --force-gpu ^
     --use-bf16
 
 if errorlevel 1 (

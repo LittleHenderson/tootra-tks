@@ -1,0 +1,117 @@
+{
+  "version": "1.0",
+  "source": "narrative/constants.py (TKS v7.4 Formal Mathematical Manual, TKS_Narrative_Semantics_Rulebook_v1.0.md)",
+  "count": 11,
+  "operators": {
+    "+T": {
+      "symbol": "+T",
+      "name": "Association (Tootra)",
+      "semantic": "together with",
+      "description": "Combine or link two ideas so they coexist and support each other",
+      "symmetric": true
+    },
+    "-T": {
+      "symbol": "-T",
+      "name": "Disassociation (Tootra)",
+      "semantic": "without",
+      "description": "Sever or remove the influence of the second idea from the first",
+      "symmetric": false
+    },
+    "*T": {
+      "symbol": "*T",
+      "alt_symbol": "xT",
+      "name": "Intensification (Tootra)",
+      "semantic": "intensified by",
+      "description": "Amplify the interaction so the effect is stronger or fused",
+      "symmetric": true
+    },
+    "/T": {
+      "symbol": "/T",
+      "name": "Opposition (Tootra)",
+      "semantic": "in conflict with",
+      "description": "Create contrast or tension between two ideas",
+      "symmetric": false
+    },
+    "o": {
+      "symbol": "o",
+      "alt_symbol": "∘",
+      "name": "Composition",
+      "semantic": "then",
+      "description": "Sequential composition - A then B",
+      "symmetric": false
+    },
+    "->": {
+      "symbol": "->",
+      "alt_symbol": "→",
+      "name": "Causal",
+      "semantic": "causes",
+      "description": "A causes B (causal relationship)",
+      "symmetric": false
+    },
+    "<-": {
+      "symbol": "<-",
+      "alt_symbol": "←",
+      "name": "Reverse Causal",
+      "semantic": "caused by",
+      "description": "A is caused by B (reverse causal)",
+      "symmetric": false
+    },
+    "+": {
+      "symbol": "+",
+      "name": "Association (Basic)",
+      "semantic": "and",
+      "description": "Basic conjunction/association",
+      "symmetric": true
+    },
+    "-": {
+      "symbol": "-",
+      "name": "Subtraction (Basic)",
+      "semantic": "minus",
+      "description": "Basic subtraction/removal",
+      "symmetric": false
+    },
+    "*": {
+      "symbol": "*",
+      "name": "Multiplication (Basic)",
+      "semantic": "times",
+      "description": "Basic multiplication/intensification",
+      "symmetric": true
+    },
+    "/": {
+      "symbol": "/",
+      "name": "Division (Basic)",
+      "semantic": "divided by",
+      "description": "Basic division/opposition",
+      "symmetric": false
+    }
+  },
+  "allowed_operators": ["+T", "-T", "*T", "/T", "o", "->", "<-", "+", "-", "*", "/"],
+  "verb_mappings": {
+    "combining": "+T",
+    "with": "+T",
+    "and": "+T",
+    "together": "+T",
+    "combined": "+T",
+    "without": "-T",
+    "removes": "-T",
+    "lacks": "-T",
+    "minus": "-T",
+    "amplifies": "*T",
+    "intensifies": "*T",
+    "multiplies": "*T",
+    "modulates": "*T",
+    "opposes": "/T",
+    "fights": "/T",
+    "divides": "/T",
+    "conflicts": "/T",
+    "causes": "->",
+    "leads": "->",
+    "results": "->",
+    "triggers": "->",
+    "produces": "->",
+    "transforms": "->",
+    "then": "o",
+    "after": "o",
+    "followed": "o"
+  }
+}

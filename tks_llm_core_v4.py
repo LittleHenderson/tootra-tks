@@ -131,6 +131,59 @@ try:
 except Exception:
     pass
 
+# Optional: DPS Gating (Depth Permission System - learnable novelty gating)
+DPS_GATING_AVAILABLE = False
+DPSGatingLayer = None
+DPSConfig = None
+DPSState = None
+try:
+    import importlib.util
+    import os
+    import sys
+    _dps_path = os.path.join(os.path.dirname(__file__), "tks_features", "dps_gating.py")
+    if os.path.exists(_dps_path):
+        _spec = importlib.util.spec_from_file_location("dps_gating", _dps_path)
+        _module = importlib.util.module_from_spec(_spec)
+        sys.modules["dps_gating"] = _module
+        _spec.loader.exec_module(_module)
+        DPSGatingLayer = _module.DPSGatingLayer
+        DPSConfig = _module.DPSConfig
+        DPSState = _module.DPSState
+        DPS_GATING_AVAILABLE = True
+except Exception:
+    pass
+
+# Optional: Governance Rails (rule-based safety gates - no learnable params)
+GOVERNANCE_RAILS_AVAILABLE = False
+GovernanceRails = None
+GovernanceConfig = None
+ActionProfile = None
+GateDecision = None
+GovernanceBlockError = None
+GovernancePauseError = None
+enforce_governance = None
+try:
+    import importlib.util
+    import os
+    import sys
+    _gov_path = os.path.join(os.path.dirname(__file__), "tks_features", "governance_rails.py")
+    if os.path.exists(_gov_path):
+        _spec = importlib.util.spec_from_file_location("governance_rails", _gov_path)
+        _module = importlib.util.module_from_spec(_spec)
+        sys.modules["governance_rails"] = _module
+        _spec.loader.exec_module(_module)
+        GovernanceRails = _module.GovernanceRails
+        GovernanceConfig = _module.GovernanceConfig
+        ActionProfile = _module.ActionProfile
+        GateDecision = _module.GateDecision
+        # NEW: Import enforcement mechanisms
+        GovernanceBlockError = _module.GovernanceBlockError
+        GovernancePauseError = _module.GovernancePauseError
+        enforce_governance = _module.enforce_governance
+        GOVERNANCE_RAILS_AVAILABLE = True
+except Exception:
+    pass
+
 
 @dataclass
 class TKSNoeticLMConfig:
@@ -185,6 +238,27 @@ class TKSNoeticLMConfig:
     world_bridge_mode: str = "hybrid"  # "explicit", "foundation", "hybrid"
     world_bridge_rank: int = 2
     world_bridge_max_energy: float = 0.3
+    # DPS Gating config (Depth Permission System - learnable novelty gating)
+    use_dps_gating: bool = False  # Default OFF for backward compatibility
+    dps_n_tokens_threshold: int = 5  # COUNT tokens needed for unlock
+    dps_count_threshold: float = 0.45  # NW threshold for COUNT classification
+    dps_heavy_threshold: float = 0.70  # NW threshold for HEAVY classification
+    dps_cooldown_k: int = 10  # Episodes after unlock
+    dps_max_depth: int = 5  # Hard cap on p_max
+    dps_initial_p_max: int = 2  # Starting depth
+    dps_hidden_dim: int = 64  # Hidden dimension for networks
+    dps_use_adaptive_iteration: bool = True  # Control iteration count based on depth
+    # Governance Rails config (rule-based safety gates)
+    use_governance_rails: bool = False  # Default OFF for backward compatibility
+    governance_hs_threshold: float = 0.45  # High-Stakes threshold
+    governance_critical_threshold: float = 0.70  # Critical threshold
+    governance_rpm_depth_cap_normal: int = 3  # Depth cap in Normal mode
+    governance_rpm_depth_cap_high_stakes: int = 2  # Depth cap in High-Stakes
+    governance_rpm_breadth_cap: int = 5  # Breadth cap per node
+    governance_tool_call_cap_normal: int = 12  # Tool cap in Normal
+    governance_tool_call_cap_high_stakes: int = 8  # Tool cap in High-Stakes
+    # NEW: Enforcement mode - when True, governance BLOCK raises GovernanceBlockError
+    enforce_safety: bool = True  # Recommended: True for production
 
 
 class NoeticTokenEmbedding(nn.Module):
@@ -485,7 +559,7 @@ class CausalFractalAttentionMechanism(nn.Module):
             keys = self.key_projs[s](x_proj)
             attn_scores = torch.matmul(query, keys.transpose(-2, -1)) / (dim ** 0.5)
             mask = key_pos.unsqueeze(0) <= q_pos.unsqueeze(1)
-            attn_scores = attn_scores.masked_fill(~mask, -1e9)
+            attn_scores = attn_scores.masked_fill(~mask, -1e4)
             attn_weights = F.softmax(attn_scores, dim=-1)
             attn_weights = attn_weights * mask.unsqueeze(0)
             norm = attn_weights.sum(dim=-1, keepdim=True)
@@ -749,6 +823,39 @@ class TKSNoeticLM(nn.Module):
                 mode=config.world_bridge_mode,
             )
 
+        # DPS Gating (Depth Permission System - learnable novelty gating)
+        # Applied after RPM gating, before final output projection
+        self.dps_layer = None
+        self._dps_state = None
+        if config.use_dps_gating and DPS_GATING_AVAILABLE:
+            dps_config = DPSConfig(
+                n_tokens_threshold=config.dps_n_tokens_threshold,
+                count_threshold=config.dps_count_threshold,
+                heavy_threshold=config.dps_heavy_threshold,
+                cooldown_k=config.dps_cooldown_k,
+                max_depth=config.dps_max_depth,
+                initial_p_max=config.dps_initial_p_max,
+                hidden_dim=config.dps_hidden_dim,
+                use_adaptive_iteration=config.dps_use_adaptive_iteration,
+            )
+            self.dps_layer = DPSGatingLayer(dps_config, noetic_dim=self.noetic_dim)
+            self._dps_state = DPSState(p_max=config.dps_initial_p_max)
+
+        # Governance Rails (rule-based safety gates - NO learnable parameters)
+        # Applied before/after actions to enforce non-bypassable safety constraints
+        self.governance = None
+        if config.use_governance_rails and GOVERNANCE_RAILS_AVAILABLE:
+            governance_config = GovernanceConfig(
+                hs_threshold=config.governance_hs_threshold,
+                critical_threshold=config.governance_critical_threshold,
+                rpm_depth_cap_normal=config.governance_rpm_depth_cap_normal,
+                rpm_depth_cap_high_stakes=config.governance_rpm_depth_cap_high_stakes,
+                rpm_breadth_cap=config.governance_rpm_breadth_cap,
+                tool_call_cap_normal=config.governance_tool_call_cap_normal,
+                tool_call_cap_high_stakes=config.governance_tool_call_cap_high_stakes,
+            )
+            self.governance = GovernanceRails(governance_config)
+
         # Training step counter for temperature annealing
         self._training_step = 0
 
@@ -819,6 +926,13 @@ class TKSNoeticLM(nn.Module):
                 self.nl_retriever = None
                 pass
 
+        # NL Projection layer for mapping noetic_dim (40D) to retriever dim (384D)
+        # FIXED: Previously created in forward() which broke multi-GPU training
+        self.nl_projection = None
+        if config.use_nl_retriever:
+            self.nl_projection = nn.Linear(self.noetic_dim, 384, bias=False)
+            nn.init.xavier_uniform_(self.nl_projection.weight, gain=0.1)
+
         if config.use_attractor:
             if config.use_stable_attractor:
                 self.attractor = StableAttractorLayer(
@@ -886,6 +1000,70 @@ class TKSNoeticLM(nn.Module):
             "blocks": block_interpretations,
         }
 
+    def get_dps_state(self) -> Optional["DPSState"]:
+        """Get current DPS state. Returns None if DPS is not enabled."""
+        return self._dps_state
+
+    def set_dps_state(self, state: "DPSState") -> None:
+        """Set DPS state. Only works if DPS is enabled."""
+        if self.dps_layer is not None:
+            self._dps_state = state
+
+    def reset_dps_state(self) -> None:
+        """Reset DPS state to initial values. Only works if DPS is enabled."""
+        if self.dps_layer is not None and DPS_GATING_AVAILABLE:
+            self._dps_state = DPSState(p_max=self.config.dps_initial_p_max)
+
+    def check_governance(
+        self,
+        action: "ActionProfile",
+        uncertainty: float = 0.0,
+        stakes: float = 0.0,
+        alignment: float = 1.0,
+        enforce: Optional[bool] = None,
+        raise_on_pause: bool = False,
+        **kwargs,
+    ) -> Optional["GateResult"]:
+        """
+        Check governance rails for a proposed action.
+
+        Args:
+            action: ActionProfile describing the proposed action
+            uncertainty: Uncertainty score [0, 1]
+            stakes: Stakes score [0, 1]
+            alignment: Alignment score [0, 1]
+            enforce: If True, raise GovernanceBlockError on BLOCK decision.
+                     Defaults to config.enforce_safety.
+            raise_on_pause: If True and enforce=True, also raise on PAUSE.
+            **kwargs: Additional context for governance check
+
+        Returns:
+            GateResult with decision (ALLOW/PAUSE/BLOCK), or None if governance not enabled
+
+        Raises:
+            GovernanceBlockError: When enforce=True and decision is BLOCK
+            GovernancePauseError: When enforce=True, raise_on_pause=True, and decision is PAUSE
+        """
+        if self.governance is None:
+            return None
+
+        result = self.governance.check_action(
+            action=action,
+            uncertainty=uncertainty,
+            stakes=stakes,
+            alignment=alignment,
+            **kwargs,
+        )
+
+        # Determine whether to enforce
+        should_enforce = enforce if enforce is not None else self.config.enforce_safety
+
+        # Enforce if requested (raises exception on BLOCK)
+        if should_enforce and enforce_governance is not None:
+            enforce_governance(result, raise_on_pause=raise_on_pause)
+
+        return result
+
     def _retrieve_equation_for_nl(
         self,
         hidden_states: torch.Tensor,
@@ -926,16 +1104,12 @@ class TKSNoeticLM(nn.Module):
         # 2. Use the hidden states as-is and pad/repeat
         # 3. Skip this for now and document the requirement
 
-        # For this implementation, let's create a simple projection on-the-fly
-        # This is not ideal but allows the integration to work
-        if not hasattr(self, '_nl_projection'):
-            # Create projection layer on first call
-            self._nl_projection = nn.Linear(self.noetic_dim, 384, bias=False).to(device)
-            # Initialize with small random weights
-            nn.init.xavier_uniform_(self._nl_projection.weight, gain=0.1)
+        # Use the properly registered projection layer from __init__
+        if self.nl_projection is None:
+            return None, 0.0
 
-        # Project to 384D
-        nl_embedding = self._nl_projection(pooled)  # [batch, 384]
+        # Project to 384D using registered module (works with multi-GPU)
+        nl_embedding = self.nl_projection(pooled)  # [batch, 384]
 
         # Normalize
         nl_embedding = F.normalize(nl_embedding, p=2, dim=-1)
@@ -1124,6 +1298,19 @@ class TKSNoeticLM(nn.Module):
             rpm_out = self.rpm_gating(x, goal_state=goal_state, target_foundation=target_foundation)
             x = rpm_out["gated_output"]
 
+        # DPS Gating: Apply Depth Permission System after RPM gating
+        # This is the learnable novelty-based gating system
+        dps_trace = None
+        if self.dps_layer is not None and self._dps_state is not None:
+            x, self._dps_state, dps_trace = self.dps_layer(
+                x,
+                self._dps_state,
+                memory_embeddings=None,  # Can be provided externally if needed
+                verifier_signals=None,   # Can be provided externally if needed
+                reward_signals=None,     # Can be provided externally if needed
+                episode_id="forward_pass",
+            )
+
         logits = self.output_projection(x)
 
         # Build standardized trace if requested
@@ -1207,6 +1394,10 @@ class TKSNoeticLM(nn.Module):
             if world_bridge_trace is not None:
                 trace["world_bridge"] = world_bridge_trace
 
+            # Add DPS gating trace if enabled
+            if dps_trace is not None:
+                trace["dps"] = dps_trace
+
             # Add routing stability metrics if enabled
             if self.config.use_stable_routing and all_routing_metrics:
                 trace["routing_stability"] = {
@@ -1241,6 +1432,10 @@ class TKSNoeticLM(nn.Module):
             out["rpm_gate"] = rpm_out["rpm_gate"]
         if operator_out is not None:
             out["operator_core_output"] = operator_out
+        # Add DPS state and trace
+        if self.dps_layer is not None and self._dps_state is not None:
+            out["dps_state"] = self._dps_state
+            out["dps_depth_allowed"] = self._dps_state.p_max
         # Add routing auxiliary loss for training
         if total_routing_aux_loss is not None:
             out["routing_aux_loss"] = total_routing_aux_loss
@@ -1375,4 +1570,19 @@ __all__ = [
     "get_trace_schema_version",
     "TRACE_SCHEMA_VERSION",
     "NOETIC_BASIS_AVAILABLE",
+    # DPS Gating exports
+    "DPS_GATING_AVAILABLE",
+    "DPSGatingLayer",
+    "DPSConfig",
+    "DPSState",
+    # Governance Rails exports
+    "GOVERNANCE_RAILS_AVAILABLE",
+    "GovernanceRails",
+    "GovernanceConfig",
+    "ActionProfile",
+    "GateDecision",
+    # Governance Enforcement exports
+    "GovernanceBlockError",
+    "GovernancePauseError",
+    "enforce_governance",
 ]

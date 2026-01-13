@@ -45,6 +45,175 @@ import torch.nn as nn
 
 
 # =============================================================================
+# MEMORY BANK FOR NOVELTY DETECTION
+# =============================================================================
+
+class MemoryBank:
+    """
+    Circular buffer storing thought embeddings for novelty detection.
+
+    The memory bank enables TRUE earned depth by tracking what the model
+    has already "thought about". New thoughts are compared against stored
+    memories - high similarity means low novelty, preventing depth unlock.
+
+    Usage:
+        bank = MemoryBank(max_size=1000, embedding_dim=256)
+        similarity = bank.compute_similarity(current_embedding)
+        bank.add(current_embedding)
+
+    Features:
+        - Circular buffer (FIFO when full)
+        - Batch add/query support
+        - Decay factor for older memories (optional)
+    """
+
+    def __init__(
+        self,
+        max_size: int = 1000,
+        embedding_dim: int = 256,
+        similarity_threshold: float = 0.85,
+        use_decay: bool = False,
+        decay_factor: float = 0.99,
+    ):
+        self.max_size = max_size
+        self.embedding_dim = embedding_dim
+        self.similarity_threshold = similarity_threshold
+        self.use_decay = use_decay
+        self.decay_factor = decay_factor
+
+        self._embeddings: Optional[torch.Tensor] = None
+        self._weights: Optional[torch.Tensor] = None
+        self._index = 0
+        self._size = 0
+        self._device = None
+
+    @property
+    def size(self) -> int:
+        return self._size
+
+    @property
+    def is_empty(self) -> bool:
+        return self._size == 0
+
+    @property
+    def embeddings(self) -> Optional[torch.Tensor]:
+        if self._size == 0:
+            return None
+        return self._embeddings[:self._size]
+
+    def _ensure_storage(self, device: torch.device, dtype: torch.dtype):
+        if self._embeddings is None or self._device != device:
+            self._embeddings = torch.zeros(
+                self.max_size, self.embedding_dim,
+                device=device, dtype=dtype
+            )
+            self._weights = torch.ones(self.max_size, device=device, dtype=dtype)
+            self._device = device
+            self._index = 0
+            self._size = 0
+
+    def add(self, embedding: torch.Tensor, normalize: bool = True):
+        """Add embedding(s) to memory bank."""
+        if embedding.dim() == 1:
+            embedding = embedding.unsqueeze(0)
+
+        batch_size = embedding.shape[0]
+        self._ensure_storage(embedding.device, embedding.dtype)
+
+        if normalize:
+            embedding = torch.nn.functional.normalize(embedding, p=2, dim=-1)
+
+        if self.use_decay and self._size > 0:
+            self._weights[:self._size] *= self.decay_factor
+
+        for i in range(batch_size):
+            self._embeddings[self._index] = embedding[i]
+            self._weights[self._index] = 1.0
+            self._index = (self._index + 1) % self.max_size
+            self._size = min(self._size + 1, self.max_size)
+
+    def compute_similarity(self, query: torch.Tensor, normalize: bool = True) -> torch.Tensor:
+        """Compute max similarity of query to stored memories."""
+        if query.dim() == 1:
+            query = query.unsqueeze(0)
+
+        batch_size = query.shape[0]
+
+        if self._size == 0:
+            return torch.zeros(batch_size, device=query.device, dtype=query.dtype)
+
+        if normalize:
+            query = torch.nn.functional.normalize(query, p=2, dim=-1)
+
+        stored = self._embeddings[:self._size]
+        similarities = torch.matmul(query, stored.t())
+
+        if self.use_decay:
+            weights = self._weights[:self._size]
+            similarities = similarities * weights.unsqueeze(0)
+
+        max_sim, _ = similarities.max(dim=-1)
+        return max_sim
+
+    def compute_novelty_factor(self, query: torch.Tensor) -> torch.Tensor:
+        """Compute (1 - similarity) for DPS novelty calculation."""
+        similarity = self.compute_similarity(query)
+        return 1.0 - similarity
+
+    def clear(self):
+        """Clear all stored memories."""
+        self._size = 0
+        self._index = 0
+        if self._weights is not None:
+            self._weights.fill_(1.0)
+
+    def get_stats(self) -> Dict:
+        """Get memory bank statistics."""
+        stats = {
+            "size": self._size,
+            "max_size": self.max_size,
+            "fill_ratio": self._size / self.max_size if self.max_size > 0 else 0,
+        }
+        if self._size > 1 and self._embeddings is not None:
+            stored = self._embeddings[:self._size]
+            sim_matrix = torch.matmul(stored, stored.t())
+            mask = ~torch.eye(self._size, dtype=torch.bool, device=stored.device)
+            avg_sim = sim_matrix[mask].mean().item()
+            stats["avg_internal_similarity"] = avg_sim
+            stats["diversity"] = 1.0 - avg_sim
+        return stats
+
+    def state_dict(self) -> Dict:
+        """Serialize for checkpointing."""
+        return {
+            "embeddings": self._embeddings[:self._size].cpu() if self._size > 0 else None,
+            "weights": self._weights[:self._size].cpu() if self._size > 0 else None,
+            "index": self._index,
+            "size": self._size,
+            "config": {
+                "max_size": self.max_size,
+                "embedding_dim": self.embedding_dim,
+            }
+        }
+
+    def load_state_dict(self, state: Dict, device: torch.device = None):
+        """Load from checkpoint."""
+        cfg = state.get("config", {})
+        self.max_size = cfg.get("max_size", self.max_size)
+        self.embedding_dim = cfg.get("embedding_dim", self.embedding_dim)
+        self._index = state["index"]
+        self._size = state["size"]
+
+        if state["embeddings"] is not None:
+            dev = device or self._device or torch.device("cpu")
+            self._embeddings = torch.zeros(self.max_size, self.embedding_dim, device=dev)
+            self._embeddings[:self._size] = state["embeddings"].to(dev)
+            self._weights = torch.ones(self.max_size, device=dev)
+            self._weights[:self._size] = state["weights"].to(dev)
+            self._device = dev
+
+
+# =============================================================================
 # CONSTANTS
 # =============================================================================
 
@@ -56,7 +225,7 @@ DEFAULT_HEAVY_THRESHOLD = 0.35  # Was 0.70
 DEFAULT_COUNT_THRESHOLD = 0.20  # Was 0.45
 DEFAULT_TOKENS_FOR_UNLOCK = 3   # Was 5 (faster accumulation)
 DEFAULT_COOLDOWN_EPISODES = 10
-DEFAULT_MAX_DEPTH = 5
+DEFAULT_MAX_DEPTH = 8           # INCREASED from 5 to 8
 DEFAULT_INITIAL_P_MAX = 2
 
 
@@ -122,6 +291,11 @@ class DPSConfig:
 
     # Training config
     dropout: float = 0.1
+
+    # I-based earned depth mode
+    # When True: NW = I × (1-S), ignoring V (validity is hard to learn from patterns)
+    # When False: NW = V × I × (1-S) (original formula)
+    use_impact_only_nw: bool = True  # Default to I-based (proven to work)
 
 
 # =============================================================================
@@ -271,7 +445,8 @@ class NoveltyWeight:
     """
     Complete novelty weight computation.
 
-    NW = V x I x (1 - S)
+    Standard: NW = V x I x (1 - S)
+    I-based:  NW = I x (1 - S)  (when use_impact_only_nw=True)
     """
     validity: ValidityScore
     impact: ImpactScore
@@ -279,18 +454,80 @@ class NoveltyWeight:
 
     @property
     def value(self) -> float:
-        """Compute NW = V x I x (1 - S)"""
+        """Compute NW = V x I x (1 - S) (standard formula)"""
         return self.validity.value * self.impact.value * (1.0 - self.similarity.value)
+
+    def value_with_config(self, config: DPSConfig) -> float:
+        """Compute NW using config settings (supports I-based mode)."""
+        if config.use_impact_only_nw:
+            # I-based: NW = I x (1 - S)
+            return self.impact.value * (1.0 - self.similarity.value)
+        else:
+            # Standard: NW = V x I x (1 - S)
+            return self.validity.value * self.impact.value * (1.0 - self.similarity.value)
 
     def classify(self, config: DPSConfig) -> NoveltyClass:
         """Classify this novelty weight."""
-        nw = self.value
+        nw = self.value_with_config(config)
         if nw >= config.heavy_threshold:
             return NoveltyClass.HEAVY
         elif nw >= config.count_threshold:
             return NoveltyClass.COUNT
         else:
             return NoveltyClass.NOCOUNT
+
+
+# =============================================================================
+# MEMORY BANK (for True Earned Depth)
+# =============================================================================
+
+class MemoryBank(nn.Module):
+    """
+    Circular buffer storing thought embeddings to track 'what has been thought'.
+    
+    Used by DPS to compute Similarity (S). If a thought is similar to one
+    in the bank, S is high, Novelty (NW) is low, and Depth is NOT earned.
+    """
+    def __init__(self, capacity: int = 1000, dim: int = 256):
+        super().__init__()
+        self.capacity = capacity
+        self.dim = dim
+        self.ptr = 0
+        self.size = 0
+        
+        # Buffer: [capacity, dim]
+        # We use a register_buffer so it's saved with state_dict but not trained via SGD
+        self.register_buffer("storage", torch.zeros(capacity, dim))
+        
+    def add(self, x: torch.Tensor):
+        """
+        Add batch of embeddings to memory.
+        x: [batch, dim] (usually pooled thought vectors)
+        """
+        batch_size = x.shape[0]
+        
+        # Detach to prevent gradient flow into memory history
+        x = x.detach()
+        
+        # Normalize for cosine similarity usage later
+        x = torch.nn.functional.normalize(x, p=2, dim=-1)
+        
+        # Simple FIFO / Circular buffer implementation
+        # For batch > 1, we add sequentially
+        for i in range(batch_size):
+            self.storage[self.ptr] = x[i]
+            self.ptr = (self.ptr + 1) % self.capacity
+            self.size = min(self.size + 1, self.capacity)
+            
+    def get_memory(self) -> torch.Tensor:
+        """Return all valid memories [size, dim]."""
+        return self.storage[:self.size]
+        
+    def clear(self):
+        """Reset memory bank."""
+        self.ptr = 0
+        self.size = 0
+        self.storage.zero_()
 
 
 # =============================================================================
@@ -583,9 +820,9 @@ class DPSGatingLayer(nn.Module):
         x_pooled = x.mean(dim=1)  # [batch, dim]
 
         if memory_embeddings is None or memory_embeddings.shape[0] == 0:
-            # No memories: low similarity (high novelty)
-            s_ast_out = self.similarity_ast_net(x_pooled).mean().item()
-            return SimilarityScore(s_embed=0.0, s_ast=s_ast_out)
+            # No memories: ZERO similarity = MAXIMUM novelty (1-S = 1.0)
+            # Don't compute s_ast from network - that would give ~0.5 with untrained weights
+            return SimilarityScore(s_embed=0.0, s_ast=0.0)
 
         # Compute embedding similarity: max cosine similarity to any memory
         x_norm = torch.nn.functional.normalize(x_pooled, p=2, dim=-1)  # [batch, dim]
@@ -673,7 +910,7 @@ class DPSGatingLayer(nn.Module):
         # Validity: per-sample
         validity_out = self.validity_net(x_pooled)  # [batch, 3]
         v = validity_out.mean(dim=-1)  # [batch]
-        v = torch.sigmoid(v)  # Normalize to [0, 1]
+        # v = torch.sigmoid(v)  # REMOVED: Double sigmoid
 
         # Impact: per-sample
         impact_input = torch.cat([
@@ -682,7 +919,7 @@ class DPSGatingLayer(nn.Module):
         ], dim=-1)
         impact_out = self.impact_net(impact_input)  # [batch, 4]
         i = impact_out.mean(dim=-1)  # [batch]
-        i = torch.sigmoid(i)  # Normalize to [0, 1]
+        # i = torch.sigmoid(i)  # REMOVED: Double sigmoid
 
         # Similarity: per-sample
         if memory_embeddings is None or memory_embeddings.shape[0] == 0:
@@ -746,11 +983,11 @@ class DPSGatingLayer(nn.Module):
         adjusted_count_threshold = self.config.count_threshold + self.threshold_bias[0].item()
         adjusted_heavy_threshold = self.config.heavy_threshold + self.threshold_bias[1].item()
 
-        # Clamp thresholds to valid range
-        adjusted_count_threshold = max(0.1, min(0.9, adjusted_count_threshold))
-        adjusted_heavy_threshold = max(adjusted_count_threshold + 0.1, min(0.95, adjusted_heavy_threshold))
+        # Clamp thresholds to valid range (LOWERED MINIMUMS FOR BOOTSTRAPPING)
+        adjusted_count_threshold = max(0.001, min(0.9, adjusted_count_threshold))
+        adjusted_heavy_threshold = max(adjusted_count_threshold + 0.002, min(0.95, adjusted_heavy_threshold))
 
-        nw = novelty.value
+        nw = novelty.value_with_config(self.config)  # Uses I-based if configured
         unlock_occurred = False
 
         # Create new state (immutable update)
@@ -833,11 +1070,12 @@ class DPSGatingLayer(nn.Module):
 
         # Prepare novelty features for gating
         # [V, I, S, NW, confidence, consistency, evidence_ok, s_embed, s_ast]
+        nw_value = novelty.value_with_config(self.config)  # I-based if configured
         novelty_features = torch.tensor([
             novelty.validity.value,
             novelty.impact.value,
             novelty.similarity.value,
-            novelty.value,
+            nw_value,
             novelty.validity.confidence,
             novelty.validity.consistency,
             novelty.validity.evidence_ok,
@@ -858,8 +1096,9 @@ class DPSGatingLayer(nn.Module):
 
         # Build trace
         trace = {
-            "novelty_weight": novelty.value,
+            "novelty_weight": nw_value,  # I-based if configured
             "novelty_class": novelty_class.value,
+            "i_based_mode": self.config.use_impact_only_nw,
             "validity": {
                 "confidence": novelty.validity.confidence,
                 "consistency": novelty.validity.consistency,
@@ -897,6 +1136,53 @@ class DPSGatingLayer(nn.Module):
             Number of iterations allowed (based on p_max)
         """
         return state.p_max
+
+    def load_pretrained_vi(
+        self,
+        validity_path: Optional[str] = None,
+        impact_path: Optional[str] = None,
+        device: str = 'cpu',
+    ) -> Dict[str, bool]:
+        """
+        Load pretrained V (validity) and I (impact) network weights.
+
+        The pretrained networks must have matching architecture:
+        - validity_net: Linear(noetic_dim, validity_dim) -> ... -> 3
+        - impact_net: Linear(noetic_dim+4, impact_dim) -> ... -> 4
+
+        Args:
+            validity_path: Path to validity_net.pt checkpoint
+            impact_path: Path to impact_net.pt checkpoint
+            device: Device to load weights to
+
+        Returns:
+            Dict with 'validity_loaded' and 'impact_loaded' booleans
+        """
+        result = {'validity_loaded': False, 'impact_loaded': False}
+
+        if validity_path is not None:
+            try:
+                checkpoint = torch.load(validity_path, map_location=device)
+                # The checkpoint contains 'validity_net' state dict
+                if 'validity_net' in checkpoint:
+                    self.validity_net.load_state_dict(checkpoint['validity_net'])
+                    result['validity_loaded'] = True
+                    print(f"Loaded pretrained validity_net from {validity_path}")
+            except Exception as e:
+                print(f"Failed to load validity_net: {e}")
+
+        if impact_path is not None:
+            try:
+                checkpoint = torch.load(impact_path, map_location=device)
+                # The checkpoint contains 'impact_net' state dict
+                if 'impact_net' in checkpoint:
+                    self.impact_net.load_state_dict(checkpoint['impact_net'])
+                    result['impact_loaded'] = True
+                    print(f"Loaded pretrained impact_net from {impact_path}")
+            except Exception as e:
+                print(f"Failed to load impact_net: {e}")
+
+        return result
 
 
 # =============================================================================
@@ -982,7 +1268,8 @@ class AdaptiveIterationController:
 
         # Stop early if novelty is very high (stable novel representation)
         # This means the thought has "settled" into something valuable
-        if novelty.value >= novelty_threshold:
+        nw = novelty.value_with_config(self.dps_layer.config)
+        if nw >= novelty_threshold:
             return True
 
         return False
@@ -1016,8 +1303,9 @@ class AdaptiveIterationController:
         with torch.no_grad():
             novelty = self.dps_layer.compute_novelty(x)
 
-        # Extend if novelty is HEAVY
-        return novelty.value >= extension_threshold
+        # Extend if novelty is HEAVY (using I-based if configured)
+        nw = novelty.value_with_config(self.dps_layer.config)
+        return nw >= extension_threshold
 
     def extend_budget(self, amount: int = 1) -> None:
         """
@@ -1090,6 +1378,8 @@ __all__ = [
     "DPSGatingProtocol",
     "DPSGatingLayer",
     "AdaptiveIterationController",
+    # Memory bank
+    "MemoryBank",
     # Trace schema
     "DPS_TRACE_SCHEMA",
 ]

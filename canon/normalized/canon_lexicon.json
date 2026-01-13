@@ -1,0 +1,338 @@
+{
+  "elements": {
+    "d0.1 physical template": {
+      "symbol": "D0",
+      "weight": 1.0
+    },
+    "d1.1 body awareness": {
+      "symbol": "D1",
+      "weight": 1.0
+    },
+    "d2.1 physical health": {
+      "symbol": "D2",
+      "weight": 1.0
+    },
+    "d3.1 physical illness": {
+      "symbol": "D3",
+      "weight": 1.0
+    },
+    "d4.1 physical energy": {
+      "symbol": "D4",
+      "weight": 1.0
+    },
+    "d5.1 physical woman": {
+      "symbol": "D5",
+      "weight": 1.0
+    },
+    "d6.1 physical man": {
+      "symbol": "D6",
+      "weight": 1.0
+    },
+    "d7.1 physical habit": {
+      "symbol": "D7",
+      "weight": 1.0
+    },
+    "d8.1 physical elevation": {
+      "symbol": "D8",
+      "weight": 1.0
+    },
+    "d9.1 physical foundation": {
+      "symbol": "D9",
+      "weight": 1.0
+    },
+    "c0.1 emotional concept": {
+      "symbol": "C0",
+      "weight": 1.0
+    },
+    "c1.1 emotional awareness": {
+      "symbol": "C1",
+      "weight": 1.0
+    },
+    "c2.1 joy/happiness": {
+      "symbol": "C2",
+      "weight": 1.0
+    },
+    "c3.1 fear": {
+      "symbol": "C3",
+      "weight": 1.0
+    },
+    "c4.1 emotional intensity": {
+      "symbol": "C4",
+      "weight": 1.0
+    },
+    "c5.1 emotional receptivity": {
+      "symbol": "C5",
+      "weight": 1.0
+    },
+    "c6.1 emotional expression": {
+      "symbol": "C6",
+      "weight": 1.0
+    },
+    "c7.1 mood cycle": {
+      "symbol": "C7",
+      "weight": 1.0
+    },
+    "c8.1 emotional trigger": {
+      "symbol": "C8",
+      "weight": 1.0
+    },
+    "c9.1 emotional response": {
+      "symbol": "C9",
+      "weight": 1.0
+    },
+    "b0.1 thought form": {
+      "symbol": "B0",
+      "weight": 1.0
+    },
+    "mental b0.1 thought form": {
+      "symbol": "B0",
+      "weight": 0.9
+    },
+    "b1.1 meta-cognition": {
+      "symbol": "B1",
+      "weight": 1.0
+    },
+    "mental b1.1 meta-cognition": {
+      "symbol": "B1",
+      "weight": 0.9
+    },
+    "b2.1 positive belief": {
+      "symbol": "B2",
+      "weight": 1.0
+    },
+    "mental b2.1 positive belief": {
+      "symbol": "B2",
+      "weight": 0.9
+    },
+    "b3.1 limiting belief": {
+      "symbol": "B3",
+      "weight": 1.0
+    },
+    "mental b3.1 limiting belief": {
+      "symbol": "B3",
+      "weight": 0.9
+    },
+    "b4.1 thought intensity": {
+      "symbol": "B4",
+      "weight": 1.0
+    },
+    "mental b4.1 thought intensity": {
+      "symbol": "B4",
+      "weight": 0.9
+    },
+    "b5.1 learning receptivity": {
+      "symbol": "B5",
+      "weight": 1.0
+    },
+    "mental b5.1 learning receptivity": {
+      "symbol": "B5",
+      "weight": 0.9
+    },
+    "b6.1 logical thinking": {
+      "symbol": "B6",
+      "weight": 1.0
+    },
+    "mental b6.1 logical thinking": {
+      "symbol": "B6",
+      "weight": 0.9
+    },
+    "b7.1 thought pattern": {
+      "symbol": "B7",
+      "weight": 1.0
+    },
+    "mental b7.1 thought pattern": {
+      "symbol": "B7",
+      "weight": 0.9
+    },
+    "b8.1 thought trigger": {
+      "symbol": "B8",
+      "weight": 1.0
+    },
+    "mental b8.1 thought trigger": {
+      "symbol": "B8",
+      "weight": 0.9
+    },
+    "b9.1 cognitive response": {
+      "symbol": "B9",
+      "weight": 1.0
+    },
+    "mental b9.1 cognitive response": {
+      "symbol": "B9",
+      "weight": 0.9
+    },
+    "a0.1 divine blueprint": {
+      "symbol": "A0",
+      "weight": 1.0
+    },
+    "spiritual a0.1 divine blueprint": {
+      "symbol": "A0",
+      "weight": 0.9
+    },
+    "a1.1 soul awareness": {
+      "symbol": "A1",
+      "weight": 1.0
+    },
+    "spiritual a1.1 soul awareness": {
+      "symbol": "A1",
+      "weight": 0.9
+    },
+    "a2.1 spiritual alignment": {
+      "symbol": "A2",
+      "weight": 1.0
+    },
+    "spiritual a2.1 spiritual alignment": {
+      "symbol": "A2",
+      "weight": 0.9
+    },
+    "a3.1 spiritual misalignment": {
+      "symbol": "A3",
+      "weight": 1.0
+    },
+    "spiritual a3.1 spiritual misalignment": {
+      "symbol": "A3",
+      "weight": 0.9
+    },
+    "a4.1 spiritual frequency": {
+      "symbol": "A4",
+      "weight": 1.0
+    },
+    "spiritual a4.1 spiritual frequency": {
+      "symbol": "A4",
+      "weight": 0.9
+    },
+    "a5.1 divine receptivity": {
+      "symbol": "A5",
+      "weight": 1.0
+    },
+    "spiritual a5.1 divine receptivity": {
+      "symbol": "A5",
+      "weight": 0.9
+    },
+    "a6.1 divine will": {
+      "symbol": "A6",
+      "weight": 1.0
+    },
+    "spiritual a6.1 divine will": {
+      "symbol": "A6",
+      "weight": 0.9
+    },
+    "a7.1 karmic pattern": {
+      "symbol": "A7",
+      "weight": 1.0
+    },
+    "spiritual a7.1 karmic pattern": {
+      "symbol": "A7",
+      "weight": 0.9
+    },
+    "a8.1 divine cause": {
+      "symbol": "A8",
+      "weight": 1.0
+    },
+    "spiritual a8.1 divine cause": {
+      "symbol": "A8",
+      "weight": 0.9
+    },
+    "trigger": {
+      "symbol": "A8",
+      "weight": 0.8
+    },
+    "source": {
+      "symbol": "A8",
+      "weight": 0.8
+    },
+    "a9.1 spiritual effect": {
+      "symbol": "A9",
+      "weight": 1.0
+    },
+    "spiritual a9.1 spiritual effect": {
+      "symbol": "A9",
+      "weight": 0.9
+    },
+    "quantum": {
+      "symbol": "A8",
+      "weight": 0.85
+    },
+    "inference": {
+      "symbol": "B6",
+      "weight": 0.8
+    },
+    "delete": {
+      "symbol": "D3",
+      "weight": 0.9
+    },
+    "remove": {
+      "symbol": "D3",
+      "weight": 0.85
+    }
+  },
+  "noetics": {
+    "idea": {
+      "id": "^0",
+      "weight": 1.0
+    },
+    "mind": {
+      "id": "^1",
+      "weight": 1.0
+    },
+    "attention": {
+      "id": "^1",
+      "weight": 0.9
+    },
+    "focus": {
+      "id": "^1",
+      "weight": 0.9
+    },
+    "positive": {
+      "id": "^2",
+      "weight": 1.0
+    },
+    "negative": {
+      "id": "^3",
+      "weight": 1.0
+    },
+    "vibration": {
+      "id": "^4",
+      "weight": 1.0
+    },
+    "female": {
+      "id": "^5",
+      "weight": 1.0
+    },
+    "male": {
+      "id": "^6",
+      "weight": 1.0
+    },
+    "rhythm": {
+      "id": "^7",
+      "weight": 1.0
+    },
+    "above": {
+      "id": "^8",
+      "weight": 1.0
+    },
+    "cause": {
+      "id": "^8",
+      "weight": 0.9
+    },
+    "prior": {
+      "id": "^8",
+      "weight": 0.8
+    },
+    "below": {
+      "id": "^9",
+      "weight": 1.0
+    },
+    "effect": {
+      "id": "^9",
+      "weight": 0.9
+    },
+    "outcome": {
+      "id": "^9",
+      "weight": 0.8
+    },
+    "critical": {
+      "id": "^3",
+      "weight": 0.7
+    }
+  }
+}

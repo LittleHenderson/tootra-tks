@@ -123,10 +123,12 @@ def train():
     parser = argparse.ArgumentParser(description="TKS v5 Training")
     parser.add_argument("--steps", type=int, default=None, help="Number of steps to train")
     parser.add_argument("--epochs", type=int, default=None, help="Number of epochs to train")
+    parser.add_argument("--data", type=str, default="output/train_final.jsonl", help="Path to training data")
+    parser.add_argument("--resume", type=str, default=None, help="Path to checkpoint to resume from")
     args = parser.parse_args()
-    
-    # Data - use larger dataset for better generalization
-    data_path = "output/train_full_5k.jsonl"
+
+    # Data path from argument or default
+    data_path = args.data
     tokenizer_path = "tokenizer_v5.json"
     
     # Fallback if data missing
@@ -182,7 +184,14 @@ def train():
     model = TKSGeneralLM(config)
     model = model.to(DEVICE)
 
-    optimizer = AdamW(model.parameters(), lr=LR)
+    # Resume from checkpoint if specified
+    if args.resume and Path(args.resume).exists():
+        print(f"Resuming from checkpoint: {args.resume}")
+        state_dict = torch.load(args.resume, map_location=DEVICE)
+        model.load_state_dict(state_dict)
+        print("Checkpoint loaded successfully.")
+
+    optimizer = AdamW(model.parameters(), lr=LR, weight_decay=0.1)  # Added weight decay for regularization
     scheduler = CosineAnnealingLR(optimizer, T_max=100000) # Increased T_max for longer runs
 
     global_step = 0
@@ -227,7 +236,7 @@ def train():
             optimizer.step()
             scheduler.step()
             
-            if global_step % 5 == 0:
+            if global_step % 1 == 0:
                 metrics = output.get("routing_metrics", {})
                 temp = metrics.get('routing_temperature', 'N/A')
                 if isinstance(temp, torch.Tensor): temp = temp.item()

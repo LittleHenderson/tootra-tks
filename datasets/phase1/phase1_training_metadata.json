@@ -1,0 +1,29 @@
+{
+  "generated_at": "2026-01-06T03:34:10.652516",
+  "total_samples": 51660,
+  "splits": {
+    "train": 46494,
+    "val": 2583,
+    "test": 2583
+  },
+  "types": {
+    "interpretation": 6084,
+    "contrastive_cross_world": 1020,
+    "reasoning": 1416,
+    "operation": 4668,
+    "mapping": 1928,
+    "dialogue_followup_multi": 1660,
+    "grounding_id_forward": 5280,
+    "dialogue_qa": 3340,
+    "dialogue_followup": 1660,
+    "grounding_id_reverse": 5200,
+    "grounding_world": 3120,
+    "grounding_noetic": 780,
+    "goal": 5904,
+    "grounding_definition": 3120,
+    "contrastive_choice": 3138,
+    "contrastive_same_world": 3138,
+    "contrastive_opposite": 136,
+    "contrastive_polarity": 68
+  }
+}

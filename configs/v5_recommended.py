@@ -91,7 +91,7 @@ def get_v5_config(
 
         # Fixed
         num_scales=4,
-        dropout=0.1,
+        dropout=0.2,  # Increased from 0.1 for better generalization
 
         # Canonical components
         use_attractor=use_attractor,
@@ -183,10 +183,30 @@ def get_full_config() -> TKSGeneralConfig:
     )
 
 
+def get_regularized_config() -> TKSGeneralConfig:
+    """
+    Get config with strong regularization to prevent memorization.
+
+    Use this when training on smaller datasets (<50k samples).
+    """
+    return get_v5_config(
+        size="base",
+        use_stable_routing=True,
+        use_attractor=True,
+        use_rpm=True,
+        use_njt=True,
+        njt_use_hysteresis=True,
+        njt_use_rhythm=True,
+        # Strong regularization
+        dropout=0.3,  # Higher dropout
+    )
+
+
 # Quick reference
 CONFIG_PRESETS = {
     "conservative": get_conservative_config,
     "full": get_full_config,
+    "regularized": get_regularized_config,
 }
 
 

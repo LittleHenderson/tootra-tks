@@ -6,7 +6,7 @@
 
 ## Overview
 
-TKS (Traceable Knowledge System) v5 is not a fine-tuned version of GPT, LLaMA, or any existing model. It is a **ground-up custom architecture** with novel neural components inspired by transistor physics, noetic (consciousness) theory, and Kabbalistic operator frameworks.
+TKS (Tootra Knowledge System) v5 is not a fine-tuned version of GPT, LLaMA, or any existing model. It is a **ground-up custom architecture** with novel neural components inspired by transistor physics and noetic (consciousness) theory based on the TKS v7.4 canonical framework.
 
 ---
 
@@ -33,20 +33,20 @@ NJT- output:    p_E = clamp(β × p_C × (1 - g(B)), 0, 1)
 
 ### 2. 10 Noetic Operators (Mixture of Experts)
 
-Unlike generic MoE models with interchangeable experts, TKS routes to **10 specialized operators** based on Kabbalistic Sefirot:
+Unlike generic MoE models with interchangeable experts, TKS routes to **10 specialized operators** based on TKS canonical positions:
 
-| Operator | Domain | Function |
-|----------|--------|----------|
-| KETHER | Unity/Source | Origin point processing |
-| CHOKMAH | Wisdom | Pattern recognition |
-| BINAH | Understanding | Structural analysis |
-| CHESED | Mercy/Expansion | Generalization |
-| GEVURAH | Severity/Constraint | Boundary enforcement |
-| TIPHARETH | Beauty/Balance | Harmonization |
-| NETZACH | Victory/Persistence | Iterative refinement |
-| HOD | Glory/Analysis | Decomposition |
-| YESOD | Foundation | Grounding/validation |
-| MALKUTH | Kingdom/Manifestation | Output generation |
+| Operator | Position | Function |
+|----------|----------|----------|
+| N1 | Mind | Consciousness/mentalism processing |
+| N2 | Positive | Attraction/affirmation patterns |
+| N3 | Negative | Repulsion/constraint patterns |
+| N4 | Vibration | Resonance/vibrational processing |
+| N5 | Female | Receptivity/integration |
+| N6 | Male | Projection/differentiation |
+| N7 | Rhythm | Cyclic/temporal patterns |
+| N8 | Cause | Causal relationship processing |
+| N9 | Effect | Correspondence/result mapping |
+| N10 | All | Holistic/totality integration |
 
 ### 3. Stable Routing with Temperature Annealing
 
@@ -87,15 +87,33 @@ Throughout training:
 
 ---
 
+## TKS Language Framework
+
+TKS v7.4 is a programming language with:
+
+### Elements (40 total)
+- **4 Worlds**: A (Spiritual), B (Mental), C (Emotional), D (Physical)
+- **10 Positions each**: 1-Mind, 2-Positive, 3-Negative, 4-Vibration, 5-Female, 6-Male, 7-Rhythm, 8-Cause, 9-Effect, 10-All
+- **Example**: B4 = Mental-Vibration, D9 = Physical-Effect
+
+### Operators
+- `+T` (accumulate), `-T` (diminish), `*T` (amplify), `/T` (attenuate)
+- `->` (flow to), `<-` (source from), `o` (cycle)
+
+### Foundations (d1-d7)
+- d1: Unity, d2: Wisdom, d3: Understanding, d4: Companionship, d5: Power, d6: Material, d7: Lust
+
+---
+
 ## Theoretical Framework
 
-TKS isn't random architecture choices. It maps to a coherent theory:
+TKS maps to a coherent theory:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    TKS THEORETICAL STACK                     │
 ├─────────────────────────────────────────────────────────────┤
-│  LAYER 4: Noetic Operators    (Kabbalistic Sefirot)         │
+│  LAYER 4: Noetic Operators    (10 TKS Positions)            │
 │  LAYER 3: NJT Circuits        (Consciousness Amplifiers)    │
 │  LAYER 2: Transistor Model    (C-B-E: Cause-Bias-Effect)    │
 │  LAYER 1: Neural Attention    (Standard Transformers)       │
@@ -130,14 +148,17 @@ This creates a **traceable** reasoning system where you can see exactly which "t
 
 ## Training Approach
 
-The model learns by translating **natural language stories into formal TKS equations**:
+The model learns by translating **natural language narratives into formal TKS equations**:
 
 ```
-Input:  "The light of wisdom flows through understanding to mercy"
-Output: "CHOKMAH -> BINAH -> CHESED"
+Input:  "Mental Vibration accumulates with Physical Effect"
+Output: "B4 +T D9"
+
+Input:  "Spiritual Mind flows to Emotional Cause through Physical Rhythm"
+Output: "A1 -> C8 o D7"
 ```
 
-This teaches the model a **new language of thought** - not just pattern matching, but structured reasoning in a specific philosophical framework.
+This teaches the model a **new language of thought** - not just pattern matching, but structured reasoning in the TKS framework.
 
 ---
 
@@ -176,7 +197,7 @@ tests/test_njt_circuits.py # 29 tests for NJT
 TKS v5 represents genuine ML research:
 - **Custom architecture** (not fine-tuning)
 - **Novel components** (NJT, Noetic Operators)
-- **Theoretical grounding** (Kabbalistic + transistor + noetic)
+- **Theoretical grounding** (TKS v7.4 + transistor + noetic)
 - **Proven learning** (NJT gains changed, routing stable)
 
 This is a **specialized reasoning engine** with consciousness-inspired circuits - a unique contribution to AI architecture research.

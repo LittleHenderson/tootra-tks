@@ -1,0 +1,6 @@
+[
+  {"id": "A", "name": "Spiritual", "description": "World of Emanation/Causes"},
+  {"id": "B", "name": "Mental", "description": "World of Creation/Thoughts"},
+  {"id": "C", "name": "Emotional", "description": "World of Formation/Feelings"},
+  {"id": "D", "name": "Physical", "description": "World of Action/Manifestation"}
+]

@@ -1,0 +1,58 @@
+{
+  "version": "1.0",
+  "created_by": "agent-data",
+  "source": "strg-llm-stk/tks_operator_training_pack schema",
+  "operators": {
+    "+": {
+      "name": "Association",
+      "symbol": "+",
+      "semantic": "combine/link/coexist/support",
+      "description": "Combine or link two ideas so they coexist and support each other",
+      "symmetric": true,
+      "examples": [
+        "A + B: A associates with B",
+        "spiritual mind + positive energy: harmonious reinforcement"
+      ]
+    },
+    "-": {
+      "name": "Disassociation",
+      "symbol": "-",
+      "semantic": "sever/remove/exclude influence",
+      "description": "Sever or remove the influence of the second idea from the first",
+      "symmetric": false,
+      "examples": [
+        "A - B: A removes influence of B",
+        "clarity - confusion: purification of thought"
+      ]
+    },
+    "*": {
+      "name": "Intensification",
+      "symbol": "*",
+      "alt_symbol": "x",
+      "semantic": "amplify/fuse/strengthen",
+      "description": "Amplify the interaction so the effect is stronger or fused",
+      "symmetric": true,
+      "examples": [
+        "A * B: A intensifies through B",
+        "wisdom * power: amplified capability"
+      ]
+    },
+    "/": {
+      "name": "Opposition",
+      "symbol": "/",
+      "alt_symbol": "div",
+      "semantic": "contrast/tension/dialectic",
+      "description": "Create contrast or tension between two ideas",
+      "symmetric": false,
+      "examples": [
+        "A / B: A contrasts with B",
+        "light / darkness: fundamental tension"
+      ]
+    }
+  },
+  "operator_precedence": ["*", "/", "+", "-"],
+  "grouping_symbols": {
+    "parentheses": "()",
+    "purpose": "Override precedence and group sub-expressions"
+  }
+}

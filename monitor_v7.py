@@ -38,14 +38,17 @@ def depth_viz(d, p_max):
             result += DIM + '░' + RST  # Locked
     return result
 
-def novelty_viz(novelty_class):
-    """Visualize novelty classification."""
-    if novelty_class == "HEAVY":
-        return G + BOLD + "HEAVY" + RST + " ★"
-    elif novelty_class == "COUNT":
-        return Y + "COUNT" + RST + " +"
+def nw_viz(nw):
+    """Visualize novelty weight."""
+    if nw is None:
+        return DIM + "NW:-" + RST
+    if nw >= 0.7:
+        color = G
+    elif nw >= 0.45:
+        color = Y
     else:
-        return DIM + "NOCOUNT" + RST
+        color = C
+    return f"{color}NW:{nw:.3f}{RST}"
 
 def tokens_viz(tokens, threshold=5):
     """Visualize token progress toward unlock."""
@@ -59,12 +62,19 @@ print(f"""
 ╚════════════════════════════════════════════════════════════╝{RST}
 """)
 
-log_file = "training_log_v7.txt"
+log_file = os.environ.get("TKS_LOG_FILE", "training_log_v7.txt")
+total_epochs = float(os.environ.get("TKS_EPOCHS", "5"))
 best_loss = 999
 total_unlocks = 0
 
-# v7 pattern: Epoch X.XX | Step XXX: Loss=X.XXXX, Depth=X, p_max=X, Tokens=X, Novelty=XXX, LR=X.XXe-XX
-pattern = re.compile(r'Epoch ([\d.]+) \| Step (\d+): Loss=([\d.]+), Depth=(\d+), p_max=(\d+), Tokens=(\d+), Novelty=(\w+)')
+# v7 pattern: Epoch N | Batch B/Total | Loss: X.XXXX (CE: X.XXXX) | Depth: D | Tokens: T | NW: X.XXXX | Mem: C/CAP
+base_pattern = re.compile(
+    r'Epoch\s+([\d.]+)\s*\|\s*Batch\s+(\d+)(?:/\d+)?\s*\|\s*'
+    r'Loss:\s*([-+]?[\d.]+)\s*\(CE:\s*([-+]?[\d.]+)\)\s*\|\s*Depth:\s*(\d+)'
+)
+tokens_pattern = re.compile(r'Tokens:\s*(\d+)')
+mem_pattern = re.compile(r'Mem:\s*(\d+)/(\d+)')
+nw_pattern = re.compile(r'NW:\s*([\d.]+)')
 
 # Start by showing last 20 lines
 if os.path.exists(log_file):
@@ -73,33 +83,39 @@ if os.path.exists(log_file):
         last_pos = f.tell()
     # Process last 20 lines to catch up
     for line in lines[-20:]:
-        m = pattern.search(line)
+        m = base_pattern.search(line)
         if m:
             epoch = float(m[1])
             step = int(m[2])
             loss = float(m[3])
-            depth = int(m[4])
-            p_max = int(m[5])
-            tokens = int(m[6])
-            novelty = m[7]
+            depth = int(m[5])
+            tokens_match = tokens_pattern.search(line)
+            mem_match = mem_pattern.search(line)
+            nw_match = nw_pattern.search(line)
+
+            tokens = int(tokens_match.group(1)) if tokens_match else None
+            mem_cur = int(mem_match.group(1)) if mem_match else None
+            mem_cap = int(mem_match.group(2)) if mem_match else None
+            nw = float(nw_match.group(1)) if nw_match else None
 
             if loss < best_loss:
                 best_loss = loss
 
             lc = color_loss(loss)
-            dv = depth_viz(depth, p_max)
-            nv = novelty_viz(novelty)
-            tv = tokens_viz(tokens)
+            dv = depth_viz(depth, depth)
+            nv = nw_viz(nw)
+            tv = tokens_viz(tokens or 0)
+            mem = f"{mem_cur}/{mem_cap}" if mem_cur is not None else "-"
 
-            pct = (epoch / 5) * 100  # 5 epochs for v7
+            pct = (epoch / total_epochs) * 100 if total_epochs else 0
             bar = G + '█' * int(pct/5) + DIM + '░' * (20-int(pct/5)) + RST
 
             print(f"{W}Epoch{RST} {bar} {BOLD}{epoch:.2f}/5{RST}  "
                   f"{W}Step{RST} {C}{step:>6}{RST}  "
                   f"{W}Loss{RST} {lc}{BOLD}{loss:.4f}{RST}  "
                   f"{W}Depth{RST} {dv}  "
-                  f"{W}p_max{RST}={M}{p_max}{RST}  "
                   f"{W}Tok{RST} {tv}  "
+                  f"{W}Mem{RST} {M}{mem}{RST}  "
                   f"{nv}")
     print(f"\n{Y}--- Live updates below ---{RST}\n")
 else:
@@ -119,33 +135,39 @@ while True:
 
         for line in lines:
             # Parse v7 training line
-            m = pattern.search(line)
+            m = base_pattern.search(line)
             if m:
                 epoch = float(m[1])
                 step = int(m[2])
                 loss = float(m[3])
-                depth = int(m[4])
-                p_max = int(m[5])
-                tokens = int(m[6])
-                novelty = m[7]
+                depth = int(m[5])
+                tokens_match = tokens_pattern.search(line)
+                mem_match = mem_pattern.search(line)
+                nw_match = nw_pattern.search(line)
+
+                tokens = int(tokens_match.group(1)) if tokens_match else None
+                mem_cur = int(mem_match.group(1)) if mem_match else None
+                mem_cap = int(mem_match.group(2)) if mem_match else None
+                nw = float(nw_match.group(1)) if nw_match else None
 
                 if loss < best_loss:
                     best_loss = loss
 
                 lc = color_loss(loss)
-                dv = depth_viz(depth, p_max)
-                nv = novelty_viz(novelty)
-                tv = tokens_viz(tokens)
+                dv = depth_viz(depth, depth)
+                nv = nw_viz(nw)
+                tv = tokens_viz(tokens or 0)
+                mem = f"{mem_cur}/{mem_cap}" if mem_cur is not None else "-"
 
-                pct = (epoch / 5) * 100
+                pct = (epoch / total_epochs) * 100 if total_epochs else 0
                 bar = G + '█' * int(pct/5) + DIM + '░' * (20-int(pct/5)) + RST
 
                 print(f"{W}Epoch{RST} {bar} {BOLD}{epoch:.2f}/5{RST}  "
                       f"{W}Step{RST} {C}{step:>6}{RST}  "
                       f"{W}Loss{RST} {lc}{BOLD}{loss:.4f}{RST}  "
                       f"{W}Depth{RST} {dv}  "
-                      f"{W}p_max{RST}={M}{p_max}{RST}  "
                       f"{W}Tok{RST} {tv}  "
+                      f"{W}Mem{RST} {M}{mem}{RST}  "
                       f"{nv}")
 
             # Validation

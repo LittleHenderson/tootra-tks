@@ -1,0 +1,61 @@
+{
+  "version": "1.0",
+  "created_by": "agent-data",
+  "source": "strg-llm-stk/tks_consciousness_unlock_HS_enabled_pack_1000.jsonl",
+  "novelty_weight": {
+    "formula": "NW = V * I * (1 - S)",
+    "description": "Novelty Weight computed from Validity, Impact, and Similarity",
+    "components": {
+      "V": "Validity score [0,1] - how valid/correct the input is",
+      "I": "Impact score [0,1] - how significant the input is",
+      "S": "Similarity score [0,1] - how similar to existing knowledge (penalized)"
+    },
+    "clipping": "[0, 1]",
+    "thresholds": {
+      "heavy": {
+        "value": 0.70,
+        "meaning": "HEAVY classification - immediate unlock eligible"
+      },
+      "count": {
+        "value": 0.45,
+        "meaning": "COUNT classification - accumulates tokens"
+      },
+      "nocount": {
+        "value": 0.0,
+        "meaning": "NOCOUNT classification - no token accumulation"
+      }
+    }
+  },
+  "depth_permission": {
+    "p_max_initial": 2,
+    "p_max_limit": 5,
+    "tokens_to_unlock": 5,
+    "cooldown_K": 10,
+    "unlock_mechanics": {
+      "heavy_unlock": "If NW >= 0.7 and eligible: p_max += 1, tokens = 0, cooldown = K",
+      "count_unlock": "If tokens >= N_threshold and eligible: p_max += 1, tokens = 0, cooldown = K",
+      "cooldown_tick": "Each step without unlock: cooldown -= 1 (min 0)"
+    }
+  },
+  "high_stakes": {
+    "hs_formula": "(U * K) * A^2",
+    "description": "High-stakes score from Uncertainty, Known-risk, and Autonomy",
+    "pause_threshold": 0.45,
+    "block_threshold": 0.70,
+    "gating_rules": {
+      "unlock_high_stakes": true,
+      "unlock_critical": false,
+      "conditions": "admin_unlock=true AND verifier PASS AND replay passed AND cooldown_left==0"
+    }
+  },
+  "log_events": {
+    "NOVELTY_CANDIDATE": {
+      "fields": ["episode_id", "novelty_type", "scores", "mode", "verifier", "replay"],
+      "purpose": "Log every novelty evaluation"
+    },
+    "DEPTH_UNLOCK": {
+      "fields": ["episode_id", "old_p_max", "new_p_max", "trigger"],
+      "purpose": "Log successful depth permission unlock"
+    }
+  }
+}

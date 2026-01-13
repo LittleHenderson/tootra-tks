@@ -28,6 +28,14 @@ checkpoints/
 # Logs / reports
 *.log
 *.jsonl
+logs/
+training_log*.txt
+training_output.txt
+training_error.txt
+tmpclaude-*/
+tmpclaude-*
+nul
+temp_repo/
 
 # Rust build artifacts
 tks-rs/target/
@@ -46,3 +54,8 @@ tks-rs/target/
 
 # Git worktrees (should not be tracked)
 .worktrees/
+
+# Large generated datasets (keep canon)
+data/*
+!data/canon/
+!data/canon/*.json

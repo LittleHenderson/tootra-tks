@@ -1,0 +1,352 @@
+{
+  "version": "1.0.0",
+  "description": "Core golden episodes for TKS regression testing",
+  "created_at": "2026-01-05T10:00:00-08:00",
+  "episodes": [
+    {
+      "id": "golden_001_operator_association",
+      "category": "operator_semantics",
+      "description": "Verify + operator produces association (coexistence)",
+      "input": {
+        "left_element": "A1",
+        "right_element": "B2",
+        "operator": "+",
+        "context": "Combine ideas"
+      },
+      "expected": {
+        "operator_behavior": "symmetric",
+        "output_contains_both": true,
+        "symmetry_loss_below": 0.1
+      },
+      "priority": "critical"
+    },
+    {
+      "id": "golden_002_operator_disassociation",
+      "category": "operator_semantics",
+      "description": "Verify - operator produces disassociation (removal)",
+      "input": {
+        "left_element": "A1",
+        "right_element": "B2",
+        "operator": "-",
+        "context": "Remove influence"
+      },
+      "expected": {
+        "operator_behavior": "antisymmetric",
+        "output_reduces_right": true,
+        "antisymmetry_loss_below": 0.1
+      },
+      "priority": "critical"
+    },
+    {
+      "id": "golden_003_operator_intensification",
+      "category": "operator_semantics",
+      "description": "Verify x operator produces intensification (amplification)",
+      "input": {
+        "left_element": "C3",
+        "right_element": "D4",
+        "operator": "x",
+        "context": "Amplify interaction"
+      },
+      "expected": {
+        "operator_behavior": "symmetric",
+        "output_amplified": true,
+        "symmetry_loss_below": 0.1
+      },
+      "priority": "critical"
+    },
+    {
+      "id": "golden_004_operator_opposition",
+      "category": "operator_semantics",
+      "description": "Verify / operator produces opposition (tension)",
+      "input": {
+        "left_element": "A5",
+        "right_element": "B6",
+        "operator": "/",
+        "context": "Create contrast"
+      },
+      "expected": {
+        "operator_behavior": "antisymmetric",
+        "output_creates_tension": true,
+        "antisymmetry_loss_below": 0.1
+      },
+      "priority": "critical"
+    },
+    {
+      "id": "golden_005_dps_heavy_unlock",
+      "category": "dps_gating",
+      "description": "HEAVY novelty (NW >= 0.70) triggers immediate unlock",
+      "input": {
+        "validity": {"confidence": 1.0, "consistency": 1.0, "evidence_ok": 1.0},
+        "impact": {"delta_reward": 1.0, "delta_uncertainty": 1.0, "delta_coverage": 1.0, "delta_cost": 1.0},
+        "similarity": {"s_embed": 0.0, "s_ast": 0.0},
+        "initial_state": {"p_max": 2, "tokens": 0, "cooldown": 0}
+      },
+      "expected": {
+        "novelty_class": "HEAVY",
+        "novelty_weight_gte": 0.70,
+        "unlock_occurred": true,
+        "new_p_max": 3,
+        "tokens_reset": true
+      },
+      "priority": "critical"
+    },
+    {
+      "id": "golden_006_dps_count_accumulation",
+      "category": "dps_gating",
+      "description": "COUNT novelty (0.45 <= NW < 0.70) accumulates tokens",
+      "input": {
+        "validity": {"confidence": 0.85, "consistency": 0.85, "evidence_ok": 0.9},
+        "impact": {"delta_reward": 0.75, "delta_uncertainty": 0.75, "delta_coverage": 0.75, "delta_cost": 0.75},
+        "similarity": {"s_embed": 0.25, "s_ast": 0.0},
+        "initial_state": {"p_max": 2, "tokens": 3, "cooldown": 0}
+      },
+      "expected": {
+        "novelty_class": "COUNT",
+        "novelty_weight_range": [0.45, 0.70],
+        "tokens_incremented": true
+      },
+      "priority": "critical"
+    },
+    {
+      "id": "golden_007_dps_cooldown_blocks",
+      "category": "dps_gating",
+      "description": "Cooldown prevents unlock even on HEAVY novelty",
+      "input": {
+        "validity": {"confidence": 1.0, "consistency": 1.0, "evidence_ok": 1.0},
+        "impact": {"delta_reward": 1.0, "delta_uncertainty": 1.0, "delta_coverage": 1.0, "delta_cost": 1.0},
+        "similarity": {"s_embed": 0.0, "s_ast": 0.0},
+        "initial_state": {"p_max": 2, "tokens": 0, "cooldown": 5}
+      },
+      "expected": {
+        "novelty_class": "HEAVY",
+        "unlock_occurred": false,
+        "p_max_unchanged": true,
+        "cooldown_decremented": true
+      },
+      "priority": "critical"
+    },
+    {
+      "id": "golden_008_governance_hs_critical",
+      "category": "governance_rails",
+      "description": "HS >= 0.70 triggers Critical mode and BLOCK",
+      "input": {
+        "uncertainty": 0.9,
+        "stakes": 0.9,
+        "alignment": 0.95,
+        "action": {"type": "tool_call", "reversibility": "reversible"}
+      },
+      "expected": {
+        "hs_score_gte": 0.70,
+        "mode": "Critical",
+        "decision": "BLOCK",
+        "required_actions_include": ["ASK", "SLOW", "VERIFY"]
+      },
+      "priority": "critical"
+    },
+    {
+      "id": "golden_009_governance_hs_pause",
+      "category": "governance_rails",
+      "description": "HS in [0.45, 0.70) triggers High-Stakes mode and PAUSE",
+      "input": {
+        "uncertainty": 0.7,
+        "stakes": 0.7,
+        "alignment": 0.95,
+        "action": {"type": "tool_call", "reversibility": "reversible"}
+      },
+      "expected": {
+        "hs_score_range": [0.45, 0.70],
+        "mode": "High-Stakes",
+        "decision": "PAUSE"
+      },
+      "priority": "critical"
+    },
+    {
+      "id": "golden_010_governance_irreversible_blocked",
+      "category": "governance_rails",
+      "description": "Irreversible action without clearance triggers BLOCK",
+      "input": {
+        "uncertainty": 0.2,
+        "stakes": 0.2,
+        "alignment": 0.95,
+        "action": {"type": "delete_file", "reversibility": "irreversible"},
+        "clearance_token": null
+      },
+      "expected": {
+        "decision": "BLOCK",
+        "clearance_required": true,
+        "gate_name": "IrreversibilityGate"
+      },
+      "priority": "critical"
+    },
+    {
+      "id": "golden_011_governance_depth_cap",
+      "category": "governance_rails",
+      "description": "RPM depth exceeding cap triggers BLOCK",
+      "input": {
+        "current_depth": 4,
+        "depth_cap_normal": 3,
+        "mode": "Normal"
+      },
+      "expected": {
+        "decision": "BLOCK",
+        "gate_name": "AntiRecursionGate",
+        "reason_contains": "depth"
+      },
+      "priority": "critical"
+    },
+    {
+      "id": "golden_012_governance_self_mod_critical",
+      "category": "governance_rails",
+      "description": "Self-modification in Critical mode triggers BLOCK",
+      "input": {
+        "action": {"type": "policy_update", "is_self_modification": true},
+        "mode": "Critical"
+      },
+      "expected": {
+        "decision": "BLOCK",
+        "gate_name": "SelfModificationGate"
+      },
+      "priority": "critical"
+    },
+    {
+      "id": "golden_013_rpm_dwp_scoring",
+      "category": "rpm_regulator",
+      "description": "D/W/P scores correctly computed from noetic activation",
+      "input": {
+        "thought_state": "MVR_pattern",
+        "noetic_activation": {"1": 1.0, "4": 1.0, "7": 1.0},
+        "target_foundation": "Unity"
+      },
+      "expected": {
+        "desire_score_high": true,
+        "dwp_scores_in_range": [0.0, 1.0],
+        "rpm_gate_is_product": true
+      },
+      "priority": "critical"
+    },
+    {
+      "id": "golden_014_rpm_cascade_depth_2",
+      "category": "rpm_regulator",
+      "description": "RPM cascade maintains valid output through 2 layers",
+      "input": {
+        "initial_thought": "random",
+        "cascade_depth": 2
+      },
+      "expected": {
+        "output_valid": true,
+        "no_nan_values": true,
+        "shape_preserved": true
+      },
+      "priority": "critical"
+    },
+    {
+      "id": "golden_015_world_separation",
+      "category": "operator_semantics",
+      "description": "World boundaries (A/B/C/D) are respected in composition",
+      "input": {
+        "left_world": "A",
+        "right_world": "A",
+        "operator": "+"
+      },
+      "expected": {
+        "output_primarily_in_world_A": true,
+        "cross_world_mixing_minimal": true
+      },
+      "priority": "high"
+    },
+    {
+      "id": "golden_016_alignment_minimum",
+      "category": "governance_rails",
+      "description": "Alignment below 0.80 triggers PAUSE (F1 dominance)",
+      "input": {
+        "uncertainty": 0.2,
+        "stakes": 0.2,
+        "alignment": 0.70,
+        "action": {"type": "read_file", "reversibility": "reversible"}
+      },
+      "expected": {
+        "decision": "PAUSE",
+        "reason_contains": "alignment"
+      },
+      "priority": "high"
+    },
+    {
+      "id": "golden_017_integration_full_pipeline",
+      "category": "integration",
+      "description": "Full pipeline (Operator -> RPM -> DPS -> Governance) produces valid output",
+      "input": {
+        "left_element": "random",
+        "right_element": "random",
+        "operator": "+",
+        "enable_all_modules": true
+      },
+      "expected": {
+        "output_shape_correct": true,
+        "trace_contains_all_stages": true,
+        "no_nan_values": true,
+        "gradients_flow": true
+      },
+      "priority": "critical"
+    },
+    {
+      "id": "golden_018_backward_compat_disabled",
+      "category": "integration",
+      "description": "All features disabled produces baseline behavior",
+      "input": {
+        "use_operator": false,
+        "use_rpm": false,
+        "use_dps": false,
+        "use_governance": false
+      },
+      "expected": {
+        "output_equals_input_mean": true,
+        "no_side_effects": true
+      },
+      "priority": "high"
+    },
+    {
+      "id": "golden_019_dps_max_depth_cap",
+      "category": "dps_gating",
+      "description": "p_max cannot exceed max_depth (5)",
+      "input": {
+        "initial_state": {"p_max": 5, "tokens": 0, "cooldown": 0},
+        "novelty_class": "HEAVY"
+      },
+      "expected": {
+        "unlock_occurred": false,
+        "p_max_unchanged": true
+      },
+      "priority": "high"
+    },
+    {
+      "id": "golden_020_tool_call_cap",
+      "category": "governance_rails",
+      "description": "Tool calls at cap triggers BLOCK",
+      "input": {
+        "tool_calls_this_episode": 12,
+        "tool_call_cap_normal": 12,
+        "mode": "Normal"
+      },
+      "expected": {
+        "decision": "BLOCK",
+        "gate_name": "AntiRecursionGate",
+        "reason_contains": "tool"
+      },
+      "priority": "high"
+    }
+  ],
+  "metadata": {
+    "total_episodes": 20,
+    "categories": {
+      "operator_semantics": 5,
+      "dps_gating": 4,
+      "governance_rails": 6,
+      "rpm_regulator": 2,
+      "integration": 3
+    },
+    "priority_counts": {
+      "critical": 14,
+      "high": 6
+    }
+  }
+}

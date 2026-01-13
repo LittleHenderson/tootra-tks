@@ -1,0 +1,52 @@
+[
+  {
+    "id": "^0",
+    "name": "Idea",
+    "meaning": "The seed concept"
+  },
+  {
+    "id": "^1",
+    "name": "Mind",
+    "meaning": "Attention and Focus"
+  },
+  {
+    "id": "^2",
+    "name": "Positive",
+    "meaning": "Attraction/Addition"
+  },
+  {
+    "id": "^3",
+    "name": "Negative",
+    "meaning": "Repulsion/Subtraction"
+  },
+  {
+    "id": "^4",
+    "name": "Vibration",
+    "meaning": "Intensity/Resonance"
+  },
+  {
+    "id": "^5",
+    "name": "Female",
+    "meaning": "Authority/Reservoir/Identity"
+  },
+  {
+    "id": "^6",
+    "name": "Male",
+    "meaning": "Component/Related-Set"
+  },
+  {
+    "id": "^7",
+    "name": "Rhythm",
+    "meaning": "Pattern/Repetition"
+  },
+  {
+    "id": "^8",
+    "name": "Above",
+    "meaning": "Cause/Trigger"
+  },
+  {
+    "id": "^9",
+    "name": "Below",
+    "meaning": "Effect/Outcome"
+  }
+]

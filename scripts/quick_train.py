@@ -12,6 +12,8 @@ from torch.optim import AdamW
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+from src.tks.core.gpu_utils import get_target_device, setup_cuda_optimizations
+
 # Simple tokenizer
 class SimpleTokenizer:
     def __init__(self, vocab_size=1000, max_length=256):
@@ -91,12 +93,14 @@ class SimpleTransformer(nn.Module):
         x = self.transformer(x)
         return self.output(x)
 
-def train_model(data_path, output_dir, epochs=2, batch_size=4, lr=1e-3):
+def train_model(data_path, output_dir, epochs=2, batch_size=4, lr=1e-3, force_gpu=True):
     print("=" * 70)
     print("PHASE 5 - TKS TRAINING WITH AUGMENTED DATA")
     print("=" * 70)
 
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device = get_target_device(force_gpu=force_gpu)
+    if device.type == 'cuda':
+        setup_cuda_optimizations()
     print(f"\nDevice: {device}")
 
     # Setup
@@ -232,6 +236,8 @@ if __name__ == '__main__':
     parser.add_argument('--epochs', type=int, default=2)
     parser.add_argument('--batch-size', type=int, default=4)
     parser.add_argument('--learning-rate', type=float, default=1e-3)
+    parser.add_argument('--force-gpu', action='store_true', default=True)
+    parser.add_argument('--no-force-gpu', action='store_false', dest='force_gpu')
 
     args = parser.parse_args()
-    train_model(args.data, args.output_dir, args.epochs, args.batch_size, args.learning_rate)
+    train_model(args.data, args.output_dir, args.epochs, args.batch_size, args.learning_rate, args.force_gpu)

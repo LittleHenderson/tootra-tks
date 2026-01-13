@@ -719,17 +719,7 @@ class RuminationEngine:
                 continue
 
             failure = unsolved[0]
-            self.raise_desire(failure)
-
-            hypothesis = self.operator_bank.propose_operator(failure)
-            if hypothesis:
-                passed = self._try_solve(failure, hypothesis)
-                if passed:
-                    self.ledger.mark_solved(failure.id, hypothesis.name)
-                    self.decay_on_resolve(failure)
-                else:
-                    self.decay_desire(failure)
-
+            self.ruminate_once(failure)
             self.ledger._save()
             time.sleep(self.state.tick_ms / 1000.0)
 
@@ -800,9 +790,6 @@ class WakeHooks:
 
     def on_idle_enter(self):
         """Called when system enters idle state."""
-        self.engine.state.enabled = True
-        self.engine.state.mode = "ruminating"
-        self.engine.state.wake_event.clear()
         self.engine.start_rumination()
 
     def on_user_prompt(self, prompt_text: str):
