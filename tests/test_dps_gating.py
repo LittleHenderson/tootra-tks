@@ -2,19 +2,21 @@
 Test suite for DPS (Depth Permission System) from strg-llm-stk.
 
 Novelty Weight: NW = V x I x (1 - S)
-Classifications:
-- HEAVY (NW >= 0.70): Immediate unlock
-- COUNT (0.45 <= NW < 0.70): Token accumulation
-- NOCOUNT (NW < 0.45): No progress
+Classifications (thresholds lowered for untrained networks):
+- HEAVY (NW >= 0.35): Immediate unlock
+- COUNT (0.20 <= NW < 0.35): Token accumulation
+- NOCOUNT (NW < 0.20): No progress
 
 State Update Rules:
 - HEAVY: p_max += 1, tokens = 0, cooldown = K (if allowed)
-- COUNT: tokens += 1, unlock when tokens = 5
+- COUNT: tokens += 1, unlock when tokens = 3
 - NOCOUNT: No state change
 - Cooldown decrements by 1 each episode
+- Max depth: 8
 
 Author: EVAL agent
 Date: 2026-01-05
+Updated: 2026-01-13 (thresholds and max_depth adjusted)
 """
 import pytest
 import torch
@@ -233,8 +235,8 @@ class TestStateUpdate:
         assert new_state.cooldown == 4  # 5 - 1
 
     def test_max_depth_cap(self, dps_layer, config):
-        """p_max cannot exceed max_depth (5)"""
-        state = DPSState(p_max=5, tokens=0, cooldown=0)  # Already at max
+        """p_max cannot exceed max_depth (8)"""
+        state = DPSState(p_max=8, tokens=0, cooldown=0)  # Already at max
 
         # Create HEAVY novelty
         validity = ValidityScore(confidence=1.0, consistency=1.0, evidence_ok=1.0)
@@ -245,7 +247,7 @@ class TestStateUpdate:
         new_state, unlock_occurred = dps_layer.update_state(state, novelty, "test_episode")
 
         # Should NOT unlock (already at max)
-        assert new_state.p_max == 5
+        assert new_state.p_max == 8
         # can_unlock returns False when p_max >= max_depth
 
 
@@ -382,14 +384,15 @@ class TestAdaptiveIterationController:
         controller = AdaptiveIterationController(dps_layer, state)
         x = torch.randn(4, 8, 40)
 
-        # Should not stop before budget
-        assert not controller.should_stop(x, 0)
-        assert not controller.should_stop(x, 1)
-        assert not controller.should_stop(x, 2)
+        # Should not stop before budget (use high threshold to avoid early novelty stop)
+        # With lowered DEFAULT_HEAVY_THRESHOLD (0.35), random input might trigger early stop
+        assert not controller.should_stop(x, 0, novelty_threshold=1.0)
+        assert not controller.should_stop(x, 1, novelty_threshold=1.0)
+        assert not controller.should_stop(x, 2, novelty_threshold=1.0)
 
-        # Should stop at budget
-        assert controller.should_stop(x, 3)
-        assert controller.should_stop(x, 4)
+        # Should stop at budget (regardless of novelty threshold)
+        assert controller.should_stop(x, 3, novelty_threshold=1.0)
+        assert controller.should_stop(x, 4, novelty_threshold=1.0)
 
     def test_extend_budget(self, dps_layer, state):
         """Test budget extension."""
@@ -402,7 +405,7 @@ class TestAdaptiveIterationController:
 
     def test_extend_respects_max_depth(self, dps_layer):
         """Extension should not exceed max_depth."""
-        state = DPSState(p_max=5)  # Already at max
+        state = DPSState(p_max=8)  # Already at max
         controller = AdaptiveIterationController(dps_layer, state)
 
         controller.extend_budget(1)
@@ -422,7 +425,7 @@ class TestDPSConfig:
         assert config.count_threshold == DEFAULT_COUNT_THRESHOLD == 0.20
         assert config.n_tokens_threshold == DEFAULT_TOKENS_FOR_UNLOCK == 3
         assert config.cooldown_k == DEFAULT_COOLDOWN_EPISODES == 10
-        assert config.max_depth == DEFAULT_MAX_DEPTH == 5
+        assert config.max_depth == DEFAULT_MAX_DEPTH == 8
         assert config.initial_p_max == DEFAULT_INITIAL_P_MAX == 2
 
     def test_custom_thresholds(self):
@@ -479,7 +482,7 @@ class TestDPSState:
         assert state2.can_unlock(config) == False
 
         # At max depth, should not unlock
-        state3 = DPSState(p_max=5, cooldown=0, mode=DPSMode.NORMAL)
+        state3 = DPSState(p_max=8, cooldown=0, mode=DPSMode.NORMAL)
         assert state3.can_unlock(config) == False
 
 
