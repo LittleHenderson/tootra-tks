@@ -130,6 +130,10 @@ def train():
     parser.add_argument("--batch_size", type=int, default=4)
     parser.add_argument("--lr", type=float, default=3e-5)  # Lower for fine-tuning
     parser.add_argument("--v6_checkpoint", type=str, default="checkpoints/v6_best.pt")
+    parser.add_argument("--data", type=str, default="data/v7_combined_training.jsonl",
+                        help="Training data (default: combined v6+v7 data)")
+    parser.add_argument("--val_data", type=str, default="data/v7_discovery_validation.jsonl",
+                        help="Validation data")
     args = parser.parse_args()
 
     # CUDA enforcement
@@ -143,8 +147,10 @@ def train():
 
     # 1. Setup Tokenizer and Data
     tokenizer_path = "tokenizer_v5.json"
-    dataset = V7CoTDataset("data/v6_cot_training.jsonl", tokenizer_path)
-    val_dataset = V7CoTDataset("data/v6_cot_validation.jsonl", tokenizer_path)
+    print(f"Loading training data: {args.data}")
+    dataset = V7CoTDataset(args.data, tokenizer_path)
+    print(f"Loading validation data: {args.val_data}")
+    val_dataset = V7CoTDataset(args.val_data, tokenizer_path)
 
     # 2. Create v7 Model from v6 Checkpoint
     print(f"\nCreating v7 model from {args.v6_checkpoint}...")
