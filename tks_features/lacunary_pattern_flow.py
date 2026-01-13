@@ -438,14 +438,29 @@ class TextureTuple:
     is_coherent: bool = True   # Coherent if lacunarity close to 1
 
     def coherence_score(self) -> float:
-        """Compute overall coherence from texture tuple."""
-        # Lacunarity = 1 is perfectly coherent, higher = more gaps
-        lacunarity_score = 1.0 / max(self.lacunarity, 1.0)
-        # Higher complexity generally means more coherent (not repetitive)
-        complexity_score = min(self.complexity / math.log(10), 1.0)  # Normalize to max entropy
-        # Dimension should be moderate (not collapsed)
+        """Compute overall coherence from texture tuple.
+
+        Key insight from TKS v7.4:
+        - Lacunarity = 1 is coherent, >1 is gappy (gibberish)
+        - Complexity should be MODERATE: too high = random noise, too low = repetitive
+        - Optimal complexity is around 1.5-2.0 bits for natural language patterns
+        """
+        # Lacunarity: L=1 is perfect, penalize exponentially as L increases
+        # L=1 -> 1.0, L=1.5 -> 0.61, L=2 -> 0.37
+        lacunarity_score = math.exp(-(self.lacunarity - 1.0))
+
+        # Complexity: optimal around 1.5-2.0, penalize both extremes
+        # Too low (<1.0) = repetitive/collapsed
+        # Too high (>2.5) = random noise/gibberish
+        optimal_complexity = 1.75  # Target for natural language
+        complexity_deviation = abs(self.complexity - optimal_complexity)
+        complexity_score = math.exp(-complexity_deviation)
+
+        # Dimension should be moderate (fractal, not collapsed or space-filling)
         dim_score = 1.0 - abs(self.dimension - 1.5) / 1.5
-        return (lacunarity_score + complexity_score + dim_score) / 3.0
+
+        # Weight lacunarity most heavily (primary coherence signal)
+        return 0.5 * lacunarity_score + 0.3 * complexity_score + 0.2 * dim_score
 
 
 class CanonicalLacunarity:
