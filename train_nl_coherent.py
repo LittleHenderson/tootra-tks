@@ -66,8 +66,8 @@ EPOCHS = 3
 LR = 5e-5  # Fine-tuning LR
 MAX_SEQ_LEN = 512  # Longer for paragraphs
 GRAD_ACCUM_STEPS = 4
-SAVE_EVERY = 2000
-LOG_EVERY = 100
+SAVE_EVERY = 500
+LOG_EVERY = 10
 
 # NL Training Data Files
 NL_DATA_FILES = [
