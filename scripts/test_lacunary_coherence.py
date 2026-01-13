@@ -563,13 +563,89 @@ def generate_with_coherence(
     return output_text, coherence_scores
 
 
+def test_integrated_pipeline():
+    """Test the full integrated coherence pipeline with trained classifier."""
+    print("=" * 80)
+    print("INTEGRATED COHERENCE PIPELINE TEST")
+    print("=" * 80)
+
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    print(f"Using device: {device}")
+
+    # Import wrapper
+    sys.path.insert(0, '.')
+    from tks_features.coherent_tks_wrapper import CoherentTKSModel, CoherenceConfig
+
+    # Check for trained classifier
+    classifier_path = Path("checkpoints/coherence_classifier_v2.pt")
+    if not classifier_path.exists():
+        print("Trained classifier not found. Run train_coherence_model.py first.")
+        return
+
+    # Load model
+    checkpoint_path = "checkpoints/v7_discovery/v7_discovery_model.pt"
+    if not Path(checkpoint_path).exists():
+        print("No model checkpoint found.")
+        return
+
+    try:
+        model, config = load_model(checkpoint_path, device)
+    except Exception as e:
+        print(f"Failed to load model: {e}")
+        return
+
+    # Create coherent wrapper with trained classifier
+    coherence_config = CoherenceConfig(
+        enabled=True,
+        threshold=0.5,
+        use_trained_classifier=True,
+        classifier_path=str(classifier_path),
+    )
+
+    coherent_model = CoherentTKSModel(
+        base_model=model,
+        config=coherence_config,
+        embed_dim=config.hidden_dim,
+    )
+
+    # Test text samples
+    test_samples = [
+        # Coherent TKS text
+        ("Coherent TKS", "The spiritual mind combines with emotional force to create balance."),
+        ("Coherent equation", "A1 +T B2 represents the union of spiritual and emotional energies."),
+        # Gibberish
+        ("Shuffled words", "force emotional The with combines mind balance create to spiritual."),
+        ("Random symbols", "A1 B5 C3 X9 +T -T o ^ random gibberish text here."),
+        # Edge cases
+        ("Mixed", "The A1 pattern shows B2 connection with C3 energy flow."),
+    ]
+
+    print("\n" + "-" * 40)
+    print("TRAINED CLASSIFIER COHERENCE SCORES")
+    print("-" * 40)
+
+    for name, text in test_samples:
+        score = coherent_model.classify_text_coherence(text)
+        status = "COHERENT" if score > 0.5 else "INCOHERENT"
+        print(f"\n[{name}]")
+        print(f"  Text: {text[:60]}...")
+        print(f"  Score: {score:.3f} [{status}]")
+
+    print("\n" + "=" * 80)
+    print("Integrated pipeline test complete!")
+    print("=" * 80)
+
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("--generate", action="store_true", help="Run generation test")
+    parser.add_argument("--integrated", action="store_true", help="Run integrated pipeline test")
     args = parser.parse_args()
 
-    if args.generate:
+    if args.integrated:
+        test_integrated_pipeline()
+    elif args.generate:
         test_actual_generation()
     else:
         test_with_simple_tokenizer()

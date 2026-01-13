@@ -99,14 +99,22 @@ class CoherenceDataset(Dataset):
 class CoherenceClassifier(nn.Module):
     """
     Coherence classifier that uses NoeticFractalEncoder features
-    combined with learned coherence patterns.
+    combined with learned coherence patterns and n-gram features.
     """
 
     def __init__(self, vocab_size: int = 130, embed_dim: int = 64,
                  hidden_dim: int = 128, noetic_dim: int = 40):
         super().__init__()
 
+        self.embed_dim = embed_dim
         self.embedding = nn.Embedding(vocab_size, embed_dim, padding_idx=128)
+
+        # N-gram convolutions for local pattern detection (catches word shuffling)
+        self.ngram_convs = nn.ModuleList([
+            nn.Conv1d(embed_dim, embed_dim // 2, kernel_size=k, padding=k // 2)
+            for k in [2, 3, 4, 5]  # bigram, trigram, 4-gram, 5-gram
+        ])
+        ngram_features = (embed_dim // 2) * 4  # 4 n-gram sizes
 
         # Text encoder (simple transformer-like)
         self.encoder = nn.TransformerEncoder(
@@ -126,9 +134,11 @@ class CoherenceClassifier(nn.Module):
             noetic_dim=noetic_dim
         )
 
-        # Coherence head
+        # Coherence head (now includes n-gram features)
+        # embed_dim + noetic_dim + 3 (lacunarity) + ngram_features
+        total_features = embed_dim + noetic_dim + 3 + ngram_features
         self.coherence_head = nn.Sequential(
-            nn.Linear(embed_dim + noetic_dim + 3, hidden_dim),  # +3 for lacunarity features
+            nn.Linear(total_features, hidden_dim),
             nn.ReLU(),
             nn.Dropout(0.2),
             nn.Linear(hidden_dim, hidden_dim // 2),
@@ -140,6 +150,16 @@ class CoherenceClassifier(nn.Module):
     def forward(self, tokens: torch.Tensor) -> Dict[str, torch.Tensor]:
         # Embed tokens
         x = self.embedding(tokens)  # [B, L, E]
+
+        # Compute n-gram features (catches word shuffling patterns)
+        x_conv = x.transpose(1, 2)  # [B, E, L] for conv1d
+        ngram_outputs = []
+        for conv in self.ngram_convs:
+            conv_out = F.relu(conv(x_conv))  # [B, E//2, L]
+            # Global max pooling over sequence
+            ngram_pooled = conv_out.max(dim=2)[0]  # [B, E//2]
+            ngram_outputs.append(ngram_pooled)
+        ngram_features = torch.cat(ngram_outputs, dim=-1)  # [B, E//2 * 4]
 
         # Encode sequence
         encoded = self.encoder(x)  # [B, L, E]
@@ -155,8 +175,8 @@ class CoherenceClassifier(nn.Module):
         # Compute lacunarity features from encoded sequence
         lacunarity = self._compute_lacunarity_features(encoded, mask)
 
-        # Combine features
-        features = torch.cat([pooled, nf_output, lacunarity], dim=-1)
+        # Combine all features: pooled + NF + lacunarity + n-grams
+        features = torch.cat([pooled, nf_output, lacunarity, ngram_features], dim=-1)
 
         # Predict coherence
         coherence_score = self.coherence_head(features)
@@ -166,6 +186,7 @@ class CoherenceClassifier(nn.Module):
             'nf_validity': nf_validity,
             'nf_coords': nf_coords,
             'lacunarity_features': lacunarity,
+            'ngram_features': ngram_features,
         }
 
     def _compute_lacunarity_features(self, encoded: torch.Tensor,

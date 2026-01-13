@@ -55,6 +55,9 @@ class CoherenceConfig:
     history_length: int = 10            # Attention history for tracking
     warn_threshold: float = 0.3         # Warn if below this (even if passing)
     strict_mode: bool = False           # Block ALL incoherent outputs
+    # Trained classifier settings
+    use_trained_classifier: bool = True  # Use trained coherence classifier
+    classifier_path: str = "checkpoints/coherence_classifier_v2.pt"  # Path to trained model
 
 
 @dataclass
@@ -115,12 +118,76 @@ class CoherentTKSModel(nn.Module):
             history_length=self.config.history_length,
         )
 
+        # Load trained coherence classifier if available
+        self.trained_classifier = None
+        if self.config.use_trained_classifier:
+            self._load_trained_classifier()
+
         # Trace for debugging
         self.trace = CoherenceTrace()
 
         # Projection for connecting to base model's hidden states
         # (adapt to model's actual hidden dim if different)
         self._hidden_proj = None  # Lazy init based on actual hidden dim
+
+    def _load_trained_classifier(self):
+        """Load trained coherence classifier from checkpoint."""
+        from pathlib import Path
+        import sys
+
+        classifier_path = Path(self.config.classifier_path)
+        if not classifier_path.exists():
+            print(f"Warning: Trained classifier not found at {classifier_path}")
+            return
+
+        try:
+            # Import the classifier
+            sys.path.insert(0, 'scripts')
+            from train_coherence_model import CoherenceClassifier
+
+            # Load checkpoint
+            checkpoint = torch.load(classifier_path, map_location='cpu', weights_only=False)
+
+            # Create classifier
+            self.trained_classifier = CoherenceClassifier()
+            self.trained_classifier.load_state_dict(checkpoint['model_state_dict'])
+            self.trained_classifier.eval()
+
+            # Move to same device as base model
+            device = next(self.base_model.parameters()).device
+            self.trained_classifier = self.trained_classifier.to(device)
+
+            print(f"Loaded trained coherence classifier (acc: {checkpoint.get('val_accuracy', 'N/A'):.4f})")
+        except Exception as e:
+            print(f"Warning: Could not load trained classifier: {e}")
+            self.trained_classifier = None
+
+    def classify_text_coherence(self, text: str) -> float:
+        """Use trained classifier to check text coherence."""
+        if self.trained_classifier is None:
+            return 1.0  # Default to coherent if no classifier
+
+        device = next(self.trained_classifier.parameters()).device
+
+        # Simple character tokenization
+        char_to_id = {chr(i): i for i in range(128)}
+        char_to_id['<PAD>'] = 128
+        char_to_id['<UNK>'] = 129
+
+        max_length = 256
+        ids = []
+        for char in text[:max_length]:
+            ids.append(char_to_id.get(char, char_to_id['<UNK>']))
+        while len(ids) < max_length:
+            ids.append(char_to_id['<PAD>'])
+
+        tokens = torch.tensor([ids[:max_length]], device=device)
+
+        with torch.no_grad():
+            outputs = self.trained_classifier(tokens)
+            coherence = outputs['coherence'].item()
+
+        return coherence
 
     def _ensure_hidden_proj(self, hidden_dim: int):
         """Lazily initialize hidden projection if needed."""
