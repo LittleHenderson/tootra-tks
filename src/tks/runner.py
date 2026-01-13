@@ -34,6 +34,31 @@ except ImportError:
     IdleScheduler = None
     RTTACanonical = None
 
+# Lacunary Pattern Flow Integration
+LACUNARY_AVAILABLE = False
+try:
+    from tks_features.lacunary_pattern_flow import (
+        LacunaryFlowSystem,
+        CanonicalLacunarity,
+        PatternCategory,
+    )
+    LACUNARY_AVAILABLE = True
+except ImportError:
+    LacunaryFlowSystem = None
+    CanonicalLacunarity = None
+    PatternCategory = None
+
+# Coherence System Integration
+COHERENCE_AVAILABLE = False
+try:
+    from tks_features.coherent_tks_wrapper import CoherentTKSModel, CoherenceConfig
+    from tks_features.noetic_fractal_coherence import NoeticFractalCoherenceSystem
+    COHERENCE_AVAILABLE = True
+except ImportError:
+    CoherentTKSModel = None
+    CoherenceConfig = None
+    NoeticFractalCoherenceSystem = None
+
 
 @dataclass
 class EpisodeInput:
@@ -58,6 +83,12 @@ class EpisodeResult:
     violations: List[str] = field(default_factory=list)
     mode: OperationalMode = OperationalMode.NORMAL
     duration_ms: float = 0.0
+    # Coherence and Lacunary metrics
+    coherence_score: Optional[float] = None
+    lacunarity: Optional[float] = None
+    nf_coords: Optional[str] = None  # "X:Y:Z" format
+    pattern_category: Optional[str] = None
+    coherence_gated: bool = False
 
 
 class EpisodeRunner:
@@ -68,10 +99,18 @@ class EpisodeRunner:
     Includes RTTA-R rumination for idle-time learning.
     """
 
-    def __init__(self, config: TKSConfig, enable_rumination: bool = True):
+    def __init__(
+        self,
+        config: TKSConfig,
+        enable_rumination: bool = True,
+        enable_lacunary: bool = True,
+        enable_coherence: bool = True,
+    ):
         self.config = config
         self._initialize_modules()
         self._initialize_rumination(enable_rumination)
+        self._initialize_lacunary(enable_lacunary)
+        self._initialize_coherence(enable_coherence)
         self._last_activity_time = time.time()
 
     def _initialize_modules(self) -> None:
@@ -186,6 +225,153 @@ class EpisodeRunner:
         except Exception as e:
             logger.warning(f"Failed to initialize rumination: {e}")
             self._rumination_enabled = False
+
+    def _initialize_lacunary(self, enable: bool) -> None:
+        """Initialize Lacunary Pattern Flow system for coherence tracking."""
+        self.lacunary = None
+        self._lacunary_enabled = enable and LACUNARY_AVAILABLE
+
+        if not self._lacunary_enabled:
+            if enable and not LACUNARY_AVAILABLE:
+                logger.warning("Lacunary requested but LacunaryFlowSystem not available")
+            return
+
+        try:
+            import torch
+            self.lacunary = LacunaryFlowSystem(
+                hidden_dim=384,
+                noetic_dim=40,
+                num_layers=12,
+                storage_path="checkpoints/coherence_memory",
+            )
+            logger.info("Lacunary Pattern Flow system initialized")
+        except Exception as e:
+            logger.warning(f"Failed to initialize lacunary: {e}")
+            self._lacunary_enabled = False
+
+    def _initialize_coherence(self, enable: bool) -> None:
+        """Initialize Coherence gating system for output validation."""
+        self.coherence_system = None
+        self._coherence_enabled = enable and COHERENCE_AVAILABLE
+
+        if not self._coherence_enabled:
+            if enable and not COHERENCE_AVAILABLE:
+                logger.warning("Coherence requested but CoherenceSystem not available")
+            return
+
+        try:
+            # Initialize the Noetic Fractal Coherence System directly
+            self.coherence_system = NoeticFractalCoherenceSystem(
+                embed_dim=384,
+                noetic_dim=40,
+                coherence_threshold=0.5,
+                gate_mode='constrain',
+                history_length=10,
+            )
+            logger.info("Coherence gating system initialized")
+        except Exception as e:
+            logger.warning(f"Failed to initialize coherence: {e}")
+            self._coherence_enabled = False
+
+    # ================================================================
+    # LACUNARY & COHERENCE METHODS
+    # ================================================================
+
+    def compute_output_coherence(self, output: Any) -> Dict[str, Any]:
+        """
+        Compute coherence metrics for an output.
+
+        Returns dict with:
+            - coherence_score: 0-1 (1 = fully coherent)
+            - lacunarity: gap measure (1 = homogeneous, >1 = gappy)
+            - nf_coords: "X:Y:Z" Noetic Fractal coordinates
+            - pattern_category: TKS category string
+            - is_coherent: boolean
+        """
+        result = {
+            'coherence_score': 1.0,
+            'lacunarity': 1.0,
+            'nf_coords': None,
+            'pattern_category': None,
+            'is_coherent': True,
+        }
+
+        if not self._coherence_enabled or self.coherence_system is None:
+            return result
+
+        try:
+            import torch
+
+            # Convert output to tensor representation
+            # For text outputs, we use character embeddings
+            if isinstance(output, str):
+                # Simple character-level embedding
+                chars = [ord(c) % 128 for c in output[:256]]
+                while len(chars) < 256:
+                    chars.append(0)
+                embeddings = torch.tensor(chars, dtype=torch.float32).unsqueeze(0).unsqueeze(-1)
+                embeddings = embeddings.expand(-1, -1, 384)  # [1, 256, 384]
+            elif isinstance(output, dict):
+                # Use answer field if available
+                text = str(output.get('answer', output.get('result', str(output))))
+                chars = [ord(c) % 128 for c in text[:256]]
+                while len(chars) < 256:
+                    chars.append(0)
+                embeddings = torch.tensor(chars, dtype=torch.float32).unsqueeze(0).unsqueeze(-1)
+                embeddings = embeddings.expand(-1, -1, 384)
+            else:
+                return result  # Can't compute coherence for unknown types
+
+            # Check coherence
+            coherence_result = self.coherence_system(embeddings, return_all=True)
+
+            result['coherence_score'] = float(coherence_result['coherence_score'].mean().item())
+            result['lacunarity'] = float(coherence_result['lacunary_index'].mean().item())
+            result['is_coherent'] = bool(coherence_result['is_coherent'].all().item())
+
+            # Get NF coordinates
+            nf = coherence_result['detected_nf']
+            if nf is not None and len(nf) >= 3:
+                result['nf_coords'] = f"{int(nf[0])}:{int(nf[1])}:{int(nf[2])}"
+
+                # Get pattern category
+                if PatternCategory is not None:
+                    category, _ = PatternCategory.categorize((int(nf[0]), int(nf[1]), int(nf[2])))
+                    result['pattern_category'] = category
+
+        except Exception as e:
+            logger.warning(f"Coherence computation failed: {e}")
+
+        return result
+
+    def gate_output_coherence(self, output: Any, coherence: Dict[str, Any]) -> tuple:
+        """
+        Apply coherence gating to output.
+
+        Returns:
+            (gated_output, was_gated)
+        """
+        if not coherence.get('is_coherent', True):
+            # Output is incoherent - apply gating
+            if isinstance(output, dict):
+                output = output.copy()
+                output['_coherence_warning'] = 'Output flagged as potentially incoherent'
+                output['_coherence_score'] = coherence.get('coherence_score', 0)
+            return output, True
+
+        return output, False
+
+    def start_lacunary_trace(self) -> None:
+        """Start a new lacunary flow trace for an episode."""
+        if self._lacunary_enabled and self.lacunary is not None:
+            self.lacunary.start_generation(input_coherence=1.0)
+
+    def finalize_lacunary_trace(self, output_coherence: float) -> Optional[Dict]:
+        """Finalize lacunary trace and return stats."""
+        if self._lacunary_enabled and self.lacunary is not None:
+            trace = self.lacunary.finalize_generation(output_coherence)
+            return self.lacunary.get_stats()
+        return None
 
     # ================================================================
     # RUMINATION HOOKS (Wake Events)
@@ -361,6 +547,9 @@ class EpisodeRunner:
         # Wake from rumination
         self._on_episode_start(episode_id)
 
+        # Start lacunary pattern tracking
+        self.start_lacunary_trace()
+
         trace: Dict[str, Any] = {
             "episode_id": episode_id,
             "start_time": start_time.isoformat(),
@@ -470,6 +659,32 @@ class EpisodeRunner:
         output = self._generate_output(input, tool_results, verification)
         tks_packet = self._generate_tks_packet(input, output, evidence_ids)
 
+        # 8.5 COHERENCE & LACUNARY GATING (NEW)
+        coherence_metrics = self.compute_output_coherence(output)
+        coherence_gated = False
+        if coherence_metrics:
+            output, coherence_gated = self.gate_output_coherence(output, coherence_metrics)
+            trace["stages"].append({
+                "stage": "COHERENCE_CHECK",
+                "coherence_score": coherence_metrics.get('coherence_score'),
+                "lacunarity": coherence_metrics.get('lacunarity'),
+                "nf_coords": coherence_metrics.get('nf_coords'),
+                "pattern_category": coherence_metrics.get('pattern_category'),
+                "is_coherent": coherence_metrics.get('is_coherent'),
+                "was_gated": coherence_gated,
+            })
+            self._log_event("COHERENCE_CHECK", episode_id, coherence_metrics)
+
+            if not coherence_metrics.get('is_coherent', True):
+                violations.append("COHERENCE_WARNING")
+
+        # Finalize lacunary trace
+        lacunary_stats = self.finalize_lacunary_trace(
+            coherence_metrics.get('coherence_score', 1.0)
+        )
+        if lacunary_stats:
+            trace["lacunary_stats"] = lacunary_stats
+
         # 9. Write to memory
         if self.memory_store and verification.get("status") == "PASS":
             packet_id = self.memory_store.store(episode_id, tks_packet, evidence_ids)
@@ -496,6 +711,8 @@ class EpisodeRunner:
             "output": output,
             "tks_packet": tks_packet,
             "reward": reward,
+            "coherence_score": coherence_metrics.get('coherence_score'),
+            "lacunarity": coherence_metrics.get('lacunarity'),
         })
 
         result = EpisodeResult(
@@ -509,6 +726,12 @@ class EpisodeRunner:
             violations=violations,
             mode=mode,
             duration_ms=duration_ms,
+            # Coherence and lacunary metrics
+            coherence_score=coherence_metrics.get('coherence_score'),
+            lacunarity=coherence_metrics.get('lacunarity'),
+            nf_coords=coherence_metrics.get('nf_coords'),
+            pattern_category=coherence_metrics.get('pattern_category'),
+            coherence_gated=coherence_gated,
         )
 
         # Log failures to rumination
