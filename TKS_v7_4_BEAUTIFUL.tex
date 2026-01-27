@@ -1,0 +1,732 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% TKS FORMAL MATHEMATICAL MANUAL v7.4 — BEAUTIFUL CORRECTED EDITION
+%%
+%% CANONICAL INHERITANCE:
+%%   v6.1 -> v7.0 -> v7.1 -> v7.2 -> v7.3 -> v7.4
+%%
+%% FEATURES:
+%%   - Beautiful colored theorem environments throughout
+%%   - Charter font for elegant typography
+%%   - All mathematical corrections integrated
+%%   - Professional formatting with no text overflow
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt,twoside,openright]{book}
+
+%% ============================================================================
+%% PACKAGES
+%% ============================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+% Use default Computer Modern font (widely available)
+\usepackage{amsmath,amssymb,amsthm,amsfonts}
+\usepackage{mathtools}
+%\usepackage{stmaryrd}                   % For semantic brackets
+\usepackage{bm}                         % Bold math
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{cd,arrows,positioning,calc,decorations.pathmorphing,shapes}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{theorems,skins,breakable}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{multicol}
+\usepackage{braket}                     % For quantum notation
+\usepackage{tikz-cd}                    % For commutative diagrams
+%\usepackage{bussproofs}                 % For proof trees
+\usepackage{mathrsfs}                   % For \mathscr (Scott topology)
+%\usepackage{wasysym}                    % Additional symbols
+%\usepackage{extarrows}                  % Extended arrows
+%\usepackage{proof}                      % Proof derivations
+%\usepackage{tensor}                     % For tensor notation
+\usepackage{float}                      % For [H] float placement
+\usepackage{adjustbox}                  % For scaling wide tables
+\usepackage{tocloft}                    % For TOC formatting
+
+%% ============================================================================
+%% PAGE GEOMETRY AND OVERFLOW PREVENTION
+%% ============================================================================
+\geometry{
+  paper=letterpaper,
+  inner=1.2in,
+  outer=1in,
+  top=1in,
+  bottom=1in
+}
+
+% Prevent text overflow
+\setlength{\emergencystretch}{3em}
+\tolerance=9999
+\hbadness=9999
+\sloppy
+
+% Paragraph spacing
+\setlength{\parskip}{0.6\baselineskip}
+
+%% ============================================================================
+%% COLORS
+%% ============================================================================
+\definecolor{defblue}{RGB}{30,90,150}
+\definecolor{defbluebg}{RGB}{235,245,255}
+\definecolor{thmgreen}{RGB}{34,139,34}
+\definecolor{thmgreenbg}{RGB}{235,255,235}
+\definecolor{lemgreen}{RGB}{60,179,113}
+\definecolor{lemgreenbg}{RGB}{240,255,240}
+\definecolor{propteal}{RGB}{0,128,128}
+\definecolor{proptealbg}{RGB}{235,255,255}
+\definecolor{axpurple}{RGB}{128,0,128}
+\definecolor{axpurplebg}{RGB}{250,235,255}
+\definecolor{remorange}{RGB}{255,140,0}
+\definecolor{remorangebg}{RGB}{255,250,235}
+\definecolor{expink}{RGB}{219,112,147}
+\definecolor{expinkbg}{RGB}{255,240,245}
+\definecolor{chapterblue}{RGB}{0,51,102}
+
+%% ============================================================================
+%% COLORED THEOREM ENVIRONMENTS
+%% ============================================================================
+
+% Counter for all theorem-like environments
+\newcounter{thmcounter}[chapter]
+\renewcommand{\thethmcounter}{\thechapter.\arabic{thmcounter}}
+
+% Standard amsthm environments for included files
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{axiom}[definition]{Axiom}
+\newtheorem{assumption}[definition]{Assumption}
+\newtheorem{construction}[definition]{Construction}
+\newtheorem{notation}[definition]{Notation}
+
+\theoremstyle{plain}
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{corollary}[definition]{Corollary}
+
+\theoremstyle{remark}
+\newtheorem{remark}[definition]{Remark}
+\newtheorem{example}[definition]{Example}
+
+% Definition - Blue (starred version for main document)
+\newtcbtheorem[use counter=thmcounter]{definitionbox}{Definition}{
+    enhanced,
+    breakable,
+    colback=defbluebg,
+    colframe=defblue,
+    fonttitle=\bfseries,
+    left=8pt, right=8pt, top=6pt, bottom=6pt,
+    boxrule=1pt,
+    arc=2pt,
+    separator sign={.},
+}{def}
+
+% Theorem - Green (starred version for main document)
+\newtcbtheorem[use counter=thmcounter]{theorembox}{Theorem}{
+    enhanced,
+    breakable,
+    colback=thmgreenbg,
+    colframe=thmgreen,
+    fonttitle=\bfseries,
+    left=8pt, right=8pt, top=6pt, bottom=6pt,
+    boxrule=1pt,
+    arc=2pt,
+    separator sign={.},
+}{thm}
+
+% Lemma - Light Green (starred version for main document)
+\newtcbtheorem[use counter=thmcounter]{lemmabox}{Lemma}{
+    enhanced,
+    breakable,
+    colback=lemgreenbg,
+    colframe=lemgreen,
+    fonttitle=\bfseries,
+    left=8pt, right=8pt, top=6pt, bottom=6pt,
+    boxrule=1pt,
+    arc=2pt,
+    separator sign={.},
+}{lem}
+
+% Proposition - Teal (starred version for main document)
+\newtcbtheorem[use counter=thmcounter]{propositionbox}{Proposition}{
+    enhanced,
+    breakable,
+    colback=proptealbg,
+    colframe=propteal,
+    fonttitle=\bfseries,
+    left=8pt, right=8pt, top=6pt, bottom=6pt,
+    boxrule=1pt,
+    arc=2pt,
+    separator sign={.},
+}{prop}
+
+% Corollary - Teal (starred version for main document)
+\newtcbtheorem[use counter=thmcounter]{corollarybox}{Corollary}{
+    enhanced,
+    breakable,
+    colback=proptealbg,
+    colframe=propteal,
+    fonttitle=\bfseries,
+    left=8pt, right=8pt, top=6pt, bottom=6pt,
+    boxrule=1pt,
+    arc=2pt,
+    separator sign={.},
+}{cor}
+
+% Axiom - Purple (starred version for main document)
+\newtcbtheorem[use counter=thmcounter]{axiombox}{Axiom}{
+    enhanced,
+    breakable,
+    colback=axpurplebg,
+    colframe=axpurple,
+    fonttitle=\bfseries,
+    left=8pt, right=8pt, top=6pt, bottom=6pt,
+    boxrule=1pt,
+    arc=2pt,
+    separator sign={.},
+}{ax}
+
+% Remark - Orange (starred version for main document)
+\newtcbtheorem[use counter=thmcounter]{remarkbox}{Remark}{
+    enhanced,
+    breakable,
+    colback=remorangebg,
+    colframe=remorange,
+    fonttitle=\bfseries,
+    left=8pt, right=8pt, top=6pt, bottom=6pt,
+    boxrule=1pt,
+    arc=2pt,
+    separator sign={.},
+}{rem}
+
+% Example - Pink (starred version for main document)
+\newtcbtheorem[use counter=thmcounter]{examplebox}{Example}{
+    enhanced,
+    breakable,
+    colback=expinkbg,
+    colframe=expink,
+    fonttitle=\bfseries,
+    left=8pt, right=8pt, top=6pt, bottom=6pt,
+    boxrule=1pt,
+    arc=2pt,
+    separator sign={.},
+}{ex}
+
+% Construction - Blue (starred version for main document)
+\newtcbtheorem[use counter=thmcounter]{constructionbox}{Construction}{
+    enhanced,
+    breakable,
+    colback=defbluebg,
+    colframe=defblue,
+    fonttitle=\bfseries,
+    left=8pt, right=8pt, top=6pt, bottom=6pt,
+    boxrule=1pt,
+    arc=2pt,
+    separator sign={.},
+}{constr}
+
+% Notation - Blue (starred version for main document)
+\newtcbtheorem[use counter=thmcounter]{notationbox}{Notation}{
+    enhanced,
+    breakable,
+    colback=defbluebg,
+    colframe=defblue,
+    fonttitle=\bfseries,
+    left=8pt, right=8pt, top=6pt, bottom=6pt,
+    boxrule=1pt,
+    arc=2pt,
+    separator sign={.},
+}{not}
+
+%% ============================================================================
+%% CHAPTER AND SECTION FORMATTING
+%% ============================================================================
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries\color{chapterblue}}
+  {\chaptertitlename\ \thechapter}
+  {20pt}
+  {\Huge}
+\titlespacing*{\chapter}{0pt}{50pt}{40pt}
+
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{chapterblue}}
+  {\thesection}
+  {1em}
+  {}
+  
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{chapterblue!80}}
+  {\thesubsection}
+  {1em}
+  {}
+
+%% ============================================================================
+%% TABLE OF CONTENTS FORMATTING
+%% ============================================================================
+\setlength{\cftbeforepartskip}{15pt}
+\setlength{\cftbeforechapskip}{8pt}
+\setlength{\cftbeforesecskip}{3pt}
+
+%% ============================================================================
+%% CUSTOM COMMANDS (TKS-specific)
+%% ============================================================================
+% Semantic brackets
+\newcommand{\sem}[1]{[\![#1]\!]}
+
+% TKS-specific symbols
+\newcommand{\Worlds}{\mathcal{W}}
+\newcommand{\Ideas}{\mathcal{I}}
+\newcommand{\Elements}{\mathcal{E}}
+\newcommand{\Noetics}{\mathcal{N}}
+\newcommand{\Foundations}{\mathcal{F}}
+\newcommand{\Acquisitions}{\mathcal{A}}
+\newcommand{\Noetica}{\mathbf{Noetica}}
+\newcommand{\Acq}{\mathbf{Acq}}
+
+% Noetic operators
+\newcommand{\noe}[1]{\nu_{#1}}
+
+% Tootra operations
+\newcommand{\Tadd}{\oplus_T}
+\newcommand{\Tsub}{\ominus_T}
+\newcommand{\Tmul}{\otimes_T}
+\newcommand{\Tdiv}{\oslash_T}
+
+% World association
+\newcommand{\Wadd}{\oplus_W}
+\newcommand{\Wsub}{\ominus_W}
+
+% Type judgments
+\newcommand{\types}{\vdash}
+\newcommand{\typmark}{:}
+
+% RPM Monad
+\newcommand{\RPM}{\mathfrak{R}}
+\newcommand{\rpmret}{\mathsf{return}}
+\newcommand{\rpmbind}{\mathbin{\gg\!=}}
+\newcommand{\Kleisli}{\mathcal{K}}
+
+% Fractal notation
+\newcommand{\Frac}{\Phi}
+\newcommand{\FracSet}{\mathfrak{F}}
+\newcommand{\bigstep}{\Downarrow}
+\newcommand{\smallstep}{\rightarrow}
+\newcommand{\Failed}{\mathsf{Failed}}
+
+% Quantum notation
+\newcommand{\Hspace}{\mathcal{H}}
+\newcommand{\qket}[1]{|#1\rangle}
+\newcommand{\qbra}[1]{\langle #1|}
+\newcommand{\qbraket}[2]{\langle #1 | #2 \rangle}
+\newcommand{\qop}[1]{\hat{#1}}
+
+% Domain theory
+\newcommand{\Scott}{\mathscr{S}}
+\newcommand{\Dcpo}{\mathbf{Dcpo}}
+\newcommand{\Cont}{\mathbf{Cont}}
+\newcommand{\sqleq}{\sqsubseteq}
+\newcommand{\fix}{\mathsf{fix}}
+
+% Natural transformations
+\newcommand{\NatTrans}[2]{\eta_{#1 \to #2}}
+\newcommand{\WorldFunctor}[1]{\mathfrak{W}_{#1}}
+
+% Transfinite fractals
+\newcommand{\Ord}{\mathbf{Ord}}
+\newcommand{\TransFrac}[1]{\Phi^{#1}}
+\newcommand{\limfrac}{\varinjlim}
+\newcommand{\colfrac}{\varprojlim}
+\newcommand{\omegalim}{\omega\text{-}\lim}
+
+% Topos and coalgebra
+\newcommand{\Topos}{\mathbf{Topos}}
+\newcommand{\Sh}{\mathbf{Sh}}
+\newcommand{\Coalg}{\mathbf{Coalg}}
+\newcommand{\Terminal}{\mathbf{1}}
+\newcommand{\Initial}{\mathbf{0}}
+
+% v7.4 New commands
+\newcommand{\vnewfour}{\textbf{v7.4 New}}
+\newcommand{\NoeticManifold}{M_\nu}
+\newcommand{\TangentBundle}{TM_\nu}
+\newcommand{\CotangentBundle}{T^*M_\nu}
+\newcommand{\NoeticMetric}{g_\nu}
+\newcommand{\NoeticConnection}{\nabla^\nu}
+\newcommand{\NoeticCurvature}{R^\nu}
+\newcommand{\InftyTopos}{\mathbf{Topos}_\infty}
+
+% Info boxes
+\newcommand{\infobox}[2]{%
+\begin{tcolorbox}[colback=gray!10!white,colframe=gray!75!black,title=\textbf{#1}]
+#2
+\end{tcolorbox}
+}
+
+\newcommand{\correctionbox}[2]{%
+\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=\textbf{#1}]
+#2
+\end{tcolorbox}
+}
+
+\newcommand{\newbox}[1]{%
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\vnewfour]
+#1
+\end{tcolorbox}
+}
+
+%% ============================================================================
+%% HYPERREF SETUP
+%% ============================================================================
+\hypersetup{
+    colorlinks=true,
+    linkcolor=chapterblue,
+    citecolor=thmgreen,
+    urlcolor=defblue,
+    pdftitle={TKS Formal Mathematical Manual v7.4 - Corrected Edition},
+    pdfauthor={TKS Formalization Project}
+}
+
+%% ============================================================================
+%% DOCUMENT INFO
+%% ============================================================================
+\title{\Huge\bfseries The TKS Formal Mathematical Manual\\[0.5em]
+\Large Version 7.4 --- Corrected Edition\\[1em]
+\normalsize Extended Fractals $\cdot$ Domain Semantics $\cdot$ Higher Categories $\cdot$ Noetic Geometry}
+\author{TKS Formalization Project}
+\date{January 2026}
+
+%% ============================================================================
+%% BEGIN DOCUMENT
+%% ============================================================================
+\begin{document}
+
+\maketitle
+
+\frontmatter
+
+%% ============================================================================
+%% CANONICAL AUTHORITY DECLARATION
+%% ============================================================================
+\chapter*{Canonical Authority Declaration}
+\addcontentsline{toc}{chapter}{Canonical Authority Declaration}
+
+\infobox{v7.3 $\to$ v7.4 Continuity Bridge}{
+\textbf{Canonical Inheritance Declaration.} This document, TKS v7.4, is a \emph{strict superset} of TKS v7.3, which itself preserves all of v7.2, v7.1, v7.0, and v6.1. All definitions, theorems, axioms, and proofs from previous versions remain valid and unchanged. Version 7.4 introduces four new domain expansions---no modifications to existing canon.
+}
+
+\textbf{Canonical Status of Version 7.4.} This document constitutes the canonical and authoritative specification of the TKS Formal Mathematical System. Version 7.4 fully integrates, refines, and supersedes all prior releases in the v3.x--v7.3 development line. Earlier versions remain valuable as historical strata documenting the conceptual evolution of TKS, but no longer serve as normative references for definitions, constructions, or semantics.
+
+The present release establishes the \textbf{definitive ontology of TKS}, consisting of:
+\begin{itemize}
+    \item The forty canonical Elements (A1--D10)
+    \item The ten Noetic operators $\{\nu_0, \ldots, \nu_9\}$
+    \item The seven Foundations and their twenty-eight Sub-Foundations
+    \item The twenty-two Acquisitions (A0 together with the D, W, and P chains)
+\end{itemize}
+
+\textbf{Normative Baseline:} All subsequent work, commentary, or extensions shall be considered extensions of v7.4 and must adopt the definitions and conventions codified herein, unless explicitly superseded by a future canonical release.
+
+\section*{Inheritance Chain}
+
+\begin{description}
+    \item[v6.1 Canon:] Complete ontology (4 Worlds, 40 Elements, 10 Noetics, 7 Foundations, 22 Acquisitions), noetic algebra, Tootra arithmetic, Category Noetica, ACBE functor
+    
+    \item[v7.0 Canon:] RPM Monad, Noetic Fractal Calculus, Dynamic Semantics, Type System, Concurrency, Quantum Algebra foundations
+    
+    \item[v7.1 Canon:] Natural transformations, Domain theory (dcpos, Scott topology), Extended denotational semantics, Topological noetic space, Multi-goal RPM
+    
+    \item[v7.2 Canon:] Transfinite fractals (preliminary), Measure theory, Polish spaces, Algorithm W, Compiler architecture, Noetic Hilbert spaces, Spectral theory, Monoidal 2-categories, Topos foundations, Coalgebraic dynamics
+    
+    \item[v7.3 Canon:] Full Transfinite Noetic Fractals, Extended TKS Language/VM, Complete Quantum Noetics, 2-Category/Topos/Coalgebra Unification
+\end{description}
+
+\section*{v7.4 Major Domain Expansions}
+
+\begin{enumerate}
+    \item \textbf{MATH Track: Extended Transfinite Fractals}
+    \begin{itemize}
+        \item Large ordinal hierarchies and inaccessible cardinals
+        \item Multi-indexed fractal systems
+        \item Fractal spectrum theory
+        \item Functorial fractal constructions
+    \end{itemize}
+    
+    \item \textbf{SEMANTICS Track: Domain-Theoretic Semantics}
+    \begin{itemize}
+        \item Scott domains for noetic computation
+        \item Continuous lattices and way-below relation
+        \item Fixed-point semantics for recursive noetics
+        \item Domain equations and solutions
+    \end{itemize}
+    
+    \item \textbf{HIGHER CATEGORIES Track: $(\infty,1)$-Categories}
+    \begin{itemize}
+        \item Quasi-categories and Segal spaces
+        \item $(\infty,1)$-topoi for noetic sheaves
+        \item Noetic homotopy theory
+        \item Higher stacks and descent
+    \end{itemize}
+    
+    \item \textbf{GEOMETRY Track: Differential Noetic Geometry}
+    \begin{itemize}
+        \item Noetic manifolds and tangent structures
+        \item Noetic connections and curvature
+        \item Geodesics in Idea space
+        \item Holonomy and parallel transport
+    \end{itemize}
+\end{enumerate}
+
+\section*{New Notation in v7.4}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lll}
+\toprule
+\textbf{Symbol} & \textbf{Meaning} & \textbf{Track} \\
+\midrule
+$\Omega$ & Large ordinal classes & Math \\
+$\mathfrak{H}_{\Ord}$ & Ordinal hierarchy & Math \\
+$\sigma_\Phi$ & Fractal spectrum & Math \\
+$\mathbf{ScottDom}$ & Scott domains & Semantics \\
+$\ll$ & Way-below relation & Semantics \\
+$\mathsf{lfp}$ & Kleene fixed point & Semantics \\
+$(\infty,1)\text{-}\mathbf{Cat}$ & $(\infty,1)$-categories & Higher Categories \\
+$(\infty,1)\text{-}\mathbf{Topos}$ & $(\infty,1)$-topoi & Higher Categories \\
+$\pi_n^\nu$ & Noetic homotopy groups & Higher Categories \\
+$M_\nu$ & Noetic manifold & Geometry \\
+$\nabla^\nu$ & Noetic connection & Geometry \\
+$R^\nu$ & Noetic curvature & Geometry \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\tableofcontents
+
+\mainmatter
+
+%% ============================================================================
+%% PART I: CANONICAL FOUNDATION
+%% ============================================================================
+\part{Canonical Foundation (v6.1 Reference)}
+\label{part:v61-reference}
+
+\chapter{Ontological Foundations Reference}
+\label{ch:foundations-reference}
+
+\infobox{Reference Chapter}{
+This chapter provides a condensed reference to the canonical v6.1 foundations. For complete details, see the TKS Formal Mathematical Manual v6.1.
+}
+
+\section{Terminology Equivalence for Foundations}
+\label{sec:foundation-terminology}
+
+\begin{table}[H]
+\centering
+\caption{Terminology Equivalence for the Seven Foundations}
+\label{tab:foundation-equivalence}
+\renewcommand{\arraystretch}{1.2}
+\adjustbox{max width=\textwidth}{%
+\begin{tabular}{c l l p{5.5cm}}
+\toprule
+\textbf{Foundation} & \textbf{Metaphysical Name} & \textbf{Canonical v7.4 Label} & \textbf{Formal Principle} \\
+\midrule
+$\Foundations_1$ & Unity & Association & Coherence and linking of Ideas across Worlds \\
+$\Foundations_2$ & Wisdom & Wisdom & Discernment, truth-orientation, structural understanding \\
+$\Foundations_3$ & Life & Life & Vitality, persistence, and self-maintenance of patterns \\
+$\Foundations_4$ & Companionship & Companionship & Relational bonding, mutual support, shared context \\
+$\Foundations_5$ & Power & Power & Capacity to influence, direct, or constrain dynamics \\
+$\Foundations_6$ & Material & Wealth & Resources, structure, and embodied stability \\
+$\Foundations_7$ & Lust / Continuation & Continuation & Drive to extend, propagate, and iterate patterns \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\begin{remarkbox*}{Interpretive Notes}{}
+The metaphysical labels in the second column reflect the historical and experiential language used in earlier Tootra expositions. The canonical v7.4 labels in the third column capture the corresponding formal principles as they function within the algebraic and categorical TKS calculus. Throughout this manual, the Foundations $\Foundations_1,\dots,\Foundations_7$ are treated as the primary formal objects, with metaphysical names retained for interpretive continuity and cross-referencing to earlier texts.
+
+\textbf{Usage convention}: In formal proofs and definitions, use the canonical v7.4 label. In expository or philosophical discussion, either label is acceptable. The index notation $\Foundations_i$ is universal.
+\end{remarkbox*}
+
+\subsection{The 28 Sub-Foundations (Canonical Grid)}
+\label{sec:28-subfoundations}
+
+This subsection consolidates the full canonical structure of the \emph{twenty-eight Sub-Foundations} $\Foundations_{mw}$, which refine the seven Foundations $\Foundations_m$ across the four Worlds $w \in \{A,B,C,D\}$.
+
+Each Sub-Foundation $\Foundations_{mw}$ denotes the contextualization of Foundation $\Foundations_m$ within World $w$:
+\[
+\Foundations_{mw} : \mathrm{Domain} \to \mathrm{Domain}
+\]
+where the semantic effect of $\Foundations_{mw}$ is to filter or reinterpret a TKS expression with respect to the structural constraints of world-indexed cognition, affect, causality, or embodiment.
+
+\begin{table}[H]
+\centering
+\caption{Canonical 28 Sub-Foundations}
+\label{tab:subfoundations}
+\renewcommand{\arraystretch}{1.1}
+\adjustbox{max width=\textwidth}{%
+\begin{tabular}{c|c|c|p{6.5cm}}
+\toprule
+$m$ & \textbf{Foundation} & \textbf{World} $w$ & \textbf{Formal Interpretation} \\
+\midrule
+1 & Unity / Association   & A & Abstract unification of Ideas (A-World coherence). \\
+  &                       & B & Cognitive unification: category-level grouping. \\
+  &                       & C & Affective synchrony and interpersonal resonance. \\
+  &                       & D & Material continuity: object persistence. \\
+\midrule
+2 & Wisdom / Structure    & A & Archetypal ordering; ideal structural pattern. \\
+  &                       & B & Conceptual structuring; mental models. \\
+  &                       & C & Emotional evaluation; felt coherence. \\
+  &                       & D & Physical constraints; environmental affordances. \\
+\midrule
+3 & Life / Animation      & A & Essential vitality; causal spark. \\
+  &                       & B & Motivation; cognitive impetus to act. \\
+  &                       & C & Emotional animation; energizing affect. \\
+  &                       & D & Biological / kinetic activation. \\
+\midrule
+4 & Companionship / Relation & A & Archetypal relational patterns. \\
+  &                          & B & Social cognition; theory of mind. \\
+  &                          & C & Emotional bonding; empathy dynamics. \\
+  &                          & D & Material relations; interaction pathways. \\
+\midrule
+5 & Power / Expression    & A & Abstract intentionality; divine will-pattern. \\
+  &                       & B & Strategic cognition; directed agency. \\
+  &                       & C & Emotional assertion; boundary formation. \\
+  &                       & D & Physical expression; force deployment. \\
+\midrule
+6 & Material / Acquisition & A & Ideal pattern of resource flow. \\
+  &                        & B & Conceptual economic models. \\
+  &                        & C & Emotional valuation; attachment/aversion. \\
+  &                        & D & Physical resources; material accumulation. \\
+\midrule
+7 & Lust / Continuation   & A & Archetypal continuation; pattern perpetuation. \\
+  &                       & B & Cognitive projection: planning continuations. \\
+  &                       & C & Desire dynamics; emotional momentum. \\
+  &                       & D & Biological reproductive / survival drives. \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\chapter{Core Calculus Overview}
+\label{ch:core-calculus}
+
+\section{Core Objects}
+
+\begin{definitionbox*}{The Four Worlds}{worlds}
+The TKS ontology is stratified into four \textbf{Worlds}, denoted $\Worlds = \{A, B, C, D\}$:
+\begin{itemize}
+    \item \textbf{World A} (Archetypal): The realm of pure Ideas and abstract patterns
+    \item \textbf{World B} (Mental): The realm of cognition, thought, and mental processes
+    \item \textbf{World C} (Emotional): The realm of affect, feeling, and relational dynamics
+    \item \textbf{World D} (Physical): The realm of matter, embodiment, and physical action
+\end{itemize}
+The Worlds are ordered by the ACBE descent: $A \to B \to C \to D$.
+\end{definitionbox*}
+
+\begin{definitionbox*}{The Forty Ideas}{ideas}
+The set $\Ideas$ consists of 40 \textbf{Ideas}, partitioned by World:
+\[
+\Ideas = \Ideas_A \sqcup \Ideas_B \sqcup \Ideas_C \sqcup \Ideas_D
+\]
+where each World-partition contains 10 Ideas:
+\begin{itemize}
+    \item $\Ideas_A = \{A1, A2, \ldots, A10\}$
+    \item $\Ideas_B = \{B1, B2, \ldots, B10\}$
+    \item $\Ideas_C = \{C1, C2, \ldots, C10\}$
+    \item $\Ideas_D = \{D1, D2, \ldots, D10\}$
+\end{itemize}
+\end{definitionbox*}
+
+\begin{definitionbox*}{The Ten Noetic Operators}{noetics}
+The \textbf{Noetic operators} $\{\nu_0, \nu_1, \ldots, \nu_9\}$ are transformations on Ideas:
+\begin{enumerate}[label=(\arabic*)]
+    \item $\nu_0$: \textbf{Mind} --- Identity/consciousness operator
+    \item $\nu_1$: \textbf{Positive} --- Affirmation/expansion
+    \item $\nu_2$: \textbf{Negative} --- Negation/contraction
+    \item $\nu_3$: \textbf{Vibration} --- Oscillation/rhythm
+    \item $\nu_4$: \textbf{Female} --- Receptive/integrative
+    \item $\nu_5$: \textbf{Male} --- Active/differentiating
+    \item $\nu_6$: \textbf{Rhythm} --- Cyclic/periodic
+    \item $\nu_7$: \textbf{Above/Cause} --- Causal/originating
+    \item $\nu_8$: \textbf{Below/Effect} --- Effectual/resulting
+    \item $\nu_9$: \textbf{Idea} --- Ideation/conceptualization
+\end{enumerate}
+\end{definitionbox*}
+
+\section{Algebraic Structure}
+
+\begin{definitionbox*}{Tootra Arithmetic}{tootra-arith}
+The \textbf{Tootra arithmetic} operations on Ideas are:
+\begin{itemize}
+    \item $\Tadd$: Tootra addition (union of noetic content)
+    \item $\Tsub$: Tootra subtraction (difference of noetic content)
+    \item $\Tmul$: Tootra multiplication (composition of noetic effects)
+    \item $\Tdiv$: Tootra division (decomposition of noetic effects)
+\end{itemize}
+These operations satisfy specific algebraic laws detailed in v6.1.
+\end{definitionbox*}
+
+\section{The RPM Monad}
+
+\begin{definitionbox*}{RPM Monad}{rpm-monad}
+The \textbf{RPM (Requisite-Prerequisite-Manifestation) Monad} $\RPM$ is defined by:
+\begin{itemize}
+    \item \textbf{Unit}: $\eta : \Ideas \to \RPM(\Ideas)$ embeds an Idea into the RPM context
+    \item \textbf{Multiplication}: $\mu : \RPM(\RPM(\Ideas)) \to \RPM(\Ideas)$ flattens nested RPM computations
+    \item \textbf{Bind}: $\rpmbind : \RPM(\Ideas) \times (\Ideas \to \RPM(\Ideas)) \to \RPM(\Ideas)$ sequences RPM computations
+\end{itemize}
+The RPM Monad encapsulates the prerequisite-checking semantics of TKS goal pursuit.
+\end{definitionbox*}
+
+\section{Finite Fractals}
+
+\begin{definitionbox*}{Noetic Fractal}{fractal}
+A \textbf{Noetic Fractal} $\Frac = \langle k_1 : k_2 : \cdots : k_n \rangle$ is a finite sequence of noetic operator indices, representing the composition:
+\[
+\Frac = \nu_{k_n} \circ \nu_{k_{n-1}} \circ \cdots \circ \nu_{k_1}
+\]
+Fractals act on Ideas: $\Frac(I) = \nu_{k_n}(\nu_{k_{n-1}}(\cdots \nu_{k_1}(I) \cdots))$.
+\end{definitionbox*}
+
+\begin{theorembox*}{Fractal Closure}{fractal-closure}
+The set of all finite Noetic Fractals forms a monoid under concatenation, with the empty fractal $\langle \rangle$ (identity) as the unit.
+\end{theorembox*}
+
+%% ============================================================================
+%% PART II: HIGHER CATEGORIES TRACK (v7.4 New)
+%% ============================================================================
+\part{Higher Categories Track}
+\label{part:higher-categories}
+
+\input{TKS_v7.4_HigherCat.tex}
+
+%% ============================================================================
+%% PART III: DIFFERENTIAL NOETIC GEOMETRY TRACK (v7.4 New)
+%% ============================================================================
+\part{Differential Noetic Geometry Track}
+\label{part:geometry}
+
+\input{TKS_v7.4_Geometry.tex}
+
+%% ============================================================================
+%% PART IV: CORRECTED CHAPTERS
+%% ============================================================================
+\part{Corrected Chapters}
+\label{part:corrected}
+
+\input{chapter27_corrected.tex}
+
+\input{geometry_corrected.tex}
+
+\end{document}
