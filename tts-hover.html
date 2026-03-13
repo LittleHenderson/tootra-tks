@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TTS Hover Reader</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    min-height: 100vh;
+  }
+
+  /* ---------- Top control bar ---------- */
+  #controls {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #16213e;
+    border-bottom: 2px solid #0f3460;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+
+  #controls label {
+    font-size: 13px;
+    color: #a0a0c0;
+  }
+
+  #controls select, #controls input[type="range"], #controls input[type="number"] {
+    background: #0f3460;
+    color: #e0e0e0;
+    border: 1px solid #1a1a5e;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 13px;
+  }
+
+  #controls input[type="range"] { width: 100px; }
+  #controls input[type="number"] { width: 60px; }
+
+  .ctrl-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  #status-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #555;
+    transition: background 0.3s;
+  }
+  #status-dot.listening { background: #00c853; }
+  #status-dot.speaking  { background: #ff9100; }
+
+  #toggle-btn {
+    background: #0f3460;
+    color: #e0e0e0;
+    border: 1px solid #1a1a5e;
+    border-radius: 4px;
+    padding: 6px 14px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  #toggle-btn:hover { background: #1a1a5e; }
+  #toggle-btn.active { background: #00c853; color: #000; }
+
+  /* ---------- Content area ---------- */
+  #content-area {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 0 24px;
+  }
+
+  #content-area h2 { color: #e94560; margin: 24px 0 12px; }
+  #content-area p  { line-height: 1.8; margin-bottom: 16px; font-size: 17px; }
+  #content-area li { line-height: 1.8; margin-bottom: 6px; font-size: 16px; }
+  #content-area ul { padding-left: 24px; margin-bottom: 16px; }
+
+  /* Highlight the word / element being hovered */
+  .tts-hover-highlight {
+    background: rgba(233, 69, 96, 0.25);
+    border-radius: 3px;
+    outline: 1px solid rgba(233, 69, 96, 0.4);
+  }
+
+  /* Progress ring shown while waiting 1.5 s */
+  #hover-ring {
+    position: fixed;
+    pointer-events: none;
+    width: 28px; height: 28px;
+    display: none;
+    z-index: 200;
+  }
+  #hover-ring svg { width: 100%; height: 100%; }
+  #hover-ring circle {
+    fill: none;
+    stroke: #e94560;
+    stroke-width: 3;
+    stroke-dasharray: 76;          /* circumference of r=12 */
+    stroke-dashoffset: 76;
+    transform: rotate(-90deg);
+    transform-origin: center;
+  }
+  #hover-ring.running circle {
+    transition: stroke-dashoffset 1.5s linear;
+    stroke-dashoffset: 0;
+  }
+
+  /* ---------- Paste / URL loader area ---------- */
+  #load-section {
+    max-width: 900px;
+    margin: 0 auto 20px;
+    padding: 0 24px;
+  }
+
+  #load-section textarea {
+    width: 100%;
+    min-height: 120px;
+    background: #0f3460;
+    color: #e0e0e0;
+    border: 1px solid #1a1a5e;
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 15px;
+    font-family: inherit;
+    resize: vertical;
+  }
+
+  #load-section button {
+    margin-top: 8px;
+    background: #e94560;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 20px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  #load-section button:hover { background: #c73650; }
+
+  .instructions {
+    background: #16213e;
+    border: 1px solid #0f3460;
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #a0a0c0;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== Controls ========== -->
+<div id="controls">
+  <div class="ctrl-group">
+    <div id="status-dot"></div>
+    <button id="toggle-btn" class="active">Hover TTS ON</button>
+  </div>
+
+  <div class="ctrl-group">
+    <label for="voice-select">Voice:</label>
+    <select id="voice-select"></select>
+  </div>
+
+  <div class="ctrl-group">
+    <label for="rate-range">Speed:</label>
+    <input type="range" id="rate-range" min="0.5" max="2" step="0.1" value="1">
+    <span id="rate-val">1.0</span>
+  </div>
+
+  <div class="ctrl-group">
+    <label for="pitch-range">Pitch:</label>
+    <input type="range" id="pitch-range" min="0" max="2" step="0.1" value="1">
+    <span id="pitch-val">1.0</span>
+  </div>
+
+  <div class="ctrl-group">
+    <label for="delay-input">Delay (s):</label>
+    <input type="number" id="delay-input" min="0.3" max="5" step="0.1" value="1.5">
+  </div>
+
+  <div class="ctrl-group">
+    <label for="mode-select">Read:</label>
+    <select id="mode-select">
+      <option value="word">Word</option>
+      <option value="sentence">Sentence</option>
+      <option value="paragraph" selected>Paragraph</option>
+    </select>
+  </div>
+</div>
+
+<!-- ========== Hover ring (progress indicator) ========== -->
+<div id="hover-ring">
+  <svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="12"/></svg>
+</div>
+
+<!-- ========== Paste / load content ========== -->
+<div id="load-section">
+  <div class="instructions">
+    <strong>How to use:</strong> Hover your pointer over any text below for 1.5 seconds.
+    A progress ring appears at your cursor -- once it completes, the text is read aloud
+    in your chosen voice. Move the pointer away to stop. Paste your own content below,
+    or simply read the sample text.
+  </div>
+  <textarea id="paste-box" placeholder="Paste or type text here, then click 'Load Text' to replace the sample content below..."></textarea>
+  <button id="load-btn">Load Text</button>
+</div>
+
+<!-- ========== Readable content ========== -->
+<div id="content-area">
+  <h2>Sample Content</h2>
+  <p>The Tootra Kabbalistic System (TKS) represents a unified mathematical framework that bridges ancient mystical traditions with modern computational paradigms. At its core, TKS provides a rigorous symbolic calculus for modeling consciousness, intention, and transformation.</p>
+  <p>The system operates through a hierarchy of operators, foundations, and worlds. Each operator encodes a specific transformational principle -- from simple negation to complex recursive dissolution. The 28 Foundations serve as the axiomatic bedrock upon which all equations are constructed.</p>
+  <p>Noetic Fractals describe the self-similar patterns that emerge when consciousness operators are applied recursively. These fractals mirror structures found in nature, from the branching of trees to the spiral of galaxies, suggesting a deep connection between mathematical abstraction and physical reality.</p>
+
+  <h2>Key Concepts</h2>
+  <ul>
+    <li>Operators transform symbolic states according to precise mathematical rules.</li>
+    <li>The Four Worlds -- Atziluth, Briah, Yetzirah, Assiah -- represent nested domains of manifestation.</li>
+    <li>Noetic Junction Transistors (NJTs) model the flow of intentional energy through consciousness circuits.</li>
+    <li>Anti-Attractors prevent the system from collapsing into degenerate fixed points.</li>
+  </ul>
+
+  <p>The practical applications of TKS extend into AI alignment, cognitive modeling, strategic analysis, and the formalization of previously ineffable metaphysical concepts into computable structures.</p>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- DOM refs ---------- */
+  const synth        = window.speechSynthesis;
+  const voiceSel     = document.getElementById("voice-select");
+  const rateRange    = document.getElementById("rate-range");
+  const rateVal      = document.getElementById("rate-val");
+  const pitchRange   = document.getElementById("pitch-range");
+  const pitchVal     = document.getElementById("pitch-val");
+  const delayInput   = document.getElementById("delay-input");
+  const modeSel      = document.getElementById("mode-select");
+  const toggleBtn    = document.getElementById("toggle-btn");
+  const statusDot    = document.getElementById("status-dot");
+  const contentArea  = document.getElementById("content-area");
+  const hoverRing    = document.getElementById("hover-ring");
+  const pasteBox     = document.getElementById("paste-box");
+  const loadBtn      = document.getElementById("load-btn");
+
+  let enabled        = true;
+  let hoverTimer     = null;
+  let currentTarget  = null;
+  let speaking       = false;
+
+  /* ---------- Populate voices ---------- */
+  function loadVoices() {
+    const voices = synth.getVoices();
+    voiceSel.innerHTML = "";
+    voices.forEach((v, i) => {
+      const opt = document.createElement("option");
+      opt.value = i;
+      opt.textContent = v.name + " (" + v.lang + ")";
+      if (v.default) opt.selected = true;
+      voiceSel.appendChild(opt);
+    });
+  }
+  loadVoices();
+  if (synth.onvoiceschanged !== undefined) synth.onvoiceschanged = loadVoices;
+
+  /* ---------- UI wiring ---------- */
+  rateRange.addEventListener("input", () => { rateVal.textContent = Number(rateRange.value).toFixed(1); });
+  pitchRange.addEventListener("input", () => { pitchVal.textContent = Number(pitchRange.value).toFixed(1); });
+
+  toggleBtn.addEventListener("click", () => {
+    enabled = !enabled;
+    toggleBtn.textContent = enabled ? "Hover TTS ON" : "Hover TTS OFF";
+    toggleBtn.classList.toggle("active", enabled);
+    if (!enabled) cancelAll();
+  });
+
+  loadBtn.addEventListener("click", () => {
+    const raw = pasteBox.value.trim();
+    if (!raw) return;
+    contentArea.innerHTML = "";
+    raw.split(/\n\s*\n/).forEach(block => {
+      const p = document.createElement("p");
+      p.textContent = block.trim();
+      contentArea.appendChild(p);
+    });
+  });
+
+  /* ---------- Resolve text to read based on mode ---------- */
+  function getTextForTarget(el, mode) {
+    const fullText = el.textContent || "";
+    if (mode === "paragraph") return fullText.trim();
+
+    /* For word / sentence we need cursor-relative info, but a simpler
+       approach: read the innerText of the deepest element the user hovers */
+    if (mode === "sentence") {
+      /* Find the sentence containing the first few words visible */
+      const sentences = fullText.match(/[^.!?]+[.!?]+/g);
+      return sentences ? sentences[0].trim() : fullText.trim();
+    }
+
+    /* word mode -- read entire hovered element (usually already a word span) */
+    return fullText.trim();
+  }
+
+  /* ---------- Speak ---------- */
+  function speak(text) {
+    if (!text) return;
+    synth.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    const voices = synth.getVoices();
+    const idx = parseInt(voiceSel.value, 10);
+    if (voices[idx]) utter.voice = voices[idx];
+    utter.rate  = parseFloat(rateRange.value);
+    utter.pitch = parseFloat(pitchRange.value);
+
+    utter.onstart = () => { speaking = true;  statusDot.className = "speaking"; };
+    utter.onend   = () => { speaking = false; statusDot.className = enabled ? "listening" : ""; };
+    utter.onerror = () => { speaking = false; statusDot.className = enabled ? "listening" : ""; };
+
+    synth.speak(utter);
+  }
+
+  /* ---------- Cancel everything ---------- */
+  function cancelAll() {
+    clearTimeout(hoverTimer);
+    hoverTimer = null;
+    synth.cancel();
+    speaking = false;
+    hoverRing.classList.remove("running");
+    hoverRing.style.display = "none";
+    if (currentTarget) currentTarget.classList.remove("tts-hover-highlight");
+    currentTarget = null;
+    statusDot.className = enabled ? "listening" : "";
+  }
+
+  /* ---------- Find the readable element under cursor ---------- */
+  function readableTarget(el) {
+    /* Walk up to find the nearest block-level text container inside #content-area */
+    while (el && el !== contentArea) {
+      const tag = el.tagName;
+      if (tag === "P" || tag === "LI" || tag === "H1" || tag === "H2" ||
+          tag === "H3" || tag === "H4" || tag === "TD" || tag === "TH" ||
+          tag === "SPAN" || tag === "A" || tag === "BLOCKQUOTE" || tag === "DD" || tag === "DT") {
+        return el;
+      }
+      el = el.parentElement;
+    }
+    return null;
+  }
+
+  /* ---------- Pointer events ---------- */
+  contentArea.addEventListener("mousemove", (e) => {
+    if (!enabled) return;
+
+    /* Position the ring near cursor */
+    hoverRing.style.left = (e.clientX + 14) + "px";
+    hoverRing.style.top  = (e.clientY - 14) + "px";
+
+    const target = readableTarget(e.target);
+    if (!target || target === currentTarget) return;
+
+    /* New target -- reset */
+    cancelAll();
+    currentTarget = target;
+    currentTarget.classList.add("tts-hover-highlight");
+    statusDot.className = "listening";
+
+    /* Show ring and start countdown */
+    const delay = parseFloat(delayInput.value) * 1000 || 1500;
+    hoverRing.style.display = "block";
+
+    /* Reset the CSS transition so it replays */
+    const circle = hoverRing.querySelector("circle");
+    circle.style.transition = "none";
+    circle.style.strokeDashoffset = "76";
+    void circle.offsetWidth;                         /* force reflow */
+    circle.style.transition = "stroke-dashoffset " + (delay / 1000) + "s linear";
+    circle.style.strokeDashoffset = "0";
+    hoverRing.classList.add("running");
+
+    hoverTimer = setTimeout(() => {
+      hoverRing.classList.remove("running");
+      hoverRing.style.display = "none";
+      const text = getTextForTarget(currentTarget, modeSel.value);
+      speak(text);
+    }, delay);
+  });
+
+  contentArea.addEventListener("mouseleave", cancelAll);
+
+  /* Also cancel if pointer leaves the current target */
+  contentArea.addEventListener("mouseout", (e) => {
+    if (!enabled) return;
+    const target = readableTarget(e.target);
+    if (target && target === currentTarget) {
+      cancelAll();
+    }
+  });
+
+  /* Start as listening */
+  statusDot.className = "listening";
+
+})();
+</script>
+</body>
+</html>
