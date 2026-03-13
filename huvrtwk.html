@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>HuvrTwk</title>
+<style>
+  /* Demo page styling -- not part of HuvrTwk itself */
+  body { font-family: Georgia, 'Times New Roman', serif; background: #f5f0eb; color: #2a2a2a; margin: 0; padding: 40px 20px; line-height: 1.8; }
+  .demo-content { max-width: 720px; margin: 0 auto; }
+  .demo-content h1 { font-size: 28px; margin-bottom: 8px; }
+  .demo-content h2 { font-size: 20px; margin: 28px 0 8px; color: #555; }
+  .demo-content p  { font-size: 17px; margin-bottom: 16px; }
+  .demo-content li { font-size: 16px; margin-bottom: 6px; }
+  .demo-content ul { padding-left: 24px; margin-bottom: 16px; }
+  .demo-content blockquote { border-left: 3px solid #ccc; padding-left: 16px; color: #555; margin: 16px 0; font-style: italic; }
+  .demo-badge { text-align: center; margin-bottom: 30px; font-size: 13px; color: #999; }
+</style>
+</head>
+<body>
+
+<div class="demo-badge">HuvrTwk is active -- look for the floating button on the right edge</div>
+
+<div class="demo-content">
+  <h1>The Tootra Kabbalistic System</h1>
+  <p>The Tootra Kabbalistic System (TKS) represents a unified mathematical framework that bridges ancient mystical traditions with modern computational paradigms. At its core, TKS provides a rigorous symbolic calculus for modeling consciousness, intention, and transformation.</p>
+
+  <h2>Foundations</h2>
+  <p>The system operates through a hierarchy of operators, foundations, and worlds. Each operator encodes a specific transformational principle -- from simple negation to complex recursive dissolution. The 28 Foundations serve as the axiomatic bedrock upon which all equations are constructed.</p>
+  <p>These foundations are not arbitrary axioms but emerge from deep structural analysis of kabbalistic tradition, reinterpreted through the lens of category theory, topology, and information dynamics.</p>
+
+  <blockquote>The map is not the territory, but a sufficiently precise map becomes indistinguishable from navigation itself.</blockquote>
+
+  <h2>Noetic Fractals</h2>
+  <p>Noetic Fractals describe the self-similar patterns that emerge when consciousness operators are applied recursively. These fractals mirror structures found in nature, from the branching of trees to the spiral of galaxies, suggesting a deep connection between mathematical abstraction and physical reality.</p>
+
+  <h2>Key Concepts</h2>
+  <ul>
+    <li>Operators transform symbolic states according to precise mathematical rules.</li>
+    <li>The Four Worlds -- Atziluth, Briah, Yetzirah, Assiah -- represent nested domains of manifestation.</li>
+    <li>Noetic Junction Transistors (NJTs) model the flow of intentional energy through consciousness circuits.</li>
+    <li>Anti-Attractors prevent the system from collapsing into degenerate fixed points.</li>
+    <li>The Inversion Engine allows scenario modeling through controlled parameter reversal.</li>
+  </ul>
+
+  <h2>Applications</h2>
+  <p>The practical applications of TKS extend into AI alignment, cognitive modeling, strategic analysis, and the formalization of previously ineffable metaphysical concepts into computable structures. The system has been validated through extensive training pipelines and formal mathematical proofs.</p>
+  <p>Recent developments include integration with large language model architectures, enabling natural-language interfaces to the equation system and opening new pathways for human-AI collaborative reasoning.</p>
+</div>
+
+<!-- ============================================================
+     HuvrTwk -- Self-contained TTS overlay widget
+     Drop this entire <script> block into any page, or use as bookmarklet.
+     ============================================================ -->
+<script>
+(function HuvrTwk() {
+  "use strict";
+
+  /* Prevent double-injection */
+  if (window.__huvrtwk_loaded) return;
+  window.__huvrtwk_loaded = true;
+
+  const synth = window.speechSynthesis;
+  if (!synth) { console.warn("HuvrTwk: Web Speech API not supported"); return; }
+
+  /* ========== State ========== */
+  const PREFS_KEY = "huvrtwk_prefs";
+  let prefs = loadPrefs();
+  let enabled    = true;
+  let panelOpen  = false;
+  let speaking   = false;
+  let hoverTimer = null;
+  let currentEl  = null;
+  let isTouch    = ("ontouchstart" in window) || (navigator.maxTouchPoints > 0);
+
+  /* Touch circle state */
+  let drawing       = false;
+  let holdTimer     = null;
+  let touchStart    = null;
+  let touchPoints   = [];
+
+  /* ========== Inject styles ========== */
+  const css = document.createElement("style");
+  css.textContent = `
+    /* ---------- Pill button ---------- */
+    #huvrtwk-pill {
+      position: fixed;
+      z-index: 2147483646;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(20, 20, 40, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.12);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+      transition: transform 0.2s, background 0.3s, width 0.3s, border-radius 0.3s;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    #huvrtwk-pill:hover { transform: scale(1.08); }
+    #huvrtwk-pill.speaking { background: rgba(255, 145, 0, 0.8); }
+    #huvrtwk-pill.off { opacity: 0.45; }
+
+    #huvrtwk-pill svg {
+      width: 22px; height: 22px;
+      fill: none; stroke: #fff; stroke-width: 1.8;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    /* ---------- Glass panel ---------- */
+    #huvrtwk-panel {
+      position: fixed;
+      z-index: 2147483645;
+      width: 240px;
+      background: rgba(16, 16, 36, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 0;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.35s ease, opacity 0.25s ease, padding 0.35s ease;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #e0e0e0;
+    }
+    #huvrtwk-panel.open {
+      max-height: 500px;
+      opacity: 1;
+      padding: 16px;
+    }
+
+    #huvrtwk-panel .hw-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 14px;
+      text-align: center;
+    }
+
+    #huvrtwk-panel .hw-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    #huvrtwk-panel .hw-label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.55);
+      min-width: 48px;
+    }
+
+    #huvrtwk-panel select {
+      flex: 1;
+      background: rgba(255,255,255,0.08);
+      color: #e0e0e0;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 6px;
+      padding: 5px 6px;
+      font-size: 12px;
+      max-width: 170px;
+      outline: none;
+    }
+
+    #huvrtwk-panel input[type="range"] {
+      flex: 1;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 4px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 2px;
+      outline: none;
+      margin: 0 6px;
+    }
+    #huvrtwk-panel input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: #e94560;
+      cursor: pointer;
+    }
+
+    #huvrtwk-panel .hw-val {
+      font-size: 11px;
+      color: rgba(255,255,255,0.5);
+      width: 28px;
+      text-align: right;
+    }
+
+    #huvrtwk-panel .hw-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      margin-top: 4px;
+    }
+
+    /* Toggle switch */
+    .hw-switch {
+      position: relative;
+      width: 40px; height: 22px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 11px;
+      cursor: pointer;
+      transition: background 0.25s;
+    }
+    .hw-switch.on { background: #00c853; }
+    .hw-switch::after {
+      content: '';
+      position: absolute;
+      top: 2px; left: 2px;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform 0.25s;
+    }
+    .hw-switch.on::after { transform: translateX(18px); }
+
+    /* Stop button */
+    #huvrtwk-stop {
+      width: 100%;
+      padding: 7px 0;
+      background: rgba(233, 69, 96, 0.2);
+      border: 1px solid rgba(233, 69, 96, 0.3);
+      border-radius: 8px;
+      color: #e94560;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      margin-top: 8px;
+      transition: background 0.2s;
+      display: none;
+    }
+    #huvrtwk-stop:hover { background: rgba(233, 69, 96, 0.35); }
+    #huvrtwk-stop.visible { display: block; }
+
+    /* ---------- Highlight styles ---------- */
+    .huvrtwk-highlight {
+      background: rgba(233, 69, 96, 0.18) !important;
+      outline: 1px solid rgba(233, 69, 96, 0.35) !important;
+      border-radius: 2px !important;
+      transition: background 0.15s !important;
+    }
+    .huvrtwk-circle-sel {
+      background: rgba(68, 138, 255, 0.15) !important;
+      outline: 2px solid rgba(68, 138, 255, 0.5) !important;
+      border-radius: 2px !important;
+    }
+    .huvrtwk-word-active {
+      background: rgba(255, 200, 0, 0.3) !important;
+      border-radius: 2px !important;
+    }
+
+    /* ---------- Progress ring ---------- */
+    #huvrtwk-ring {
+      position: fixed;
+      pointer-events: none;
+      width: 26px; height: 26px;
+      z-index: 2147483647;
+      display: none;
+    }
+    #huvrtwk-ring circle {
+      fill: none;
+      stroke: #e94560;
+      stroke-width: 2.5;
+      stroke-dasharray: 69.12;
+      stroke-dashoffset: 69.12;
+      transform: rotate(-90deg);
+      transform-origin: center;
+    }
+
+    /* ---------- Touch canvas ---------- */
+    #huvrtwk-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 2147483644;
+    }
+    #huvrtwk-canvas.active { pointer-events: auto; }
+
+    /* ---------- Mobile adjustments ---------- */
+    @media (max-width: 500px) {
+      #huvrtwk-panel { width: 210px; }
+      #huvrtwk-panel select { max-width: 140px; font-size: 11px; }
+    }
+  `;
+  document.head.appendChild(css);
+
+  /* ========== Build DOM ========== */
+
+  /* -- Pill button -- */
+  const pill = document.createElement("div");
+  pill.id = "huvrtwk-pill";
+  pill.innerHTML = `<svg viewBox="0 0 24 24">
+    <path d="M12 1C9.24 1 7 3.24 7 6v6c0 2.76 2.24 5 5 5s5-2.24 5-5V6c0-2.76-2.24-5-5-5z"/>
+    <path d="M19 10v2c0 3.87-3.13 7-7 7s-7-3.13-7-7v-2"/>
+    <line x1="12" y1="19" x2="12" y2="23"/>
+    <line x1="8" y1="23" x2="16" y2="23"/>
+  </svg>`;
+  document.body.appendChild(pill);
+
+  /* -- Panel -- */
+  const panel = document.createElement("div");
+  panel.id = "huvrtwk-panel";
+  panel.innerHTML = `
+    <div class="hw-title">HuvrTwk</div>
+
+    <div class="hw-row">
+      <span class="hw-label">Voice</span>
+      <select id="hw-voice"></select>
+    </div>
+
+    <div class="hw-row">
+      <span class="hw-label">Speed</span>
+      <input type="range" id="hw-speed" min="0.4" max="2.5" step="0.1" value="${prefs.rate}">
+      <span class="hw-val" id="hw-speed-v">${prefs.rate}</span>
+    </div>
+
+    <div class="hw-row">
+      <span class="hw-label">Pitch</span>
+      <input type="range" id="hw-pitch" min="0" max="2" step="0.1" value="${prefs.pitch}">
+      <span class="hw-val" id="hw-pitch-v">${prefs.pitch}</span>
+    </div>
+
+    <div class="hw-row">
+      <span class="hw-label">Delay</span>
+      <input type="range" id="hw-delay" min="0.3" max="4" step="0.1" value="${prefs.delay}">
+      <span class="hw-val" id="hw-delay-v">${prefs.delay}s</span>
+    </div>
+
+    <div class="hw-row">
+      <span class="hw-label">Read</span>
+      <select id="hw-read-mode">
+        <option value="auto"${prefs.readMode === 'auto' ? ' selected' : ''}>Auto (element)</option>
+        <option value="sentence"${prefs.readMode === 'sentence' ? ' selected' : ''}>Sentence</option>
+        <option value="paragraph"${prefs.readMode === 'paragraph' ? ' selected' : ''}>Paragraph</option>
+      </select>
+    </div>
+
+    <div class="hw-toggle">
+      <span class="hw-label">Karaoke</span>
+      <div class="hw-switch${prefs.karaoke ? ' on' : ''}" id="hw-karaoke"></div>
+    </div>
+
+    <div class="hw-toggle">
+      <span class="hw-label">Enabled</span>
+      <div class="hw-switch on" id="hw-enabled"></div>
+    </div>
+
+    <div id="huvrtwk-stop">Stop Speaking</div>
+  `;
+  document.body.appendChild(panel);
+
+  /* -- Progress ring -- */
+  const ring = document.createElement("div");
+  ring.id = "huvrtwk-ring";
+  ring.innerHTML = `<svg viewBox="0 0 26 26"><circle cx="13" cy="13" r="11"/></svg>`;
+  document.body.appendChild(ring);
+
+  /* -- Touch canvas -- */
+  const canvas = document.createElement("canvas");
+  canvas.id = "huvrtwk-canvas";
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext("2d");
+  function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  resizeCanvas();
+  window.addEventListener("resize", resizeCanvas);
+
+  /* ========== Panel refs ========== */
+  const voiceSel  = document.getElementById("hw-voice");
+  const speedR    = document.getElementById("hw-speed");
+  const speedV    = document.getElementById("hw-speed-v");
+  const pitchR    = document.getElementById("hw-pitch");
+  const pitchV    = document.getElementById("hw-pitch-v");
+  const delayR    = document.getElementById("hw-delay");
+  const delayV    = document.getElementById("hw-delay-v");
+  const readMSel  = document.getElementById("hw-read-mode");
+  const karToggle = document.getElementById("hw-karaoke");
+  const enToggle  = document.getElementById("hw-enabled");
+  const stopBtn   = document.getElementById("huvrtwk-stop");
+
+  /* ========== Voices ========== */
+  function loadVoices() {
+    const voices = synth.getVoices();
+    voiceSel.innerHTML = "";
+    voices.forEach((v, i) => {
+      const o = document.createElement("option");
+      o.value = i;
+      o.textContent = v.name.replace(/Microsoft |Google |Apple /g, "") + " (" + v.lang + ")";
+      if (prefs.voiceName && v.name === prefs.voiceName) o.selected = true;
+      else if (!prefs.voiceName && v.default) o.selected = true;
+      voiceSel.appendChild(o);
+    });
+  }
+  loadVoices();
+  if (synth.onvoiceschanged !== undefined) synth.onvoiceschanged = loadVoices;
+
+  /* ========== Pill positioning & drag ========== */
+  let pillPos = prefs.pillPos || { right: 8, top: Math.round(window.innerHeight * 0.4) };
+  positionPill();
+
+  function positionPill() {
+    pill.style.right = pillPos.right + "px";
+    pill.style.top   = pillPos.top   + "px";
+    /* Panel follows pill */
+    panel.style.right = (pillPos.right + 52) + "px";
+    panel.style.top   = pillPos.top + "px";
+  }
+
+  /* Drag the pill */
+  let dragData = null;
+  pill.addEventListener("pointerdown", (e) => {
+    dragData = { startY: e.clientY, origTop: pillPos.top, moved: false };
+    pill.setPointerCapture(e.pointerId);
+  });
+  pill.addEventListener("pointermove", (e) => {
+    if (!dragData) return;
+    const dy = e.clientY - dragData.startY;
+    if (Math.abs(dy) > 5) dragData.moved = true;
+    pillPos.top = Math.max(0, Math.min(window.innerHeight - 50, dragData.origTop + dy));
+    positionPill();
+  });
+  pill.addEventListener("pointerup", (e) => {
+    if (dragData && !dragData.moved) togglePanel();
+    if (dragData) { prefs.pillPos = pillPos; savePrefs(); }
+    dragData = null;
+  });
+
+  /* ========== Panel toggle ========== */
+  function togglePanel() {
+    panelOpen = !panelOpen;
+    panel.classList.toggle("open", panelOpen);
+  }
+
+  /* Close panel on outside tap */
+  document.addEventListener("pointerdown", (e) => {
+    if (panelOpen && !panel.contains(e.target) && e.target !== pill && !pill.contains(e.target)) {
+      panelOpen = false;
+      panel.classList.remove("open");
+    }
+  });
+
+  /* ========== Panel controls ========== */
+  speedR.addEventListener("input", () => {
+    prefs.rate = Number(speedR.value).toFixed(1);
+    speedV.textContent = prefs.rate; savePrefs();
+  });
+  pitchR.addEventListener("input", () => {
+    prefs.pitch = Number(pitchR.value).toFixed(1);
+    pitchV.textContent = prefs.pitch; savePrefs();
+  });
+  delayR.addEventListener("input", () => {
+    prefs.delay = Number(delayR.value).toFixed(1);
+    delayV.textContent = prefs.delay + "s"; savePrefs();
+  });
+  voiceSel.addEventListener("change", () => {
+    const voices = synth.getVoices();
+    const idx = parseInt(voiceSel.value, 10);
+    if (voices[idx]) prefs.voiceName = voices[idx].name;
+    savePrefs();
+  });
+  readMSel.addEventListener("change", () => { prefs.readMode = readMSel.value; savePrefs(); });
+
+  karToggle.addEventListener("click", () => {
+    prefs.karaoke = !prefs.karaoke;
+    karToggle.classList.toggle("on", prefs.karaoke);
+    savePrefs();
+  });
+
+  enToggle.addEventListener("click", () => {
+    enabled = !enabled;
+    enToggle.classList.toggle("on", enabled);
+    pill.classList.toggle("off", !enabled);
+    if (!enabled) cancelAll();
+  });
+
+  stopBtn.addEventListener("click", () => { synth.cancel(); });
+
+  /* ========== Preferences ========== */
+  function loadPrefs() {
+    try {
+      const s = localStorage.getItem(PREFS_KEY);
+      if (s) return JSON.parse(s);
+    } catch (e) {}
+    return { rate: "1.0", pitch: "1.0", delay: "1.5", voiceName: "", readMode: "auto", karaoke: true, pillPos: null };
+  }
+  function savePrefs() {
+    try { localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); } catch (e) {}
+  }
+
+  /* ========== Speech engine ========== */
+  function speak(text, sourceEls) {
+    if (!text) return;
+    synth.cancel();
+    clearHighlights();
+
+    const utter  = new SpeechSynthesisUtterance(text);
+    const voices = synth.getVoices();
+    const idx    = parseInt(voiceSel.value, 10);
+    if (voices[idx]) utter.voice = voices[idx];
+    utter.rate  = parseFloat(prefs.rate);
+    utter.pitch = parseFloat(prefs.pitch);
+
+    utter.onstart = () => {
+      speaking = true;
+      pill.classList.add("speaking");
+      stopBtn.classList.add("visible");
+    };
+    utter.onend = () => {
+      speaking = false;
+      pill.classList.remove("speaking");
+      stopBtn.classList.remove("visible");
+      clearKaraoke();
+    };
+    utter.onerror = utter.onend;
+
+    /* Karaoke: highlight words as they're spoken */
+    if (prefs.karaoke && sourceEls && sourceEls.length === 1) {
+      const el = sourceEls[0];
+      const origHTML = el.innerHTML;
+      wrapWords(el);
+      const wordSpans = el.querySelectorAll(".hw-word");
+
+      utter.onboundary = (ev) => {
+        if (ev.name !== "word") return;
+        wordSpans.forEach(s => s.classList.remove("huvrtwk-word-active"));
+        /* Find the word span that corresponds to the current char index */
+        let charCount = 0;
+        for (const span of wordSpans) {
+          const len = span.textContent.length;
+          if (charCount <= ev.charIndex && ev.charIndex < charCount + len + 1) {
+            span.classList.add("huvrtwk-word-active");
+            break;
+          }
+          charCount += len + 1; /* +1 for space */
+        }
+      };
+
+      const restore = () => { el.innerHTML = origHTML; };
+      utter.onend = () => {
+        speaking = false;
+        pill.classList.remove("speaking");
+        stopBtn.classList.remove("visible");
+        setTimeout(restore, 600);
+      };
+      utter.onerror = () => { restore(); speaking = false; pill.classList.remove("speaking"); stopBtn.classList.remove("visible"); };
+    }
+
+    synth.speak(utter);
+  }
+
+  function wrapWords(el) {
+    const text = el.textContent;
+    const words = text.split(/(\s+)/);
+    el.innerHTML = "";
+    words.forEach(w => {
+      if (/^\s+$/.test(w)) {
+        el.appendChild(document.createTextNode(w));
+      } else {
+        const span = document.createElement("span");
+        span.className = "hw-word";
+        span.textContent = w;
+        el.appendChild(span);
+      }
+    });
+  }
+
+  function clearKaraoke() {
+    document.querySelectorAll(".huvrtwk-word-active").forEach(el => el.classList.remove("huvrtwk-word-active"));
+  }
+
+  /* ========== Helpers ========== */
+  function cancelAll() {
+    clearTimeout(hoverTimer); hoverTimer = null;
+    synth.cancel();
+    speaking = false;
+    pill.classList.remove("speaking");
+    stopBtn.classList.remove("visible");
+    ring.style.display = "none";
+    clearHighlights();
+    clearKaraoke();
+    currentEl = null;
+  }
+
+  function clearHighlights() {
+    document.querySelectorAll(".huvrtwk-highlight, .huvrtwk-circle-sel").forEach(el => {
+      el.classList.remove("huvrtwk-highlight", "huvrtwk-circle-sel");
+    });
+  }
+
+  /* Walk up to find a readable block, skip HuvrTwk UI elements */
+  const HW_IDS = new Set(["huvrtwk-pill", "huvrtwk-panel", "huvrtwk-ring", "huvrtwk-canvas"]);
+  function readableEl(el) {
+    while (el) {
+      if (el.id && HW_IDS.has(el.id)) return null;
+      if (el === panel || el === pill) return null;
+      const tag = el.tagName;
+      if (tag === "P" || tag === "LI" || tag === "H1" || tag === "H2" || tag === "H3" ||
+          tag === "H4" || tag === "H5" || tag === "H6" || tag === "TD" || tag === "TH" ||
+          tag === "BLOCKQUOTE" || tag === "FIGCAPTION" || tag === "CAPTION" ||
+          tag === "DD" || tag === "DT" || tag === "LABEL" || tag === "A" || tag === "SPAN") {
+        return el;
+      }
+      el = el.parentElement;
+    }
+    return null;
+  }
+
+  function getReadText(el) {
+    const full = (el.textContent || "").trim();
+    const mode = prefs.readMode;
+    if (mode === "auto" || mode === "paragraph") return full;
+    if (mode === "sentence") {
+      const m = full.match(/[^.!?]+[.!?]+/g);
+      return m ? m[0].trim() : full;
+    }
+    return full;
+  }
+
+  /* ==========================================================
+     DESKTOP: Hover-to-speak
+     ========================================================== */
+  document.addEventListener("mousemove", (e) => {
+    if (!enabled || isTouch) return;
+
+    ring.style.left = (e.clientX + 14) + "px";
+    ring.style.top  = (e.clientY - 14) + "px";
+
+    const target = readableEl(e.target);
+    if (!target || target === currentEl) return;
+
+    /* New element */
+    cancelAll();
+    currentEl = target;
+    currentEl.classList.add("huvrtwk-highlight");
+
+    const delay = parseFloat(prefs.delay) * 1000 || 1500;
+    ring.style.display = "block";
+
+    const c = ring.querySelector("circle");
+    c.style.transition = "none";
+    c.style.strokeDashoffset = "69.12";
+    void c.offsetWidth;
+    c.style.transition = "stroke-dashoffset " + (delay / 1000) + "s linear";
+    c.style.strokeDashoffset = "0";
+
+    hoverTimer = setTimeout(() => {
+      ring.style.display = "none";
+      const txt = getReadText(currentEl);
+      speak(txt, [currentEl]);
+    }, delay);
+  });
+
+  document.addEventListener("mouseout", (e) => {
+    if (isTouch || !enabled) return;
+    const target = readableEl(e.target);
+    if (target && target === currentEl) cancelAll();
+  });
+
+
+  /* ==========================================================
+     MOBILE: Touch-hold + circle-draw
+     ========================================================== */
+  document.addEventListener("touchstart", (e) => {
+    if (!enabled) return;
+    const t = e.touches[0];
+    /* Ignore touches on HuvrTwk UI */
+    if (pill.contains(e.target) || panel.contains(e.target)) return;
+
+    touchStart = { x: t.clientX, y: t.clientY };
+    clearHighlights();
+    clearCanvas();
+
+    holdTimer = setTimeout(() => {
+      drawing = true;
+      touchPoints = [];
+      canvas.classList.add("active");
+      /* Haptic feedback if available */
+      if (navigator.vibrate) navigator.vibrate(30);
+    }, 350);
+  }, { passive: true });
+
+  document.addEventListener("touchmove", (e) => {
+    if (!drawing) {
+      /* Cancel hold if scrolling */
+      if (touchStart && holdTimer) {
+        const t = e.touches[0];
+        const d = Math.hypot(t.clientX - touchStart.x, t.clientY - touchStart.y);
+        if (d > 12) { clearTimeout(holdTimer); holdTimer = null; }
+      }
+      return;
+    }
+    e.preventDefault();
+    const t = e.touches[0];
+    touchPoints.push({ x: t.clientX, y: t.clientY });
+    drawCirclePath();
+  }, { passive: false });
+
+  document.addEventListener("touchend", (e) => {
+    clearTimeout(holdTimer); holdTimer = null;
+
+    if (!drawing || touchPoints.length < 12) {
+      drawing = false;
+      canvas.classList.remove("active");
+      clearCanvas();
+      return;
+    }
+
+    drawing = false;
+    canvas.classList.remove("active");
+
+    /* Find text elements inside the drawn circle */
+    const bbox = getBBox(touchPoints);
+    const candidates = document.querySelectorAll("p, li, h1, h2, h3, h4, h5, h6, td, th, blockquote, figcaption, dd, dt, label, span, a");
+    const captured = [];
+
+    candidates.forEach(el => {
+      if (pill.contains(el) || panel.contains(el)) return;
+      const r = el.getBoundingClientRect();
+      if (rectsOverlap(bbox, r) && ptInPoly(r.left + r.width / 2, r.top + r.height / 2, touchPoints)) {
+        captured.push(el);
+        el.classList.add("huvrtwk-circle-sel");
+      }
+    });
+
+    fadeCanvas();
+
+    if (!captured.length) return;
+
+    /* Vibrate to confirm */
+    if (navigator.vibrate) navigator.vibrate(50);
+
+    const text = captured.map(el => el.textContent.trim()).join(". ");
+    speak(text, captured);
+
+    /* Clear circle highlights after speech */
+    const cleanup = setInterval(() => {
+      if (!synth.speaking) { clearInterval(cleanup); setTimeout(clearHighlights, 1200); }
+    }, 400);
+  }, { passive: true });
+
+
+  /* ---------- Canvas helpers ---------- */
+  function drawCirclePath() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (touchPoints.length < 2) return;
+    ctx.beginPath();
+    ctx.moveTo(touchPoints[0].x, touchPoints[0].y);
+    for (let i = 1; i < touchPoints.length; i++) ctx.lineTo(touchPoints[i].x, touchPoints[i].y);
+    ctx.strokeStyle = "rgba(68, 138, 255, 0.65)";
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = "round";
+    ctx.stroke();
+    /* Closing dash */
+    ctx.beginPath();
+    ctx.moveTo(touchPoints[touchPoints.length - 1].x, touchPoints[touchPoints.length - 1].y);
+    ctx.lineTo(touchPoints[0].x, touchPoints[0].y);
+    ctx.strokeStyle = "rgba(68, 138, 255, 0.25)";
+    ctx.setLineDash([4, 4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    /* Fill */
+    ctx.beginPath();
+    ctx.moveTo(touchPoints[0].x, touchPoints[0].y);
+    for (let i = 1; i < touchPoints.length; i++) ctx.lineTo(touchPoints[i].x, touchPoints[i].y);
+    ctx.closePath();
+    ctx.fillStyle = "rgba(68, 138, 255, 0.06)";
+    ctx.fill();
+  }
+
+  function clearCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    touchPoints = [];
+  }
+
+  function fadeCanvas() {
+    let op = 0.65;
+    const pts = [...touchPoints];
+    const iv = setInterval(() => {
+      op -= 0.065;
+      if (op <= 0 || pts.length < 2) { clearInterval(iv); clearCanvas(); return; }
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x, pts[0].y);
+      for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+      ctx.closePath();
+      ctx.fillStyle = "rgba(68, 138, 255, " + (op * 0.12) + ")";
+      ctx.fill();
+      ctx.strokeStyle = "rgba(68, 138, 255, " + op + ")";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }, 45);
+  }
+
+  /* ---------- Geometry ---------- */
+  function getBBox(pts) {
+    let x1 = Infinity, y1 = Infinity, x2 = -Infinity, y2 = -Infinity;
+    pts.forEach(p => { x1 = Math.min(x1, p.x); y1 = Math.min(y1, p.y); x2 = Math.max(x2, p.x); y2 = Math.max(y2, p.y); });
+    return { left: x1, top: y1, right: x2, bottom: y2 };
+  }
+  function rectsOverlap(a, b) {
+    return !(a.right < b.left || a.left > b.right || a.bottom < b.top || a.top > b.bottom);
+  }
+  function ptInPoly(px, py, poly) {
+    let ins = false;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const xi = poly[i].x, yi = poly[i].y, xj = poly[j].x, yj = poly[j].y;
+      if (((yi > py) !== (yj > py)) && (px < (xj - xi) * (py - yi) / (yj - yi) + xi)) ins = !ins;
+    }
+    return ins;
+  }
+
+})();
+</script>
+</body>
+</html>
