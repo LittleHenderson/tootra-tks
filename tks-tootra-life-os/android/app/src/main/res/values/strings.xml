@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">TKS Tootra</string>
+    <string name="title_activity_main">TKS Tootra</string>
+    <string name="package_name">com.tootra.tks</string>
+    <string name="custom_url_scheme">com.tootra.tks</string>
+</resources>

@@ -16,7 +16,9 @@ import PowerGaps from "./pages/PowerGaps";
 import WeeklyReview from "./pages/WeeklyReview";
 import DWPTracker from "./pages/DWPTracker";
 import TaskDetail from "./pages/TaskDetail";
+import NotificationSettings from "./pages/NotificationSettings";
 import { useState, useEffect } from "react";
+import { checkWebReminders } from "@/lib/notifications";
 
 function Router() {
   return (
@@ -30,6 +32,7 @@ function Router() {
         <Route path="/power" component={PowerGaps} />
         <Route path="/review" component={WeeklyReview} />
         <Route path="/dwp" component={DWPTracker} />
+        <Route path="/notifications" component={NotificationSettings} />
         <Route path="/404" component={NotFound} />
         <Route component={NotFound} />
       </Switch>
@@ -40,6 +43,11 @@ function Router() {
 function App() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showTour, setShowTour] = useState(false);
+
+  // Check web reminders on app load
+  useEffect(() => {
+    checkWebReminders();
+  }, []);
 
   // Auto-show on first visit: onboarding for brand-new users, tour for returning users
   useEffect(() => {

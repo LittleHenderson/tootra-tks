@@ -36,6 +36,7 @@ import {
   Flame,
   HelpCircle,
   Compass,
+  Bell,
 } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
@@ -52,6 +53,7 @@ const menuItems = [
   { icon: Shield, label: "Power Gaps", path: "/power" },
   { icon: BarChart3, label: "Weekly Review", path: "/review" },
   { icon: ClipboardList, label: "D/W/P Tracker", path: "/dwp" },
+  { icon: Bell, label: "Notifications", path: "/notifications" },
 ];
 
 const SIDEBAR_WIDTH_KEY = "sidebar-width";

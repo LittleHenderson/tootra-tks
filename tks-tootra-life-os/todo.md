@@ -230,3 +230,26 @@
 ## Native App Packaging (Play Store / App Store)
 - [x] Research Capacitor vs TWA for wrapping PWA as native app
 - [x] Provide guidance on APK generation and store submission requirements
+
+## Capacitor Native App Setup
+- [x] Install @capacitor/core and @capacitor/cli
+- [x] Initialize Capacitor with app config (appId, appName, webDir)
+- [x] Add Android platform
+- [x] Add iOS platform
+- [x] Configure capacitor.config.ts with proper settings
+- [x] Create build script for generating native project files
+- [x] Document build instructions for Android APK and iOS IPA (MOBILE_BUILD.md)
+
+## Push Notifications for Weekly Review Reminders
+- [x] Install @capacitor/push-notifications plugin
+- [x] Install @capacitor/local-notifications for scheduled reminders
+- [x] Create notification permission request UI
+- [x] Implement weekly review reminder scheduling (e.g., Sunday evening)
+- [x] Add notification preferences page in settings
+- [x] Create cross-platform notification service (web + native)
+- [x] Add notification route to sidebar and App.tsx
+
+## Publishing Preparation
+- [x] Ensure all features are working and tested (222 tests passing, 0 TS errors)
+- [ ] Save final checkpoint for publishing
+- [ ] Push latest code to GitHub
