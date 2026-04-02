@@ -1,0 +1,23 @@
+CREATE TABLE `inversions` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`taskId` int NOT NULL,
+	`userId` int NOT NULL,
+	`modeIds` json NOT NULL,
+	`intensity` varchar(16) NOT NULL,
+	`scope` varchar(16) NOT NULL,
+	`presetId` varchar(64),
+	`originalEquation` text,
+	`originalNarrative` text,
+	`invertedEquation` text,
+	`invertedNarrative` text,
+	`changeSummary` json,
+	`invertedFoundationId` int,
+	`invertedArchetype` varchar(32),
+	`invertedDesireStage` varchar(32),
+	`invertedWisdomStage` varchar(32),
+	`invertedPowerStage` varchar(32),
+	`scenarioPrompt` text,
+	`imageUrl` text,
+	`createdAt` timestamp NOT NULL DEFAULT (now()),
+	CONSTRAINT `inversions_id` PRIMARY KEY(`id`)
+);

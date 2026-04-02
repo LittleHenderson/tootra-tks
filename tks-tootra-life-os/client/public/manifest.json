@@ -1,0 +1,27 @@
+{
+  "name": "TKS Tootra — Life Execution System",
+  "short_name": "TKS Tootra",
+  "description": "A life operating system built on the Total Knowledge System. Map every task to the deeper dimensions of your life.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0e1a",
+  "theme_color": "#d4a843",
+  "orientation": "any",
+  "categories": ["productivity", "lifestyle", "utilities"],
+  "icons": [
+    {
+      "src": "https://d2xsxph8kpxj0f.cloudfront.net/94944829/f5haNuBW7Ar9emg5jDjqxD/tks-icon-192-5dcog9K2d6UXcais9BdKuW.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://d2xsxph8kpxj0f.cloudfront.net/94944829/f5haNuBW7Ar9emg5jDjqxD/tks-icon-512-YYy3fpUv5HvsY9RWGpTYft.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "prefer_related_applications": false
+}
