@@ -269,4 +269,14 @@
 - [x] Show diff-style "what changed" explanation
 - [x] Optional: generate AI image of inverted vision
 - [x] Write vitest tests for inversion engine (273 tests all passing)
-- [ ] Push to GitHub and save checkpoint
+- [x] Push to GitHub and save checkpoint (version: de9e92bb)
+
+## APK Build — Make It Real
+- [x] Install Android SDK command-line tools in sandbox
+- [x] Accept Android SDK licenses
+- [x] Build web assets (vite build)
+- [x] Run cap sync to copy web assets into Android project
+- [x] Verify android/app/src/main/assets/public/ contains built web app (398 asset files)
+- [x] Build debug APK using Gradle (10MB, BUILD SUCCESSFUL)
+- [x] Verify APK contains inversion engine and all features (all 29 modes, notifications, tour)
+- [x] Provide downloadable APK file to user
