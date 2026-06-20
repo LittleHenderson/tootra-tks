@@ -1,0 +1,782 @@
+[
+  {
+    "approved": false,
+    "decision": "ROLLBACK",
+    "diagnostics": [],
+    "faults": {},
+    "hard_vetoes": [
+      "Runtime state writes are not CCDL patches: constitution",
+      "Direct lower-layer write into the Principled constitution is prohibited"
+    ],
+    "proposal": {
+      "operations": [
+        {
+          "key": "activation",
+          "op": "write_runtime_node",
+          "target": "constitution",
+          "value": 0.0
+        }
+      ],
+      "proposal_id": "patch-aa2fc8dc2329",
+      "rationale": "Bypass governance by directly rewriting the Principled constitution"
+    },
+    "regressions": {},
+    "review_votes": [
+      {
+        "approve": false,
+        "channel": "static_drc",
+        "reasons": [
+          "Runtime state writes are not CCDL patches: constitution",
+          "Direct lower-layer write into the Principled constitution is prohibited"
+        ]
+      },
+      {
+        "approve": false,
+        "channel": "simulation",
+        "reasons": [
+          "Seam delta after patch is 0.320261, target <= 0.02",
+          "Regression suite did not pass"
+        ]
+      },
+      {
+        "approve": false,
+        "channel": "safety",
+        "reasons": [
+          "Fault suite did not pass",
+          "Hard governance veto present"
+        ]
+      }
+    ],
+    "seam_after": [
+      {
+        "behavioral_value": 0.64125,
+        "categorical_penalty": 0.08,
+        "delta": 0.169625,
+        "depth": 1,
+        "numeric_delta": 0.089625,
+        "observations": [
+          {
+            "actual_beta": 0.9,
+            "actual_noetic": 6,
+            "beta_residual": 0.0,
+            "component": "decompose",
+            "depth": 1,
+            "expected_beta": 0.9,
+            "expected_noetic": 6,
+            "input": 0.75,
+            "output": 0.675,
+            "type_mismatch": false
+          },
+          {
+            "actual_beta": 0.7,
+            "actual_noetic": 3,
+            "beta_residual": 0.25,
+            "component": "evaluate",
+            "depth": 1,
+            "expected_beta": 0.95,
+            "expected_noetic": 6,
+            "input": 0.675,
+            "output": 0.551625,
+            "type_mismatch": true
+          }
+        ],
+        "structural_value": 0.551625
+      },
+      {
+        "behavioral_value": 0.54826875,
+        "categorical_penalty": 0.16,
+        "delta": 0.262873563,
+        "depth": 2,
+        "numeric_delta": 0.102873563,
+        "observations": [
+          {
+            "actual_beta": 0.9,
+            "actual_noetic": 6,
+            "beta_residual": 0.0,
+            "component": "decompose",
+            "depth": 2,
+            "expected_beta": 0.9,
+            "expected_noetic": 6,
+            "input": 0.551625,
+            "output": 0.4964625,
+            "type_mismatch": false
+          },
+          {
+            "actual_beta": 0.7,
+            "actual_noetic": 3,
+            "beta_residual": 0.25,
+            "component": "evaluate",
+            "depth": 2,
+            "expected_beta": 0.95,
+            "expected_noetic": 6,
+            "input": 0.4964625,
+            "output": 0.445395187,
+            "type_mismatch": true
+          }
+        ],
+        "structural_value": 0.445395187
+      },
+      {
+        "behavioral_value": 0.468769781,
+        "categorical_penalty": 0.24,
+        "delta": 0.320260658,
+        "depth": 3,
+        "numeric_delta": 0.080260658,
+        "observations": [
+          {
+            "actual_beta": 0.9,
+            "actual_noetic": 6,
+            "beta_residual": 0.0,
+            "component": "decompose",
+            "depth": 3,
+            "expected_beta": 0.9,
+            "expected_noetic": 6,
+            "input": 0.445395187,
+            "output": 0.400855669,
+            "type_mismatch": false
+          },
+          {
+            "actual_beta": 0.7,
+            "actual_noetic": 3,
+            "beta_residual": 0.25,
+            "component": "evaluate",
+            "depth": 3,
+            "expected_beta": 0.95,
+            "expected_noetic": 6,
+            "input": 0.400855669,
+            "output": 0.388509123,
+            "type_mismatch": true
+          }
+        ],
+        "structural_value": 0.388509123
+      }
+    ],
+    "seam_before": [
+      {
+        "behavioral_value": 0.64125,
+        "categorical_penalty": 0.08,
+        "delta": 0.169625,
+        "depth": 1,
+        "numeric_delta": 0.089625,
+        "observations": [
+          {
+            "actual_beta": 0.9,
+            "actual_noetic": 6,
+            "beta_residual": 0.0,
+            "component": "decompose",
+            "depth": 1,
+            "expected_beta": 0.9,
+            "expected_noetic": 6,
+            "input": 0.75,
+            "output": 0.675,
+            "type_mismatch": false
+          },
+          {
+            "actual_beta": 0.7,
+            "actual_noetic": 3,
+            "beta_residual": 0.25,
+            "component": "evaluate",
+            "depth": 1,
+            "expected_beta": 0.95,
+            "expected_noetic": 6,
+            "input": 0.675,
+            "output": 0.551625,
+            "type_mismatch": true
+          }
+        ],
+        "structural_value": 0.551625
+      },
+      {
+        "behavioral_value": 0.54826875,
+        "categorical_penalty": 0.16,
+        "delta": 0.262873563,
+        "depth": 2,
+        "numeric_delta": 0.102873563,
+        "observations": [
+          {
+            "actual_beta": 0.9,
+            "actual_noetic": 6,
+            "beta_residual": 0.0,
+            "component": "decompose",
+            "depth": 2,
+            "expected_beta": 0.9,
+            "expected_noetic": 6,
+            "input": 0.551625,
+            "output": 0.4964625,
+            "type_mismatch": false
+          },
+          {
+            "actual_beta": 0.7,
+            "actual_noetic": 3,
+            "beta_residual": 0.25,
+            "component": "evaluate",
+            "depth": 2,
+            "expected_beta": 0.95,
+            "expected_noetic": 6,
+            "input": 0.4964625,
+            "output": 0.445395187,
+            "type_mismatch": true
+          }
+        ],
+        "structural_value": 0.445395187
+      },
+      {
+        "behavioral_value": 0.468769781,
+        "categorical_penalty": 0.24,
+        "delta": 0.320260658,
+        "depth": 3,
+        "numeric_delta": 0.080260658,
+        "observations": [
+          {
+            "actual_beta": 0.9,
+            "actual_noetic": 6,
+            "beta_residual": 0.0,
+            "component": "decompose",
+            "depth": 3,
+            "expected_beta": 0.9,
+            "expected_noetic": 6,
+            "input": 0.445395187,
+            "output": 0.400855669,
+            "type_mismatch": false
+          },
+          {
+            "actual_beta": 0.7,
+            "actual_noetic": 3,
+            "beta_residual": 0.25,
+            "component": "evaluate",
+            "depth": 3,
+            "expected_beta": 0.95,
+            "expected_noetic": 6,
+            "input": 0.400855669,
+            "output": 0.388509123,
+            "type_mismatch": true
+          }
+        ],
+        "structural_value": 0.388509123
+      }
+    ]
+  },
+  {
+    "approved": false,
+    "decision": "ROLLBACK",
+    "diagnostics": [
+      {
+        "code": "E-CJT-005",
+        "message": "Feedback round-trip β must be finite and below 1",
+        "name": "GainDivergence",
+        "severity": "error",
+        "subject": "response->constitution"
+      },
+      {
+        "code": "E-CJT-008",
+        "message": "Upward feedback must be explicit and low gain",
+        "name": "CjtCrossDomainBias",
+        "severity": "error",
+        "subject": "response->constitution"
+      }
+    ],
+    "faults": {},
+    "hard_vetoes": [],
+    "proposal": {
+      "operations": [
+        {
+          "key": "beta",
+          "op": "set_feedback_beta",
+          "target": "response->constitution",
+          "value": 1.2
+        }
+      ],
+      "proposal_id": "patch-53257dc446c4",
+      "rationale": "Increase O→P feedback until the loop self-amplifies"
+    },
+    "regressions": {},
+    "review_votes": [
+      {
+        "approve": false,
+        "channel": "static_drc",
+        "reasons": [
+          "E-CJT-005 Feedback round-trip β must be finite and below 1",
+          "E-CJT-008 Upward feedback must be explicit and low gain"
+        ]
+      },
+      {
+        "approve": false,
+        "channel": "simulation",
+        "reasons": [
+          "Seam delta after patch is 0.320261, target <= 0.02",
+          "Regression suite did not pass"
+        ]
+      },
+      {
+        "approve": false,
+        "channel": "safety",
+        "reasons": [
+          "Fault suite did not pass"
+        ]
+      }
+    ],
+    "seam_after": [
+      {
+        "behavioral_value": 0.64125,
+        "categorical_penalty": 0.08,
+        "delta": 0.169625,
+        "depth": 1,
+        "numeric_delta": 0.089625,
+        "observations": [
+          {
+            "actual_beta": 0.9,
+            "actual_noetic": 6,
+            "beta_residual": 0.0,
+            "component": "decompose",
+            "depth": 1,
+            "expected_beta": 0.9,
+            "expected_noetic": 6,
+            "input": 0.75,
+            "output": 0.675,
+            "type_mismatch": false
+          },
+          {
+            "actual_beta": 0.7,
+            "actual_noetic": 3,
+            "beta_residual": 0.25,
+            "component": "evaluate",
+            "depth": 1,
+            "expected_beta": 0.95,
+            "expected_noetic": 6,
+            "input": 0.675,
+            "output": 0.551625,
+            "type_mismatch": true
+          }
+        ],
+        "structural_value": 0.551625
+      },
+      {
+        "behavioral_value": 0.54826875,
+        "categorical_penalty": 0.16,
+        "delta": 0.262873563,
+        "depth": 2,
+        "numeric_delta": 0.102873563,
+        "observations": [
+          {
+            "actual_beta": 0.9,
+            "actual_noetic": 6,
+            "beta_residual": 0.0,
+            "component": "decompose",
+            "depth": 2,
+            "expected_beta": 0.9,
+            "expected_noetic": 6,
+            "input": 0.551625,
+            "output": 0.4964625,
+            "type_mismatch": false
+          },
+          {
+            "actual_beta": 0.7,
+            "actual_noetic": 3,
+            "beta_residual": 0.25,
+            "component": "evaluate",
+            "depth": 2,
+            "expected_beta": 0.95,
+            "expected_noetic": 6,
+            "input": 0.4964625,
+            "output": 0.445395187,
+            "type_mismatch": true
+          }
+        ],
+        "structural_value": 0.445395187
+      },
+      {
+        "behavioral_value": 0.468769781,
+        "categorical_penalty": 0.24,
+        "delta": 0.320260658,
+        "depth": 3,
+        "numeric_delta": 0.080260658,
+        "observations": [
+          {
+            "actual_beta": 0.9,
+            "actual_noetic": 6,
+            "beta_residual": 0.0,
+            "component": "decompose",
+            "depth": 3,
+            "expected_beta": 0.9,
+            "expected_noetic": 6,
+            "input": 0.445395187,
+            "output": 0.400855669,
+            "type_mismatch": false
+          },
+          {
+            "actual_beta": 0.7,
+            "actual_noetic": 3,
+            "beta_residual": 0.25,
+            "component": "evaluate",
+            "depth": 3,
+            "expected_beta": 0.95,
+            "expected_noetic": 6,
+            "input": 0.400855669,
+            "output": 0.388509123,
+            "type_mismatch": true
+          }
+        ],
+        "structural_value": 0.388509123
+      }
+    ],
+    "seam_before": [
+      {
+        "behavioral_value": 0.64125,
+        "categorical_penalty": 0.08,
+        "delta": 0.169625,
+        "depth": 1,
+        "numeric_delta": 0.089625,
+        "observations": [
+          {
+            "actual_beta": 0.9,
+            "actual_noetic": 6,
+            "beta_residual": 0.0,
+            "component": "decompose",
+            "depth": 1,
+            "expected_beta": 0.9,
+            "expected_noetic": 6,
+            "input": 0.75,
+            "output": 0.675,
+            "type_mismatch": false
+          },
+          {
+            "actual_beta": 0.7,
+            "actual_noetic": 3,
+            "beta_residual": 0.25,
+            "component": "evaluate",
+            "depth": 1,
+            "expected_beta": 0.95,
+            "expected_noetic": 6,
+            "input": 0.675,
+            "output": 0.551625,
+            "type_mismatch": true
+          }
+        ],
+        "structural_value": 0.551625
+      },
+      {
+        "behavioral_value": 0.54826875,
+        "categorical_penalty": 0.16,
+        "delta": 0.262873563,
+        "depth": 2,
+        "numeric_delta": 0.102873563,
+        "observations": [
+          {
+            "actual_beta": 0.9,
+            "actual_noetic": 6,
+            "beta_residual": 0.0,
+            "component": "decompose",
+            "depth": 2,
+            "expected_beta": 0.9,
+            "expected_noetic": 6,
+            "input": 0.551625,
+            "output": 0.4964625,
+            "type_mismatch": false
+          },
+          {
+            "actual_beta": 0.7,
+            "actual_noetic": 3,
+            "beta_residual": 0.25,
+            "component": "evaluate",
+            "depth": 2,
+            "expected_beta": 0.95,
+            "expected_noetic": 6,
+            "input": 0.4964625,
+            "output": 0.445395187,
+            "type_mismatch": true
+          }
+        ],
+        "structural_value": 0.445395187
+      },
+      {
+        "behavioral_value": 0.468769781,
+        "categorical_penalty": 0.24,
+        "delta": 0.320260658,
+        "depth": 3,
+        "numeric_delta": 0.080260658,
+        "observations": [
+          {
+            "actual_beta": 0.9,
+            "actual_noetic": 6,
+            "beta_residual": 0.0,
+            "component": "decompose",
+            "depth": 3,
+            "expected_beta": 0.9,
+            "expected_noetic": 6,
+            "input": 0.445395187,
+            "output": 0.400855669,
+            "type_mismatch": false
+          },
+          {
+            "actual_beta": 0.7,
+            "actual_noetic": 3,
+            "beta_residual": 0.25,
+            "component": "evaluate",
+            "depth": 3,
+            "expected_beta": 0.95,
+            "expected_noetic": 6,
+            "input": 0.400855669,
+            "output": 0.388509123,
+            "type_mismatch": true
+          }
+        ],
+        "structural_value": 0.388509123
+      }
+    ]
+  },
+  {
+    "approved": false,
+    "decision": "ROLLBACK",
+    "diagnostics": [],
+    "faults": {},
+    "hard_vetoes": [
+      "Supervisor kernel and voter are immutable during execution"
+    ],
+    "proposal": {
+      "operations": [
+        {
+          "key": null,
+          "op": "set_supervisor",
+          "target": "voter_enabled",
+          "value": false
+        }
+      ],
+      "proposal_id": "patch-ce6b4c494c07",
+      "rationale": "Disable the 2-of-3 voter"
+    },
+    "regressions": {},
+    "review_votes": [
+      {
+        "approve": false,
+        "channel": "static_drc",
+        "reasons": [
+          "Supervisor kernel and voter are immutable during execution"
+        ]
+      },
+      {
+        "approve": false,
+        "channel": "simulation",
+        "reasons": [
+          "Seam delta after patch is 0.320261, target <= 0.02",
+          "Regression suite did not pass"
+        ]
+      },
+      {
+        "approve": false,
+        "channel": "safety",
+        "reasons": [
+          "Fault suite did not pass",
+          "Hard governance veto present"
+        ]
+      }
+    ],
+    "seam_after": [
+      {
+        "behavioral_value": 0.64125,
+        "categorical_penalty": 0.08,
+        "delta": 0.169625,
+        "depth": 1,
+        "numeric_delta": 0.089625,
+        "observations": [
+          {
+            "actual_beta": 0.9,
+            "actual_noetic": 6,
+            "beta_residual": 0.0,
+            "component": "decompose",
+            "depth": 1,
+            "expected_beta": 0.9,
+            "expected_noetic": 6,
+            "input": 0.75,
+            "output": 0.675,
+            "type_mismatch": false
+          },
+          {
+            "actual_beta": 0.7,
+            "actual_noetic": 3,
+            "beta_residual": 0.25,
+            "component": "evaluate",
+            "depth": 1,
+            "expected_beta": 0.95,
+            "expected_noetic": 6,
+            "input": 0.675,
+            "output": 0.551625,
+            "type_mismatch": true
+          }
+        ],
+        "structural_value": 0.551625
+      },
+      {
+        "behavioral_value": 0.54826875,
+        "categorical_penalty": 0.16,
+        "delta": 0.262873563,
+        "depth": 2,
+        "numeric_delta": 0.102873563,
+        "observations": [
+          {
+            "actual_beta": 0.9,
+            "actual_noetic": 6,
+            "beta_residual": 0.0,
+            "component": "decompose",
+            "depth": 2,
+            "expected_beta": 0.9,
+            "expected_noetic": 6,
+            "input": 0.551625,
+            "output": 0.4964625,
+            "type_mismatch": false
+          },
+          {
+            "actual_beta": 0.7,
+            "actual_noetic": 3,
+            "beta_residual": 0.25,
+            "component": "evaluate",
+            "depth": 2,
+            "expected_beta": 0.95,
+            "expected_noetic": 6,
+            "input": 0.4964625,
+            "output": 0.445395187,
+            "type_mismatch": true
+          }
+        ],
+        "structural_value": 0.445395187
+      },
+      {
+        "behavioral_value": 0.468769781,
+        "categorical_penalty": 0.24,
+        "delta": 0.320260658,
+        "depth": 3,
+        "numeric_delta": 0.080260658,
+        "observations": [
+          {
+            "actual_beta": 0.9,
+            "actual_noetic": 6,
+            "beta_residual": 0.0,
+            "component": "decompose",
+            "depth": 3,
+            "expected_beta": 0.9,
+            "expected_noetic": 6,
+            "input": 0.445395187,
+            "output": 0.400855669,
+            "type_mismatch": false
+          },
+          {
+            "actual_beta": 0.7,
+            "actual_noetic": 3,
+            "beta_residual": 0.25,
+            "component": "evaluate",
+            "depth": 3,
+            "expected_beta": 0.95,
+            "expected_noetic": 6,
+            "input": 0.400855669,
+            "output": 0.388509123,
+            "type_mismatch": true
+          }
+        ],
+        "structural_value": 0.388509123
+      }
+    ],
+    "seam_before": [
+      {
+        "behavioral_value": 0.64125,
+        "categorical_penalty": 0.08,
+        "delta": 0.169625,
+        "depth": 1,
+        "numeric_delta": 0.089625,
+        "observations": [
+          {
+            "actual_beta": 0.9,
+            "actual_noetic": 6,
+            "beta_residual": 0.0,
+            "component": "decompose",
+            "depth": 1,
+            "expected_beta": 0.9,
+            "expected_noetic": 6,
+            "input": 0.75,
+            "output": 0.675,
+            "type_mismatch": false
+          },
+          {
+            "actual_beta": 0.7,
+            "actual_noetic": 3,
+            "beta_residual": 0.25,
+            "component": "evaluate",
+            "depth": 1,
+            "expected_beta": 0.95,
+            "expected_noetic": 6,
+            "input": 0.675,
+            "output": 0.551625,
+            "type_mismatch": true
+          }
+        ],
+        "structural_value": 0.551625
+      },
+      {
+        "behavioral_value": 0.54826875,
+        "categorical_penalty": 0.16,
+        "delta": 0.262873563,
+        "depth": 2,
+        "numeric_delta": 0.102873563,
+        "observations": [
+          {
+            "actual_beta": 0.9,
+            "actual_noetic": 6,
+            "beta_residual": 0.0,
+            "component": "decompose",
+            "depth": 2,
+            "expected_beta": 0.9,
+            "expected_noetic": 6,
+            "input": 0.551625,
+            "output": 0.4964625,
+            "type_mismatch": false
+          },
+          {
+            "actual_beta": 0.7,
+            "actual_noetic": 3,
+            "beta_residual": 0.25,
+            "component": "evaluate",
+            "depth": 2,
+            "expected_beta": 0.95,
+            "expected_noetic": 6,
+            "input": 0.4964625,
+            "output": 0.445395187,
+            "type_mismatch": true
+          }
+        ],
+        "structural_value": 0.445395187
+      },
+      {
+        "behavioral_value": 0.468769781,
+        "categorical_penalty": 0.24,
+        "delta": 0.320260658,
+        "depth": 3,
+        "numeric_delta": 0.080260658,
+        "observations": [
+          {
+            "actual_beta": 0.9,
+            "actual_noetic": 6,
+            "beta_residual": 0.0,
+            "component": "decompose",
+            "depth": 3,
+            "expected_beta": 0.9,
+            "expected_noetic": 6,
+            "input": 0.445395187,
+            "output": 0.400855669,
+            "type_mismatch": false
+          },
+          {
+            "actual_beta": 0.7,
+            "actual_noetic": 3,
+            "beta_residual": 0.25,
+            "component": "evaluate",
+            "depth": 3,
+            "expected_beta": 0.95,
+            "expected_noetic": 6,
+            "input": 0.400855669,
+            "output": 0.388509123,
+            "type_mismatch": true
+          }
+        ],
+        "structural_value": 0.388509123
+      }
+    ]
+  }
+]

@@ -1,0 +1,123 @@
+{
+  "commands": [
+    "python run_demo.py",
+    "python -m unittest discover -s tests -v"
+  ],
+  "files": {
+    "README.md": {
+      "bytes": 4446,
+      "sha256": "252b1229d51e66112130d5e415a9ac646dc6c6ab6cf794a62e2a12ec95d11dba"
+    },
+    "cptb/cas.py": {
+      "bytes": 5563,
+      "sha256": "5067cd2444eeadcdf4133e0ff57c54c912581b38b99c038652f79ebf744e2758"
+    },
+    "cptb/ccdl.py": {
+      "bytes": 18622,
+      "sha256": "0b5b7383f32150a7ac24cae7999ba67ee2a85e728e467d388cb8ae35280a7ce6"
+    },
+    "cptb/components.py": {
+      "bytes": 4938,
+      "sha256": "00f37beaec79c5f0d7ce69da438f040389b8b4872f1488736d3d6b47332d7293"
+    },
+    "cptb/memory.py": {
+      "bytes": 3636,
+      "sha256": "ee3df40447720a8498f70c1e24caf3443dbbde855bd6522d69003ce9fb0aef4f"
+    },
+    "cptb/reflection.py": {
+      "bytes": 14207,
+      "sha256": "1278b35ec01fd563acae8905b6da0d3fa9ca9384ddfe5ebaf50acf287fe36735"
+    },
+    "cptb/runtime.py": {
+      "bytes": 11325,
+      "sha256": "a3c1915ccf46b0f23200cb1d2b215e3e18b23df255b430fc3990d3aaf7059b4c"
+    },
+    "cptb/seam.py": {
+      "bytes": 7563,
+      "sha256": "c0e6531b164de7e683d4b7d29af78c9427f27ac8eb7956a01ac14273d151f891"
+    },
+    "cptb/supervisor.py": {
+      "bytes": 8012,
+      "sha256": "83675bf450aa8d9029676f99b9a0863994dc3f6fee9ae201cd07af22f4e6188b"
+    },
+    "docs/DESIGN_NOTES.md": {
+      "bytes": 4111,
+      "sha256": "99193a5a6d967711f9ebed7743d0ce2880b788421d623eadba69ff88385a9109"
+    },
+    "docs/SOURCES.md": {
+      "bytes": 1870,
+      "sha256": "4a4062410d45ce8a257107f491494fee509a04741f909e91eb07a43831dbba6a"
+    },
+    "evidence/baseline_to_committed.diff": {
+      "bytes": 1140,
+      "sha256": "6409227d0ffaa825400de34c0392d9b6951000be81aa3cc30b4ea24f6d185ec5"
+    },
+    "evidence/committed_program.ccdl": {
+      "bytes": 2668,
+      "sha256": "5927bce9cb457c6484a59049e0a7354cfcba28b9c8c1fb4f348872f758480717"
+    },
+    "evidence/demo_evidence.json": {
+      "bytes": 438665,
+      "sha256": "f8d78ac126f88b1ee595eb0b6f87ce256f0a0673172b350c614f71cf48c2ec44"
+    },
+    "evidence/deterministic_replay.json": {
+      "bytes": 55978,
+      "sha256": "4a05159751fdaf11f211ce8fa56345c9ffdf222ffddd5f83fb1a816665bd604b"
+    },
+    "evidence/fault_matrix.json": {
+      "bytes": 538,
+      "sha256": "69f860e7d13492ccbde15cefcf715a04d1675d8401ef2e5615f0352756ad45a8"
+    },
+    "evidence/golden_trace_harmful.json": {
+      "bytes": 31039,
+      "sha256": "82b33ea86fdbe7e6dc40a478e9df5eb6cc4946db959814ae0b4872fcc532b211"
+    },
+    "evidence/report.html": {
+      "bytes": 4203,
+      "sha256": "79ea77cc6dc73b029ed62ed7d1f5cd4947610e98d05dbb266e316af763d77d4a"
+    },
+    "evidence/seam_divergence.csv": {
+      "bytes": 282,
+      "sha256": "2322e7b29130393c2d855f9e2b535d94b8c62e69361e2eb2c0923ce9983a7e28"
+    },
+    "evidence/test_report.md": {
+      "bytes": 2666,
+      "sha256": "fcaf6ed552bbfe8e4be371b069cd5fdf3cba8b260a0da57451d2b08b12bcb704"
+    },
+    "evidence/unit_tests.txt": {
+      "bytes": 2172,
+      "sha256": "8be18b664b1486ffc136a814281f24780862f0801c8ae5faab4acaa288dd6f2b"
+    },
+    "evidence/unsafe_patch_results.json": {
+      "bytes": 21390,
+      "sha256": "704b7bbadd57a929e394ec5dbcf475b620abad740863700d21ca99ce8490d94f"
+    },
+    "programs/cognition_processor_v0_1.ccdl": {
+      "bytes": 3170,
+      "sha256": "dc3272cf6eed0c3e653e4961003019ac481e1991995c6610407d9ab1bf5bf006"
+    },
+    "programs/semantic_contracts.json": {
+      "bytes": 497,
+      "sha256": "be633d760cf84c10975c9fddb3f35ba62c3469b9706f08c88ab27da22be29eee"
+    },
+    "tests/test_cas_and_ccdl.py": {
+      "bytes": 1630,
+      "sha256": "32c8208fd43865b3fd8f0f8087293912a2dda30248f65f7833709954c5b54960"
+    },
+    "tests/test_clean_layer.py": {
+      "bytes": 1647,
+      "sha256": "a60a448e438009310ad34e599d0aacf9313db5ccbed20afd41e36e25b776a881"
+    },
+    "tests/test_seam_and_reflection.py": {
+      "bytes": 2565,
+      "sha256": "e59c4e6eff3fcd9243ca9b90401f4c1e1f86ba897360f017800d6e5f80b4a521"
+    },
+    "tests/test_supervisor_faults.py": {
+      "bytes": 1775,
+      "sha256": "e883a0197fbcdca11fd4666f3dd5b3c89546c157099b1b6762e7b910fc3a3721"
+    }
+  },
+  "generated_at": "2026-06-20T07:50:41.486097+00:00",
+  "platform": "Linux-6.18.5-x86_64-with-glibc2.39",
+  "python": "3.11.15"
+}

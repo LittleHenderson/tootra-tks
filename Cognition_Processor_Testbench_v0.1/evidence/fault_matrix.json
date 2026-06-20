@@ -1,0 +1,33 @@
+{
+  "brownout_derate": {
+    "passed": true,
+    "route": "REST",
+    "status_bus": [
+      "BO_ALERT"
+    ]
+  },
+  "operational_before_principled": {
+    "blocked": [
+      "O"
+    ],
+    "passed": true,
+    "route": "HELD_RESET"
+  },
+  "single_channel_failure": {
+    "channels": {
+      "A": false,
+      "B": null,
+      "C": false
+    },
+    "passed": true,
+    "route": "REFUSE"
+  },
+  "watchdog_timeout": {
+    "fuse": {
+      "blown": true,
+      "reason": "WDT_TRIP"
+    },
+    "passed": true,
+    "route": "MASTER_CUTOFF"
+  }
+}
