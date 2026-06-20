@@ -1,0 +1,21 @@
+{
+  "name": "depth_three_reasoning_contract_v0_1",
+  "description": "Synthetic oracle contract for the seam test. It is a fixture, not a measured model benchmark.",
+  "pipeline": [
+    {
+      "component": "decompose",
+      "expected_noetic": 6,
+      "expected_beta": 0.9
+    },
+    {
+      "component": "evaluate",
+      "expected_noetic": 6,
+      "expected_beta": 0.95
+    }
+  ],
+  "categorical_penalty_per_depth": 0.08,
+  "acceptance": {
+    "max_delta": 0.02,
+    "required_depth": 3
+  }
+}

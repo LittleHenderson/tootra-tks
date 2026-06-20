@@ -1,0 +1,23 @@
+test_fisher_rao_identity (test_cas_and_ccdl.CASTests.test_fisher_rao_identity) ... ok
+test_state_round_trip_and_involution (test_cas_and_ccdl.CASTests.test_state_round_trip_and_involution) ... ok
+test_baseline_parses_and_validates (test_cas_and_ccdl.CCDLTests.test_baseline_parses_and_validates) ... ok
+test_feedback_divergence_is_rejected (test_cas_and_ccdl.CCDLTests.test_feedback_divergence_is_rejected) ... ok
+test_round_trip_serializer (test_cas_and_ccdl.CCDLTests.test_round_trip_serializer) ... ok
+test_ambiguous_resolves_toward_caution (test_clean_layer.CleanLayerTests.test_ambiguous_resolves_toward_caution) ... ok
+test_benign_allows (test_clean_layer.CleanLayerTests.test_benign_allows) ... ok
+test_brownout_derates_and_rests (test_clean_layer.CleanLayerTests.test_brownout_derates_and_rests) ... ok
+test_harmful_refuses (test_clean_layer.CleanLayerTests.test_harmful_refuses) ... ok
+test_trace_and_memory_are_instrumented (test_clean_layer.CleanLayerTests.test_trace_and_memory_are_instrumented) ... ok
+test_baseline_exposes_semantic_seam (test_seam_and_reflection.SeamAndReflectionTests.test_baseline_exposes_semantic_seam) ... ok
+test_corrected_replay_is_deterministic (test_seam_and_reflection.SeamAndReflectionTests.test_corrected_replay_is_deterministic) ... ok
+test_safe_patch_is_verified_and_committed (test_seam_and_reflection.SeamAndReflectionTests.test_safe_patch_is_verified_and_committed) ... ok
+test_unsafe_patches_are_rejected (test_seam_and_reflection.SeamAndReflectionTests.test_unsafe_patches_are_rejected) ... ok
+test_one_safety_channel_can_fail (test_supervisor_faults.SupervisorFaultTests.test_one_safety_channel_can_fail) ... ok
+test_operational_before_principled_is_held_reset (test_supervisor_faults.SupervisorFaultTests.test_operational_before_principled_is_held_reset) ... ok
+test_thermal_emergency_trips_fuse (test_supervisor_faults.SupervisorFaultTests.test_thermal_emergency_trips_fuse) ... ok
+test_watchdog_timeout_trips_permanent_fuse (test_supervisor_faults.SupervisorFaultTests.test_watchdog_timeout_trips_permanent_fuse) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.094s
+
+OK

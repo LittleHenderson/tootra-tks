@@ -1,0 +1,51 @@
+circuit cognition_processor_v0_1 {
+  input: prompt, risk_p, risk_e, risk_c;
+  output: result;
+
+  node constitution: ^5^P_{F7}|T;
+  node working_model: ^5^C_{F2}|A;
+  node experience_e: ^5^E_{F4}|f;
+  node expanded: ^8^C_{F2}|A;
+  node decomposed: ^6^C_{F6}|A;
+  node evaluated: ^6^E_{F6}|A;
+  node candidate: ^9^O_{F5}|E;
+  node a_surface: ^8^P_{F7}|T;
+  node a_guard: ^3^P_{F7}|T;
+  node b_surface: ^6^E_{F6}|A;
+  node b_guard: ^3^E_{F6}|A;
+  node c_surface: ^6^C_{F2}|A;
+  node c_guard: ^3^C_{F2}|A;
+  node memory_encoded: ^5^E_{F4}|f;
+  node memory_rehearsal: ^7^C_{F7}|A;
+  node response: ^9^O_{F5}|E;
+  node refusal: ^9^O_{F5}|E;
+  node diagnosis: ^6^E_{F6}|A;
+  node patch_signal: ^8^C_{F6}|A;
+
+  cjt pre_amp: CJT< prompt | constitution => expanded > [β=1.15, sat=0.95, cutoff=0.1, region=active];
+  cjt decompose: CJT< expanded | working_model => decomposed > [β=0.9, sat=0.95, cutoff=0.1, region=active];
+  cjt evaluate: CJT< decomposed | constitution => evaluated > [β=0.95, sat=0.95, cutoff=0.1, region=active];
+  cjt render: CJT< evaluated | constitution => candidate > [β=0.9, sat=0.95, cutoff=0.1, region=active];
+  cjt ch_a_surface: CJT< risk_p | constitution => a_surface > [β=1, sat=0.95, cutoff=0.05, region=active];
+  cjt ch_a_guard: CJT< a_surface | constitution => a_guard > [β=1, sat=0.8, cutoff=0.05, region=active];
+  cjt ch_b_surface: CJT< risk_e | experience_e => b_surface > [β=1, sat=0.95, cutoff=0.05, region=active];
+  cjt ch_b_guard: CJT< b_surface | experience_e => b_guard > [β=1, sat=0.8, cutoff=0.05, region=active];
+  cjt ch_c_surface: CJT< risk_c | working_model => c_surface > [β=1, sat=0.95, cutoff=0.05, region=active];
+  cjt ch_c_guard: CJT< c_surface | working_model => c_guard > [β=1, sat=0.8, cutoff=0.05, region=active];
+  cjt mem_encode: CJT< evaluated | experience_e => memory_encoded > [β=0.8, sat=0.95, cutoff=0.1, region=active];
+  cjt mem_rehearse: CJT< memory_encoded | constitution => memory_rehearsal > [β=0.8, sat=0.95, cutoff=0.1, region=active];
+  cjt green: CJT< evaluated | constitution => response > [β=1, sat=0.95, cutoff=0.1, region=active];
+  cjt red: CJT< evaluated | constitution => refusal > [β=1, sat=0.95, cutoff=0.1, region=active];
+  cjt diagnose: CJT< evaluated | constitution => diagnosis > [β=1, sat=0.95, cutoff=0.1, region=active];
+  cjt propose: CJT< diagnosis | constitution => patch_signal > [β=0.8, sat=0.95, cutoff=0.1, region=active];
+
+  feedback response -> constitution [β=0.2];
+
+  probe tp_core: candidate;
+  probe tp_eval: evaluated;
+  probe tp_a: a_guard;
+  probe tp_b: b_guard;
+  probe tp_c: c_guard;
+  probe tp_mem: memory_rehearsal;
+  probe tp_diag: diagnosis;
+}
