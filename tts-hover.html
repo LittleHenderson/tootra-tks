@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>TTS Reader -- Hover & Circle</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    min-height: 100vh;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* ---------- Top control bar ---------- */
+  #controls {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #16213e;
+    border-bottom: 2px solid #0f3460;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  #controls label {
+    font-size: 12px;
+    color: #a0a0c0;
+  }
+
+  #controls select, #controls input[type="range"], #controls input[type="number"] {
+    background: #0f3460;
+    color: #e0e0e0;
+    border: 1px solid #1a1a5e;
+    border-radius: 4px;
+    padding: 4px 6px;
+    font-size: 13px;
+  }
+
+  #controls input[type="range"] { width: 80px; }
+  #controls input[type="number"] { width: 54px; }
+
+  .ctrl-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  #status-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #555;
+    transition: background 0.3s;
+  }
+  #status-dot.listening { background: #00c853; }
+  #status-dot.speaking  { background: #ff9100; }
+  #status-dot.drawing   { background: #448aff; }
+
+  #toggle-btn {
+    background: #0f3460;
+    color: #e0e0e0;
+    border: 1px solid #1a1a5e;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  #toggle-btn:hover { background: #1a1a5e; }
+  #toggle-btn.active { background: #00c853; color: #000; }
+
+  #mode-label {
+    font-size: 11px;
+    color: #888;
+    padding: 2px 8px;
+    background: #0f3460;
+    border-radius: 10px;
+  }
+
+  /* ---------- Content area ---------- */
+  #content-area {
+    max-width: 900px;
+    margin: 24px auto;
+    padding: 0 20px;
+    position: relative;
+  }
+
+  #content-area h2 { color: #e94560; margin: 20px 0 10px; font-size: 20px; }
+  #content-area p  { line-height: 1.8; margin-bottom: 14px; font-size: 16px; }
+  #content-area li { line-height: 1.8; margin-bottom: 6px; font-size: 15px; }
+  #content-area ul { padding-left: 24px; margin-bottom: 14px; }
+
+  /* Highlight */
+  .tts-hover-highlight {
+    background: rgba(233, 69, 96, 0.25);
+    border-radius: 3px;
+    outline: 1px solid rgba(233, 69, 96, 0.4);
+  }
+
+  .tts-circle-selected {
+    background: rgba(68, 138, 255, 0.2);
+    border-radius: 3px;
+    outline: 2px solid rgba(68, 138, 255, 0.6);
+  }
+
+  /* Progress ring (desktop hover) */
+  #hover-ring {
+    position: fixed;
+    pointer-events: none;
+    width: 28px; height: 28px;
+    display: none;
+    z-index: 200;
+  }
+  #hover-ring svg { width: 100%; height: 100%; }
+  #hover-ring circle {
+    fill: none;
+    stroke: #e94560;
+    stroke-width: 3;
+    stroke-dasharray: 76;
+    stroke-dashoffset: 76;
+    transform: rotate(-90deg);
+    transform-origin: center;
+  }
+  #hover-ring.running circle {
+    stroke-dashoffset: 0;
+  }
+
+  /* ---------- Touch drawing canvas ---------- */
+  #draw-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 150;
+  }
+  #draw-canvas.active {
+    pointer-events: auto;
+  }
+
+  /* ---------- Paste / load area ---------- */
+  #load-section {
+    max-width: 900px;
+    margin: 0 auto 16px;
+    padding: 0 20px;
+  }
+
+  #load-section textarea {
+    width: 100%;
+    min-height: 80px;
+    background: #0f3460;
+    color: #e0e0e0;
+    border: 1px solid #1a1a5e;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+    -webkit-user-select: text;
+    user-select: text;
+  }
+
+  #load-section button {
+    margin-top: 6px;
+    background: #e94560;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 18px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  #load-section button:hover { background: #c73650; }
+
+  .instructions {
+    background: #16213e;
+    border: 1px solid #0f3460;
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    font-size: 13px;
+    color: #a0a0c0;
+    line-height: 1.6;
+  }
+
+  .instructions strong { color: #e94560; }
+  .instructions .mobile-inst { color: #448aff; }
+
+  /* ---------- Mobile adjustments ---------- */
+  @media (max-width: 600px) {
+    #controls { padding: 8px 10px; gap: 8px; }
+    #controls label { font-size: 11px; }
+    #controls select { font-size: 12px; max-width: 140px; }
+    #content-area { padding: 0 14px; margin: 16px auto; }
+    #content-area p { font-size: 15px; }
+    #load-section { padding: 0 14px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== Controls ========== -->
+<div id="controls">
+  <div class="ctrl-group">
+    <div id="status-dot"></div>
+    <button id="toggle-btn" class="active">TTS ON</button>
+    <span id="mode-label">desktop</span>
+  </div>
+
+  <div class="ctrl-group">
+    <label for="voice-select">Voice:</label>
+    <select id="voice-select"></select>
+  </div>
+
+  <div class="ctrl-group">
+    <label for="rate-range">Speed:</label>
+    <input type="range" id="rate-range" min="0.5" max="2" step="0.1" value="1">
+    <span id="rate-val">1.0</span>
+  </div>
+
+  <div class="ctrl-group">
+    <label for="pitch-range">Pitch:</label>
+    <input type="range" id="pitch-range" min="0" max="2" step="0.1" value="1">
+    <span id="pitch-val">1.0</span>
+  </div>
+
+  <div class="ctrl-group">
+    <label for="delay-input">Delay:</label>
+    <input type="number" id="delay-input" min="0.3" max="5" step="0.1" value="1.5">
+  </div>
+
+  <div class="ctrl-group">
+    <label for="read-mode">Read:</label>
+    <select id="read-mode">
+      <option value="word">Word</option>
+      <option value="sentence">Sentence</option>
+      <option value="paragraph" selected>Paragraph</option>
+    </select>
+  </div>
+</div>
+
+<!-- ========== Hover ring (desktop) ========== -->
+<div id="hover-ring">
+  <svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="12"/></svg>
+</div>
+
+<!-- ========== Touch canvas (mobile) ========== -->
+<canvas id="draw-canvas"></canvas>
+
+<!-- ========== Paste / load content ========== -->
+<div id="load-section">
+  <div class="instructions">
+    <strong>Desktop:</strong> Hover over text for 1.5 s -- a ring fills, then it reads aloud.<br>
+    <strong class="mobile-inst">Phone/Tablet:</strong> Touch and hold, then draw a circle around the text you want read.
+    Lift your finger and the circled text is spoken aloud. The circle turns blue to show what was captured.<br>
+    Use the controls above to pick your voice, speed, and pitch.
+  </div>
+  <textarea id="paste-box" placeholder="Paste or type text here, then tap 'Load Text'..."></textarea>
+  <button id="load-btn">Load Text</button>
+</div>
+
+<!-- ========== Readable content ========== -->
+<div id="content-area">
+  <h2>Sample Content</h2>
+  <p>The Tootra Kabbalistic System (TKS) represents a unified mathematical framework that bridges ancient mystical traditions with modern computational paradigms. At its core, TKS provides a rigorous symbolic calculus for modeling consciousness, intention, and transformation.</p>
+  <p>The system operates through a hierarchy of operators, foundations, and worlds. Each operator encodes a specific transformational principle -- from simple negation to complex recursive dissolution. The 28 Foundations serve as the axiomatic bedrock upon which all equations are constructed.</p>
+  <p>Noetic Fractals describe the self-similar patterns that emerge when consciousness operators are applied recursively. These fractals mirror structures found in nature, from the branching of trees to the spiral of galaxies, suggesting a deep connection between mathematical abstraction and physical reality.</p>
+
+  <h2>Key Concepts</h2>
+  <ul>
+    <li>Operators transform symbolic states according to precise mathematical rules.</li>
+    <li>The Four Worlds -- Atziluth, Briah, Yetzirah, Assiah -- represent nested domains of manifestation.</li>
+    <li>Noetic Junction Transistors (NJTs) model the flow of intentional energy through consciousness circuits.</li>
+    <li>Anti-Attractors prevent the system from collapsing into degenerate fixed points.</li>
+  </ul>
+
+  <p>The practical applications of TKS extend into AI alignment, cognitive modeling, strategic analysis, and the formalization of previously ineffable metaphysical concepts into computable structures.</p>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ========== DOM refs ========== */
+  const synth       = window.speechSynthesis;
+  const voiceSel    = document.getElementById("voice-select");
+  const rateRange   = document.getElementById("rate-range");
+  const rateVal     = document.getElementById("rate-val");
+  const pitchRange  = document.getElementById("pitch-range");
+  const pitchVal    = document.getElementById("pitch-val");
+  const delayInput  = document.getElementById("delay-input");
+  const readMode    = document.getElementById("read-mode");
+  const toggleBtn   = document.getElementById("toggle-btn");
+  const statusDot   = document.getElementById("status-dot");
+  const modeLabel   = document.getElementById("mode-label");
+  const contentArea = document.getElementById("content-area");
+  const hoverRing   = document.getElementById("hover-ring");
+  const canvas      = document.getElementById("draw-canvas");
+  const ctx         = canvas.getContext("2d");
+  const pasteBox    = document.getElementById("paste-box");
+  const loadBtn     = document.getElementById("load-btn");
+
+  let enabled       = true;
+  let hoverTimer    = null;
+  let currentTarget = null;
+  let speaking      = false;
+
+  /* ========== Detect touch device ========== */
+  const isTouchDevice = ("ontouchstart" in window) || (navigator.maxTouchPoints > 0);
+  modeLabel.textContent = isTouchDevice ? "touch" : "desktop";
+
+  /* ========== Canvas sizing ========== */
+  function resizeCanvas() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener("resize", resizeCanvas);
+
+  /* ========== Populate voices ========== */
+  function loadVoices() {
+    const voices = synth.getVoices();
+    voiceSel.innerHTML = "";
+    voices.forEach((v, i) => {
+      const opt = document.createElement("option");
+      opt.value = i;
+      opt.textContent = v.name + " (" + v.lang + ")";
+      if (v.default) opt.selected = true;
+      voiceSel.appendChild(opt);
+    });
+  }
+  loadVoices();
+  if (synth.onvoiceschanged !== undefined) synth.onvoiceschanged = loadVoices;
+
+  /* ========== UI wiring ========== */
+  rateRange.addEventListener("input",  () => { rateVal.textContent  = Number(rateRange.value).toFixed(1); });
+  pitchRange.addEventListener("input", () => { pitchVal.textContent = Number(pitchRange.value).toFixed(1); });
+
+  toggleBtn.addEventListener("click", () => {
+    enabled = !enabled;
+    toggleBtn.textContent = enabled ? "TTS ON" : "TTS OFF";
+    toggleBtn.classList.toggle("active", enabled);
+    if (!enabled) cancelAll();
+  });
+
+  loadBtn.addEventListener("click", () => {
+    const raw = pasteBox.value.trim();
+    if (!raw) return;
+    contentArea.innerHTML = "";
+    raw.split(/\n\s*\n/).forEach(block => {
+      const p = document.createElement("p");
+      p.textContent = block.trim();
+      contentArea.appendChild(p);
+    });
+  });
+
+  /* ========== Speech engine ========== */
+  function speak(text) {
+    if (!text) return;
+    synth.cancel();
+    const utter  = new SpeechSynthesisUtterance(text);
+    const voices = synth.getVoices();
+    const idx    = parseInt(voiceSel.value, 10);
+    if (voices[idx]) utter.voice = voices[idx];
+    utter.rate  = parseFloat(rateRange.value);
+    utter.pitch = parseFloat(pitchRange.value);
+
+    utter.onstart = () => { speaking = true;  statusDot.className = "speaking"; };
+    utter.onend   = () => { speaking = false; statusDot.className = enabled ? "listening" : ""; };
+    utter.onerror = () => { speaking = false; statusDot.className = enabled ? "listening" : ""; };
+
+    synth.speak(utter);
+  }
+
+  /* ========== Shared helpers ========== */
+  function cancelAll() {
+    clearTimeout(hoverTimer);
+    hoverTimer = null;
+    synth.cancel();
+    speaking = false;
+    hoverRing.classList.remove("running");
+    hoverRing.style.display = "none";
+    if (currentTarget) currentTarget.classList.remove("tts-hover-highlight");
+    currentTarget = null;
+    clearCircleHighlights();
+    statusDot.className = enabled ? "listening" : "";
+  }
+
+  function clearCircleHighlights() {
+    contentArea.querySelectorAll(".tts-circle-selected").forEach(el => {
+      el.classList.remove("tts-circle-selected");
+    });
+  }
+
+  function readableTarget(el) {
+    while (el && el !== contentArea) {
+      const tag = el.tagName;
+      if (tag === "P" || tag === "LI" || tag === "H1" || tag === "H2" ||
+          tag === "H3" || tag === "H4" || tag === "TD" || tag === "TH" ||
+          tag === "SPAN" || tag === "A" || tag === "BLOCKQUOTE" || tag === "DD" || tag === "DT") {
+        return el;
+      }
+      el = el.parentElement;
+    }
+    return null;
+  }
+
+  function getTextForTarget(el, mode) {
+    const fullText = el.textContent || "";
+    if (mode === "paragraph") return fullText.trim();
+    if (mode === "sentence") {
+      const sentences = fullText.match(/[^.!?]+[.!?]+/g);
+      return sentences ? sentences[0].trim() : fullText.trim();
+    }
+    return fullText.trim();
+  }
+
+
+  /* ==========================================================
+     DESKTOP: Hover-to-speak (mouse only)
+     ========================================================== */
+
+  contentArea.addEventListener("mousemove", (e) => {
+    if (!enabled || isTouchDevice) return;
+
+    hoverRing.style.left = (e.clientX + 14) + "px";
+    hoverRing.style.top  = (e.clientY - 14) + "px";
+
+    const target = readableTarget(e.target);
+    if (!target || target === currentTarget) return;
+
+    cancelAll();
+    currentTarget = target;
+    currentTarget.classList.add("tts-hover-highlight");
+    statusDot.className = "listening";
+
+    const delay  = parseFloat(delayInput.value) * 1000 || 1500;
+    hoverRing.style.display = "block";
+
+    const circle = hoverRing.querySelector("circle");
+    circle.style.transition = "none";
+    circle.style.strokeDashoffset = "76";
+    void circle.offsetWidth;
+    circle.style.transition = "stroke-dashoffset " + (delay / 1000) + "s linear";
+    circle.style.strokeDashoffset = "0";
+    hoverRing.classList.add("running");
+
+    hoverTimer = setTimeout(() => {
+      hoverRing.classList.remove("running");
+      hoverRing.style.display = "none";
+      speak(getTextForTarget(currentTarget, readMode.value));
+    }, delay);
+  });
+
+  contentArea.addEventListener("mouseleave", () => { if (!isTouchDevice) cancelAll(); });
+  contentArea.addEventListener("mouseout", (e) => {
+    if (isTouchDevice || !enabled) return;
+    const target = readableTarget(e.target);
+    if (target && target === currentTarget) cancelAll();
+  });
+
+
+  /* ==========================================================
+     MOBILE: Touch-hold + circle-draw to select text
+     ========================================================== */
+
+  let touchPoints   = [];      /* Array of {x, y} in page coords */
+  let isDrawing     = false;
+  let holdTimer     = null;
+  let touchStartPos = null;
+
+  /* Prevent default touch scrolling while drawing */
+  function preventScroll(e) { if (isDrawing) e.preventDefault(); }
+
+  /* Begin: user touches and holds */
+  contentArea.addEventListener("touchstart", (e) => {
+    if (!enabled) return;
+    const t = e.touches[0];
+    touchStartPos = { x: t.clientX, y: t.clientY };
+    synth.cancel();
+    clearCircleHighlights();
+    clearCanvas();
+
+    /* After a short hold (300ms), activate drawing mode */
+    holdTimer = setTimeout(() => {
+      isDrawing = true;
+      touchPoints = [];
+      canvas.classList.add("active");
+      statusDot.className = "drawing";
+      document.addEventListener("touchmove", preventScroll, { passive: false });
+    }, 300);
+  }, { passive: true });
+
+  /* Draw the circle path as finger moves */
+  contentArea.addEventListener("touchmove", (e) => {
+    if (!isDrawing) {
+      /* If finger moves significantly before hold completes, cancel hold (user is scrolling) */
+      if (touchStartPos && holdTimer) {
+        const t  = e.touches[0];
+        const dx = t.clientX - touchStartPos.x;
+        const dy = t.clientY - touchStartPos.y;
+        if (Math.sqrt(dx * dx + dy * dy) > 15) {
+          clearTimeout(holdTimer);
+          holdTimer = null;
+        }
+      }
+      return;
+    }
+
+    const t = e.touches[0];
+    touchPoints.push({ x: t.clientX, y: t.clientY });
+    drawPath();
+  }, { passive: true });
+
+  /* Finger lifts: find text inside the drawn circle */
+  contentArea.addEventListener("touchend", () => {
+    clearTimeout(holdTimer);
+    holdTimer = null;
+    document.removeEventListener("touchmove", preventScroll);
+
+    if (!isDrawing || touchPoints.length < 10) {
+      isDrawing = false;
+      canvas.classList.remove("active");
+      clearCanvas();
+      return;
+    }
+
+    isDrawing = false;
+    canvas.classList.remove("active");
+
+    /* Compute bounding box of the drawn path */
+    const bbox = getBBox(touchPoints);
+
+    /* Find all text elements whose bounding rect overlaps the circle bbox */
+    const textEls  = contentArea.querySelectorAll("p, li, h1, h2, h3, h4, span, blockquote, td, th");
+    const captured = [];
+
+    textEls.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      if (rectsOverlap(bbox, rect) && isInsideCirclePath(rect, touchPoints)) {
+        captured.push(el);
+        el.classList.add("tts-circle-selected");
+      }
+    });
+
+    /* Fade the drawn circle */
+    fadeCanvas();
+
+    if (captured.length === 0) {
+      clearCanvas();
+      statusDot.className = enabled ? "listening" : "";
+      return;
+    }
+
+    /* Combine text from all captured elements */
+    const combinedText = captured.map(el => el.textContent.trim()).join(". ");
+    speak(combinedText);
+
+    /* Clear highlights after speech ends (or after 30s fallback) */
+    const clearTimer = setTimeout(clearCircleHighlights, 30000);
+    const checkDone = setInterval(() => {
+      if (!synth.speaking) {
+        clearInterval(checkDone);
+        clearTimeout(clearTimer);
+        setTimeout(clearCircleHighlights, 1500);
+      }
+    }, 500);
+
+  }, { passive: true });
+
+  /* Cancel on touch outside content area */
+  document.addEventListener("touchstart", (e) => {
+    if (!contentArea.contains(e.target) && isDrawing) {
+      isDrawing = false;
+      canvas.classList.remove("active");
+      clearCanvas();
+      document.removeEventListener("touchmove", preventScroll);
+    }
+  }, { passive: true });
+
+
+  /* ---------- Canvas drawing helpers ---------- */
+  function drawPath() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (touchPoints.length < 2) return;
+
+    ctx.beginPath();
+    ctx.moveTo(touchPoints[0].x, touchPoints[0].y);
+    for (let i = 1; i < touchPoints.length; i++) {
+      ctx.lineTo(touchPoints[i].x, touchPoints[i].y);
+    }
+    ctx.strokeStyle = "rgba(68, 138, 255, 0.7)";
+    ctx.lineWidth   = 3;
+    ctx.lineCap     = "round";
+    ctx.lineJoin    = "round";
+    ctx.stroke();
+
+    /* Draw closing line back to start to show the circle */
+    ctx.beginPath();
+    ctx.moveTo(touchPoints[touchPoints.length - 1].x, touchPoints[touchPoints.length - 1].y);
+    ctx.lineTo(touchPoints[0].x, touchPoints[0].y);
+    ctx.strokeStyle = "rgba(68, 138, 255, 0.35)";
+    ctx.lineWidth   = 2;
+    ctx.setLineDash([4, 4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  function clearCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    touchPoints = [];
+  }
+
+  function fadeCanvas() {
+    let opacity = 0.7;
+    const fade = setInterval(() => {
+      opacity -= 0.07;
+      if (opacity <= 0) {
+        clearInterval(fade);
+        clearCanvas();
+        return;
+      }
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (touchPoints.length < 2) { clearInterval(fade); return; }
+      ctx.beginPath();
+      ctx.moveTo(touchPoints[0].x, touchPoints[0].y);
+      for (let i = 1; i < touchPoints.length; i++) {
+        ctx.lineTo(touchPoints[i].x, touchPoints[i].y);
+      }
+      ctx.closePath();
+      ctx.fillStyle   = "rgba(68, 138, 255, " + (opacity * 0.15) + ")";
+      ctx.fill();
+      ctx.strokeStyle = "rgba(68, 138, 255, " + opacity + ")";
+      ctx.lineWidth   = 2;
+      ctx.stroke();
+    }, 50);
+  }
+
+
+  /* ---------- Geometry helpers ---------- */
+  function getBBox(points) {
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    points.forEach(p => {
+      if (p.x < minX) minX = p.x;
+      if (p.y < minY) minY = p.y;
+      if (p.x > maxX) maxX = p.x;
+      if (p.y > maxY) maxY = p.y;
+    });
+    return { left: minX, top: minY, right: maxX, bottom: maxY, width: maxX - minX, height: maxY - minY };
+  }
+
+  function rectsOverlap(a, b) {
+    return !(a.right < b.left || a.left > b.right || a.bottom < b.top || a.top > b.bottom);
+  }
+
+  /* Point-in-polygon (ray casting) to check if element center is inside the drawn path */
+  function pointInPolygon(px, py, polygon) {
+    let inside = false;
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+      const xi = polygon[i].x, yi = polygon[i].y;
+      const xj = polygon[j].x, yj = polygon[j].y;
+      const intersect = ((yi > py) !== (yj > py)) &&
+                        (px < (xj - xi) * (py - yi) / (yj - yi) + xi);
+      if (intersect) inside = !inside;
+    }
+    return inside;
+  }
+
+  function isInsideCirclePath(rect, polygon) {
+    /* Check if the center of the element's rect falls inside the drawn polygon */
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top  + rect.height / 2;
+    return pointInPolygon(cx, cy, polygon);
+  }
+
+
+  /* ========== Init ========== */
+  statusDot.className = "listening";
+
+})();
+</script>
+</body>
+</html>
